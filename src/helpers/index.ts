@@ -1,0 +1,1 @@
+export { renderNumericValue } from './renderNumericValue'

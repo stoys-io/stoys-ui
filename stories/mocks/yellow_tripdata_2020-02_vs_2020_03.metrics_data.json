@@ -1,0 +1,284 @@
+{
+  "columns": [
+    {
+      "columnName": "VendorID",
+      "title": "VendorID"
+    },
+    {
+      "columnName": "payment_type",
+      "title": "payment_type"
+    }
+  ],
+  "values": [
+    [
+      {
+        "currentValue": "1",
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": "1",
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 12.350942930663457,
+        "previousValue": 12.234239167429164,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 2.8564920150125745,
+        "previousValue": 2.7950208752839325,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ],
+    [
+      {
+        "currentValue": "1",
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": "2",
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 11.520786641976729,
+        "previousValue": 11.527657893946097,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 0.0004028024359047782,
+        "previousValue": 0.0017556029653541215,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ],
+    [
+      {
+        "currentValue": "1",
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": "3",
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 12.928408991446188,
+        "previousValue": 12.63787407462798,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 0.0010678336980306346,
+        "previousValue": 0.005641965153667839,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ],
+    [
+      {
+        "currentValue": "1",
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": "4",
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 14.041189024390242,
+        "previousValue": 166.06333785617366,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 0.0028285907859078594,
+        "previousValue": 0.010047489823609226,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ],
+    [
+      {
+        "currentValue": "2",
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": "1",
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 12.839511048883981,
+        "previousValue": 12.646306562229826,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 3.028532322499322,
+        "previousValue": 2.9599334941237925,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ],
+    [
+      {
+        "currentValue": "2",
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": "2",
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 12.223818642487233,
+        "previousValue": 12.259356859067989,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 0.0003256834190600752,
+        "previousValue": 0.00022618124552956946,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ],
+    [
+      {
+        "currentValue": "2",
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": "3",
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": -9.840118070554356,
+        "previousValue": -9.201277581040591,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": -0.01752627789776818,
+        "previousValue": -0.024927812585126666,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ],
+    [
+      {
+        "currentValue": "2",
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": "4",
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": -12.721625678696903,
+        "previousValue": -12.942568702290076,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 0.04336740125625466,
+        "previousValue": -0.08466793893129772,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ],
+    [
+      {
+        "currentValue": null,
+        "previousValue": null,
+        "columnName": "VendorID",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": null,
+        "previousValue": null,
+        "columnName": "payment_type",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 31.917812180037558,
+        "previousValue": 24.525233014111432,
+        "columnName": "average_fare",
+        "threshold": 42,
+        "trends": []
+      },
+      {
+        "currentValue": 0.0749221853626572,
+        "previousValue": 0.23981593619121308,
+        "columnName": "average_tip",
+        "threshold": 42,
+        "trends": []
+      }
+    ]
+  ]
+}

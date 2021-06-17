@@ -1,0 +1,113 @@
+{
+  "name": "@stoys/stoys",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stoys-io/stoys-ui.git"
+  },
+  "scripts": {
+    "reinstall": "rm -rf package-lock.json && rm -rf node_modules && npm install",
+    "prebuild": "rm -rf dist",
+    "build": "tsc",
+    "bundle-build": "webpack",
+    "pack-build": "npm run reinstall && npm run prebuild && npm run build && npm pack",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "checktype": "tsc --noEmit",
+    "app-link": "bash app-link.sh"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^4.5.0",
+    "@emotion/core": "^10.0.10",
+    "@emotion/css": "^10.0.9",
+    "@emotion/styled": "^10.0.10",
+    "antd": "^4.6.4",
+    "echarts": "github:AE-Nuna/echarts#build",
+    "echarts-for-react": "^3.0.1",
+    "lodash.get": "^4.4.2",
+    "numbro": "^2.3.2",
+    "rc-resize-observer": "^1.0.0",
+    "react-window": "^1.8.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-transform-typescript": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.5",
+    "@babel/preset-typescript": "^7.12.1",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@emotion/babel-preset-css-prop": "^10.0.9",
+    "@storybook/addon-actions": "^6.2.4",
+    "@storybook/addon-essentials": "^6.2.4",
+    "@storybook/addon-links": "^6.2.4",
+    "@storybook/builder-webpack5": "^6.2.5",
+    "@storybook/react": "^6.2.4",
+    "@testing-library/react": "^11.1.2",
+    "@types/jest": "^26.0.20",
+    "@types/lodash.get": "^4.4.6",
+    "@types/react": "^16.9.55",
+    "@types/react-dom": "^16.9.9",
+    "@types/react-window": "^1.8.2",
+    "@types/uuid": "^8.3.0",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.0.1",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.2.0",
+    "husky": "^4.3.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.6.3",
+    "lint-staged": "^10.5.3",
+    "prettier": "2.1.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^5.0.3",
+    "ts-jest": "^26.4.4",
+    "ts-loader": "^8.0.11",
+    "ts-node": "^9.0.0",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^9.0.0",
+    "tslint-react": "^5.0.0",
+    "typescript": "^4.0.5",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.6.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "prettier": {
+    "printWidth": 100,
+    "semi": false,
+    "singleQuote": true,
+    "arrowParens": "avoid"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  },
+  "lint-staged": {
+    "{src,test}/**/*.tsx": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
