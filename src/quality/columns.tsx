@@ -103,7 +103,7 @@ const renderValue = ({
   )
   const failedRules = rulesForColumn?.filter(rule => violations.includes(rule.name))
 
-  if (failedRules.length === 0) {
+  if (failedRules?.length === 0) {
     return (
       <ErrorWrapper>
         <Cell>{text}</Cell>
@@ -129,7 +129,7 @@ const renderValue = ({
           <Cell>{text}</Cell>
         </ErrorWrapper>
       </Tooltip>
-      {failedRules.length > 1 && <Badge count={failedRules.length} />}
+      {failedRules?.length > 1 && <Badge count={failedRules?.length} />}
     </SampleCellWrapper>
   )
 }
@@ -208,7 +208,7 @@ const getColumnOption = (
       }),
     ellipsis: true,
     width: getColumnWidth(
-      maxColumnName[column.name].length < column.name.length
+      maxColumnName[column.name]?.length < column.name?.length
         ? column.name
         : maxColumnName[column.name]
     ),

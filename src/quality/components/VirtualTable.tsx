@@ -10,7 +10,7 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
   const { columns, scroll } = props
   const [tableWidth, setTableWidth] = useState(0)
 
-  const widthColumnCount = columns!.filter(({ width }) => !width).length
+  const widthColumnCount = columns!.filter(({ width }) => !width)?.length
   const mergedColumns = columns!.map(column => {
     if (column.width) {
       return column
@@ -48,7 +48,7 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
 
   const renderVirtualList = (rawData: object[], { scrollbarSize, ref, onScroll }: any) => {
     ref.current = connectObject
-    const totalHeight = rawData.length * MIN_TABLE_CELL_HEIGHT
+    const totalHeight = rawData?.length * MIN_TABLE_CELL_HEIGHT
 
     const renderCell = (columnIndex: number, rowIndex: number): string | JSX.Element => {
       const value = (rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]
@@ -62,15 +62,15 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
       <Grid
         ref={gridRef}
         className="virtual-grid"
-        columnCount={mergedColumns.length}
+        columnCount={mergedColumns?.length}
         columnWidth={(index: number) => {
           const { width } = mergedColumns[index]
-          return totalHeight > scroll!.y! && index === mergedColumns.length - 1
+          return totalHeight > scroll!.y! && index === mergedColumns?.length - 1
             ? (width as number) - scrollbarSize - 1
             : (width as number)
         }}
         height={scroll!.y as number}
-        rowCount={rawData.length}
+        rowCount={rawData?.length}
         rowHeight={() => MIN_TABLE_CELL_HEIGHT}
         width={tableWidth}
         onScroll={({ scrollLeft }: { scrollLeft: number }) => {
@@ -88,7 +88,7 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
         }) => (
           <div
             className={classNames('virtual-table-cell', {
-              'virtual-table-cell-last': columnIndex === mergedColumns.length - 1,
+              'virtual-table-cell-last': columnIndex === mergedColumns?.length - 1,
             })}
             style={style}
           >
