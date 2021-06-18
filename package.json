@@ -31,7 +31,7 @@
     "@emotion/css": "^10.0.9",
     "@emotion/styled": "^10.0.10",
     "antd": "^4.6.4",
-    "echarts": "github:AE-Nuna/echarts#build",
+    "echarts": "https://github.com/AE-Nuna/echarts.git#build",
     "echarts-for-react": "^3.0.1",
     "lodash.get": "^4.4.2",
     "numbro": "^2.3.2",
