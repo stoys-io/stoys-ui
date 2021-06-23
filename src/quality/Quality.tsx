@@ -73,7 +73,7 @@ export const Quality = ({
         Object.keys(row).forEach((columnName: string) => {
           if (
             !acc[columnName] ||
-            (row[columnName] && row[columnName].length > acc[columnName].length)
+            (row[columnName] && row[columnName]?.length > acc[columnName]?.length)
           ) {
             acc[columnName] = row[columnName] || ''
           }
@@ -84,7 +84,7 @@ export const Quality = ({
   )
 
   const filteredSampleData = useMemo(() => {
-    if (!_selectedRules || _selectedRules.length === 0) {
+    if (!_selectedRules || _selectedRules?.length === 0) {
       return sampleData
     }
 
