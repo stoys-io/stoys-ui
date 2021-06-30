@@ -10,15 +10,16 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
   const { columns, scroll } = props
   const [tableWidth, setTableWidth] = useState(0)
 
-  const widthColumnCount = columns!.filter(({ width }) => !width)?.length
+  const columnCount = columns!.length
+  const totalColumnWidth = columns!.reduce((acc, column) => acc + Number(column.width), 0)
   const mergedColumns = columns!.map(column => {
-    if (column.width) {
+    if (column.width && totalColumnWidth > tableWidth) {
       return column
     }
 
     return {
       ...column,
-      width: Math.floor(tableWidth / widthColumnCount),
+      width: Math.floor(tableWidth / columnCount),
     }
   })
 
@@ -65,6 +66,7 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
         columnCount={mergedColumns?.length}
         columnWidth={(index: number) => {
           const { width } = mergedColumns[index]
+
           return totalHeight > scroll!.y! && index === mergedColumns?.length - 1
             ? (width as number) - scrollbarSize - 1
             : (width as number)
