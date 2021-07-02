@@ -50,7 +50,7 @@ const renderChartCell = (data: Array<DataItem>, smallSize: boolean) => (
 
 export const renderNumericCell = (value: number | string) => {
   return (
-    <Tooltip title={value}>
+    <Tooltip title={value} placement="topLeft">
       <CellWrapper>{renderNumericValue(2, true)(value)}</CellWrapper>
     </Tooltip>
   )
@@ -103,25 +103,33 @@ const renderValue = (
 
     if (typeof date === 'string') {
       return (
-        <>
+        <Tooltip title={date} placement="topLeft">
           {date.split(',').map(dateItem => (
             <React.Fragment key={dateItem}>
               {dateItem}
               <br />
             </React.Fragment>
           ))}
-        </>
+        </Tooltip>
       )
     }
 
-    return date
+    return (
+      <Tooltip title={date} placement="topLeft">
+        {date}
+      </Tooltip>
+    )
   }
 
   if (!isNaN(+value) && value !== '') {
     return renderNumericCell(value)
   }
 
-  return value
+  return (
+    <Tooltip title={value} placement="topLeft">
+      {value}
+    </Tooltip>
+  )
 }
 
 const renderChartCellTitle = (
