@@ -121,6 +121,10 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
     td.ant-table-cell {
       padding-left: 8px;
       padding-right: 8px;
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     td.chart-cell {
