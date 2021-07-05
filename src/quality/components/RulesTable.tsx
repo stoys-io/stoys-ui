@@ -129,9 +129,10 @@ const RulesTable = ({
     [handleSearch, handleReset]
   )
 
-  const columns = useMemo(() => getRulesColumns(mode === 'row', getRuleNameColumnSearchProps), [
-    getRuleNameColumnSearchProps,
-  ])
+  const columns = useMemo(
+    () => getRulesColumns(mode === 'row', getRuleNameColumnSearchProps),
+    [getRuleNameColumnSearchProps]
+  )
 
   return (
     <RulesTableWrapper isNarrowMode={mode === 'row'} smallSize={smallSize}>

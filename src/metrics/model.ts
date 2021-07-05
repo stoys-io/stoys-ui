@@ -24,7 +24,7 @@ export interface Trend {
 
 export type TrendNode = (
   | {
-    releaseVersion: string
+      releaseVersion: string
     }
   | { date: string }
 ) &

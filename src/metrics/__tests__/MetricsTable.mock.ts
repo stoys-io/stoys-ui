@@ -70,8 +70,20 @@ export const bigMetricsData: MetricsData = {
   ],
   values: Array.from(new Array(100), (value, index) => {
     return [
-      { columnName: 'id', currentValue: `${index}`, previousValue: null, threshold: 10, trends: [] },
-      { columnName: 'value', currentValue: `${index * 2}`, previousValue: null, threshold: 10, trends: [] },
+      {
+        columnName: 'id',
+        currentValue: `${index}`,
+        previousValue: null,
+        threshold: 10,
+        trends: [],
+      },
+      {
+        columnName: 'value',
+        currentValue: `${index * 2}`,
+        previousValue: null,
+        threshold: 10,
+        trends: [],
+      },
       {
         columnName: 'average_fare',
         currentValue: index * 2,
@@ -87,5 +99,5 @@ export const bigMetricsData: MetricsData = {
         trends: [],
       },
     ]
-  })
+  }),
 }

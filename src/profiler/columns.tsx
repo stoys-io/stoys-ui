@@ -20,33 +20,31 @@ import { CellWrapper, ColorBlock } from './styles'
 import { transformSecondsToDate } from '../pmfPlot/helpers'
 import { COLUMN_CHART_WIDTH } from './constants'
 
-const renderChartCell = (data: Array<DataItem>, smallSize: boolean) => (
-  value: string,
-  row: DataItem | HydratedDataItem,
-  index: number
-) => {
-  const parent = data.find(dataItem => {
-    if ('parent' in row) {
-      return row.parent === dataItem.columnName
+const renderChartCell =
+  (data: Array<DataItem>, smallSize: boolean) =>
+  (value: string, row: DataItem | HydratedDataItem, index: number) => {
+    const parent = data.find(dataItem => {
+      if ('parent' in row) {
+        return row.parent === dataItem.columnName
+      }
+
+      return false
+    })
+    const pmfPlotData = hygratePmfPlotData(parent?.children)
+    const renderedCellConfig: RenderedCellConfig = {
+      children: <ChartWithTooltip data={pmfPlotData} smallSize={smallSize} />,
+      props: {},
+    }
+    const rowSpan = parent?.children.length || 1
+
+    if ('column' in row) {
+      renderedCellConfig.props.colSpan = 0
+    } else {
+      renderedCellConfig.props.rowSpan = index === 0 ? rowSpan : 0
     }
 
-    return false
-  })
-  const pmfPlotData = hygratePmfPlotData(parent?.children)
-  const renderedCellConfig: RenderedCellConfig = {
-    children: <ChartWithTooltip data={pmfPlotData} smallSize={smallSize} />,
-    props: {},
+    return renderedCellConfig
   }
-  const rowSpan = parent?.children.length || 1
-
-  if ('column' in row) {
-    renderedCellConfig.props.colSpan = 0
-  } else {
-    renderedCellConfig.props.rowSpan = index === 0 ? rowSpan : 0
-  }
-
-  return renderedCellConfig
-}
 
 export const renderNumericCell = (value: number | string) => {
   return (

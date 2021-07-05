@@ -3,13 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { renderNumericValue } from '../helpers'
 
-import {
-  ColumnNode,
-  MetricsData,
-  MetricsTableData,
-  SorterValue,
-  TableCellNode,
-} from './model'
+import { ColumnNode, MetricsData, MetricsTableData, SorterValue, TableCellNode } from './model'
 
 export const defaultSort = (field: string) => (a: SorterValue, b: SorterValue) => {
   return get(a, field) > get(b, field) ? 1 : -1

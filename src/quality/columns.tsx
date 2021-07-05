@@ -190,30 +190,32 @@ export const getColumnWidth = (name: string) => {
   return width > MAX_CELL_WIDTH ? MAX_CELL_WIDTH : width
 }
 
-const getColumnOption = (
-  columnStats: Array<ColumnStatistic>,
-  rules: Array<Rule>,
-  maxColumnName: { [key: string]: string }
-) => (column: Column) => {
-  return {
-    title: getColumnTitle(columnStats, column.name, column.name, rules),
-    dataIndex: column.name,
-    // Antd: Cannot ellipsis table header with sorters and filters for now.
-    sorter: defaultSort(column.name),
-    render: (text: string, item: TableCellData) =>
-      renderValue({
-        text,
-        item,
-        columnKey: column.name,
-      }),
-    ellipsis: true,
-    width: getColumnWidth(
-      maxColumnName[column.name]?.length < column.name?.length
-        ? column.name
-        : maxColumnName[column.name]
-    ),
+const getColumnOption =
+  (
+    columnStats: Array<ColumnStatistic>,
+    rules: Array<Rule>,
+    maxColumnName: { [key: string]: string }
+  ) =>
+  (column: Column) => {
+    return {
+      title: getColumnTitle(columnStats, column.name, column.name, rules),
+      dataIndex: column.name,
+      // Antd: Cannot ellipsis table header with sorters and filters for now.
+      sorter: defaultSort(column.name),
+      render: (text: string, item: TableCellData) =>
+        renderValue({
+          text,
+          item,
+          columnKey: column.name,
+        }),
+      ellipsis: true,
+      width: getColumnWidth(
+        maxColumnName[column.name]?.length < column.name?.length
+          ? column.name
+          : maxColumnName[column.name]
+      ),
+    }
   }
-}
 
 export const getSampleColumns = (
   columns: Array<Column>,
