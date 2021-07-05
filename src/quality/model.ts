@@ -40,10 +40,12 @@ export interface Data {
 
 export type Mode = 'column' | 'row'
 
+export type OnModeChange = (mode: Mode) => void
+
 export type QualityProps = {
   data: Data
   mode?: Mode
-  onModeChange?: (mode: Mode) => void
+  onModeChange?: OnModeChange
   selectedRules?: Array<string>
   onSelectedRulesChange?: (rules: Array<string>) => void
   pagination?: PaginationProps
