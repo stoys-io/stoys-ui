@@ -78,7 +78,7 @@ const JoinRates = ({
   return (
     <>
       <JoinRatesTable
-        data={joinRatesData}
+        data={joinRatesData as any}
         columns={JoinRatesTableColumns}
         joinRateId={_id}
         onRowClickHandler={_onRowClickHandler}

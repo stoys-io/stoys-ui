@@ -5,7 +5,7 @@ export const getJoinRatesColumns = (columns: Array<string>) =>
       title: column,
       dataIndex: column,
       render: (data: any) => {
-        if (column === 'table_names') {
+        if (data && column === 'Table names') {
           return data.join(', ')
         }
         return data

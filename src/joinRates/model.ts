@@ -24,8 +24,14 @@ export interface JoinRatesProps {
   smallSize?: boolean
 }
 
+export interface JoinRatesTableData {
+  key: string
+  id: string
+  'Table names'?: Array<string>
+  [key: string]: number | string | Array<string> | undefined
+}
 export interface JoinRatesTableProps {
-  data: Array<DqJoinStatistics>
+  data: Array<JoinRatesTableData>
   columns: any
   joinRateId: string
   onRowClickHandler: any

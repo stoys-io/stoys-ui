@@ -19,7 +19,7 @@ JoinRatesWithFewItems.args = {
     { id: 'mock1', ...mockData },
     {
       id: 'mock2',
-      tableNames: ['first'],
+      tableNames: ['first', 'second'],
       dq_join_statistics: {
         left_rows: 2,
         right_rows: 3,
