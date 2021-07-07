@@ -106,7 +106,6 @@ SmallQuality.args = {
 }
 SmallQuality.storyName = 'with small dataset'
 
-
 export default {
   title: 'Data Quality/Quality',
   component: [Quality, SmallQuality],

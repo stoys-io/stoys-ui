@@ -1,0 +1,5 @@
+.prettierignore
+.gitignore
+app-link.sh
+.husky
+coverage

@@ -1,4 +1,4 @@
-# DQ Library
+# Stoys UI
 
 ## Installation
 
@@ -19,7 +19,7 @@ Running documentation locally
 
 build packages: `npm run bundle-build`
 
-Copy compiled `dqLibrary.js` from `dist` folder to your project.
+Copy compiled `stoys-ui.js` from `dist` folder to your project.
 
 #### Example of using library in Jupyter project
 
@@ -43,12 +43,12 @@ HTML("""
 
 (function() {
 
-  const {Profiler, Metrics, RulesWidget, React, ReactDOM} = dqLibrary
+  const {Profiler, Metrics, Quality, React, ReactDOM} = dqLibrary
 
   const sampleData = %s
 
   ReactDOM.render(
-    React.createElement({Profiler || Metrics || RulesWidget}, {data: sampleData}, null),
+    React.createElement({Profiler || Metrics || Quality}, {data: sampleData}, null),
     document.getElementById('app')
   );
 
