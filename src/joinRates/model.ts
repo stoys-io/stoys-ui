@@ -6,8 +6,8 @@ export interface DqJoinStatistics {
 }
 
 export interface JoinRatesData {
-  dq_join_statistics: DqJoinStatistics
-  dq_result: Data
+  dq_join_statistics: DqJoinStatistics | string
+  dq_result: Data | string
   id: string
   tableNames?: Array<string>
 }

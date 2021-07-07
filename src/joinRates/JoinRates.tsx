@@ -1,12 +1,9 @@
 import React, { useMemo, useState, useCallback } from 'react'
 
-import JoinRatesTable from './JoinRatesTable'
-import { JoinRatesProps } from './model'
 import { Quality } from '../quality/Quality'
-
-function getTableNames(tableNames?: Array<string>): { 'Table names': Array<string> } | {} {
-  return tableNames ? { 'Table names': tableNames } : {}
-}
+import JoinRatesTable from './JoinRatesTable'
+import { getTableNames, parseDqJoinStatistics, transformJoinRatesData } from './helpers'
+import { JoinRatesProps } from './model'
 
 const JoinRates = ({
   data,
@@ -23,20 +20,8 @@ const JoinRates = ({
   const joinRatesData = useMemo(
     () =>
       Array.isArray(data)
-        ? data.map(dataItem => ({
-            key: dataItem.id,
-            id: dataItem.id,
-            ...getTableNames(dataItem.tableNames),
-            ...dataItem.dq_join_statistics,
-          }))
-        : [
-            {
-              key: data.id,
-              id: data.id,
-              ...getTableNames(data.tableNames),
-              ...data.dq_join_statistics,
-            },
-          ],
+        ? data.map(dataItem => transformJoinRatesData(dataItem))
+        : [transformJoinRatesData(data)],
     [data]
   )
   const JoinRatesTableColumns = useMemo(() => {
@@ -46,24 +31,24 @@ const JoinRates = ({
             (acc: any, dataItem) => ({
               ...getTableNames(dataItem.tableNames),
               ...acc,
-              ...dataItem.dq_join_statistics,
+              ...parseDqJoinStatistics(dataItem.dq_join_statistics),
             }),
             {}
           )
         )
       : Object.keys({
           ...getTableNames(data.tableNames),
-          ...data.dq_join_statistics,
+          ...parseDqJoinStatistics(data.dq_join_statistics),
         })
     return columns
   }, [data])
-  const joinRatesDqData = useMemo(
-    () =>
-      Array.isArray(data)
-        ? data[data.findIndex(dataItem => _id === dataItem.id)].dq_result
-        : data.dq_result,
-    [data, _id]
-  )
+  const joinRatesDqData = useMemo(() => {
+    const dqData = Array.isArray(data)
+      ? data[data.findIndex(dataItem => _id === dataItem.id)].dq_result
+      : data.dq_result
+
+    return typeof dqData === 'string' ? JSON.parse(dqData) : dqData
+  }, [data, _id])
   const _onRowClickHandler = useCallback(
     (id: string): void => {
       if (onRowClickHandler) {
@@ -78,7 +63,7 @@ const JoinRates = ({
   return (
     <>
       <JoinRatesTable
-        data={joinRatesData as any}
+        data={joinRatesData}
         columns={JoinRatesTableColumns}
         joinRateId={_id}
         onRowClickHandler={_onRowClickHandler}
