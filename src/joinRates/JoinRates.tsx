@@ -2,7 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react'
 
 import { Quality } from '../quality/Quality'
 import JoinRatesTable from './JoinRatesTable'
-import { getTableNames, parseDqJoinStatistics, transformJoinRatesData } from './helpers'
+import { getTableNames, parseJson, transformJoinRatesData } from './helpers'
 import { JoinRatesProps } from './model'
 
 const JoinRates = ({
@@ -31,14 +31,14 @@ const JoinRates = ({
             (acc: any, dataItem) => ({
               ...getTableNames(dataItem.tableNames),
               ...acc,
-              ...parseDqJoinStatistics(dataItem.dq_join_statistics),
+              ...parseJson(dataItem.dq_join_statistics),
             }),
             {}
           )
         )
       : Object.keys({
           ...getTableNames(data.tableNames),
-          ...parseDqJoinStatistics(data.dq_join_statistics),
+          ...parseJson(data.dq_join_statistics),
         })
     return columns
   }, [data])
