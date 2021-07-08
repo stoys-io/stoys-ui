@@ -17,7 +17,15 @@ export interface DiscreteItem {
   count: number
 }
 
-export type ColumnType = 'integer' | 'float' | 'timestamp' | 'array' | 'string'
+export type ColumnType =
+  | 'integer'
+  | 'float'
+  | 'timestamp'
+  | 'array'
+  | 'string'
+  | 'long'
+  | 'double'
+  | 'boolean'
 
 export interface Column {
   name: string

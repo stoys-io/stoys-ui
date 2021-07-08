@@ -18,13 +18,13 @@
     "build-storybook": "build-storybook",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "checktype": "tsc --noEmit",
+    "checktype": "tsc --noEmit -p tsconfig.checktype.json",
     "lint:check": "prettier --check \"**/*.*\"",
     "lint:fix": "prettier --write \"**/*.*\"",
     "app-link": "bash app-link.sh",
     "prepare": "husky install && echo 'PATH=$PATH:'$PATH >> .husky/_/husky.sh",
     "commitlint": "commitlint -E HUSKY_GIT_PARAMS",
-    "pre-commit": "lint-staged"
+    "pre-commit": "npm run checktype && lint-staged"
   },
   "peerDependencies": {
     "react": "^16.13.1",

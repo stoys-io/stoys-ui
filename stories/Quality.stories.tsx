@@ -96,7 +96,7 @@ SmallQuality.args = {
         violated_rule_names: ['value__shorter_then_extra', 'value__in_lookup_sub_select'],
       },
       {
-        row: ['4', null, 'extra', 'b'],
+        row: ['4', 'null', 'extra', 'b'],
         violated_rule_names: ['value__shorter_then_extra', 'value__in_lookup_sub_select'],
       },
     ],
