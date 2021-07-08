@@ -65,6 +65,10 @@ export interface DataProfilerProps {
   pagination?: PaginationProps
   showAllCheckboxes?: boolean
   smallSize?: boolean
+  searchOptions?: {
+    disabled: boolean
+    onChangeHandler: (value: string) => void
+  }
 }
 
 export type HydratedColumn = Omit<
@@ -237,4 +241,12 @@ export interface RenderChartProps {
   checkedTableRows: Array<string>
   isHorizontal: boolean
   smallSize: boolean
+}
+
+export interface TableSettingsProps {
+  isModeSwitcherShown?: boolean
+  isModeSwitcherChecked: boolean
+  onModeChange: () => void
+  isSearchShown: boolean
+  onSearchChangeHandler: (value: string) => void
 }

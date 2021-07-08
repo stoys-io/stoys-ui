@@ -279,9 +279,17 @@ export const ChartTable = styled(AntdTable)<{ height: number }>`
   }
 `
 
-export const ModeCheckboxWrapper = styled.div`
+export const TableSettingsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
+
+  .search-wrapper {
+    flex-grow: 1;
+  }
+
+  .ant-input-search {
+    width: 250px;
+  }
 `
 
 export const ModeCheckbox = styled(Checkbox)`

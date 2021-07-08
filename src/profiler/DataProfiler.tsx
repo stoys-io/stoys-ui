@@ -9,7 +9,7 @@ import { DataItem, DataProfilerProps, HydratedColumn, HydratedDataItem, Mode } f
 
 import VerticalTable from './components/VerticalTable'
 import HorizontalTable from './components/HorizontalTable'
-import ModeSwitcher from './components/ModeSwitcher'
+import TableSettings from './components/TableSettings'
 
 import { NoData, TableWrapper } from './styles'
 
@@ -23,8 +23,10 @@ export const DataProfiler = ({
   modeOptions,
   showAllCheckboxes,
   smallSize = true,
+  searchOptions,
 }: DataProfilerProps) => {
   const [isVertical, setIsVertical] = useState<boolean>(modeOptions?.type === Mode.vertical)
+  const [searchValue, setSearchValue] = useState<string>('')
   const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
   if (!datasets || !Array.isArray(datasets)) {
@@ -70,15 +72,17 @@ export const DataProfiler = ({
 
   const data = useMemo(
     () =>
-      Object.keys(dataGrouppedByTitle).reduce((acc: Array<DataItem>, column) => {
-        acc.push({
-          columnName: column,
-          key: column,
-          children: [...dataGrouppedByTitle[column]],
-        })
-        return acc
-      }, []),
-    [dataGrouppedByTitle]
+      Object.keys(dataGrouppedByTitle)
+        .filter(column => column.toLowerCase().includes(searchValue))
+        .reduce((acc: Array<DataItem>, column) => {
+          acc.push({
+            columnName: column,
+            key: column,
+            children: [...dataGrouppedByTitle[column]],
+          })
+          return acc
+        }, []),
+    [dataGrouppedByTitle, searchValue]
   )
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
@@ -132,6 +136,17 @@ export const DataProfiler = ({
     []
   )
 
+  const _onSearch = useCallback(
+    (value: string) => {
+      if (searchOptions?.onChangeHandler) {
+        searchOptions.onChangeHandler(value)
+      }
+
+      setSearchValue(value)
+    },
+    [searchOptions]
+  )
+
   return (
     <CheckedRowsContext.Provider
       value={{
@@ -144,8 +159,14 @@ export const DataProfiler = ({
         dataLength: data.length,
       }}
     >
-      {modeOptions?.isCheckboxShown ? (
-        <ModeSwitcher checked={isVertical} onChange={_setIsVerticalView} />
+      {modeOptions?.isCheckboxShown && !searchOptions?.disabled ? (
+        <TableSettings
+          isModeSwitcherShown={modeOptions?.isCheckboxShown}
+          isModeSwitcherChecked={isVertical}
+          onModeChange={_setIsVerticalView}
+          isSearchShown={!searchOptions?.disabled}
+          onSearchChangeHandler={_onSearch}
+        />
       ) : null}
       <TableWrapper smallSize={!!smallSize}>
         {isVertical ? (
