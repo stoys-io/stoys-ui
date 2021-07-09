@@ -33,7 +33,9 @@ describe('Join Rates', () => {
 
   it('should call onRowClickHandler', () => {
     const onRowClickHandlerMock = jest.fn()
-    const { container } = render(<JoinRates data={[mockData1, mockData2]} onRowClickHandler={onRowClickHandlerMock} />)
+    const { container } = render(
+      <JoinRates data={[mockData1, mockData2]} onRowClickHandler={onRowClickHandlerMock} />
+    )
 
     const selectedRow = container.querySelector('[data-row-key="test1"]')
     const otherRow = container.querySelector('[data-row-key="test2"]')

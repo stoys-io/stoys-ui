@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 
 import { Quality } from '../quality/Quality'
 import JoinRatesTable from './JoinRatesTable'
@@ -59,6 +59,12 @@ const JoinRates = ({
     },
     [onRowClickHandler, _setId]
   )
+
+  useEffect(() => {
+    if (joinRateId) {
+      _setId(joinRateId)
+    }
+  }, [joinRateId, _setId])
 
   return (
     <>

@@ -315,5 +315,5 @@ export const mockData2 = {
 export const mockDataWithJson = {
   ...mockData1,
   dq_join_statistics: JSON.stringify(mockData1.dq_join_statistics),
-  dq_result: JSON.stringify(mockData1.dq_result)
-} 
+  dq_result: JSON.stringify(mockData1.dq_result),
+}
