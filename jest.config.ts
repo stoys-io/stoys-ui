@@ -17,7 +17,7 @@ export default {
     '(\\.(css|less|svg))$': 'identity-obj-proxy',
   },
 
-  modulePathIgnorePatterns: ["<rootDir>/dist/"],
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
 
   testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
 
