@@ -34,9 +34,8 @@ const Threshold = ({
       value: metricsDataItem[column.columnName],
     }))
 
-  const [keyColumnsWithValue, updateKeyColumnsValue] = useState<KeyValueInput[]>(
-    getKeyColumnsWithValues
-  )
+  const [keyColumnsWithValue, updateKeyColumnsValue] =
+    useState<KeyValueInput[]>(getKeyColumnsWithValues)
 
   const onChangeHandler = (e: RadioChangeEvent, key: string) => {
     const updatedKeyColumns = keyColumnsWithValue.map(column => {

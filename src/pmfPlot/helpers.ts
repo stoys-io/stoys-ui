@@ -34,5 +34,7 @@ export const renderItem = (isLogScale: boolean) => (params: any, api: any) => {
   }
 }
 
-export const removeZeroData = (enabledLogScale = false) => (pmfPlotData: Array<number>): boolean =>
-  enabledLogScale && pmfPlotData[COUNT_INDEX] === 0 ? false : true
+export const removeZeroData =
+  (enabledLogScale = false) =>
+  (pmfPlotData: Array<number>): boolean =>
+    enabledLogScale && pmfPlotData[COUNT_INDEX] === 0 ? false : true

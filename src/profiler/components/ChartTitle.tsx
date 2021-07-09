@@ -22,20 +22,22 @@ const ChartTitle = ({ row, rowOptions, tableOptions }: ChartTitleProps): JSX.Ele
         const isAxisChecked = checkedAxisRows.includes(row.columnName)
         const isTableChecked = checkedTableRows.includes(row.columnName)
 
-        const setChecked = (
-          _isChecked: boolean,
-          _checkedRows: Array<string>,
-          _setChecked: (_checkedRows: Array<string>) => void
-        ) => () => {
-          if (_isChecked) {
-            const checkedRowsCopy = [..._checkedRows]
-            const checkedRowIndex = checkedRowsCopy.indexOf(row.columnName)
-            checkedRowsCopy.splice(checkedRowIndex, 1)
-            _setChecked(checkedRowsCopy)
-          } else {
-            _setChecked([..._checkedRows, row.columnName])
+        const setChecked =
+          (
+            _isChecked: boolean,
+            _checkedRows: Array<string>,
+            _setChecked: (_checkedRows: Array<string>) => void
+          ) =>
+          () => {
+            if (_isChecked) {
+              const checkedRowsCopy = [..._checkedRows]
+              const checkedRowIndex = checkedRowsCopy.indexOf(row.columnName)
+              checkedRowsCopy.splice(checkedRowIndex, 1)
+              _setChecked(checkedRowsCopy)
+            } else {
+              _setChecked([..._checkedRows, row.columnName])
+            }
           }
-        }
 
         const onChangeRadioGroup = (event: RadioChangeEvent) => {
           const {
