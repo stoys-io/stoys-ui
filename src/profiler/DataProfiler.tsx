@@ -159,7 +159,7 @@ export const DataProfiler = ({
         dataLength: data.length,
       }}
     >
-      {modeOptions?.isCheckboxShown && !searchOptions?.disabled ? (
+      {modeOptions?.isCheckboxShown || !searchOptions?.disabled ? (
         <TableSettings
           isModeSwitcherShown={modeOptions?.isCheckboxShown}
           isModeSwitcherChecked={isVertical}

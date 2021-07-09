@@ -66,8 +66,8 @@ export interface DataProfilerProps {
   showAllCheckboxes?: boolean
   smallSize?: boolean
   searchOptions?: {
-    disabled: boolean
-    onChangeHandler: (value: string) => void
+    disabled?: boolean
+    onChangeHandler?: (value: string) => void
   }
 }
 

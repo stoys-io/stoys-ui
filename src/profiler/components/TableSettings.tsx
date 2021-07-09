@@ -33,6 +33,7 @@ const TableSettings = ({
             allowClear
             onSearch={onSearchChangeHandler}
             onChange={_onSearchChange}
+            data-testid="table-search"
           />
         </div>
       ) : null}
