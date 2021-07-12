@@ -2,7 +2,12 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react'
 
 import { Quality } from '../quality/Quality'
 import JoinRatesTable from './JoinRatesTable'
-import { getTableNames, parseJson, transformJoinRatesData } from './helpers'
+import {
+  getTableNames,
+  parseDqJoinStatistics,
+  parseDqResult,
+  transformJoinRatesData,
+} from './helpers'
 import { JoinRatesProps } from './model'
 
 const JoinRates = ({
@@ -31,23 +36,23 @@ const JoinRates = ({
             (acc: any, dataItem) => ({
               ...getTableNames(dataItem.tableNames),
               ...acc,
-              ...parseJson(dataItem.dq_join_statistics),
+              ...parseDqJoinStatistics(dataItem),
             }),
             {}
           )
         )
       : Object.keys({
           ...getTableNames(data.tableNames),
-          ...parseJson(data.dq_join_statistics),
+          ...parseDqJoinStatistics(data),
         })
     return columns
   }, [data])
   const joinRatesDqData = useMemo(() => {
     const dqData = Array.isArray(data)
-      ? data[data.findIndex(dataItem => _id === dataItem.id)].dq_result
-      : data.dq_result
+      ? data[data.findIndex(dataItem => _id === dataItem.id)]
+      : data
 
-    return typeof dqData === 'string' ? JSON.parse(dqData) : dqData
+    return parseDqResult(dqData)
   }, [data, _id])
   const _onRowClickHandler = useCallback(
     (id: string): void => {

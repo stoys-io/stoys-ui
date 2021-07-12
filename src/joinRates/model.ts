@@ -5,12 +5,21 @@ export interface DqJoinStatistics {
   [key: string]: number | string
 }
 
-export interface JoinRatesData {
-  dq_join_statistics: DqJoinStatistics | string
-  dq_result: Data | string
+export interface BaseJoinRatesData {
   id: string
   tableNames?: Array<string>
 }
+export interface JoinRatesJsonData extends BaseJoinRatesData {
+  dqJoinStatisticsJson: string
+  dqJoinResultJson: string
+}
+
+export interface JoinRatesObjectData extends BaseJoinRatesData {
+  dq_join_statistics: DqJoinStatistics
+  dq_result: Data
+}
+
+export type JoinRatesData = JoinRatesJsonData | JoinRatesObjectData
 
 export interface JoinRatesProps {
   data: JoinRatesData | Array<JoinRatesData>

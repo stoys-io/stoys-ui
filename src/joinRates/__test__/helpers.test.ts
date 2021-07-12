@@ -1,5 +1,10 @@
 import { Data } from '../../quality/model'
-import { getTableNames, parseJson, transformJoinRatesData } from '../helpers'
+import {
+  getTableNames,
+  transformJoinRatesData,
+  parseDqResult,
+  parseDqJoinStatistics,
+} from '../helpers'
 
 describe('join rates helpers', () => {
   describe('getTableNames', () => {
@@ -14,15 +19,49 @@ describe('join rates helpers', () => {
     })
   })
 
-  describe('parseJson', () => {
-    const mockData = { data: '123' }
+  describe('parseDqResult', () => {
+    it('should return object', () => {
+      const mockData = {
+        id: 'testId',
+        dq_join_statistics: { a: 1, b: 2 },
+        dq_result: { x: 1, y: 2 },
+      }
 
-    it('should return object when paased object', () => {
-      expect(parseJson(mockData)).toEqual(mockData)
+      expect(parseDqResult(mockData as any)).toEqual(mockData.dq_result)
     })
 
-    it('should return parsed object when passed json', () => {
-      expect(parseJson(JSON.stringify(mockData))).toEqual(mockData)
+    it('should parse JSON', () => {
+      const mockData = {
+        id: 'testId',
+        dq_join_statistics: { a: 1, b: 2 },
+        dqJoinResultJson: JSON.stringify({ x: 1, y: 2 }),
+      }
+
+      expect(parseDqResult(mockData as any)).toEqual(JSON.parse(mockData.dqJoinResultJson))
+    })
+  })
+
+  describe('parseDqJoinStatistics', () => {
+    it('should return object', () => {
+      const mockData = {
+        id: 'testId',
+        dq_join_statistics: { a: 1, b: 2 },
+        dq_result: { x: 1, y: 2 },
+      }
+
+      expect(parseDqJoinStatistics(mockData as any)).toEqual(mockData.dq_join_statistics)
+    })
+
+    it('should parse JSON', () => {
+      const mockData = {
+        id: 'testId',
+        dqJoinStatisticsJson: JSON.stringify({ a: 1, b: 2 }),
+        dq_result: { x: 1, y: 2 },
+      }
+
+      expect(parseDqJoinStatistics(mockData as any)).toEqual(
+        JSON.parse(mockData.dqJoinStatisticsJson)
+      )
     })
   })
 
