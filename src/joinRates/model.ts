@@ -10,8 +10,8 @@ export interface BaseJoinRatesData {
   tableNames?: Array<string>
 }
 export interface JoinRatesJsonData extends BaseJoinRatesData {
-  dqJoinStatisticsJson: string
-  dqJoinResultJson: string
+  dqJoinStatisticsJson?: string
+  dqJoinResultJson?: string
 }
 
 export interface JoinRatesObjectData extends BaseJoinRatesData {

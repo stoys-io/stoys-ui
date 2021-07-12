@@ -6,13 +6,15 @@ export function getTableNames(tableNames?: Array<string>): { 'Table names': Arra
 }
 
 export function parseDqResult(dataItem: JoinRatesData): Data {
-  return 'dq_result' in dataItem ? dataItem.dq_result : JSON.parse(dataItem.dqJoinResultJson)
+  return 'dq_result' in dataItem
+    ? dataItem.dq_result
+    : JSON.parse(dataItem.dqJoinResultJson ? dataItem.dqJoinResultJson : '{}')
 }
 
 export function parseDqJoinStatistics(dataItem: JoinRatesData): DqJoinStatistics {
   return 'dq_join_statistics' in dataItem
     ? dataItem.dq_join_statistics
-    : JSON.parse(dataItem.dqJoinStatisticsJson)
+    : JSON.parse(dataItem.dqJoinStatisticsJson ? dataItem.dqJoinStatisticsJson : '{}')
 }
 
 export function transformJoinRatesData(dataItem: JoinRatesData): JoinRatesTableData {
