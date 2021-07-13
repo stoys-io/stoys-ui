@@ -14,9 +14,10 @@ ProfilerForOneDataset.args = {
   logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
   axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
   chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
-  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log(mode) },
+  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
   showAllCheckboxes: true,
   smallSize: true,
+  searchOptions: { disabled: false, onChangeHandler: value => console.log('search => ', value) },
 }
 ProfilerForOneDataset.storyName = 'dataset with one item'
 
@@ -27,9 +28,10 @@ Profiler.args = {
   pagination: { disabled: false },
   axisOptions: { isCheckboxShown: true, isUsedByDefault: false },
   chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
-  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log(mode) },
+  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
   showAllCheckboxes: false,
   smallSize: false,
+  searchOptions: { disabled: false, onChangeHandler: value => console.log('search => ', value) },
 }
 Profiler.storyName = 'dataset with two items'
 

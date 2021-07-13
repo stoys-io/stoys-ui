@@ -73,7 +73,12 @@ export const DataProfiler = ({
   const data = useMemo(
     () =>
       Object.keys(dataGrouppedByTitle)
-        .filter(column => column.toLowerCase().includes(searchValue))
+        .filter(column => {
+          const searchRegex = new RegExp(searchValue.split('').join('.*'))
+
+          return searchRegex.test(column.toLowerCase())
+          // return column.toLowerCase().includes(searchValue)
+        })
         .reduce((acc: Array<DataItem>, column) => {
           acc.push({
             columnName: column,
@@ -138,10 +143,7 @@ export const DataProfiler = ({
 
   const _onSearch = useCallback(
     (value: string) => {
-      if (searchOptions?.onChangeHandler) {
-        searchOptions.onChangeHandler(value)
-      }
-
+      searchOptions?.onChangeHandler?.(value)
       setSearchValue(value)
     },
     [searchOptions]
