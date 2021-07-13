@@ -77,7 +77,6 @@ export const DataProfiler = ({
           const searchRegex = new RegExp(searchValue.split('').join('.*'))
 
           return searchRegex.test(column.toLowerCase())
-          // return column.toLowerCase().includes(searchValue)
         })
         .reduce((acc: Array<DataItem>, column) => {
           acc.push({
