@@ -1,5 +1,7 @@
 import React from 'react'
+import RiseOutlined from '@ant-design/icons/RiseOutlined'
 
+import { ReactComponent as AxesIcon } from '../icons/axes.svg'
 import HeaderCheckbox from './HeaderCheckbox'
 import { CheckedRowsContext } from '../checkedRowsContext'
 import { ChartTableHeaderProps } from '../model'
@@ -28,7 +30,7 @@ const ChartTableHeader = ({
                   }
                   setChecked={logarithmicScale.setChecked}
                   isChecked={checkedLogRows.length === dataLength}
-                  title="Logarithmic Scale"
+                  title={<RiseOutlined />}
                 />
               ) : null}
               {axisOptions.isCheckboxShown ? (
@@ -38,7 +40,7 @@ const ChartTableHeader = ({
                   }
                   setChecked={axisOptions.setChecked}
                   isChecked={checkedAxisRows.length === dataLength}
-                  title="Axes"
+                  title={<AxesIcon width="1em" height="1em" />}
                 />
               ) : null}
             </span>

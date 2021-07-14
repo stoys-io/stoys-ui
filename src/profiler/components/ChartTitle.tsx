@@ -1,6 +1,8 @@
 import React from 'react'
 import { RadioChangeEvent } from 'antd/lib/radio'
+import RiseOutlined from '@ant-design/icons/RiseOutlined'
 
+import { ReactComponent as AxesIcon } from '../icons/axes.svg'
 import { CheckedRowsContext } from '../checkedRowsContext'
 import CheckboxWithTitle from './CheckboxWithTitle'
 import ChartTableSwitcher from './ChartTableSwitcher'
@@ -70,14 +72,14 @@ const ChartTitle = ({ row, rowOptions, tableOptions }: ChartTitleProps): JSX.Ele
                   <CheckboxWithTitle
                     setChecked={setChecked(isLogChecked, checkedLogRows, setCheckedLogRows)}
                     isChecked={isLogChecked}
-                    title="Logarithmic Scale"
+                    title={<RiseOutlined />}
                   />
                 ) : null}
                 {rowOptions.isAxisCheckboxShown ? (
                   <CheckboxWithTitle
                     setChecked={setChecked(isAxisChecked, checkedAxisRows, setCheckedAxisRows)}
                     isChecked={isAxisChecked}
-                    title="Axes"
+                    title={<AxesIcon width="1em" height="1em" />}
                   />
                 ) : null}
               </span>

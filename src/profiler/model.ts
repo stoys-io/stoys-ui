@@ -215,7 +215,7 @@ export interface HeaderCheckboxProps {
   isPartiallyChecked: boolean
   setChecked: (isChecked: boolean) => void
   isChecked: boolean
-  title: string
+  title: string | JSX.Element
 }
 
 export interface ModeSwitcherProps {
@@ -245,4 +245,9 @@ export interface RenderChartProps {
   checkedTableRows: Array<string>
   isHorizontal: boolean
   smallSize: boolean
+}
+
+export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> & {
+  isChecked: boolean
+  title: string | JSX.Element
 }
