@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import css from '@emotion/css'
 import Radio from 'antd/lib/radio'
 import AntdTable from 'antd/lib/table'
-import Checkbox from 'antd/lib/checkbox'
 import Empty from 'antd/lib/empty'
 
 import {
@@ -284,8 +283,12 @@ export const ModeCheckboxWrapper = styled.div`
   justify-content: flex-end;
 `
 
-export const ModeCheckbox = styled(Checkbox)`
-  margin: 10px;
+export const ModeIconWrapper = styled.div<{ checked: boolean }>`
+  color: ${props => (props.checked ? '#1890ff' : 'inherit')};
+  padding: 4px;
+  transform: rotate(${props => (props.checked ? '90' : '0')}deg)
+    scaleY(${props => (props.checked ? '-1' : '1')});
+  cursor: pointer;
 `
 
 export const StyledEmpty = styled(Empty)`
