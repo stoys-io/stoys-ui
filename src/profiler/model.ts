@@ -260,7 +260,7 @@ export interface ToolboxProps {
   activeLogScale?: boolean
   activeAxes?: boolean
   disableLogScale?: boolean
-  disableAxes?: boolean 
+  disableAxes?: boolean
   onAxesClickHandler: (active: boolean) => void
   onLogScaleClickHandler: (active: boolean) => void
   onTableClickHandler: (active: boolean) => void

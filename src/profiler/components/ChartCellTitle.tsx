@@ -1,39 +1,44 @@
 import React, { useCallback, useState } from 'react'
-import { RadioChangeEvent } from 'antd/lib/radio'
-import BarChartOutlined from '@ant-design/icons/lib/icons/BarChartOutlined'
 
-import ChartTableHeader from './ChartTableHeader'
+import { CheckedRowsContext } from '../checkedRowsContext'
+import Toolbox from './Toolbox'
 import { ChartCellTitleProps } from '../model'
-import ChartTableSwitcher from './ChartTableSwitcher'
 
 const ChartCellTitle = ({
   logarithmicScale,
   axisOptions,
   tableOptions,
 }: ChartCellTitleProps): JSX.Element => {
-  const [activeBtn, setActiveBtn] = useState<string>(
-    tableOptions.isUsedByDefault ? 'table' : 'chart'
-  )
+  const [isActiveTable, setIsActiveTable] = useState<boolean>(!!tableOptions.isUsedByDefault)
 
   const onChangeRadioGroup = useCallback(
-    (event: RadioChangeEvent) => {
-      const {
-        target: { value },
-      } = event
-      setActiveBtn(value)
-      tableOptions.setChecked(value !== 'chart')
+    (active: boolean) => {
+      setIsActiveTable(active)
+      tableOptions.setChecked(active)
     },
     [tableOptions]
   )
 
   return (
-    <ChartTableHeader logarithmicScale={logarithmicScale} axisOptions={axisOptions}>
-      {tableOptions.isCheckboxShown ? (
-        <ChartTableSwitcher onChange={onChangeRadioGroup} value={activeBtn} />
-      ) : (
-        <BarChartOutlined style={{ fontSize: '24px' }} />
-      )}
-    </ChartTableHeader>
+    <>
+      <CheckedRowsContext.Consumer>
+        {({ checkedLogRows, checkedAxisRows, checkedTableRows, dataLength }) => (
+          <Toolbox
+            isTableChartSwitcherHidden={!tableOptions?.isCheckboxShown}
+            isLogScaleSwitcherHidden={!logarithmicScale.isCheckboxShown}
+            isAxesSwitcherHidden={!axisOptions.isCheckboxShown}
+            activeLogScale={checkedLogRows.length === dataLength}
+            activeAxes={checkedAxisRows.length === dataLength}
+            activeTable={isActiveTable}
+            disableLogScale={isActiveTable || checkedTableRows.length === dataLength}
+            disableAxes={isActiveTable || checkedTableRows.length === dataLength}
+            onTableClickHandler={onChangeRadioGroup}
+            onLogScaleClickHandler={logarithmicScale.setChecked}
+            onAxesClickHandler={axisOptions.setChecked}
+          />
+        )}
+      </CheckedRowsContext.Consumer>
+    </>
   )
 }
 
