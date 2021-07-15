@@ -251,3 +251,17 @@ export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> &
   isChecked: boolean
   title: string | JSX.Element
 }
+
+export interface ToolboxProps {
+  isTableChartSwitcherHidden?: boolean
+  isLogScaleSwitcherHidden?: boolean
+  isAxesSwitcherHidden?: boolean
+  activeTable?: boolean
+  activeLogScale?: boolean
+  activeAxes?: boolean
+  disableLogScale?: boolean
+  disableAxes?: boolean 
+  onAxesClickHandler: (active: boolean) => void
+  onLogScaleClickHandler: (active: boolean) => void
+  onTableClickHandler: (active: boolean) => void
+}

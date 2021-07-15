@@ -252,19 +252,6 @@ export const RadioButton = styled(Radio.Button)`
   font-size: 24px;
 `
 
-export const ChartTitleWrapper = styled.span`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: ${COLUMN_CHART_WIDTH}px;
-  padding-left: 8px;
-
-  @media screen and (max-width: 1024px) {
-    width: ${SMALL_COLUMN_CHART_WIDTH}px;
-  }
-`
-
 export const ChartTable = styled(AntdTable)<{ height: number }>`
   height: ${({ height }) => `${height}px`};
 
@@ -297,4 +284,38 @@ export const StyledEmpty = styled(Empty)`
   align-items: center;
   flex-direction: column;
   margin: 0;
+`
+
+export const ToolboxWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+  > .toolbox-icon {
+    padding: 4px;
+    cursor: pointer;
+
+    &.active {
+      color: #1890ff;
+
+      > svg {
+        fill: #1890ff;
+      }
+    }
+
+    &.disabled {
+      color: #d9d9d9;
+      cursor: not-allowed;
+
+      > svg {
+        fill: #d9d9d9;
+      }
+    }
+  }
+`
+
+export const SvgWrapper = styled.span`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 `

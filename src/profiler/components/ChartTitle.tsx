@@ -1,13 +1,8 @@
 import React from 'react'
-import { RadioChangeEvent } from 'antd/lib/radio'
-import RiseOutlined from '@ant-design/icons/RiseOutlined'
 
-import { ReactComponent as AxesIcon } from '../icons/axes.svg'
 import { CheckedRowsContext } from '../checkedRowsContext'
-import CheckboxWithTitle from './CheckboxWithTitle'
-import ChartTableSwitcher from './ChartTableSwitcher'
-import { ChartTitleWrapper } from '../styles'
 import { ChartTitleProps } from '../model'
+import Toolbox from './Toolbox'
 
 const ChartTitle = ({ row, rowOptions, tableOptions }: ChartTitleProps): JSX.Element => {
   return (
@@ -25,13 +20,9 @@ const ChartTitle = ({ row, rowOptions, tableOptions }: ChartTitleProps): JSX.Ele
         const isTableChecked = checkedTableRows.includes(row.columnName)
 
         const setChecked =
-          (
-            _isChecked: boolean,
-            _checkedRows: Array<string>,
-            _setChecked: (_checkedRows: Array<string>) => void
-          ) =>
-          () => {
-            if (_isChecked) {
+          (_checkedRows: Array<string>, _setChecked: (_checkedRows: Array<string>) => void) =>
+          (active: boolean) => {
+            if (!active) {
               const checkedRowsCopy = [..._checkedRows]
               const checkedRowIndex = checkedRowsCopy.indexOf(row.columnName)
               checkedRowsCopy.splice(checkedRowIndex, 1)
@@ -41,12 +32,8 @@ const ChartTitle = ({ row, rowOptions, tableOptions }: ChartTitleProps): JSX.Ele
             }
           }
 
-        const onChangeRadioGroup = (event: RadioChangeEvent) => {
-          const {
-            target: { value },
-          } = event
-
-          if (value === 'table') {
+        const onChangeRadioGroup = (active: boolean) => {
+          if (active) {
             setCheckedTableRows([...checkedTableRows, row.columnName])
           } else {
             const checkedRowsCopy = [...checkedTableRows]
@@ -57,34 +44,19 @@ const ChartTitle = ({ row, rowOptions, tableOptions }: ChartTitleProps): JSX.Ele
         }
 
         return (
-          <ChartTitleWrapper>
-            {tableOptions?.isCheckboxShown ? (
-              <ChartTableSwitcher
-                onChange={onChangeRadioGroup}
-                value={isTableChecked ? 'table' : 'chart'}
-              />
-            ) : (
-              <span />
-            )}
-            {isTableChecked ? null : (
-              <span>
-                {rowOptions.isLogCheckboxShown ? (
-                  <CheckboxWithTitle
-                    setChecked={setChecked(isLogChecked, checkedLogRows, setCheckedLogRows)}
-                    isChecked={isLogChecked}
-                    title={<RiseOutlined />}
-                  />
-                ) : null}
-                {rowOptions.isAxisCheckboxShown ? (
-                  <CheckboxWithTitle
-                    setChecked={setChecked(isAxisChecked, checkedAxisRows, setCheckedAxisRows)}
-                    isChecked={isAxisChecked}
-                    title={<AxesIcon width="1em" height="1em" />}
-                  />
-                ) : null}
-              </span>
-            )}
-          </ChartTitleWrapper>
+          <Toolbox
+            isTableChartSwitcherHidden={!tableOptions?.isCheckboxShown}
+            isLogScaleSwitcherHidden={!rowOptions.isLogCheckboxShown}
+            isAxesSwitcherHidden={!rowOptions.isAxisCheckboxShown}
+            activeLogScale={isLogChecked}
+            activeAxes={isAxisChecked}
+            activeTable={isTableChecked}
+            disableLogScale={isTableChecked}
+            disableAxes={isTableChecked}
+            onTableClickHandler={onChangeRadioGroup}
+            onLogScaleClickHandler={setChecked(checkedLogRows, setCheckedLogRows)}
+            onAxesClickHandler={setChecked(checkedAxisRows, setCheckedAxisRows)}
+          />
         )
       }}
     </CheckedRowsContext.Consumer>
