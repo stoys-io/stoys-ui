@@ -4,9 +4,11 @@ import { render, fireEvent } from '@testing-library/react'
 import ChartCellTitle from '../ChartCellTitle'
 import { CheckedRowsContext } from '../../checkedRowsContext'
 
+jest.mock('../../icons/axes.svg', () => ({ ReactComponent: () => 'icon' }))
+
 describe('ChartCellTitle', () => {
   it("shouldn't render any checkboxes when they are disabled", () => {
-    const { queryAllByTestId, queryByTestId } = render(
+    const { queryByTestId } = render(
       <CheckedRowsContext.Provider
         value={{
           checkedTableRows: ['1', '2', '3'],
@@ -29,17 +31,19 @@ describe('ChartCellTitle', () => {
       </CheckedRowsContext.Provider>
     )
 
-    const checkboxes = queryAllByTestId('title-checkbox')
-    const tableRadioBtn = queryByTestId('table-view-btn')
-    const chartRadioBtn = queryByTestId('chart-view-btn')
+    const tableBtn = queryByTestId('table-view-btn')
+    const chartBtn = queryByTestId('chart-view-btn')
+    const logBtn = queryByTestId('log-btn')
+    const axesBtn = queryByTestId('axes-btn')
 
-    expect(checkboxes.length).toBe(0)
-    expect(tableRadioBtn).toBeNull()
-    expect(chartRadioBtn).toBeNull()
+    expect(tableBtn).toBeNull()
+    expect(chartBtn).toBeNull()
+    expect(logBtn).toBeNull()
+    expect(axesBtn).toBeNull()
   })
 
   it('should render log checkbox', () => {
-    const { queryAllByTestId, queryByTestId, queryByText } = render(
+    const { queryByTestId } = render(
       <CheckedRowsContext.Provider
         value={{
           checkedTableRows: ['1', '2', '3'],
@@ -62,20 +66,20 @@ describe('ChartCellTitle', () => {
       </CheckedRowsContext.Provider>
     )
 
-    const checkboxes = queryAllByTestId('title-checkbox')
-    const tableRadioBtn = queryByTestId('table-view-btn')
-    const chartRadioBtn = queryByTestId('chart-view-btn')
+    const tableBtn = queryByTestId('table-view-btn')
+    const chartBtn = queryByTestId('chart-view-btn')
+    const logBtn = queryByTestId('log-btn')
+    const axesBtn = queryByTestId('axes-btn')
 
-    expect(checkboxes.length).toBe(1)
-    expect(queryByText('Logarithmic Scale')).toBeTruthy()
-    expect(queryByText('Axes')).toBeNull()
-    expect(tableRadioBtn).toBeNull()
-    expect(chartRadioBtn).toBeNull()
+    expect(tableBtn).toBeNull()
+    expect(chartBtn).toBeNull()
+    expect(logBtn).toBeTruthy()
+    expect(axesBtn).toBeNull()
   })
 
   it('should call setCheckedLogRows', () => {
     const setCheckedMock = jest.fn()
-    const { queryAllByTestId } = render(
+    const { queryByTestId } = render(
       <CheckedRowsContext.Provider
         value={{
           checkedTableRows: ['1', '2', '3'],
@@ -98,15 +102,15 @@ describe('ChartCellTitle', () => {
       </CheckedRowsContext.Provider>
     )
 
-    const checkboxes = queryAllByTestId('title-checkbox')
+    const logBtn = queryByTestId('log-btn')
 
-    fireEvent.click(checkboxes[0])
+    fireEvent.click(logBtn)
 
     expect(setCheckedMock).toBeCalledWith([])
   })
 
   it('should render axis checkbox', () => {
-    const { queryAllByTestId, queryByTestId, queryByText } = render(
+    const { queryByTestId } = render(
       <CheckedRowsContext.Provider
         value={{
           checkedTableRows: ['1', '2', '3'],
@@ -129,20 +133,20 @@ describe('ChartCellTitle', () => {
       </CheckedRowsContext.Provider>
     )
 
-    const checkboxes = queryAllByTestId('title-checkbox')
-    const tableRadioBtn = queryByTestId('table-view-btn')
-    const chartRadioBtn = queryByTestId('chart-view-btn')
+    const tableBtn = queryByTestId('table-view-btn')
+    const chartBtn = queryByTestId('chart-view-btn')
+    const logBtn = queryByTestId('log-btn')
+    const axesBtn = queryByTestId('axes-btn')
 
-    expect(checkboxes.length).toBe(1)
-    expect(queryByText('Logarithmic Scale')).toBeNull()
-    expect(queryByText('Axes')).toBeTruthy()
-    expect(tableRadioBtn).toBeNull()
-    expect(chartRadioBtn).toBeNull()
+    expect(tableBtn).toBeNull()
+    expect(chartBtn).toBeNull()
+    expect(logBtn).toBeNull()
+    expect(axesBtn).toBeTruthy()
   })
 
   it('should call setCheckedAxisRows', () => {
     const setCheckedMock = jest.fn()
-    const { queryAllByTestId } = render(
+    const { queryByTestId } = render(
       <CheckedRowsContext.Provider
         value={{
           checkedTableRows: ['1', '2', '3'],
@@ -165,9 +169,9 @@ describe('ChartCellTitle', () => {
       </CheckedRowsContext.Provider>
     )
 
-    const checkboxes = queryAllByTestId('title-checkbox')
+    const axesBtn = queryByTestId('axes-btn')
 
-    fireEvent.click(checkboxes[0])
+    fireEvent.click(axesBtn)
 
     expect(setCheckedMock).toBeCalledWith(['id'])
   })

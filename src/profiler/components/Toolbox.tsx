@@ -72,12 +72,14 @@ const Toolbox = ({
             <TableOutlined
               onClick={_onTableClickHandler}
               className={`toolbox-icon ${getActiveClassName(activeTable)}`}
+              data-testid="table-view-btn"
             />
           </Tooltip>
           <Tooltip title="show chart">
             <BarChartOutlined
               onClick={_onChartClickHandler}
               className={`toolbox-icon ${getActiveClassName(!activeTable)}`}
+              data-testid="chart-view-btn"
             />
           </Tooltip>
         </>
@@ -89,6 +91,7 @@ const Toolbox = ({
             className={`toolbox-icon ${getActiveClassName(activeLogScale)} ${getDisabledClassName(
               disableLogScale
             )} ${getPartiallyActiveClassName(partiallyActiveLogScale)}`}
+            data-testid="log-btn"
           />
         </Tooltip>
       )}
@@ -99,6 +102,7 @@ const Toolbox = ({
             className={`toolbox-icon ${getActiveClassName(activeAxes)} ${getDisabledClassName(
               disableAxes
             )} ${getPartiallyActiveClassName(partiallyActiveAxes)}`}
+            data-testid="axes-btn"
           >
             <AxesIcon width="1em" height="1em" />
           </SvgWrapper>
