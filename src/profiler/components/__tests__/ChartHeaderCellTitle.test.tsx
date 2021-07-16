@@ -2,7 +2,7 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import '../../../__mocks__/matchMedia.mock'
 
-import ChartCellTitle from '../ChartCellTitle'
+import ChartHeaderCellTitle from '../ChartHeaderCellTitle'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -10,10 +10,10 @@ beforeAll(() => {
   )
 })
 
-describe('ChartCellTitle', () => {
+describe('ChartHeaderCellTitle', () => {
   it('should render table switcher', () => {
     const { container } = render(
-      <ChartCellTitle
+      <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
         axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         tableOptions={{ isCheckboxShown: true, setChecked: jest.fn() }}
@@ -33,7 +33,7 @@ describe('ChartCellTitle', () => {
 
   it('should render only bar chart icon', () => {
     const { container } = render(
-      <ChartCellTitle
+      <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
         axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
@@ -52,7 +52,7 @@ describe('ChartCellTitle', () => {
   it('should call "tableOptions.setChecked"', () => {
     const setCheckedMock = jest.fn()
     const { getByTestId } = render(
-      <ChartCellTitle
+      <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
         axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         tableOptions={{ isCheckboxShown: true, setChecked: setCheckedMock }}
@@ -68,7 +68,7 @@ describe('ChartCellTitle', () => {
 
   it('should be "table" btn active via passing props', () => {
     const { getByTestId } = render(
-      <ChartCellTitle
+      <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
         axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         tableOptions={{ isCheckboxShown: true, isUsedByDefault: true, setChecked: jest.fn() }}

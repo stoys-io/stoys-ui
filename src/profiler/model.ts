@@ -191,7 +191,7 @@ export interface ChartTableHeaderProps {
   axisOptions: AxisOptions
 }
 
-export interface ChartCellTitleProps {
+export interface ChartHeaderCellTitleProps {
   logarithmicScale: LogarithmicScale
   axisOptions: AxisOptions
   tableOptions: TableOptions
