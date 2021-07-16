@@ -50,14 +50,7 @@ export interface Dataset {
 
 export type Datasets = Array<Dataset>
 
-export interface DataProfilerProps {
-  datasets: Datasets
-  modeOptions?: {
-    type?: Mode
-    isCheckboxShown?: boolean
-    onModeChange?: (mode: Mode) => void
-  }
-  colors?: Array<string>
+export interface ToolboxOptions {
   logarithmicScaleOptions?: {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
@@ -70,8 +63,18 @@ export interface DataProfilerProps {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
   }
+}
+
+export interface DataProfilerProps {
+  datasets: Datasets
+  modeOptions?: {
+    type?: Mode
+    isCheckboxShown?: boolean
+    onModeChange?: (mode: Mode) => void
+  }
+  colors?: Array<string>
+  toolboxOptions?: null | false | ToolboxOptions
   pagination?: PaginationProps
-  showAllCheckboxes?: boolean
   smallSize?: boolean
 }
 

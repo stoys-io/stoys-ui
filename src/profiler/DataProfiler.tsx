@@ -16,12 +16,9 @@ import { NoData, TableWrapper } from './styles'
 export const DataProfiler = ({
   datasets,
   colors,
-  logarithmicScaleOptions,
+  toolboxOptions,
   pagination,
-  axisOptions,
-  chartTableOptions,
   modeOptions,
-  showAllCheckboxes,
   smallSize = true,
 }: DataProfilerProps) => {
   const [isVertical, setIsVertical] = useState<boolean>(modeOptions?.type === Mode.vertical)
@@ -83,23 +80,58 @@ export const DataProfiler = ({
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
 
+  const _toolboxOptions = useMemo(() => {
+    if (
+      (typeof toolboxOptions === 'boolean' && toolboxOptions) ||
+      toolboxOptions === undefined ||
+      toolboxOptions === null
+    ) {
+      return {
+        logarithmicScaleOptions: {
+          isCheckboxShown: true,
+        },
+        axisOptions: {
+          isCheckboxShown: true,
+        },
+        chartTableOptions: {
+          isCheckboxShown: true,
+        },
+      }
+    }
+    if (typeof toolboxOptions === 'boolean' && !toolboxOptions) {
+      return {
+        logarithmicScaleOptions: {
+          isCheckboxShown: false,
+        },
+        axisOptions: {
+          isCheckboxShown: false,
+        },
+        chartTableOptions: {
+          isCheckboxShown: false,
+        },
+      }
+    }
+
+    return toolboxOptions
+  }, [toolboxOptions])
+
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
-    logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
+    _toolboxOptions.logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
   )
   const [checkedAxisRows, setCheckedAxisRows] = useState<Array<string>>(
-    axisOptions?.isUsedByDefault ? columnNames : []
+    _toolboxOptions.axisOptions?.isUsedByDefault ? columnNames : []
   )
   const [checkedTableRows, setCheckedTableRows] = useState<Array<string>>(
-    chartTableOptions?.isUsedByDefault ? columnNames : []
+    _toolboxOptions.chartTableOptions?.isUsedByDefault ? columnNames : []
   )
 
   const tableOptions = useMemo(
     () => ({
-      isCheckboxShown: showAllCheckboxes || !!chartTableOptions?.isCheckboxShown,
+      isCheckboxShown: !!_toolboxOptions.chartTableOptions?.isCheckboxShown,
       setChecked: (isChecked: boolean) => setCheckedTableRows(isChecked ? columnNames : []),
-      isUsedByDefault: !!chartTableOptions?.isUsedByDefault,
+      isUsedByDefault: !!_toolboxOptions.chartTableOptions?.isUsedByDefault,
     }),
-    [chartTableOptions, showAllCheckboxes]
+    [_toolboxOptions]
   )
 
   const columns = useMemo(
@@ -107,17 +139,17 @@ export const DataProfiler = ({
       getColumns(
         data,
         {
-          isCheckboxShown: showAllCheckboxes || !!logarithmicScaleOptions?.isCheckboxShown,
+          isCheckboxShown: !!_toolboxOptions.logarithmicScaleOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
         },
         {
-          isCheckboxShown: showAllCheckboxes || !!axisOptions?.isCheckboxShown,
+          isCheckboxShown: !!_toolboxOptions.axisOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedAxisRows(isChecked ? columnNames : []),
         },
         tableOptions,
         smallSize
       ),
-    [data, logarithmicScaleOptions, axisOptions, tableOptions, smallSize, showAllCheckboxes]
+    [data, tableOptions, smallSize, _toolboxOptions]
   )
 
   const _setIsVerticalView = useCallback(
@@ -158,8 +190,8 @@ export const DataProfiler = ({
             setPageSize={setPageSize}
             withoutPagination={!!pagination?.disabled}
             rowOptions={{
-              isLogCheckboxShown: !!logarithmicScaleOptions?.isCheckboxShown,
-              isAxisCheckboxShown: !!axisOptions?.isCheckboxShown,
+              isLogCheckboxShown: !!_toolboxOptions.logarithmicScaleOptions?.isCheckboxShown,
+              isAxisCheckboxShown: !!_toolboxOptions.axisOptions?.isCheckboxShown,
             }}
             tableOptions={tableOptions}
           />
@@ -177,15 +209,4 @@ export const DataProfiler = ({
       </TableWrapper>
     </CheckedRowsContext.Provider>
   )
-}
-
-DataProfiler.defaultProps = {
-  logarithmicScaleOptions: {
-    isCheckboxShown: false,
-    isUsedByDefault: false,
-  },
-  axisOptions: {
-    isCheckboxShown: false,
-    isUsedByDefault: false,
-  },
 }
