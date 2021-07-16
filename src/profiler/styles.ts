@@ -82,6 +82,10 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
         width: ${SMALL_COLUMN_CHART_WIDTH}px;
       }
     }
+
+    .toolbox-icon {
+      font-size: 18px;
+    }
   }
 
   .ant-table-tbody td.ant-table-cell {
@@ -271,6 +275,7 @@ export const ModeCheckboxWrapper = styled.div`
 `
 
 export const ModeIconWrapper = styled.div<{ checked: boolean }>`
+  font-size: 20px;
   color: ${props => (props.checked ? '#1890ff' : 'inherit')};
   padding: 4px;
   transform: rotate(${props => (props.checked ? '90' : '0')}deg)
