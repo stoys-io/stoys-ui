@@ -226,7 +226,7 @@ export interface ModeSwitcherProps {
   onChange: () => void
 }
 
-export interface ChartTitleProps extends TableSubheaderRowProps {}
+export interface ChartCellTitleProps extends TableSubheaderRowProps {}
 
 export interface VerticalColumn {
   title: string

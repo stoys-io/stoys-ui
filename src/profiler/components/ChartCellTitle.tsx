@@ -1,10 +1,10 @@
 import React from 'react'
 
 import { CheckedRowsContext } from '../checkedRowsContext'
-import { ChartTitleProps } from '../model'
+import { ChartCellTitleProps } from '../model'
 import Toolbox from './Toolbox'
 
-const ChartTitle = ({ row, rowOptions, tableOptions }: ChartTitleProps): JSX.Element => {
+const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps): JSX.Element => {
   return (
     <CheckedRowsContext.Consumer>
       {({
@@ -63,4 +63,4 @@ const ChartTitle = ({ row, rowOptions, tableOptions }: ChartTitleProps): JSX.Ele
   )
 }
 
-export default ChartTitle
+export default ChartCellTitle

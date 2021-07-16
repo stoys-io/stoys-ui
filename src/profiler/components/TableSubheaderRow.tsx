@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ChartTitle from './ChartTitle'
+import ChartCellTitle from './ChartCellTitle'
 import { TableSubheaderRowProps } from '../model'
 import { FlexWrapper, TableSubheader } from '../styles'
 
@@ -13,7 +13,7 @@ const TableSubheaderRow = ({
     <TableSubheader>
       <FlexWrapper className="table-flex-row">
         <span>{row.columnName}</span>
-        <ChartTitle row={row} rowOptions={rowOptions} tableOptions={tableOptions} />
+        <ChartCellTitle row={row} rowOptions={rowOptions} tableOptions={tableOptions} />
       </FlexWrapper>
     </TableSubheader>
   )

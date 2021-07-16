@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import Table from 'antd/lib/table'
 
-import ChartTitle from './ChartTitle'
+import ChartCellTitle from './ChartCellTitle'
 import { ChartWithTooltip, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../columns'
@@ -39,7 +39,11 @@ const VerticalTable = ({
             children: (
               <>
                 {parent ? (
-                  <ChartTitle row={parent} rowOptions={rowOptions} tableOptions={tableOptions} />
+                  <ChartCellTitle
+                    row={parent}
+                    rowOptions={rowOptions}
+                    tableOptions={tableOptions}
+                  />
                 ) : null}
                 <ChartWithTooltip data={chartData} isHorizontal />
               </>
