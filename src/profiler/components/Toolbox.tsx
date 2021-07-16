@@ -12,6 +12,11 @@ import { ToolboxProps } from '../model'
 function getActiveClassName(isActive?: boolean): string {
   return isActive ? 'active' : ''
 }
+
+function getPartiallyActiveClassName(isActive?: boolean): string {
+  return isActive ? 'partially-active' : ''
+}
+
 function getDisabledClassName(isActive?: boolean): string {
   return isActive ? 'disabled' : ''
 }
@@ -21,7 +26,9 @@ const Toolbox = ({
   isLogScaleSwitcherHidden,
   isAxesSwitcherHidden,
   activeAxes,
+  partiallyActiveAxes,
   activeLogScale,
+  partiallyActiveLogScale,
   activeTable,
   disableLogScale,
   disableAxes,
@@ -81,7 +88,7 @@ const Toolbox = ({
             onClick={_onLogScaleClickHandler}
             className={`toolbox-icon ${getActiveClassName(activeLogScale)} ${getDisabledClassName(
               disableLogScale
-            )}`}
+            )} ${getPartiallyActiveClassName(partiallyActiveLogScale)}`}
           />
         </Tooltip>
       )}
@@ -91,7 +98,7 @@ const Toolbox = ({
             onClick={_onAxesClickHandler}
             className={`toolbox-icon ${getActiveClassName(activeAxes)} ${getDisabledClassName(
               disableAxes
-            )}`}
+            )} ${getPartiallyActiveClassName(partiallyActiveAxes)}`}
           >
             <AxesIcon width="1em" height="1em" />
           </SvgWrapper>

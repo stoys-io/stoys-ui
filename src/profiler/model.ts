@@ -258,7 +258,9 @@ export interface ToolboxProps {
   isAxesSwitcherHidden?: boolean
   activeTable?: boolean
   activeLogScale?: boolean
+  partiallyActiveLogScale?: boolean
   activeAxes?: boolean
+  partiallyActiveAxes?: boolean
   disableLogScale?: boolean
   disableAxes?: boolean
   onAxesClickHandler: (active: boolean) => void

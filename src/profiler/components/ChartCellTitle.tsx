@@ -29,7 +29,13 @@ const ChartCellTitle = ({
             isAxesSwitcherHidden={!axisOptions.isCheckboxShown}
             activeLogScale={checkedLogRows.length === dataLength}
             activeAxes={checkedAxisRows.length === dataLength}
+            partiallyActiveAxes={
+              checkedAxisRows.length !== 0 && checkedAxisRows.length !== dataLength
+            }
             activeTable={isActiveTable}
+            partiallyActiveLogScale={
+              checkedLogRows.length !== 0 && checkedLogRows.length !== dataLength
+            }
             disableLogScale={isActiveTable || checkedTableRows.length === dataLength}
             disableAxes={isActiveTable || checkedTableRows.length === dataLength}
             onTableClickHandler={onChangeRadioGroup}

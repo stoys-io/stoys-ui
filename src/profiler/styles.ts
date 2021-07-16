@@ -291,10 +291,23 @@ export const ToolboxWrapper = styled.div`
   justify-content: flex-end;
 
   > .toolbox-icon {
-    padding: 4px;
+    margin: 2px;
+    border: 1px solid transparent;
+    border-radius: 100%;
+    padding: 2px;
     cursor: pointer;
 
     &.active {
+      border-color: #1890ff;
+      color: #fff;
+      background-color: #1890ff;
+
+      > svg {
+        fill: #fff;
+      }
+    }
+
+    &.partially-active {
       color: #1890ff;
 
       > svg {
@@ -305,6 +318,10 @@ export const ToolboxWrapper = styled.div`
     &.disabled {
       color: #d9d9d9;
       cursor: not-allowed;
+
+      &:hover {
+        border-color: transparent;
+      }
 
       > svg {
         fill: #d9d9d9;
