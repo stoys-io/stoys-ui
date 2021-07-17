@@ -12,7 +12,7 @@ beforeAll(() => {
 
 describe('ChartHeaderCellTitle', () => {
   it('should render table switcher', () => {
-    const { container } = render(
+    const { queryByTestId } = render(
       <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
         axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
@@ -20,19 +20,19 @@ describe('ChartHeaderCellTitle', () => {
       />
     )
 
-    const icons = container.querySelectorAll('svg')
+    const tableBtn = queryByTestId('table-view-btn')
+    const chartBtn = queryByTestId('chart-view-btn')
+    const logBtn = queryByTestId('log-btn')
+    const axesBtn = queryByTestId('axes-btn')
 
-    expect(icons.length).toBe(2)
-
-    const tableIconDataAttr = icons[0].dataset
-    const chartIconDataAttr = icons[1].dataset
-
-    expect(tableIconDataAttr.icon).toBe('table')
-    expect(chartIconDataAttr.icon).toBe('bar-chart')
+    expect(tableBtn).toBeTruthy()
+    expect(chartBtn).toBeTruthy()
+    expect(logBtn).toBeNull()
+    expect(axesBtn).toBeNull()
   })
 
-  it('should render only bar chart icon', () => {
-    const { container } = render(
+  it("shouldn't render toolbox", () => {
+    const { queryByTestId } = render(
       <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
         axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
@@ -40,13 +40,15 @@ describe('ChartHeaderCellTitle', () => {
       />
     )
 
-    const icons = container.querySelectorAll('svg')
+    const tableBtn = queryByTestId('table-view-btn')
+    const chartBtn = queryByTestId('chart-view-btn')
+    const logBtn = queryByTestId('log-btn')
+    const axesBtn = queryByTestId('axes-btn')
 
-    expect(icons.length).toBe(1)
-
-    const chartIconDataAttr = icons[0].dataset
-
-    expect(chartIconDataAttr.icon).toBe('bar-chart')
+    expect(tableBtn).toBeNull()
+    expect(chartBtn).toBeNull()
+    expect(logBtn).toBeNull()
+    expect(axesBtn).toBeNull()
   })
 
   it('should call "tableOptions.setChecked"', () => {
@@ -78,7 +80,7 @@ describe('ChartHeaderCellTitle', () => {
     const tableViewBtn = getByTestId('table-view-btn')
     const chartViewBtn = getByTestId('chart-view-btn')
 
-    expect(tableViewBtn.getAttribute('checked')).toBe('')
-    expect(chartViewBtn.getAttribute('checked')).toBeNull()
+    expect(tableViewBtn.classList.contains('active')).toBeTruthy()
+    expect(chartViewBtn.classList.contains('active')).toBeFalsy()
   })
 })
