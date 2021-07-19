@@ -14,7 +14,7 @@ const ChartHeaderCellTitle = ({
   const onChangeRadioGroup = useCallback(
     (active: boolean) => {
       setIsActiveTable(active)
-      tableOptions.setChecked(active)
+      tableOptions?.setChecked?.(active)
     },
     [tableOptions]
   )
@@ -24,9 +24,9 @@ const ChartHeaderCellTitle = ({
       <CheckedRowsContext.Consumer>
         {({ checkedLogRows, checkedAxisRows, checkedTableRows, dataLength }) => (
           <Toolbox
-            isTableChartSwitcherHidden={!tableOptions?.isCheckboxShown}
-            isLogScaleSwitcherHidden={!logarithmicScale.isCheckboxShown}
-            isAxesSwitcherHidden={!axisOptions.isCheckboxShown}
+            showTableChartSwitcher={tableOptions?.isCheckboxShown}
+            showLogScale={logarithmicScale.isCheckboxShown}
+            showAxes={axisOptions.isCheckboxShown}
             activeLogScale={checkedLogRows.length === dataLength}
             activeAxes={checkedAxisRows.length === dataLength}
             partiallyActiveAxes={

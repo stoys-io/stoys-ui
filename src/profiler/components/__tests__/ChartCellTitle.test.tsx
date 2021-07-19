@@ -26,7 +26,7 @@ describe('ChartCellTitle', () => {
             isLogCheckboxShown: false,
             isAxisCheckboxShown: false,
           }}
-          tableOptions={undefined}
+          tableOptions={{ isCheckboxShown: false }}
         />
       </CheckedRowsContext.Provider>
     )

@@ -32,7 +32,7 @@ const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps):
             }
           }
 
-        const onChangeRadioGroup = (active: boolean) => {
+        const onChartTableClick = (active: boolean) => {
           if (active) {
             setCheckedTableRows([...checkedTableRows, row.columnName])
           } else {
@@ -45,15 +45,15 @@ const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps):
 
         return (
           <Toolbox
-            isTableChartSwitcherHidden={!tableOptions?.isCheckboxShown}
-            isLogScaleSwitcherHidden={!rowOptions.isLogCheckboxShown}
-            isAxesSwitcherHidden={!rowOptions.isAxisCheckboxShown}
+            showTableChartSwitcher={tableOptions?.isCheckboxShown}
+            showLogScale={rowOptions.isLogCheckboxShown}
+            showAxes={rowOptions.isAxisCheckboxShown}
             activeLogScale={isLogChecked}
             activeAxes={isAxisChecked}
             activeTable={isTableChecked}
             disableLogScale={isTableChecked}
             disableAxes={isTableChecked}
-            onTableClickHandler={onChangeRadioGroup}
+            onTableClickHandler={onChartTableClick}
             onLogScaleClickHandler={setChecked(checkedLogRows, setCheckedLogRows)}
             onAxesClickHandler={setChecked(checkedAxisRows, setCheckedAxisRows)}
           />

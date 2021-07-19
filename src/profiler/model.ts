@@ -122,7 +122,7 @@ export interface AxisOptions {
 }
 
 export interface TableOptions {
-  setChecked: (isChecked: boolean) => void
+  setChecked?: (isChecked: boolean) => void
   isCheckboxShown: boolean
   isUsedByDefault?: boolean
 }
@@ -256,9 +256,9 @@ export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> &
 }
 
 export interface ToolboxProps {
-  isTableChartSwitcherHidden?: boolean
-  isLogScaleSwitcherHidden?: boolean
-  isAxesSwitcherHidden?: boolean
+  showTableChartSwitcher?: boolean
+  showLogScale?: boolean
+  showAxes?: boolean
   activeTable?: boolean
   activeLogScale?: boolean
   partiallyActiveLogScale?: boolean

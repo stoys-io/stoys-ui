@@ -22,9 +22,9 @@ function getDisabledClassName(isActive?: boolean): string {
 }
 
 const Toolbox = ({
-  isTableChartSwitcherHidden,
-  isLogScaleSwitcherHidden,
-  isAxesSwitcherHidden,
+  showTableChartSwitcher = true,
+  showLogScale = true,
+  showAxes = true,
   activeAxes,
   partiallyActiveAxes,
   activeLogScale,
@@ -60,13 +60,13 @@ const Toolbox = ({
     }
   }, [activeTable, onTableClickHandler])
 
-  if (isTableChartSwitcherHidden && isLogScaleSwitcherHidden && isAxesSwitcherHidden) {
+  if (!showTableChartSwitcher && !showLogScale && !showAxes) {
     return null
   }
 
   return (
     <ToolboxWrapper>
-      {isTableChartSwitcherHidden ? null : (
+      {showTableChartSwitcher ? (
         <>
           <Tooltip title="show table">
             <TableOutlined
@@ -83,8 +83,8 @@ const Toolbox = ({
             />
           </Tooltip>
         </>
-      )}
-      {isLogScaleSwitcherHidden ? null : (
+      ) : null}
+      {showLogScale ? (
         <Tooltip title="enable log scale">
           <RiseOutlined
             onClick={_onLogScaleClickHandler}
@@ -94,8 +94,8 @@ const Toolbox = ({
             data-testid="log-btn"
           />
         </Tooltip>
-      )}
-      {isAxesSwitcherHidden ? null : (
+      ) : null}
+      {showAxes ? (
         <Tooltip title="enable axes">
           <SvgWrapper
             onClick={_onAxesClickHandler}
@@ -107,7 +107,7 @@ const Toolbox = ({
             <AxesIcon width="1em" height="1em" />
           </SvgWrapper>
         </Tooltip>
-      )}
+      ) : null}
     </ToolboxWrapper>
   )
 }
