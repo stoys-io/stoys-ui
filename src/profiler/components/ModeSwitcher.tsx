@@ -10,7 +10,7 @@ const ModeSwitcher = ({ checked, onChange }: ModeSwitcherProps): JSX.Element => 
     <ModeCheckboxWrapper>
       <ModeIconWrapper checked={checked} onClick={onChange} data-testid="profiler-mode-switcher">
         <Tooltip title={checked ? 'Vertical view' : 'Horizontal view'}>
-          <RotateRightOutlined />
+          <RotateRightOutlined data-testid={checked ? 'vertical-mode' : 'horizontal-mode'} />
         </Tooltip>
       </ModeIconWrapper>
     </ModeCheckboxWrapper>

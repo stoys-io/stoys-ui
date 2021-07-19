@@ -61,18 +61,20 @@ describe('Profiler', () => {
 
   describe('mode switcher', () => {
     it("shouldn't show mode switcher", () => {
-      const { queryByText } = render(<Profiler datasets={smallDataset} />)
+      const { queryByTestId } = render(<Profiler datasets={smallDataset} />)
 
-      expect(queryByText('Vertical view')).toBeNull()
+      expect(queryByTestId('vertical-mode')).toBeNull()
+      expect(queryByTestId('horizontal-mode')).toBeNull()
     })
 
     it('should change view from vertical to horizontal', () => {
-      const { container, queryByText, queryByTestId } = render(
+      const { container, queryByTestId } = render(
         <Profiler datasets={smallDataset} modeOptions={{ isCheckboxShown: true }} />
       )
 
       expect(container.querySelectorAll('th')[0].innerHTML).toBe('nulls')
-      expect(queryByText('Vertical view')).toBeTruthy()
+      expect(queryByTestId('vertical-mode')).toBeNull()
+      expect(queryByTestId('horizontal-mode')).toBeTruthy()
 
       const modeSwitcher = queryByTestId('profiler-mode-switcher')
 
@@ -80,6 +82,8 @@ describe('Profiler', () => {
 
       expect(container.querySelectorAll('th')[0].innerHTML).toBe('')
       expect(container.querySelectorAll('th')[1].innerHTML).toBe('id')
+      expect(queryByTestId('vertical-mode')).toBeTruthy()
+      expect(queryByTestId('horizontal-mode')).toBeNull()
     })
 
     it('should call onModeChange', () => {
