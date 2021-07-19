@@ -38,7 +38,7 @@ describe('Profiler', () => {
 
     it('should render vertical table', () => {
       const { container } = render(
-        <Profiler datasets={smallDataset} modeOptions={{ type: Mode.vertical }} />
+        <Profiler datasets={smallDataset} modeOptions={{ type: Mode.Vertical }} />
       )
       const tableHeaderCell = container.querySelectorAll('th')
 
@@ -95,7 +95,7 @@ describe('Profiler', () => {
 
       fireEvent.click(modeSwitcher)
 
-      expect(onModeChangeMock).toBeCalledWith(Mode.vertical)
+      expect(onModeChangeMock).toBeCalledWith(Mode.Vertical)
     })
   })
 

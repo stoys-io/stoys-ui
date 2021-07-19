@@ -2,8 +2,8 @@ import { ColumnsType } from 'antd/lib/table/interface'
 import { PaginationProps } from '../hooks'
 
 export enum Mode {
-  vertical = 'vertical',
-  horizontal = 'horizontal',
+  Vertical = 'Vertical',
+  Horizontal = 'Horizontal',
 }
 
 export interface PmfPlotItem {

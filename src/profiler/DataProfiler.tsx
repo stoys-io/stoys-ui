@@ -25,7 +25,7 @@ export const DataProfiler = ({
   smallSize = true,
   searchOptions,
 }: DataProfilerProps) => {
-  const [isVertical, setIsVertical] = useState<boolean>(modeOptions?.type === Mode.vertical)
+  const [isVertical, setIsVertical] = useState<boolean>(modeOptions?.type === Mode.Vertical)
   const [searchValue, setSearchValue] = useState<string>('')
   const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
@@ -34,7 +34,7 @@ export const DataProfiler = ({
   }
 
   useEffect(() => {
-    setIsVertical(modeOptions?.type === Mode.vertical)
+    setIsVertical(modeOptions?.type === Mode.Vertical)
   }, [modeOptions])
 
   const hydratedData = useMemo(
@@ -132,7 +132,7 @@ export const DataProfiler = ({
     () =>
       setIsVertical(prevState => {
         if (modeOptions && modeOptions.onModeChange) {
-          modeOptions.onModeChange(!prevState ? Mode.vertical : Mode.horizontal)
+          modeOptions.onModeChange(!prevState ? Mode.Vertical : Mode.Horizontal)
         }
 
         return !prevState
