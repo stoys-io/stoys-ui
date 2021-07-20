@@ -9,7 +9,7 @@ import { renderNumericValue } from '../helpers'
 import {
   AxisOptions,
   DataItem,
-  HydratedDataItem,
+  ChildDataItem,
   LogarithmicScale,
   Render,
   RenderedCellConfig,
@@ -22,7 +22,7 @@ import { COLUMN_CHART_WIDTH } from './constants'
 
 const renderChartCell =
   (data: Array<DataItem>, smallSize: boolean) =>
-  (value: string, row: DataItem | HydratedDataItem, index: number) => {
+  (value: string, row: DataItem | ChildDataItem, index: number) => {
     const parent = data.find(dataItem => {
       if ('parent' in row) {
         return row.parent === dataItem.columnName
@@ -90,13 +90,13 @@ const renderValue = (
   value: string | number | null,
   row: any
 ): number | string | JSX.Element | null => {
-  const { type } = row
+  const { data_type } = row
 
   if (value === null) {
     return null
   }
 
-  if (type === 'timestamp' || type === 'date') {
+  if (data_type === 'timestamp' || data_type === 'date') {
     const date = transformSecondsToDate(value, row.type)
 
     if (typeof date === 'string') {
@@ -148,19 +148,19 @@ export const getColumns = (
   axisOptions: AxisOptions,
   tableOptions: TableOptions,
   smallSize: boolean = false
-): ColumnsType<DataItem | HydratedDataItem> => {
+): ColumnsType<DataItem | ChildDataItem> => {
   return [
     {
       title: 'nulls',
-      dataIndex: 'nulls',
-      key: 'nulls',
+      dataIndex: 'count_nulls',
+      key: 'count_nulls',
       align: 'right' as 'right',
       render: renderRow(logarithmicScale, axisOptions, tableOptions),
     },
     {
       title: 'unique',
-      dataIndex: 'unique',
-      key: 'unique',
+      dataIndex: 'count_unique',
+      key: 'count_unique',
       align: 'right' as 'right',
       render: (value: string | number | undefined) =>
         value || value === 0 ? renderNumericCell(value) : null,

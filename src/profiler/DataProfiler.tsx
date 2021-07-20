@@ -5,7 +5,7 @@ import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
 import { COLORS } from './constants'
 import { CheckedRowsContext } from './checkedRowsContext'
-import { DataItem, DataProfilerProps, HydratedColumn, HydratedDataItem, Mode } from './model'
+import { DataItem, DataProfilerProps, ChildDataItem, Mode } from './model'
 
 import VerticalTable from './components/VerticalTable'
 import HorizontalTable from './components/HorizontalTable'
@@ -37,38 +37,29 @@ export const DataProfiler = ({
     setIsVertical(modeOptions?.type === Mode.Vertical)
   }, [modeOptions])
 
-  const hydratedData = useMemo(
-    () =>
-      datasets
-        .map((dataItem, index) => {
-          if (!dataItem.columns) {
-            return null
-          }
-
-          return hydrateDataset(dataItem, (colors && colors[index]) || COLORS[index])
-        })
-        .filter(dataItem => dataItem !== null),
-    [datasets, colors]
-  )
-
-  if (!hydratedData.length) {
-    return <NoData>No data</NoData>
-  }
-
   const dataGrouppedByTitle = useMemo(
     () =>
-      hydratedData.reduce((acc: { [key: string]: Array<HydratedDataItem> }, data) => {
-        data?.forEach((dataItem: HydratedColumn) => {
-          const { name, key, ...rest } = dataItem
-          acc[name] = [
-            ...(acc[name] ? acc[name] : []),
-            { ...rest, parent: name, key: `${key}-${Math.random()}` },
-          ]
-        })
-        return acc
-      }, {}),
-    [hydratedData]
+      datasets
+        .filter(dataItem => dataItem.columns)
+        .map((dataItem, index) =>
+          hydrateDataset(dataItem, (colors && colors[index]) || COLORS[index])
+        )
+        .reduce((acc: { [key: string]: Array<ChildDataItem> }, data) => {
+          data?.forEach(dataItem => {
+            const { name, key, ...rest } = dataItem
+            acc[name] = [
+              ...(acc[name] ? acc[name] : []),
+              { ...rest, parent: name, key: `${key}-${Math.random()}` },
+            ]
+          })
+          return acc
+        }, {}),
+    [datasets]
   )
+
+  if (!Object.keys(dataGrouppedByTitle).length) {
+    return <NoData>No data</NoData>
+  }
 
   const data = useMemo(
     () =>
@@ -130,7 +121,7 @@ export const DataProfiler = ({
 
   const _setIsVerticalView = useCallback(
     () =>
-      setIsVertical(prevState => {
+      setIsVertical((prevState: boolean) => {
         if (modeOptions && modeOptions.onModeChange) {
           modeOptions.onModeChange(!prevState ? Mode.Vertical : Mode.Horizontal)
         }

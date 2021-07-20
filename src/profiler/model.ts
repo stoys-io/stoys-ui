@@ -71,22 +71,9 @@ export interface DataProfilerProps {
   }
 }
 
-export type HydratedColumn = Omit<
-  Column,
-  | 'count'
-  | 'count_nulls'
-  | 'count_empty'
-  | 'count_zeros'
-  | 'count_unique'
-  | 'max_length'
-  | 'data_type'
-> & {
+export interface HydratedColumn extends Column {
   key: string
-  type: string
-  nulls: number
-  items?: Array<DiscreteItem>
   color: string
-  unique: number | null
 }
 
 interface CellProps {
@@ -102,7 +89,7 @@ export type Render = (
   logarithmicScale: LogarithmicScale,
   axisOptions: AxisOptions,
   tableOptions: TableOptions
-) => (value: number | string, row: DataItem | HydratedDataItem, index: number) => RenderedCellConfig
+) => (value: number | string, row: DataItem | ChildDataItem, index: number) => RenderedCellConfig
 
 export interface LogarithmicScale {
   isCheckboxShown: boolean
@@ -120,19 +107,19 @@ export interface TableOptions {
   isUsedByDefault?: boolean
 }
 
-export interface HydratedDataItem extends Omit<HydratedColumn, 'name'> {
+export interface ChildDataItem extends Omit<HydratedColumn, 'name'> {
   parent: string
 }
 
 export interface DataItem {
   columnName: string
   key: string
-  children: Array<HydratedDataItem>
+  children: Array<ChildDataItem>
 }
 
 export interface TableProps {
   data: Array<DataItem>
-  columns: ColumnsType<DataItem | HydratedDataItem>
+  columns: ColumnsType<DataItem | ChildDataItem>
   currentPage: number
   pageSize: number
   setCurrentPage: (page: number) => void
