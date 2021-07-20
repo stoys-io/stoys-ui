@@ -2,24 +2,25 @@ import { Data, Mode } from '../quality/model'
 import { PaginationProps } from '../hooks/model'
 
 export interface DqJoinStatistics {
-  [key: string]: number | string
+  left_rows: number
+  right_rows: number
+  left_nulls: number
+  right_nulls: number
+  left_distinct: number
+  right_distinct: number
+  inner: number
+  left: number
+  right: number
+  full: number
+  cross: number
 }
 
-export interface BaseJoinRatesData {
+export interface JoinRatesData {
   id: string
   tableNames?: Array<string>
-}
-export interface JoinRatesJsonData extends BaseJoinRatesData {
-  dqJoinStatisticsJson?: string
-  dqJoinResultJson?: string
-}
-
-export interface JoinRatesObjectData extends BaseJoinRatesData {
   dq_join_statistics: DqJoinStatistics
   dq_result: Data
 }
-
-export type JoinRatesData = JoinRatesJsonData | JoinRatesObjectData
 
 export interface JoinRatesProps {
   data: JoinRatesData | Array<JoinRatesData>

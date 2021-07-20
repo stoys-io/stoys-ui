@@ -1,10 +1,5 @@
 import { Data } from '../../quality/model'
-import {
-  getTableNames,
-  transformJoinRatesData,
-  parseDqResult,
-  parseDqJoinStatistics,
-} from '../helpers'
+import { getTableNames, transformJoinRatesData } from '../helpers'
 
 describe('join rates helpers', () => {
   describe('getTableNames', () => {
@@ -19,55 +14,25 @@ describe('join rates helpers', () => {
     })
   })
 
-  describe('parseDqResult', () => {
-    it('should return object', () => {
-      const mockData = {
-        id: 'testId',
-        dq_join_statistics: { a: 1, b: 2 },
-        dq_result: { x: 1, y: 2 },
-      }
-
-      expect(parseDqResult(mockData as any)).toEqual(mockData.dq_result)
-    })
-
-    it('should parse JSON', () => {
-      const mockData = {
-        id: 'testId',
-        dq_join_statistics: { a: 1, b: 2 },
-        dqJoinResultJson: JSON.stringify({ x: 1, y: 2 }),
-      }
-
-      expect(parseDqResult(mockData as any)).toEqual(JSON.parse(mockData.dqJoinResultJson))
-    })
-  })
-
-  describe('parseDqJoinStatistics', () => {
-    it('should return object', () => {
-      const mockData = {
-        id: 'testId',
-        dq_join_statistics: { a: 1, b: 2 },
-        dq_result: { x: 1, y: 2 },
-      }
-
-      expect(parseDqJoinStatistics(mockData as any)).toEqual(mockData.dq_join_statistics)
-    })
-
-    it('should parse JSON', () => {
-      const mockData = {
-        id: 'testId',
-        dqJoinStatisticsJson: JSON.stringify({ a: 1, b: 2 }),
-        dq_result: { x: 1, y: 2 },
-      }
-
-      expect(parseDqJoinStatistics(mockData as any)).toEqual(
-        JSON.parse(mockData.dqJoinStatisticsJson)
-      )
-    })
-  })
-
   describe('transformJoinRatesData', () => {
     it('should transform join rates data', () => {
-      const mockData = { id: 'testId', dq_join_statistics: { a: 1, b: 2 }, dq_result: {} as Data }
+      const mockData = {
+        id: 'testId',
+        dq_join_statistics: {
+          left_rows: 1,
+          right_rows: 2,
+          left_nulls: 3,
+          right_nulls: 4,
+          left_distinct: 5,
+          right_distinct: 6,
+          inner: 7,
+          left: 8,
+          right: 9,
+          full: 0,
+          cross: 1,
+        },
+        dq_result: {} as Data,
+      }
 
       expect(transformJoinRatesData(mockData)).toEqual({
         id: mockData.id,
