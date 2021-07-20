@@ -26,7 +26,7 @@ export interface RowSample {
   violated_rule_names: Array<string>
 }
 
-export interface Data {
+export interface QualityData {
   columns: Array<Column>
   rules: Array<Rule>
   row_sample: Array<RowSample>
@@ -43,7 +43,7 @@ export type Mode = 'column' | 'row'
 export type OnModeChange = (mode: Mode) => void
 
 export type QualityProps = {
-  data: Data
+  data: QualityData
   mode?: Mode
   onModeChange?: OnModeChange
   selectedRules?: Array<string>

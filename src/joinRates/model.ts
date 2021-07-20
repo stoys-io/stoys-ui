@@ -1,4 +1,4 @@
-import { Data, Mode } from '../quality/model'
+import { QualityData, Mode } from '../quality/model'
 import { PaginationProps } from '../hooks/model'
 
 export interface DqJoinStatistics {
@@ -19,7 +19,7 @@ export interface JoinRatesData {
   id: string
   tableNames?: Array<string>
   dq_join_statistics: DqJoinStatistics
-  dq_result: Data
+  dq_result: QualityData
 }
 
 export interface JoinRatesProps {
@@ -27,9 +27,9 @@ export interface JoinRatesProps {
   joinRateId?: string
   onRowClickHandler?: (id: string) => void
   selectedRules?: Array<string>
-  selectRules?: any
+  selectRules?: (rules: Array<string>) => void
   mode?: Mode
-  setMode?: any
+  setMode?: (mode: Mode) => void
   pagination?: PaginationProps
   smallSize?: boolean
 }

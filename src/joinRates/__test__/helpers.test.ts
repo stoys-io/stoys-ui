@@ -1,4 +1,4 @@
-import { Data } from '../../quality/model'
+import { QualityData } from '../../quality/model'
 import { getTableNames, transformJoinRatesData } from '../helpers'
 
 describe('join rates helpers', () => {
@@ -31,7 +31,7 @@ describe('join rates helpers', () => {
           full: 0,
           cross: 1,
         },
-        dq_result: {} as Data,
+        dq_result: {} as QualityData,
       }
 
       expect(transformJoinRatesData(mockData)).toEqual({
