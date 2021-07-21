@@ -33,6 +33,9 @@ const ChartHeaderCellTitle = ({
               checkedAxisRows.length !== 0 && checkedAxisRows.length !== dataLength
             }
             activeTable={isActiveTable}
+            partiallyActiveTable={
+              checkedTableRows.length !== 0 && checkedTableRows.length !== dataLength
+            }
             partiallyActiveLogScale={
               checkedLogRows.length !== 0 && checkedLogRows.length !== dataLength
             }

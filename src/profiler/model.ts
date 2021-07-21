@@ -260,6 +260,7 @@ export interface ToolboxProps {
   showLogScale?: boolean
   showAxes?: boolean
   activeTable?: boolean
+  partiallyActiveTable?: boolean
   activeLogScale?: boolean
   partiallyActiveLogScale?: boolean
   activeAxes?: boolean

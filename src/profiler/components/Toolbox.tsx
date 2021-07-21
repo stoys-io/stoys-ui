@@ -30,6 +30,7 @@ const Toolbox = ({
   activeLogScale,
   partiallyActiveLogScale,
   activeTable,
+  partiallyActiveTable,
   disableLogScale,
   disableAxes,
   onAxesClickHandler,
@@ -49,15 +50,7 @@ const Toolbox = ({
   }, [activeLogScale, disableAxes, onLogScaleClickHandler])
 
   const _onTableClickHandler = useCallback(() => {
-    if (!activeTable) {
-      onTableClickHandler(true)
-    }
-  }, [activeTable, onTableClickHandler])
-
-  const _onChartClickHandler = useCallback(() => {
-    if (activeTable) {
-      onTableClickHandler(false)
-    }
+    onTableClickHandler(!activeTable)
   }, [activeTable, onTableClickHandler])
 
   if (!showTableChartSwitcher && !showLogScale && !showAxes) {
@@ -67,22 +60,15 @@ const Toolbox = ({
   return (
     <ToolboxWrapper>
       {showTableChartSwitcher ? (
-        <>
-          <Tooltip title="show table">
-            <TableOutlined
-              onClick={_onTableClickHandler}
-              className={`toolbox-icon ${getActiveClassName(activeTable)}`}
-              data-testid="table-view-btn"
-            />
-          </Tooltip>
-          <Tooltip title="show chart">
-            <BarChartOutlined
-              onClick={_onChartClickHandler}
-              className={`toolbox-icon ${getActiveClassName(!activeTable)}`}
-              data-testid="chart-view-btn"
-            />
-          </Tooltip>
-        </>
+        <Tooltip title="switch to table view">
+          <TableOutlined
+            onClick={_onTableClickHandler}
+            className={`toolbox-icon ${getActiveClassName(
+              activeTable
+            )} ${getPartiallyActiveClassName(partiallyActiveTable)}`}
+            data-testid="table-view-btn"
+          />
+        </Tooltip>
       ) : null}
       {showLogScale ? (
         <Tooltip title="enable log scale">
