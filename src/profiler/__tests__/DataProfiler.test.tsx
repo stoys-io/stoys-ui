@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, waitFor } from '@testing-library/react'
 import '../../__mocks__/matchMedia.mock'
 
 import { Profiler } from '..'
@@ -38,7 +38,7 @@ describe('Profiler', () => {
 
     it('should render vertical table', () => {
       const { container } = render(
-        <Profiler datasets={smallDataset} modeOptions={{ type: Mode.vertical }} />
+        <Profiler datasets={smallDataset} modeOptions={{ type: Mode.Vertical }} />
       )
       const tableHeaderCell = container.querySelectorAll('th')
 
@@ -84,7 +84,7 @@ describe('Profiler', () => {
 
     it('should call onModeChange', () => {
       const onModeChangeMock = jest.fn()
-      const { container, queryByTestId } = render(
+      const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
           modeOptions={{ isCheckboxShown: true, onModeChange: onModeChangeMock }}
@@ -95,7 +95,51 @@ describe('Profiler', () => {
 
       fireEvent.click(modeSwitcher)
 
-      expect(onModeChangeMock).toBeCalledWith(Mode.vertical)
+      expect(onModeChangeMock).toBeCalledWith(Mode.Vertical)
+    })
+  })
+
+  describe('search', () => {
+    it('should show search', () => {
+      const { queryByTestId } = render(<Profiler datasets={smallDataset} />)
+
+      expect(queryByTestId('table-search')).toBeTruthy()
+    })
+
+    it("shouldn't show search", () => {
+      const { queryByTestId } = render(
+        <Profiler
+          datasets={smallDataset}
+          modeOptions={{ isCheckboxShown: true }}
+          searchOptions={{ disabled: true }}
+        />
+      )
+
+      expect(queryByTestId('table-search')).toBeNull()
+    })
+
+    it('should filter data', async () => {
+      const { queryAllByTestId, queryByTestId } = render(<Profiler datasets={smallDataset} />)
+      const search = queryByTestId('table-search')
+
+      expect(queryAllByTestId('row-column-name')[0].innerHTML).toBe('id')
+      expect(queryAllByTestId('row-column-name')[1].innerHTML).toBe('value')
+
+      fireEvent.change(search, { target: { value: 'value' } })
+
+      await waitFor(() => expect(queryAllByTestId('row-column-name')[0].innerHTML).toBe('value'))
+    })
+
+    it('should call onSearch handler', async () => {
+      const onSearchMock = jest.fn()
+      const { queryByTestId } = render(
+        <Profiler datasets={smallDataset} searchOptions={{ onChangeHandler: onSearchMock }} />
+      )
+      const search = queryByTestId('table-search')
+
+      fireEvent.change(search, { target: { value: 'test' } })
+
+      await waitFor(() => expect(onSearchMock).toBeCalledWith('test'))
     })
   })
 })
