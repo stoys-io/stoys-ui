@@ -21,12 +21,10 @@ describe('ChartHeaderCellTitle', () => {
     )
 
     const tableBtn = queryByTestId('table-view-btn')
-    const chartBtn = queryByTestId('chart-view-btn')
     const logBtn = queryByTestId('log-btn')
     const axesBtn = queryByTestId('axes-btn')
 
     expect(tableBtn).toBeTruthy()
-    expect(chartBtn).toBeTruthy()
     expect(logBtn).toBeNull()
     expect(axesBtn).toBeNull()
   })
@@ -78,9 +76,7 @@ describe('ChartHeaderCellTitle', () => {
     )
 
     const tableViewBtn = getByTestId('table-view-btn')
-    const chartViewBtn = getByTestId('chart-view-btn')
 
     expect(tableViewBtn.classList.contains('active')).toBeTruthy()
-    expect(chartViewBtn.classList.contains('active')).toBeFalsy()
   })
 })

@@ -32,12 +32,10 @@ describe('ChartCellTitle', () => {
     )
 
     const tableBtn = queryByTestId('table-view-btn')
-    const chartBtn = queryByTestId('chart-view-btn')
     const logBtn = queryByTestId('log-btn')
     const axesBtn = queryByTestId('axes-btn')
 
     expect(tableBtn).toBeNull()
-    expect(chartBtn).toBeNull()
     expect(logBtn).toBeNull()
     expect(axesBtn).toBeNull()
   })
@@ -67,12 +65,10 @@ describe('ChartCellTitle', () => {
     )
 
     const tableBtn = queryByTestId('table-view-btn')
-    const chartBtn = queryByTestId('chart-view-btn')
     const logBtn = queryByTestId('log-btn')
     const axesBtn = queryByTestId('axes-btn')
 
     expect(tableBtn).toBeNull()
-    expect(chartBtn).toBeNull()
     expect(logBtn).toBeTruthy()
     expect(axesBtn).toBeNull()
   })
@@ -134,12 +130,10 @@ describe('ChartCellTitle', () => {
     )
 
     const tableBtn = queryByTestId('table-view-btn')
-    const chartBtn = queryByTestId('chart-view-btn')
     const logBtn = queryByTestId('log-btn')
     const axesBtn = queryByTestId('axes-btn')
 
     expect(tableBtn).toBeNull()
-    expect(chartBtn).toBeNull()
     expect(logBtn).toBeNull()
     expect(axesBtn).toBeTruthy()
   })
@@ -202,11 +196,9 @@ describe('ChartCellTitle', () => {
 
     const checkboxes = queryAllByTestId('title-checkbox')
     const tableRadioBtn = queryByTestId('table-view-btn')
-    const chartRadioBtn = queryByTestId('chart-view-btn')
 
     expect(checkboxes.length).toBe(0)
     expect(tableRadioBtn).toBeTruthy()
-    expect(chartRadioBtn).toBeTruthy()
   })
 
   it('should call setCheckedTableRows', () => {
@@ -251,9 +243,7 @@ describe('ChartCellTitle', () => {
       </CheckedRowsContext.Provider>
     )
 
-    const chartRadioBtn = queryByTestId('chart-view-btn')
-
-    fireEvent.click(chartRadioBtn)
+    fireEvent.click(tableRadioBtn)
 
     expect(setCheckedMock).toBeCalledWith(['1', '2', '3'])
   })
