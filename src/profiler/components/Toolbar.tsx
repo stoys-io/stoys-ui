@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import Tooltip from 'antd/lib/tooltip'
 import RiseOutlined from '@ant-design/icons/RiseOutlined'
 import TableOutlined from '@ant-design/icons/lib/icons/TableOutlined'
-import BarChartOutlined from '@ant-design/icons/lib/icons/BarChartOutlined'
 
 import { ReactComponent as AxesIcon } from '../icons/axes.svg'
 

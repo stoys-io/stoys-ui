@@ -2,7 +2,7 @@ import React from 'react'
 
 import { CheckedRowsContext } from '../checkedRowsContext'
 import { ChartCellTitleProps } from '../model'
-import Toolbox from './Toolbox'
+import Toolbar from './Toolbar'
 
 const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps): JSX.Element => {
   return (
@@ -44,7 +44,7 @@ const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps):
         }
 
         return (
-          <Toolbox
+          <Toolbar
             showTableChartSwitcher={tableOptions?.isCheckboxShown}
             showLogScale={rowOptions.isLogCheckboxShown}
             showAxes={rowOptions.isAxisCheckboxShown}

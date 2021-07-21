@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 
 import { CheckedRowsContext } from '../checkedRowsContext'
-import Toolbox from './Toolbox'
+import Toolbar from './Toolbar'
 import { ChartHeaderCellTitleProps } from '../model'
 
 const ChartHeaderCellTitle = ({
@@ -23,7 +23,7 @@ const ChartHeaderCellTitle = ({
     <>
       <CheckedRowsContext.Consumer>
         {({ checkedLogRows, checkedAxisRows, checkedTableRows, dataLength }) => (
-          <Toolbox
+          <Toolbar
             showTableChartSwitcher={tableOptions?.isCheckboxShown}
             showLogScale={logarithmicScale.isCheckboxShown}
             showAxes={axisOptions.isCheckboxShown}

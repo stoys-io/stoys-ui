@@ -50,7 +50,7 @@ export interface Dataset {
 
 export type Datasets = Array<Dataset>
 
-export interface ToolboxOptions {
+export interface ToolbarOptions {
   logarithmicScaleOptions?: {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
@@ -73,7 +73,7 @@ export interface DataProfilerProps {
     onModeChange?: (mode: Mode) => void
   }
   colors?: Array<string>
-  toolboxOptions?: null | false | ToolboxOptions
+  toolbarOptions?: null | false | ToolbarOptions
   pagination?: PaginationProps
   smallSize?: boolean
   searchOptions?: {

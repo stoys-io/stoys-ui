@@ -12,7 +12,7 @@ export const ProfilerForOneDataset = Template.bind({})
 ProfilerForOneDataset.args = {
   datasets: [firstDatasetMock as Dataset],
   pagination: { disabled: false },
-  toolboxOptions: {
+  toolbarOptions: {
     logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
     axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
@@ -27,7 +27,7 @@ export const Profiler = Template.bind({})
 Profiler.args = {
   datasets: [firstDatasetMock as Dataset, secondDatasetMock as Dataset],
   pagination: { disabled: false },
-  toolboxOptions: {
+  toolbarOptions: {
     axisOptions: { isCheckboxShown: true, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
   },

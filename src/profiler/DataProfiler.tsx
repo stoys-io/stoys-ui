@@ -16,7 +16,7 @@ import { NoData, TableWrapper } from './styles'
 export const DataProfiler = ({
   datasets,
   colors,
-  toolboxOptions,
+  toolbarOptions,
   pagination,
   modeOptions,
   smallSize = true,
@@ -79,11 +79,11 @@ export const DataProfiler = ({
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
 
-  const _toolboxOptions = useMemo(() => {
+  const _toolbarOptions = useMemo(() => {
     if (
-      (typeof toolboxOptions === 'boolean' && toolboxOptions) ||
-      toolboxOptions === undefined ||
-      toolboxOptions === null
+      (typeof toolbarOptions === 'boolean' && toolbarOptions) ||
+      toolbarOptions === undefined ||
+      toolbarOptions === null
     ) {
       return {
         logarithmicScaleOptions: {
@@ -97,7 +97,7 @@ export const DataProfiler = ({
         },
       }
     }
-    if (typeof toolboxOptions === 'boolean' && !toolboxOptions) {
+    if (typeof toolbarOptions === 'boolean' && !toolbarOptions) {
       return {
         logarithmicScaleOptions: {
           isCheckboxShown: false,
@@ -111,26 +111,26 @@ export const DataProfiler = ({
       }
     }
 
-    return toolboxOptions
-  }, [toolboxOptions])
+    return toolbarOptions
+  }, [toolbarOptions])
 
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
-    _toolboxOptions.logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
+    _toolbarOptions.logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
   )
   const [checkedAxisRows, setCheckedAxisRows] = useState<Array<string>>(
-    _toolboxOptions.axisOptions?.isUsedByDefault ? columnNames : []
+    _toolbarOptions.axisOptions?.isUsedByDefault ? columnNames : []
   )
   const [checkedTableRows, setCheckedTableRows] = useState<Array<string>>(
-    _toolboxOptions.chartTableOptions?.isUsedByDefault ? columnNames : []
+    _toolbarOptions.chartTableOptions?.isUsedByDefault ? columnNames : []
   )
 
   const tableOptions = useMemo(
     () => ({
-      isCheckboxShown: !!_toolboxOptions.chartTableOptions?.isCheckboxShown,
+      isCheckboxShown: !!_toolbarOptions.chartTableOptions?.isCheckboxShown,
       setChecked: (isChecked: boolean) => setCheckedTableRows(isChecked ? columnNames : []),
-      isUsedByDefault: !!_toolboxOptions.chartTableOptions?.isUsedByDefault,
+      isUsedByDefault: !!_toolbarOptions.chartTableOptions?.isUsedByDefault,
     }),
-    [_toolboxOptions]
+    [_toolbarOptions]
   )
 
   const columns = useMemo(
@@ -138,17 +138,17 @@ export const DataProfiler = ({
       getColumns(
         data,
         {
-          isCheckboxShown: !!_toolboxOptions.logarithmicScaleOptions?.isCheckboxShown,
+          isCheckboxShown: !!_toolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
         },
         {
-          isCheckboxShown: !!_toolboxOptions.axisOptions?.isCheckboxShown,
+          isCheckboxShown: !!_toolbarOptions.axisOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedAxisRows(isChecked ? columnNames : []),
         },
         tableOptions,
         smallSize
       ),
-    [data, tableOptions, smallSize, _toolboxOptions]
+    [data, tableOptions, smallSize, _toolbarOptions]
   )
 
   const _setIsVerticalView = useCallback(
@@ -203,8 +203,8 @@ export const DataProfiler = ({
             setPageSize={setPageSize}
             withoutPagination={!!pagination?.disabled}
             rowOptions={{
-              isLogCheckboxShown: !!_toolboxOptions.logarithmicScaleOptions?.isCheckboxShown,
-              isAxisCheckboxShown: !!_toolboxOptions.axisOptions?.isCheckboxShown,
+              isLogCheckboxShown: !!_toolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
+              isAxisCheckboxShown: !!_toolbarOptions.axisOptions?.isCheckboxShown,
             }}
             tableOptions={tableOptions}
           />
