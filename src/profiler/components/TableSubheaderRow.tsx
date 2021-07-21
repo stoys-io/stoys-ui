@@ -12,7 +12,7 @@ const TableSubheaderRow = ({
   return (
     <TableSubheader>
       <FlexWrapper className="table-flex-row">
-        <span>{row.columnName}</span>
+        <span data-testid="row-column-name">{row.columnName}</span>
         <ChartCellTitle row={row} rowOptions={rowOptions} tableOptions={tableOptions} />
       </FlexWrapper>
     </TableSubheader>

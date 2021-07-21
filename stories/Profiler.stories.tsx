@@ -12,8 +12,14 @@ export const ProfilerForOneDataset = Template.bind({})
 ProfilerForOneDataset.args = {
   datasets: [firstDatasetMock as Dataset],
   pagination: { disabled: false },
-  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log(mode) },
+  toolboxOptions: {
+    logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
+    axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
+    chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
+  },
+  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
   smallSize: true,
+  searchOptions: { disabled: false, onChangeHandler: value => console.log('search => ', value) },
 }
 ProfilerForOneDataset.storyName = 'dataset with one item'
 
@@ -21,8 +27,13 @@ export const Profiler = Template.bind({})
 Profiler.args = {
   datasets: [firstDatasetMock as Dataset, secondDatasetMock as Dataset],
   pagination: { disabled: false },
-  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log(mode) },
+  toolboxOptions: {
+    axisOptions: { isCheckboxShown: true, isUsedByDefault: false },
+    chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
+  },
+  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
   smallSize: false,
+  searchOptions: { disabled: false, onChangeHandler: value => console.log('search => ', value) },
 }
 Profiler.storyName = 'dataset with two items'
 
