@@ -1,7 +1,7 @@
 import { ColumnsType } from 'antd/lib/table/interface'
 import { PaginationProps } from '../hooks'
 
-export enum Mode {
+export enum Orient {
   Vertical = 'Vertical',
   Horizontal = 'Horizontal',
 }
@@ -67,10 +67,10 @@ export interface ToolbarOptions {
 
 export interface DataProfilerProps {
   datasets: Datasets
-  modeOptions?: {
-    type?: Mode
+  orientOptions?: {
+    type?: Orient
     isCheckboxShown?: boolean
-    onModeChange?: (mode: Mode) => void
+    onModeChange?: (mode: Orient) => void
   }
   colors?: Array<string>
   toolbarOptions?: null | false | ToolbarOptions

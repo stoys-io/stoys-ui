@@ -17,7 +17,7 @@ ProfilerForOneDataset.args = {
     axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
   },
-  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
+  orientOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
   smallSize: true,
   searchOptions: { disabled: false, onChangeHandler: value => console.log('search => ', value) },
 }
@@ -31,7 +31,7 @@ Profiler.args = {
     axisOptions: { isCheckboxShown: true, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
   },
-  modeOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
+  orientOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
   smallSize: false,
   searchOptions: { disabled: false, onChangeHandler: value => console.log('search => ', value) },
 }

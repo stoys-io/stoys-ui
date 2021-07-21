@@ -38,7 +38,7 @@ describe('Profiler', () => {
 
     it('should render vertical table', () => {
       const { container } = render(
-        <Profiler datasets={smallDataset} modeOptions={{ type: Mode.Vertical }} />
+        <Profiler datasets={smallDataset} orientOptions={{ type: Mode.Vertical }} />
       )
       const tableHeaderCell = container.querySelectorAll('th')
 
@@ -69,7 +69,7 @@ describe('Profiler', () => {
 
     it('should change view from vertical to horizontal', () => {
       const { container, queryByTestId } = render(
-        <Profiler datasets={smallDataset} modeOptions={{ isCheckboxShown: true }} />
+        <Profiler datasets={smallDataset} orientOptions={{ isCheckboxShown: true }} />
       )
 
       expect(container.querySelectorAll('th')[0].innerHTML).toBe('nulls')
@@ -91,7 +91,7 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          modeOptions={{ isCheckboxShown: true, onModeChange: onModeChangeMock }}
+          orientOptions={{ isCheckboxShown: true, onModeChange: onModeChangeMock }}
         />
       )
 
@@ -114,7 +114,7 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          modeOptions={{ isCheckboxShown: true }}
+          orientOptions={{ isCheckboxShown: true }}
           searchOptions={{ disabled: true }}
         />
       )

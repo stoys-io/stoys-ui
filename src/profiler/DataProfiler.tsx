@@ -5,7 +5,7 @@ import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
 import { COLORS } from './constants'
 import { CheckedRowsContext } from './checkedRowsContext'
-import { DataItem, DataProfilerProps, ChildDataItem, Mode } from './model'
+import { DataItem, DataProfilerProps, ChildDataItem, Orient } from './model'
 
 import VerticalTable from './components/VerticalTable'
 import HorizontalTable from './components/HorizontalTable'
@@ -18,11 +18,11 @@ export const DataProfiler = ({
   colors,
   toolbarOptions,
   pagination,
-  modeOptions,
+  orientOptions,
   smallSize = true,
   searchOptions,
 }: DataProfilerProps) => {
-  const [isVertical, setIsVertical] = useState<boolean>(modeOptions?.type === Mode.Vertical)
+  const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
   const [searchValue, setSearchValue] = useState<string>('')
   const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
@@ -31,8 +31,8 @@ export const DataProfiler = ({
   }
 
   useEffect(() => {
-    setIsVertical(modeOptions?.type === Mode.Vertical)
-  }, [modeOptions])
+    setIsVertical(orientOptions?.type === Orient.Vertical)
+  }, [orientOptions])
 
   const dataGrouppedByTitle = useMemo(
     () =>
@@ -154,8 +154,8 @@ export const DataProfiler = ({
   const _setIsVerticalView = useCallback(
     () =>
       setIsVertical((prevState: boolean) => {
-        if (modeOptions && modeOptions.onModeChange) {
-          modeOptions.onModeChange(!prevState ? Mode.Vertical : Mode.Horizontal)
+        if (orientOptions && orientOptions.onModeChange) {
+          orientOptions.onModeChange(!prevState ? Orient.Vertical : Orient.Horizontal)
         }
 
         return !prevState
@@ -183,9 +183,9 @@ export const DataProfiler = ({
         dataLength: data.length,
       }}
     >
-      {modeOptions?.isCheckboxShown || !searchOptions?.disabled ? (
+      {orientOptions?.isCheckboxShown || !searchOptions?.disabled ? (
         <TableSettings
-          isModeSwitcherShown={modeOptions?.isCheckboxShown}
+          isModeSwitcherShown={orientOptions?.isCheckboxShown}
           isModeSwitcherChecked={isVertical}
           onModeChange={_setIsVerticalView}
           isSearchShown={!searchOptions?.disabled}
