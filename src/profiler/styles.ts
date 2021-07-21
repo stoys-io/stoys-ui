@@ -84,7 +84,7 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
     }
 
     .toolbox-icon {
-      font-size: 18px;
+      font-size: 17px;
     }
   }
 
@@ -296,10 +296,13 @@ export const ToolboxWrapper = styled.div`
   justify-content: flex-end;
 
   > .toolbox-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 2px;
     border: 1px solid transparent;
     border-radius: 100%;
-    padding: 2px;
+    padding: 3px;
     cursor: pointer;
 
     &.active {
