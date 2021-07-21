@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import Table from 'antd/lib/table'
 
-export const StyledJoinRatesTable = styled(Table)`
+export const StyledJoinStatistics = styled(Table)`
   margin-bottom: 20px;
 
   .ant-table-tbody {

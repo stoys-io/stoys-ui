@@ -34,14 +34,14 @@ export interface JoinRatesProps {
   smallSize?: boolean
 }
 
-export interface JoinRatesTableData {
+export interface JoinStatisticsData {
   key: string
   id: string
   'Table names'?: Array<string>
   [key: string]: number | string | Array<string> | undefined
 }
-export interface JoinRatesTableProps {
-  data: Array<JoinRatesTableData>
+export interface JoinStatisticsProps {
+  data: Array<JoinStatisticsData>
   columns: any
   joinRateId: string
   onRowClickHandler: any

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 
 import { Quality } from '../quality/Quality'
-import JoinRatesTable from './JoinRatesTable'
+import JoinStatistics from './JoinStatistics'
 import { getTableNames, transformJoinRatesData } from './helpers'
 import { JoinRatesProps } from './model'
 
@@ -24,7 +24,7 @@ const JoinRates = ({
         : [transformJoinRatesData(data)],
     [data]
   )
-  const JoinRatesTableColumns = useMemo(() => {
+  const JoinStatisticsColumns = useMemo(() => {
     const columns = Array.isArray(data)
       ? Object.keys(
           data.reduce(
@@ -67,9 +67,9 @@ const JoinRates = ({
 
   return (
     <>
-      <JoinRatesTable
+      <JoinStatistics
         data={joinRatesData}
-        columns={JoinRatesTableColumns}
+        columns={JoinStatisticsColumns}
         joinRateId={_id}
         onRowClickHandler={_onRowClickHandler}
       />

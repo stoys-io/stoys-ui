@@ -1,18 +1,18 @@
 import React, { useMemo } from 'react'
 import { getJoinRatesColumns } from './columns'
-import { StyledJoinRatesTable } from './styles'
-import { JoinRatesTableProps } from './model'
+import { StyledJoinStatistics } from './styles'
+import { JoinStatisticsProps } from './model'
 
-const JoinRatesTable = ({
+const JoinStatistics = ({
   data,
   columns,
   joinRateId,
   onRowClickHandler,
-}: JoinRatesTableProps): JSX.Element => {
+}: JoinStatisticsProps): JSX.Element => {
   const _columns = useMemo(() => getJoinRatesColumns(columns), [data])
 
   return (
-    <StyledJoinRatesTable
+    <StyledJoinStatistics
       columns={_columns}
       dataSource={data}
       pagination={false}
@@ -26,4 +26,4 @@ const JoinRatesTable = ({
   )
 }
 
-export default JoinRatesTable
+export default JoinStatistics
