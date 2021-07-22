@@ -4,7 +4,7 @@ import { Story } from '@storybook/react'
 import { Profiler as ProfilerComponent, DataProfilerProps } from '../src/profiler'
 import firstDatasetMock from './mocks/yellow_tripdata_2020-02.csv.dp_result.json'
 import secondDatasetMock from './mocks/yellow_tripdata_2020-03.csv.dp_result.json'
-import { Dataset } from '../src/profiler/model'
+import { Dataset, Orient } from '../src/profiler/model'
 
 const Template: Story<DataProfilerProps> = args => <ProfilerComponent {...args} />
 
@@ -12,14 +12,23 @@ export const ProfilerForOneDataset = Template.bind({})
 ProfilerForOneDataset.args = {
   datasets: [firstDatasetMock as Dataset],
   pagination: { disabled: false },
-  toolbarOptions: {
+  rowToolbarOptions: {
     logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
     axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
   },
-  orientOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
+  profilerToolbarOptions: {
+    orientOptions: {
+      isCheckboxShown: true,
+      onOrientChange: (orient: Orient) => console.log('orient => ', orient),
+    },
+    searchOptions: {
+      disabled: false,
+      onChange: (value: string) => console.log('search => ', value),
+    },
+  },
+
   smallSize: true,
-  searchOptions: { disabled: false, onChangeHandler: value => console.log('search => ', value) },
 }
 ProfilerForOneDataset.storyName = 'dataset with one item'
 
@@ -27,13 +36,21 @@ export const Profiler = Template.bind({})
 Profiler.args = {
   datasets: [firstDatasetMock as Dataset, secondDatasetMock as Dataset],
   pagination: { disabled: false },
-  toolbarOptions: {
+  rowToolbarOptions: {
     axisOptions: { isCheckboxShown: true, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
   },
-  orientOptions: { isCheckboxShown: true, onModeChange: mode => console.log('mode => ', mode) },
+  profilerToolbarOptions: {
+    searchOptions: {
+      disabled: false,
+      onChange: (value: string) => console.log('search => ', value),
+    },
+    orientOptions: {
+      isCheckboxShown: true,
+      onOrientChange: (orient: Orient) => console.log('orient => ', orient),
+    },
+  },
   smallSize: false,
-  searchOptions: { disabled: false, onChangeHandler: value => console.log('search => ', value) },
 }
 Profiler.storyName = 'dataset with two items'
 

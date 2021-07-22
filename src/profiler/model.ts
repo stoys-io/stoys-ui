@@ -50,7 +50,7 @@ export interface Dataset {
 
 export type Datasets = Array<Dataset>
 
-export interface ToolbarOptions {
+export interface RowToolbarOptions {
   logarithmicScaleOptions?: {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
@@ -65,21 +65,25 @@ export interface ToolbarOptions {
   }
 }
 
-export interface DataProfilerProps {
-  datasets: Datasets
+export interface ProfilerToolbarOptions {
   orientOptions?: {
     type?: Orient
     isCheckboxShown?: boolean
-    onModeChange?: (mode: Orient) => void
+    onOrientChange?: (orient: Orient) => void
   }
-  colors?: Array<string>
-  toolbarOptions?: null | false | ToolbarOptions
-  pagination?: PaginationProps
-  smallSize?: boolean
   searchOptions?: {
     disabled?: boolean
-    onChangeHandler?: (value: string) => void
+    onChange?: (value: string) => void
   }
+}
+
+export interface DataProfilerProps {
+  datasets: Datasets
+  profilerToolbarOptions?: null | false | ProfilerToolbarOptions
+  colors?: Array<string>
+  rowToolbarOptions?: null | false | RowToolbarOptions
+  pagination?: PaginationProps
+  smallSize?: boolean
 }
 
 export interface HydratedColumn extends Column {

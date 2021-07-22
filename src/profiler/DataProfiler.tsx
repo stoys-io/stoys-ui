@@ -16,12 +16,19 @@ import { NoData, TableWrapper } from './styles'
 export const DataProfiler = ({
   datasets,
   colors,
-  toolbarOptions,
+  rowToolbarOptions,
   pagination,
-  orientOptions,
+  profilerToolbarOptions,
   smallSize = true,
-  searchOptions,
 }: DataProfilerProps) => {
+  const orientOptions = useMemo(
+    () => (profilerToolbarOptions ? profilerToolbarOptions?.orientOptions : {}),
+    [profilerToolbarOptions]
+  )
+  const searchOptions = useMemo(
+    () => (profilerToolbarOptions ? profilerToolbarOptions?.searchOptions : {}),
+    [profilerToolbarOptions]
+  )
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
   const [searchValue, setSearchValue] = useState<string>('')
   const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
@@ -79,11 +86,11 @@ export const DataProfiler = ({
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
 
-  const _toolbarOptions = useMemo(() => {
+  const _rowToolbarOptions = useMemo(() => {
     if (
-      (typeof toolbarOptions === 'boolean' && toolbarOptions) ||
-      toolbarOptions === undefined ||
-      toolbarOptions === null
+      (typeof rowToolbarOptions === 'boolean' && rowToolbarOptions) ||
+      rowToolbarOptions === undefined ||
+      rowToolbarOptions === null
     ) {
       return {
         logarithmicScaleOptions: {
@@ -97,7 +104,7 @@ export const DataProfiler = ({
         },
       }
     }
-    if (typeof toolbarOptions === 'boolean' && !toolbarOptions) {
+    if (typeof rowToolbarOptions === 'boolean' && !rowToolbarOptions) {
       return {
         logarithmicScaleOptions: {
           isCheckboxShown: false,
@@ -111,26 +118,26 @@ export const DataProfiler = ({
       }
     }
 
-    return toolbarOptions
-  }, [toolbarOptions])
+    return rowToolbarOptions
+  }, [rowToolbarOptions])
 
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
-    _toolbarOptions.logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
+    _rowToolbarOptions.logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
   )
   const [checkedAxisRows, setCheckedAxisRows] = useState<Array<string>>(
-    _toolbarOptions.axisOptions?.isUsedByDefault ? columnNames : []
+    _rowToolbarOptions.axisOptions?.isUsedByDefault ? columnNames : []
   )
   const [checkedTableRows, setCheckedTableRows] = useState<Array<string>>(
-    _toolbarOptions.chartTableOptions?.isUsedByDefault ? columnNames : []
+    _rowToolbarOptions.chartTableOptions?.isUsedByDefault ? columnNames : []
   )
 
   const tableOptions = useMemo(
     () => ({
-      isCheckboxShown: !!_toolbarOptions.chartTableOptions?.isCheckboxShown,
+      isCheckboxShown: !!_rowToolbarOptions.chartTableOptions?.isCheckboxShown,
       setChecked: (isChecked: boolean) => setCheckedTableRows(isChecked ? columnNames : []),
-      isUsedByDefault: !!_toolbarOptions.chartTableOptions?.isUsedByDefault,
+      isUsedByDefault: !!_rowToolbarOptions.chartTableOptions?.isUsedByDefault,
     }),
-    [_toolbarOptions]
+    [_rowToolbarOptions]
   )
 
   const columns = useMemo(
@@ -138,25 +145,23 @@ export const DataProfiler = ({
       getColumns(
         data,
         {
-          isCheckboxShown: !!_toolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
+          isCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
         },
         {
-          isCheckboxShown: !!_toolbarOptions.axisOptions?.isCheckboxShown,
+          isCheckboxShown: !!_rowToolbarOptions.axisOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedAxisRows(isChecked ? columnNames : []),
         },
         tableOptions,
         smallSize
       ),
-    [data, tableOptions, smallSize, _toolbarOptions]
+    [data, tableOptions, smallSize, _rowToolbarOptions]
   )
 
   const _setIsVerticalView = useCallback(
     () =>
       setIsVertical((prevState: boolean) => {
-        if (orientOptions && orientOptions.onModeChange) {
-          orientOptions.onModeChange(!prevState ? Orient.Vertical : Orient.Horizontal)
-        }
+        orientOptions?.onOrientChange?.(!prevState ? Orient.Vertical : Orient.Horizontal)
 
         return !prevState
       }),
@@ -165,7 +170,7 @@ export const DataProfiler = ({
 
   const _onSearch = useCallback(
     (value: string) => {
-      searchOptions?.onChangeHandler?.(value)
+      searchOptions?.onChange?.(value)
       setSearchValue(value)
     },
     [searchOptions]
@@ -203,8 +208,8 @@ export const DataProfiler = ({
             setPageSize={setPageSize}
             withoutPagination={!!pagination?.disabled}
             rowOptions={{
-              isLogCheckboxShown: !!_toolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
-              isAxisCheckboxShown: !!_toolbarOptions.axisOptions?.isCheckboxShown,
+              isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
+              isAxisCheckboxShown: !!_rowToolbarOptions.axisOptions?.isCheckboxShown,
             }}
             tableOptions={tableOptions}
           />
