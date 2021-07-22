@@ -3,7 +3,7 @@ import { render, fireEvent } from '@testing-library/react'
 import '../../__mocks__/matchMedia.mock'
 
 import { Quality } from '..'
-import { Data as QualityModel } from '../model'
+import { QualityData as QualityModel } from '../model'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(

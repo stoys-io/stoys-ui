@@ -3,7 +3,11 @@ import { render, fireEvent } from '@testing-library/react'
 import '../../__mocks__/matchMedia.mock'
 
 import JoinRates from '..'
-import { mockData1, mockData2 } from './JoinRates.mock'
+import mockData1 from '../../../stories/mocks/covid19_epidemiology_demographics.dq_join_result.json'
+import mockData2 from '../../../stories/mocks/covid19_epidemiology_demographics.dq_join_result2.json'
+
+const joinRatesMockData1 = { id: 'test1', tableNames: ['first', 'second'], ...mockData1 }
+const joinRatesMockData2 = { id: 'test2', tableNames: ['third'], ...mockData2 }
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -13,20 +17,20 @@ beforeAll(() => {
 
 describe('Join Rates', () => {
   it('should render with one data object', () => {
-    const { queryByText } = render(<JoinRates data={mockData1} />)
+    const { queryByText } = render(<JoinRates data={joinRatesMockData1} />)
 
     expect(queryByText('first, second')).toBeTruthy()
   })
 
   it('should render with array of data objects', () => {
-    const { queryByText } = render(<JoinRates data={[mockData1, mockData2]} />)
+    const { queryByText } = render(<JoinRates data={[joinRatesMockData1, joinRatesMockData2]} />)
 
     expect(queryByText('first, second')).toBeTruthy()
     expect(queryByText('third')).toBeTruthy()
   })
 
   it('should parse json objects', () => {
-    const { queryByText } = render(<JoinRates data={mockData1} />)
+    const { queryByText } = render(<JoinRates data={joinRatesMockData1} />)
 
     expect(queryByText('first, second')).toBeTruthy()
   })
@@ -34,7 +38,10 @@ describe('Join Rates', () => {
   it('should call onRowClickHandler', () => {
     const onRowClickHandlerMock = jest.fn()
     const { container } = render(
-      <JoinRates data={[mockData1, mockData2]} onRowClickHandler={onRowClickHandlerMock} />
+      <JoinRates
+        data={[joinRatesMockData1, joinRatesMockData2]}
+        onRowClickHandler={onRowClickHandlerMock}
+      />
     )
 
     const selectedRow = container.querySelector('[data-row-key="test1"]')
@@ -45,7 +52,7 @@ describe('Join Rates', () => {
 
     fireEvent.click(otherRow!)
 
-    expect(onRowClickHandlerMock).toBeCalledWith(mockData2.id)
+    expect(onRowClickHandlerMock).toBeCalledWith(joinRatesMockData2.id)
     expect(selectedRow?.className).not.toContain('selected-row')
     expect(otherRow?.className).toContain('selected-row')
   })
