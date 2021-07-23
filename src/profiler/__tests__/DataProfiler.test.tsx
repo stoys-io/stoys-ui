@@ -5,7 +5,7 @@ import '../../__mocks__/matchMedia.mock'
 import { Profiler } from '..'
 
 import { smallDataset } from '../__mocks__/ProfilerData.mock'
-import { Mode } from '../model'
+import { Orient } from '../model'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -38,7 +38,10 @@ describe('Profiler', () => {
 
     it('should render vertical table', () => {
       const { container } = render(
-        <Profiler datasets={smallDataset} orientOptions={{ type: Mode.Vertical }} />
+        <Profiler
+          datasets={smallDataset}
+          profilerToolbarOptions={{ orientOptions: { type: Orient.Vertical } }}
+        />
       )
       const tableHeaderCell = container.querySelectorAll('th')
 
@@ -69,7 +72,10 @@ describe('Profiler', () => {
 
     it('should change view from vertical to horizontal', () => {
       const { container, queryByTestId } = render(
-        <Profiler datasets={smallDataset} orientOptions={{ isCheckboxShown: true }} />
+        <Profiler
+          datasets={smallDataset}
+          profilerToolbarOptions={{ orientOptions: { isCheckboxShown: true } }}
+        />
       )
 
       expect(container.querySelectorAll('th')[0].innerHTML).toBe('nulls')
@@ -87,11 +93,13 @@ describe('Profiler', () => {
     })
 
     it('should call onModeChange', () => {
-      const onModeChangeMock = jest.fn()
+      const onOrientChangeMock = jest.fn()
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          orientOptions={{ isCheckboxShown: true, onModeChange: onModeChangeMock }}
+          profilerToolbarOptions={{
+            orientOptions: { isCheckboxShown: true, onOrientChange: onOrientChangeMock },
+          }}
         />
       )
 
@@ -99,7 +107,7 @@ describe('Profiler', () => {
 
       fireEvent.click(modeSwitcher)
 
-      expect(onModeChangeMock).toBeCalledWith(Mode.Vertical)
+      expect(onOrientChangeMock).toBeCalledWith(Orient.Vertical)
     })
   })
 
@@ -114,8 +122,10 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          orientOptions={{ isCheckboxShown: true }}
-          searchOptions={{ disabled: true }}
+          profilerToolbarOptions={{
+            orientOptions: { isCheckboxShown: true },
+            searchOptions: { disabled: true },
+          }}
         />
       )
 
@@ -137,7 +147,10 @@ describe('Profiler', () => {
     it('should call onSearch handler', async () => {
       const onSearchMock = jest.fn()
       const { queryByTestId } = render(
-        <Profiler datasets={smallDataset} searchOptions={{ onChangeHandler: onSearchMock }} />
+        <Profiler
+          datasets={smallDataset}
+          profilerToolbarOptions={{ searchOptions: { onChange: onSearchMock } }}
+        />
       )
       const search = queryByTestId('table-search')
 
