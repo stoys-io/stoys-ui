@@ -2,7 +2,7 @@ import React from 'react'
 import Tooltip from 'antd/lib/tooltip'
 import { ColumnsType } from 'antd/lib/table'
 
-import ChartCellTitle from './components/ChartCellTitle'
+import ChartHeaderCellTitle from './components/ChartHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
 import { ChartWithTooltip, hygratePmfPlotData } from './chart'
 import { renderNumericValue } from '../helpers'
@@ -135,7 +135,7 @@ const renderChartCellTitle = (
   axisOptions: AxisOptions,
   tableOptions: TableOptions
 ) => (
-  <ChartCellTitle
+  <ChartHeaderCellTitle
     logarithmicScale={logarithmicScale}
     axisOptions={axisOptions}
     tableOptions={tableOptions}

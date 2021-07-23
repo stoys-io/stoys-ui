@@ -1,7 +1,7 @@
 import { ColumnsType } from 'antd/lib/table/interface'
 import { PaginationProps } from '../hooks'
 
-export enum Mode {
+export enum Orient {
   Vertical = 'Vertical',
   Horizontal = 'Horizontal',
 }
@@ -50,14 +50,7 @@ export interface Dataset {
 
 export type Datasets = Array<Dataset>
 
-export interface DataProfilerProps {
-  datasets: Datasets
-  modeOptions?: {
-    type?: Mode
-    isCheckboxShown?: boolean
-    onModeChange?: (mode: Mode) => void
-  }
-  colors?: Array<string>
+export interface RowToolbarOptions {
   logarithmicScaleOptions?: {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
@@ -70,13 +63,27 @@ export interface DataProfilerProps {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
   }
-  pagination?: PaginationProps
-  showAllCheckboxes?: boolean
-  smallSize?: boolean
+}
+
+export interface ProfilerToolbarOptions {
+  orientOptions?: {
+    type?: Orient
+    isCheckboxShown?: boolean
+    onOrientChange?: (orient: Orient) => void
+  }
   searchOptions?: {
     disabled?: boolean
-    onChangeHandler?: (value: string) => void
+    onChange?: (value: string) => void
   }
+}
+
+export interface DataProfilerProps {
+  datasets: Datasets
+  profilerToolbarOptions?: null | false | ProfilerToolbarOptions
+  colors?: Array<string>
+  rowToolbarOptions?: null | false | RowToolbarOptions
+  pagination?: PaginationProps
+  smallSize?: boolean
 }
 
 export interface HydratedColumn extends Column {
@@ -110,7 +117,7 @@ export interface AxisOptions {
 }
 
 export interface TableOptions {
-  setChecked: (isChecked: boolean) => void
+  setChecked?: (isChecked: boolean) => void
   isCheckboxShown: boolean
   isUsedByDefault?: boolean
 }
@@ -179,7 +186,7 @@ export interface ChartTableHeaderProps {
   axisOptions: AxisOptions
 }
 
-export interface ChartCellTitleProps {
+export interface ChartHeaderCellTitleProps {
   logarithmicScale: LogarithmicScale
   axisOptions: AxisOptions
   tableOptions: TableOptions
@@ -206,7 +213,7 @@ export interface HeaderCheckboxProps {
   isPartiallyChecked: boolean
   setChecked: (isChecked: boolean) => void
   isChecked: boolean
-  title: string
+  title: string | JSX.Element
 }
 
 export interface ModeSwitcherProps {
@@ -214,7 +221,7 @@ export interface ModeSwitcherProps {
   onChange: () => void
 }
 
-export interface ChartTitleProps extends TableSubheaderRowProps {}
+export interface ChartCellTitleProps extends TableSubheaderRowProps {}
 
 export interface VerticalColumn {
   title: string
@@ -238,6 +245,27 @@ export interface RenderChartProps {
   smallSize: boolean
 }
 
+export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> & {
+  isChecked: boolean
+  title: string | JSX.Element
+}
+
+export interface ToolboxProps {
+  showTableChartSwitcher?: boolean
+  showLogScale?: boolean
+  showAxes?: boolean
+  activeTable?: boolean
+  partiallyActiveTable?: boolean
+  activeLogScale?: boolean
+  partiallyActiveLogScale?: boolean
+  activeAxes?: boolean
+  partiallyActiveAxes?: boolean
+  disableLogScale?: boolean
+  disableAxes?: boolean
+  onAxesClickHandler: (active: boolean) => void
+  onLogScaleClickHandler: (active: boolean) => void
+  onTableClickHandler: (active: boolean) => void
+}
 export interface TableSettingsProps {
   isModeSwitcherShown?: boolean
   isModeSwitcherChecked: boolean
