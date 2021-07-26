@@ -86,7 +86,23 @@ const renderRow: Render = (logarithmicScale, axisOptions, tableOptions) => (valu
   return renderedCellConfig
 }
 
-const renderValue = (
+const renderValue = (value: string | number | null): JSX.Element | null => {
+  if (value === null) {
+    return null
+  }
+
+  if (!isNaN(+value) && value !== '') {
+    return renderNumericCell(value)
+  }
+
+  return (
+    <Tooltip title={value} placement="topLeft">
+      {value}
+    </Tooltip>
+  )
+}
+
+const renderMeanMinMaxValue = (
   value: string | number | null,
   row: any
 ): number | string | JSX.Element | null => {
@@ -119,15 +135,7 @@ const renderValue = (
     )
   }
 
-  if (!isNaN(+value) && value !== '') {
-    return renderNumericCell(value)
-  }
-
-  return (
-    <Tooltip title={value} placement="topLeft">
-      {value}
-    </Tooltip>
-  )
+  return renderValue(value)
 }
 
 const renderChartCellTitle = (
@@ -162,29 +170,28 @@ export const getColumns = (
       dataIndex: 'count_unique',
       key: 'count_unique',
       align: 'right' as 'right',
-      render: (value: string | number | undefined) =>
-        value || value === 0 ? renderNumericCell(value) : null,
+      render: renderValue,
     },
     {
       title: 'mean',
       dataIndex: 'mean',
       key: 'mean',
       align: 'left' as 'left',
-      render: renderValue,
+      render: renderMeanMinMaxValue,
     },
     {
       title: 'min',
       dataIndex: 'min',
       key: 'min',
       align: 'left' as 'left',
-      render: renderValue,
+      render: renderMeanMinMaxValue,
     },
     {
       title: 'max',
       dataIndex: 'max',
       key: 'max',
       align: 'left' as 'left',
-      render: renderValue,
+      render: renderMeanMinMaxValue,
     },
     {
       title: renderChartCellTitle(logarithmicScale, axisOptions, tableOptions),
