@@ -27,7 +27,7 @@ ProfilerForOneDataset.args = {
       onChange: (value: string) => console.log('search => ', value),
     },
   },
-
+  visibleColumns: ['count_nulls', 'count_unique', 'mean', 'min', 'max', 'nullable'],
   smallSize: true,
 }
 ProfilerForOneDataset.storyName = 'dataset with one item'

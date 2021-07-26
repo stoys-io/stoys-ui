@@ -89,6 +89,7 @@ export interface DataProfilerProps {
   rowToolbarOptions?: null | false | RowToolbarOptions
   pagination?: PaginationProps
   smallSize?: boolean
+  visibleColumns?: Array<string>
 }
 
 export interface HydratedColumn extends Column {
@@ -106,6 +107,7 @@ export interface RenderedCellConfig {
 }
 
 export type Render = (
+  render: (value: string | number | null) => JSX.Element | string | null,
   logarithmicScale: LogarithmicScale,
   axisOptions: AxisOptions,
   tableOptions: TableOptions
