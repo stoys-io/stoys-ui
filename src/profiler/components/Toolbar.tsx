@@ -3,8 +3,7 @@ import Tooltip from 'antd/lib/tooltip'
 import RiseOutlined from '@ant-design/icons/RiseOutlined'
 import TableOutlined from '@ant-design/icons/lib/icons/TableOutlined'
 
-import { ReactComponent as AxesIcon } from '../icons/axes.svg'
-
+import AxesIcon from '../icons/Axes'
 import { SvgWrapper, ToolboxWrapper } from '../styles'
 import { ToolboxProps } from '../model'
 
