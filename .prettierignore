@@ -4,3 +4,4 @@
 app-link.sh
 .husky
 coverage
+*.svg

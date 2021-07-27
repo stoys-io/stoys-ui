@@ -1,9 +1,9 @@
 import { ColumnsType } from 'antd/lib/table/interface'
 import { PaginationProps } from '../hooks'
 
-export enum Mode {
-  vertical = 'vertical',
-  horizontal = 'horizontal',
+export enum Orient {
+  Vertical = 'Vertical',
+  Horizontal = 'Horizontal',
 }
 
 export interface PmfPlotItem {
@@ -17,7 +17,15 @@ export interface DiscreteItem {
   count: number
 }
 
-export type ColumnType = 'integer' | 'float' | 'timestamp' | 'array' | 'string'
+export type ColumnType =
+  | 'integer'
+  | 'float'
+  | 'timestamp'
+  | 'array'
+  | 'string'
+  | 'long'
+  | 'double'
+  | 'boolean'
 
 export interface Column {
   name: string
@@ -42,14 +50,7 @@ export interface Dataset {
 
 export type Datasets = Array<Dataset>
 
-export interface DataProfilerProps {
-  datasets: Datasets
-  modeOptions?: {
-    type?: Mode
-    isCheckboxShown?: boolean
-    onModeChange?: (mode: Mode) => void
-  }
-  colors?: Array<string>
+export interface RowToolbarOptions {
   logarithmicScaleOptions?: {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
@@ -62,27 +63,32 @@ export interface DataProfilerProps {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
   }
+}
+
+export interface ProfilerToolbarOptions {
+  orientOptions?: {
+    type?: Orient
+    isCheckboxShown?: boolean
+    onOrientChange?: (orient: Orient) => void
+  }
+  searchOptions?: {
+    disabled?: boolean
+    onChange?: (value: string) => void
+  }
+}
+
+export interface DataProfilerProps {
+  datasets: Datasets
+  profilerToolbarOptions?: null | false | ProfilerToolbarOptions
+  colors?: Array<string>
+  rowToolbarOptions?: null | false | RowToolbarOptions
   pagination?: PaginationProps
-  showAllCheckboxes?: boolean
   smallSize?: boolean
 }
 
-export type HydratedColumn = Omit<
-  Column,
-  | 'count'
-  | 'count_nulls'
-  | 'count_empty'
-  | 'count_zeros'
-  | 'count_unique'
-  | 'max_length'
-  | 'data_type'
-> & {
+export interface HydratedColumn extends Column {
   key: string
-  type: string
-  nulls: number
-  items?: Array<DiscreteItem>
   color: string
-  unique: number | null
 }
 
 interface CellProps {
@@ -98,7 +104,7 @@ export type Render = (
   logarithmicScale: LogarithmicScale,
   axisOptions: AxisOptions,
   tableOptions: TableOptions
-) => (value: number | string, row: DataItem | HydratedDataItem, index: number) => RenderedCellConfig
+) => (value: number | string, row: DataItem | ChildDataItem, index: number) => RenderedCellConfig
 
 export interface LogarithmicScale {
   isCheckboxShown: boolean
@@ -111,24 +117,24 @@ export interface AxisOptions {
 }
 
 export interface TableOptions {
-  setChecked: (isChecked: boolean) => void
+  setChecked?: (isChecked: boolean) => void
   isCheckboxShown: boolean
   isUsedByDefault?: boolean
 }
 
-export interface HydratedDataItem extends Omit<HydratedColumn, 'name'> {
+export interface ChildDataItem extends Omit<HydratedColumn, 'name'> {
   parent: string
 }
 
 export interface DataItem {
   columnName: string
   key: string
-  children: Array<HydratedDataItem>
+  children: Array<ChildDataItem>
 }
 
 export interface TableProps {
   data: Array<DataItem>
-  columns: ColumnsType<DataItem | HydratedDataItem>
+  columns: ColumnsType<DataItem | ChildDataItem>
   currentPage: number
   pageSize: number
   setCurrentPage: (page: number) => void
@@ -180,7 +186,7 @@ export interface ChartTableHeaderProps {
   axisOptions: AxisOptions
 }
 
-export interface ChartCellTitleProps {
+export interface ChartHeaderCellTitleProps {
   logarithmicScale: LogarithmicScale
   axisOptions: AxisOptions
   tableOptions: TableOptions
@@ -207,7 +213,7 @@ export interface HeaderCheckboxProps {
   isPartiallyChecked: boolean
   setChecked: (isChecked: boolean) => void
   isChecked: boolean
-  title: string
+  title: string | JSX.Element
 }
 
 export interface ModeSwitcherProps {
@@ -215,7 +221,7 @@ export interface ModeSwitcherProps {
   onChange: () => void
 }
 
-export interface ChartTitleProps extends TableSubheaderRowProps {}
+export interface ChartCellTitleProps extends TableSubheaderRowProps {}
 
 export interface VerticalColumn {
   title: string
@@ -237,4 +243,33 @@ export interface RenderChartProps {
   checkedTableRows: Array<string>
   isHorizontal: boolean
   smallSize: boolean
+}
+
+export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> & {
+  isChecked: boolean
+  title: string | JSX.Element
+}
+
+export interface ToolboxProps {
+  showTableChartSwitcher?: boolean
+  showLogScale?: boolean
+  showAxes?: boolean
+  activeTable?: boolean
+  partiallyActiveTable?: boolean
+  activeLogScale?: boolean
+  partiallyActiveLogScale?: boolean
+  activeAxes?: boolean
+  partiallyActiveAxes?: boolean
+  disableLogScale?: boolean
+  disableAxes?: boolean
+  onAxesClickHandler: (active: boolean) => void
+  onLogScaleClickHandler: (active: boolean) => void
+  onTableClickHandler: (active: boolean) => void
+}
+export interface TableSettingsProps {
+  isModeSwitcherShown?: boolean
+  isModeSwitcherChecked: boolean
+  onModeChange: () => void
+  isSearchShown: boolean
+  onSearchChangeHandler: (value: string) => void
 }

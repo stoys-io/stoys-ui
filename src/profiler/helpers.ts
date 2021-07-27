@@ -2,29 +2,11 @@ import { Dataset, Column, HydratedColumn } from './model'
 
 export const hydrateColumnData =
   (color: string) =>
-  ({
-    name,
-    data_type: type,
-    count_nulls,
-    count_unique,
-    mean,
-    min,
-    max,
-    pmf,
-    items,
-  }: Column): HydratedColumn => {
+  (column: Column): HydratedColumn => {
     return {
-      key: `${name}`,
-      type,
-      name,
-      nulls: count_nulls,
-      unique: count_unique,
-      mean,
-      min,
-      max,
+      ...column,
+      key: `${column.name}`,
       color,
-      pmf,
-      items,
     }
   }
 

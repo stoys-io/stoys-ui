@@ -1,11 +1,11 @@
 import React from 'react'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, waitFor } from '@testing-library/react'
 import '../../__mocks__/matchMedia.mock'
 
 import { Profiler } from '..'
 
 import { smallDataset } from '../__mocks__/ProfilerData.mock'
-import { Mode } from '../model'
+import { Orient } from '../model'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -38,7 +38,10 @@ describe('Profiler', () => {
 
     it('should render vertical table', () => {
       const { container } = render(
-        <Profiler datasets={smallDataset} modeOptions={{ type: Mode.vertical }} />
+        <Profiler
+          datasets={smallDataset}
+          profilerToolbarOptions={{ orientOptions: { type: Orient.Vertical } }}
+        />
       )
       const tableHeaderCell = container.querySelectorAll('th')
 
@@ -61,18 +64,23 @@ describe('Profiler', () => {
 
   describe('mode switcher', () => {
     it("shouldn't show mode switcher", () => {
-      const { queryByText } = render(<Profiler datasets={smallDataset} />)
+      const { queryByTestId } = render(<Profiler datasets={smallDataset} />)
 
-      expect(queryByText('Vertical view')).toBeNull()
+      expect(queryByTestId('vertical-mode')).toBeNull()
+      expect(queryByTestId('horizontal-mode')).toBeNull()
     })
 
     it('should change view from vertical to horizontal', () => {
-      const { container, queryByText, queryByTestId } = render(
-        <Profiler datasets={smallDataset} modeOptions={{ isCheckboxShown: true }} />
+      const { container, queryByTestId } = render(
+        <Profiler
+          datasets={smallDataset}
+          profilerToolbarOptions={{ orientOptions: { isCheckboxShown: true } }}
+        />
       )
 
       expect(container.querySelectorAll('th')[0].innerHTML).toBe('nulls')
-      expect(queryByText('Vertical view')).toBeTruthy()
+      expect(queryByTestId('vertical-mode')).toBeNull()
+      expect(queryByTestId('horizontal-mode')).toBeTruthy()
 
       const modeSwitcher = queryByTestId('profiler-mode-switcher')
 
@@ -80,14 +88,18 @@ describe('Profiler', () => {
 
       expect(container.querySelectorAll('th')[0].innerHTML).toBe('')
       expect(container.querySelectorAll('th')[1].innerHTML).toBe('id')
+      expect(queryByTestId('vertical-mode')).toBeTruthy()
+      expect(queryByTestId('horizontal-mode')).toBeNull()
     })
 
     it('should call onModeChange', () => {
-      const onModeChangeMock = jest.fn()
-      const { container, queryByTestId } = render(
+      const onOrientChangeMock = jest.fn()
+      const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          modeOptions={{ isCheckboxShown: true, onModeChange: onModeChangeMock }}
+          profilerToolbarOptions={{
+            orientOptions: { isCheckboxShown: true, onOrientChange: onOrientChangeMock },
+          }}
         />
       )
 
@@ -95,7 +107,56 @@ describe('Profiler', () => {
 
       fireEvent.click(modeSwitcher)
 
-      expect(onModeChangeMock).toBeCalledWith(Mode.vertical)
+      expect(onOrientChangeMock).toBeCalledWith(Orient.Vertical)
+    })
+  })
+
+  describe('search', () => {
+    it('should show search', () => {
+      const { queryByTestId } = render(<Profiler datasets={smallDataset} />)
+
+      expect(queryByTestId('table-search')).toBeTruthy()
+    })
+
+    it("shouldn't show search", () => {
+      const { queryByTestId } = render(
+        <Profiler
+          datasets={smallDataset}
+          profilerToolbarOptions={{
+            orientOptions: { isCheckboxShown: true },
+            searchOptions: { disabled: true },
+          }}
+        />
+      )
+
+      expect(queryByTestId('table-search')).toBeNull()
+    })
+
+    it('should filter data', async () => {
+      const { queryAllByTestId, queryByTestId } = render(<Profiler datasets={smallDataset} />)
+      const search = queryByTestId('table-search')
+
+      expect(queryAllByTestId('row-column-name')[0].innerHTML).toBe('id')
+      expect(queryAllByTestId('row-column-name')[1].innerHTML).toBe('value')
+
+      fireEvent.change(search, { target: { value: 'value' } })
+
+      await waitFor(() => expect(queryAllByTestId('row-column-name')[0].innerHTML).toBe('value'))
+    })
+
+    it('should call onSearch handler', async () => {
+      const onSearchMock = jest.fn()
+      const { queryByTestId } = render(
+        <Profiler
+          datasets={smallDataset}
+          profilerToolbarOptions={{ searchOptions: { onChange: onSearchMock } }}
+        />
+      )
+      const search = queryByTestId('table-search')
+
+      fireEvent.change(search, { target: { value: 'test' } })
+
+      await waitFor(() => expect(onSearchMock).toBeCalledWith('test'))
     })
   })
 })
