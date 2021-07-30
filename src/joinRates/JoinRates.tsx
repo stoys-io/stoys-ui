@@ -29,7 +29,7 @@ const JoinRates = ({
       ? Object.keys(
           data.reduce(
             (acc: any, dataItem) => ({
-              ...getTableNames(dataItem.tableNames),
+              ...getTableNames(dataItem.dq_join_info),
               ...acc,
               ...dataItem.dq_join_statistics,
             }),
@@ -37,7 +37,7 @@ const JoinRates = ({
           )
         )
       : Object.keys({
-          ...getTableNames(data.tableNames),
+          ...getTableNames(data.dq_join_info),
           ...data.dq_join_statistics,
         })
     return columns

@@ -1,6 +1,15 @@
 import { QualityData, Mode } from '../quality/model'
 import { PaginationProps } from '../hooks/model'
 
+export interface DqJoinInfo {
+  left_table_name: string
+  right_table_name: string
+  left_key_column_names: Array<string>
+  right_key_column_names: Array<string>
+  join_type: string
+  join_condition: string
+}
+
 export interface DqJoinStatistics {
   left_rows: number
   right_rows: number
@@ -17,7 +26,7 @@ export interface DqJoinStatistics {
 
 export interface JoinRatesData {
   id: string
-  tableNames?: Array<string>
+  dq_join_info: DqJoinInfo
   dq_join_statistics: DqJoinStatistics
   dq_result: QualityData
 }

@@ -1,7 +1,7 @@
-import { JoinRatesData, JoinStatisticsData } from './model'
+import { DqJoinInfo, JoinRatesData, JoinStatisticsData } from './model'
 
-export function getTableNames(tableNames?: Array<string>): { 'Table names': Array<string> } | {} {
-  return tableNames ? { 'Table names': tableNames } : {}
+export function getTableNames(dqJoinInfo: DqJoinInfo): { 'Table names': Array<string> } {
+  return { 'Table names': [dqJoinInfo.left_table_name, dqJoinInfo.right_table_name] }
 }
 
 export function transformJoinRatesData(dataItem: JoinRatesData): JoinStatisticsData {
@@ -9,6 +9,6 @@ export function transformJoinRatesData(dataItem: JoinRatesData): JoinStatisticsD
     key: dataItem.id,
     id: dataItem.id,
     ...dataItem.dq_join_statistics,
-    ...getTableNames(dataItem.tableNames),
+    ...getTableNames(dataItem.dq_join_info),
   }
 }
