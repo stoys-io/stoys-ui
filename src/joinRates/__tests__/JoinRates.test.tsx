@@ -5,9 +5,10 @@ import '../../__mocks__/matchMedia.mock'
 import JoinRates from '..'
 import mockData1 from '../../../stories/mocks/covid19_epidemiology_demographics.dq_join_result.json'
 import mockData2 from '../../../stories/mocks/covid19_epidemiology_demographics.dq_join_result2.json'
+import { dq_join_info_1, dq_join_info_2 } from '../../../stories/mocks/dqJoinInfo.mock'
 
-const joinRatesMockData1 = { id: 'test1', tableNames: ['first', 'second'], ...mockData1 }
-const joinRatesMockData2 = { id: 'test2', tableNames: ['third'], ...mockData2 }
+const joinRatesMockData1 = { id: 'test1', dq_join_info: dq_join_info_1, ...mockData1 }
+const joinRatesMockData2 = { id: 'test2', dq_join_info: dq_join_info_2, ...mockData2 }
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -19,20 +20,20 @@ describe('Join Rates', () => {
   it('should render with one data object', () => {
     const { queryByText } = render(<JoinRates data={joinRatesMockData1} />)
 
-    expect(queryByText('first, second')).toBeTruthy()
+    expect(queryByText('left, right')).toBeTruthy()
   })
 
   it('should render with array of data objects', () => {
     const { queryByText } = render(<JoinRates data={[joinRatesMockData1, joinRatesMockData2]} />)
 
+    expect(queryByText('left, right')).toBeTruthy()
     expect(queryByText('first, second')).toBeTruthy()
-    expect(queryByText('third')).toBeTruthy()
   })
 
   it('should parse json objects', () => {
     const { queryByText } = render(<JoinRates data={joinRatesMockData1} />)
 
-    expect(queryByText('first, second')).toBeTruthy()
+    expect(queryByText('left, right')).toBeTruthy()
   })
 
   it('should call onRowClickHandler', () => {
