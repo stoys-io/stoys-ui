@@ -13,6 +13,7 @@ const JoinStatistics = ({
 
   return (
     <StyledJoinStatistics
+      sticky
       columns={_columns}
       dataSource={data}
       pagination={false}
