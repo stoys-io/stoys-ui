@@ -16,7 +16,25 @@ const JoinRates = ({
   pagination,
   smallSize = true,
 }: JoinRatesProps): JSX.Element => {
-  const [_id, _setId] = useState<string>(joinRateId || (Array.isArray(data) ? data[0].id : data.id))
+  const getJoinRateId = useCallback(() => {
+    const _joinRateId = Array.isArray(data) ? data[0].id : data.id
+
+    if (!joinRateId) {
+      onRowClickHandler?.(_joinRateId)
+      return _joinRateId
+    }
+
+    if (
+      (!Array.isArray(data) && data.id === joinRateId) ||
+      (Array.isArray(data) && data.filter(dataItem => dataItem.id === joinRateId).length)
+    ) {
+      return joinRateId
+    }
+
+    onRowClickHandler?.(_joinRateId)
+    return _joinRateId
+  }, [joinRateId, data])
+  const [_id, _setId] = useState<string>(getJoinRateId)
   const joinRatesData = useMemo(
     () =>
       Array.isArray(data)
