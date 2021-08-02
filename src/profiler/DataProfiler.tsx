@@ -20,6 +20,7 @@ export const DataProfiler = ({
   pagination,
   profilerToolbarOptions,
   smallSize = true,
+  visibleColumns,
 }: DataProfilerProps) => {
   const orientOptions = useMemo(
     () => (profilerToolbarOptions ? profilerToolbarOptions?.orientOptions : {}),
@@ -40,6 +41,18 @@ export const DataProfiler = ({
   useEffect(() => {
     setIsVertical(orientOptions?.type === Orient.Vertical)
   }, [orientOptions])
+
+  const _columns = useMemo(
+    () =>
+      Object.keys(
+        datasets
+          .filter(dataItem => dataItem.columns)
+          .map(dataItem => dataItem.columns)
+          .flat()
+          .reduce((acc, columns) => ({ ...acc, ...columns }), {})
+      ),
+    [datasets]
+  )
 
   const dataGrouppedByTitle = useMemo(
     () =>
@@ -140,6 +153,11 @@ export const DataProfiler = ({
     [_rowToolbarOptions]
   )
 
+  const validVisibleColumns = useMemo(
+    () => visibleColumns?.filter(column => _columns.includes(column)),
+    [visibleColumns, _columns]
+  )
+
   const columns = useMemo(
     () =>
       getColumns(
@@ -153,7 +171,8 @@ export const DataProfiler = ({
           setChecked: (isChecked: boolean) => setCheckedAxisRows(isChecked ? columnNames : []),
         },
         tableOptions,
-        smallSize
+        smallSize,
+        validVisibleColumns
       ),
     [data, tableOptions, smallSize, _rowToolbarOptions]
   )

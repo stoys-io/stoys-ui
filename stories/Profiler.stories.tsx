@@ -27,16 +27,18 @@ ProfilerForOneDataset.args = {
       onChange: (value: string) => console.log('search => ', value),
     },
   },
-
+  visibleColumns: ['count_nulls', 'count_unique', 'mean', 'min', 'max', 'nullable'],
   smallSize: true,
+  colors: ['#4363d8']
 }
-ProfilerForOneDataset.storyName = 'dataset with one item'
+ProfilerForOneDataset.storyName = 'simple'
 
 export const Profiler = Template.bind({})
 Profiler.args = {
   datasets: [firstDatasetMock as Dataset, secondDatasetMock as Dataset],
   pagination: { disabled: false },
   rowToolbarOptions: {
+    logarithmicScaleOptions: { isCheckboxShown: true, isUsedByDefault: false },
     axisOptions: { isCheckboxShown: true, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
   },
@@ -52,7 +54,7 @@ Profiler.args = {
   },
   smallSize: false,
 }
-Profiler.storyName = 'dataset with two items'
+Profiler.storyName = 'comparable'
 
 export default {
   title: 'Data Quality/Profiler',

@@ -30,9 +30,13 @@ export type ColumnType =
 export interface Column {
   name: string
   data_type: ColumnType
+  data_type_json?: string
+  nullable?: boolean
+  enum_values?: Array<string>
+  format?: string | null
   count: number
-  count_nulls: number
   count_empty: number | null
+  count_nulls: number | null
   count_zeros: number | null
   count_unique: number | null
   max_length: number | null
@@ -41,6 +45,7 @@ export interface Column {
   max: string | null
   pmf?: Array<PmfPlotItem>
   items?: Array<DiscreteItem>
+  extras?: { [key: string]: string }
 }
 
 export interface Dataset {
@@ -84,6 +89,7 @@ export interface DataProfilerProps {
   rowToolbarOptions?: null | false | RowToolbarOptions
   pagination?: PaginationProps
   smallSize?: boolean
+  visibleColumns?: Array<string>
 }
 
 export interface HydratedColumn extends Column {
@@ -101,6 +107,7 @@ export interface RenderedCellConfig {
 }
 
 export type Render = (
+  render: (value: string | number | null) => JSX.Element | string | null,
   logarithmicScale: LogarithmicScale,
   axisOptions: AxisOptions,
   tableOptions: TableOptions
