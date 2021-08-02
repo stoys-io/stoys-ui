@@ -110,6 +110,7 @@ const VerticalTable = ({
 
   return (
     <Table
+      sticky
       bordered
       columns={verticalColumns}
       dataSource={dataSource}
