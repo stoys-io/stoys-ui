@@ -146,6 +146,7 @@ const RulesTable = ({
         />
       </TableTitleWrapper>
       <Table
+        sticky
         columns={columns}
         dataSource={_rulesData}
         rowSelection={{

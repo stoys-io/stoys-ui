@@ -50,6 +50,7 @@ const SampleTable = ({
       ) : (
         <Table
           {...tableProps}
+          sticky
           pagination={{
             current: currentPage,
             pageSize,

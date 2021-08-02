@@ -30,6 +30,7 @@ const HorizontalTable = ({
 
   return (
     <Table
+      sticky
       dataSource={data}
       columns={columns}
       expandable={{ expandIcon: () => null, expandedRowKeys: keys }}
