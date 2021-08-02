@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
+import Empty from 'antd/lib/empty'
 
 import { Quality } from '../quality/Quality'
 import JoinStatistics from './JoinStatistics'
@@ -60,12 +61,12 @@ const JoinRates = ({
         })
     return columns
   }, [data])
-  const joinRatesDqData = useMemo(
-    () =>
-      (Array.isArray(data) ? data[data.findIndex(dataItem => _id === dataItem.id)] : data)
-        .dq_result,
-    [data, _id]
-  )
+  const joinRatesDqData = useMemo(() => {
+    const _joinRatesDqData = Array.isArray(data)
+      ? data[data.findIndex(dataItem => _id === dataItem.id)]
+      : data
+    return _joinRatesDqData ? _joinRatesDqData.dq_result : null
+  }, [data, _id])
   const _onRowClickHandler = useCallback(
     (id: string): void => {
       if (onRowClickHandler) {
@@ -91,15 +92,19 @@ const JoinRates = ({
         joinRateId={_id}
         onRowClickHandler={_onRowClickHandler}
       />
-      <Quality
-        data={joinRatesDqData}
-        mode={mode}
-        onModeChange={setMode}
-        selectedRules={selectedRules}
-        onSelectedRulesChange={selectRules}
-        pagination={pagination}
-        smallSize={smallSize}
-      />
+      {joinRatesDqData ? (
+        <Quality
+          data={joinRatesDqData}
+          mode={mode}
+          onModeChange={setMode}
+          selectedRules={selectedRules}
+          onSelectedRulesChange={selectRules}
+          pagination={pagination}
+          smallSize={smallSize}
+        />
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      )}
     </>
   )
 }
