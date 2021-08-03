@@ -17,9 +17,12 @@ export const Quality = ({
   pagination,
   heightenedCell,
   smallSize = true,
+  showReferencedColumns = true,
 }: QualityProps): JSX.Element => {
   const [_mode, _setMode] = useState<Mode>(mode)
   const [_selectedRules, _setSelectedRules] = useState<Array<string>>(selectedRules || [])
+  const [_showReferencedColumns, _setShowReferencedColumns] =
+    useState<boolean>(showReferencedColumns)
   const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
   const { columns, rules, row_sample, statistics } = data
 
@@ -30,6 +33,10 @@ export const Quality = ({
   useEffect(() => {
     _setSelectedRules(selectedRules || [])
   }, [selectedRules])
+
+  useEffect(() => {
+    _setShowReferencedColumns(showReferencedColumns)
+  }, [showReferencedColumns])
 
   const rulesData = useMemo(
     () =>
@@ -115,8 +122,21 @@ export const Quality = ({
     [onSelectedRulesChange]
   )
 
+  const referencedColumns = useMemo(
+    () => [...new Set(rules.map(rule => rule.referenced_column_names).flat())],
+    [data]
+  )
+
+  const _columns = useMemo(
+    () =>
+      _showReferencedColumns
+        ? columns.filter(column => referencedColumns.includes(column.name))
+        : columns,
+    [data]
+  )
+
   const sampleColumns = useMemo(
-    () => getSampleColumns(columns, statistics?.column, rules, longestColumnsNames),
+    () => getSampleColumns(_columns, statistics?.column, rules, longestColumnsNames),
     [data]
   )
 
