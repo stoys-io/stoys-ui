@@ -69,9 +69,8 @@ const JoinRates = ({
   }, [data, _id])
   const _onRowClickHandler = useCallback(
     (id: string): void => {
-      if (onRowClickHandler) {
-        onRowClickHandler(id)
-      }
+      onRowClickHandler?.(id)
+      selectRules?.([])
 
       _setId(id)
     },
