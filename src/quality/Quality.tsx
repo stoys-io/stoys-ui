@@ -132,13 +132,17 @@ export const Quality = ({
       _showReferencedColumns
         ? columns.filter(column => referencedColumns.includes(column.name))
         : columns,
-    [data]
+    [data, _showReferencedColumns]
   )
 
   const sampleColumns = useMemo(
     () => getSampleColumns(_columns, statistics?.column, rules, longestColumnsNames),
-    [data]
+    [data, _columns]
   )
+
+  const setShowReferencedColumns = () => {
+    _setShowReferencedColumns(!_showReferencedColumns)
+  }
 
   return (
     <TablesWrapper mode={_mode} className="data-quality-checks">
@@ -160,6 +164,8 @@ export const Quality = ({
         withoutPagination={!!pagination?.disabled}
         heightenedCell={heightenedCell}
         smallSize={!!smallSize}
+        showReferencedColumns={_showReferencedColumns}
+        setShowReferencedColumns={setShowReferencedColumns}
       />
     </TablesWrapper>
   )

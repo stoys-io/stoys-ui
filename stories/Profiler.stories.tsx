@@ -29,7 +29,7 @@ ProfilerForOneDataset.args = {
   },
   visibleColumns: ['count_nulls', 'count_unique', 'mean', 'min', 'max', 'nullable'],
   smallSize: true,
-  colors: ['#4363d8']
+  colors: ['#4363d8'],
 }
 ProfilerForOneDataset.storyName = 'simple'
 

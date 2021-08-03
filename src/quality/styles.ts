@@ -17,7 +17,7 @@ export const TableTitle = styled.h3`
   }
 `
 
-export const SwitchModeButton = styled.div`
+export const IconButton = styled.div`
   cursor: pointer;
   font-weight: normal;
   display: flex;

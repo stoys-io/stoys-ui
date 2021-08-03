@@ -4,7 +4,7 @@ import ShrinkOutlined from '@ant-design/icons/ShrinkOutlined'
 import ArrowsAltOutlined from '@ant-design/icons/ArrowsAltOutlined'
 import ExclamationCircleOutlined from '@ant-design/icons/ExclamationCircleOutlined'
 
-import { FailtureRules, RulesTableSwitchersWrapper, SwitchModeButton } from '../styles'
+import { FailtureRules, RulesTableSwitchersWrapper, IconButton } from '../styles'
 import { RulesTableSwitchersProps } from '../model'
 
 const RulesTableSwitchers = ({
@@ -32,7 +32,7 @@ const RulesTableSwitchers = ({
       </FailtureRules>
       |
       {mode === 'row' ? (
-        <SwitchModeButton
+        <IconButton
           role="button"
           onClick={() => setMode('column')}
           data-testid="expand-rules-table-btn"
@@ -40,9 +40,9 @@ const RulesTableSwitchers = ({
           <Tooltip title="Expand">
             <ArrowsAltOutlined />
           </Tooltip>
-        </SwitchModeButton>
+        </IconButton>
       ) : (
-        <SwitchModeButton
+        <IconButton
           role="button"
           onClick={() => setMode('row')}
           data-testid="shrink-rules-table-btn"
@@ -50,7 +50,7 @@ const RulesTableSwitchers = ({
           <Tooltip title="Show Less">
             <ShrinkOutlined />
           </Tooltip>
-        </SwitchModeButton>
+        </IconButton>
       )}
     </RulesTableSwitchersWrapper>
   )

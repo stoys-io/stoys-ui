@@ -91,6 +91,8 @@ export interface SampleTableProps {
   withoutPagination?: boolean
   heightenedCell?: boolean
   smallSize: boolean
+  showReferencedColumns: boolean
+  setShowReferencedColumns: () => void
 }
 
 export interface RulesTableSwitchersProps {
