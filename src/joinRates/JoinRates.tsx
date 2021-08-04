@@ -48,7 +48,7 @@ const JoinRates = ({
     [data]
   )
 
-  const JoinStatisticsColumns = useMemo(() => {
+  const joinStatisticsColumns = useMemo(() => {
     const columns = Array.isArray(data)
       ? Object.keys(
           data.reduce(
@@ -64,6 +64,7 @@ const JoinRates = ({
           ...getTableNames(data.dq_join_info),
           ...data.dq_join_statistics,
         })
+
     return columns
   }, [data])
 
@@ -107,7 +108,7 @@ const JoinRates = ({
     <>
       <JoinStatistics
         data={joinRatesData}
-        columns={JoinStatisticsColumns}
+        columns={joinStatisticsColumns}
         joinRateId={_id}
         onRowClickHandler={_onRowClickHandler}
       />
