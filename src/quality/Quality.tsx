@@ -122,18 +122,15 @@ export const Quality = ({
     [onSelectedRulesChange]
   )
 
-  const _columns = useMemo(() => {
+  const sampleColumns = useMemo(() => {
     const referencedColumns = [...new Set(rules.map(rule => rule.referenced_column_names).flat())]
 
-    return _showReferencedColumns
+    const _columns = _showReferencedColumns
       ? columns.filter(column => referencedColumns.includes(column.name))
       : columns
-  }, [data, _showReferencedColumns])
 
-  const sampleColumns = useMemo(
-    () => getSampleColumns(_columns, statistics?.column, rules, longestColumnsNames),
-    [data, _columns]
-  )
+    return getSampleColumns(_columns, statistics?.column, rules, longestColumnsNames)
+  }, [data, _showReferencedColumns])
 
   const setShowReferencedColumns = () => {
     _setShowReferencedColumns(!_showReferencedColumns)
