@@ -92,7 +92,9 @@ const PmfPlot = ({
           values =>
             `${marker(values[3])} ${getTooltipValue(values[0])} - ${getTooltipValue(
               values[1]
-            )} <b>${values[2]}</b><br />`
+            )} <b>${
+              isNaN(+values[2]) ? values[2] : renderNumericValue(2, true)(values[2])
+            }</b><br />`
         )
         .join('')}
       </div>
