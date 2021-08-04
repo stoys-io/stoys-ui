@@ -35,7 +35,11 @@ const JoinRates = ({
     onRowClickHandler?.(_joinRateId)
     return _joinRateId
   }, [joinRateId, data])
+
   const [_id, _setId] = useState<string>(getJoinRateId)
+
+  const [_selectedRules, _setSelectedRules] = useState<Array<string>>(selectedRules || [])
+
   const joinRatesData = useMemo(
     () =>
       Array.isArray(data)
@@ -43,6 +47,7 @@ const JoinRates = ({
         : [transformJoinRatesData(data)],
     [data]
   )
+
   const JoinStatisticsColumns = useMemo(() => {
     const columns = Array.isArray(data)
       ? Object.keys(
@@ -61,21 +66,31 @@ const JoinRates = ({
         })
     return columns
   }, [data])
+
   const joinRatesDqData = useMemo(() => {
     const _joinRatesDqData = Array.isArray(data)
       ? data[data.findIndex(dataItem => _id === dataItem.id)]
       : data
     return _joinRatesDqData ? _joinRatesDqData.dq_result : null
   }, [data, _id])
+
   const _onRowClickHandler = useCallback(
     (id: string): void => {
-      if (onRowClickHandler) {
-        onRowClickHandler(id)
-      }
+      onRowClickHandler?.(id)
+      selectRules?.([])
 
+      _setSelectedRules([])
       _setId(id)
     },
     [onRowClickHandler, _setId]
+  )
+
+  const _selectRules = useCallback(
+    (rules: Array<string>): void => {
+      _setSelectedRules(rules)
+      selectRules?.(rules)
+    },
+    [selectRules, _setSelectedRules]
   )
 
   useEffect(() => {
@@ -83,6 +98,10 @@ const JoinRates = ({
       _setId(joinRateId)
     }
   }, [joinRateId, _setId])
+
+  useEffect(() => {
+    _setSelectedRules(selectedRules || [])
+  }, [selectedRules])
 
   return (
     <>
@@ -97,8 +116,8 @@ const JoinRates = ({
           data={joinRatesDqData}
           mode={mode}
           onModeChange={setMode}
-          selectedRules={selectedRules}
-          onSelectedRulesChange={selectRules}
+          selectedRules={_selectedRules}
+          onSelectedRulesChange={_selectRules}
           pagination={pagination}
           smallSize={smallSize}
         />
