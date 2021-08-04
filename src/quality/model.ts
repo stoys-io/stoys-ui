@@ -51,6 +51,7 @@ export type QualityProps = {
   pagination?: PaginationProps
   heightenedCell?: boolean
   smallSize?: boolean
+  showReferencedColumnsOnly?: boolean
 }
 
 export type TableCellData = {
@@ -92,6 +93,8 @@ export interface SampleTableProps {
   withoutPagination?: boolean
   heightenedCell?: boolean
   smallSize: boolean
+  showReferencedColumns: boolean
+  setShowReferencedColumns: () => void
 }
 
 export interface RulesTableSwitchersProps {
