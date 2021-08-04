@@ -49,7 +49,7 @@ export type QualityProps = {
   pagination?: PaginationProps
   heightenedCell?: boolean
   smallSize?: boolean
-  showReferencedColumns?: boolean
+  showReferencedColumnsOnly?: boolean
 }
 
 export type TableCellData = {
