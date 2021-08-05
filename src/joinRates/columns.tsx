@@ -11,7 +11,11 @@ export const getJoinRatesColumns = (columns: Array<string>) =>
           return data.join(', ')
         }
 
-        return renderNumericCell(data as number)
+        if (data) {
+          return renderNumericCell(data as number)
+        }
+
+        return null
       },
     }
   })
