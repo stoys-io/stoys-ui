@@ -110,6 +110,7 @@ const JoinRates = ({
         columns={JoinStatisticsColumns}
         joinRateId={_id}
         onRowClickHandler={_onRowClickHandler}
+        smallSize={smallSize}
       />
       {joinRatesDqData ? (
         <Quality
