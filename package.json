@@ -8,9 +8,13 @@
     "type": "git",
     "url": "https://github.com/stoys-io/stoys-ui.git"
   },
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
     "reinstall": "rm -rf package-lock.json && rm -rf node_modules && npm install",
-    "prebuild": "rm -rf dist",
+    "prebuild": "rm -rf dist lib",
     "build": "tsc",
     "bundle-build": "webpack",
     "pack-build": "npm run reinstall && npm run prebuild && npm run build && npm pack",

@@ -32,10 +32,12 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'dqLibrary.js',
-    path: path.resolve(__dirname, 'dist'),
-    library: 'dqLibrary',
-    libraryTarget: 'umd',
+    filename: 'stoys-ui.js',
+    path: path.resolve(__dirname, 'lib'),
+    library: {
+      name: 'stoysUi',
+      type: 'umd'
+    },
     publicPath: '/',
   },
   optimization: {
