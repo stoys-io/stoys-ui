@@ -33,9 +33,11 @@ module.exports = {
   },
   output: {
     filename: 'stoys-ui.js',
-    path: path.resolve(__dirname, 'dist'),
-    library: 'dqLibrary',
-    libraryTarget: 'umd',
+    path: path.resolve(__dirname, 'lib'),
+    library: {
+      name: 'stoysUi',
+      type: 'umd',
+    },
     publicPath: '/',
   },
   optimization: {

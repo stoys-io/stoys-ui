@@ -3,6 +3,7 @@ node_modules
 .vscode
 .idea
 dist
+lib
 .npmrc
 storybook-static
 coverage

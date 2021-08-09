@@ -1,6 +1,6 @@
 {
   "name": "@stoys/stoys",
-  "version": "0.2.0",
+  "version": "0.2.2-rc.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
@@ -8,9 +8,13 @@
     "type": "git",
     "url": "https://github.com/stoys-io/stoys-ui.git"
   },
+  "files": [
+    "dist",
+    "lib"
+  ],
   "scripts": {
     "reinstall": "rm -rf node_modules && npm install",
-    "prebuild": "rm -rf dist",
+    "prebuild": "rm -rf dist lib",
     "build": "tsc",
     "bundle-build": "webpack",
     "pack-build": "npm run reinstall && npm run prebuild && npm run build && npm pack",
