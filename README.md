@@ -24,37 +24,21 @@ Copy compiled `dqLibrary.js` from `dist` folder to your project.
 #### Example of using library in Jupyter project
 
 ```
-from IPython.core.display import HTML
-```
+%%html
+    <div id="app">default</div>
 
-```
-with open ({path-to-bundle.js}, "r") as bundle:
-    bundleString = bundle.read()
-```
+    <script type="module">
 
-```
-HTML("""
+        import 'https://unpkg.com/@stoys/stoys@0.2.1/lib/stoys-ui.js'
 
-<div id="app"></div>
+        var domNode = document.getElementById("app");
 
-<script>
+        const { Profiler, ReactDOM, React } = stoysUi
 
-%s
+        ReactDOM.render(
+            React.createElement(Profiler, {datasets: [...]}, null),
+            element
+        );
 
-(function() {
-
-  const {Profiler, Metrics, RulesWidget, React, ReactDOM} = dqLibrary
-
-  const sampleData = %s
-
-  ReactDOM.render(
-    React.createElement({Profiler || Metrics || RulesWidget}, {data: sampleData}, null),
-    document.getElementById('app')
-  );
-
-})()
-
-</script>
-
-""" % (bundleString, {your-data}))
+    </script>
 ```

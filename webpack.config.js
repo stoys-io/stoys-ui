@@ -36,7 +36,7 @@ module.exports = {
     path: path.resolve(__dirname, 'lib'),
     library: {
       name: 'stoysUi',
-      type: 'umd'
+      type: 'umd',
     },
     publicPath: '/',
   },
