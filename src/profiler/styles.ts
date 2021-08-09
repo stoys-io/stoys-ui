@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import css from '@emotion/css'
 import Radio from 'antd/lib/radio'
 import AntdTable from 'antd/lib/table'
-import Checkbox from 'antd/lib/checkbox'
 import Empty from 'antd/lib/empty'
 
 import {
@@ -83,6 +82,10 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
         width: ${SMALL_COLUMN_CHART_WIDTH}px;
       }
     }
+
+    .toolbox-icon {
+      font-size: 17px;
+    }
   }
 
   .ant-table-tbody td.ant-table-cell {
@@ -121,6 +124,10 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
     td.ant-table-cell {
       padding-left: 8px;
       padding-right: 8px;
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     td.chart-cell {
@@ -249,19 +256,6 @@ export const RadioButton = styled(Radio.Button)`
   font-size: 24px;
 `
 
-export const ChartTitleWrapper = styled.span`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: ${COLUMN_CHART_WIDTH}px;
-  padding-left: 8px;
-
-  @media screen and (max-width: 1024px) {
-    width: ${SMALL_COLUMN_CHART_WIDTH}px;
-  }
-`
-
 export const ChartTable = styled(AntdTable)<{ height: number }>`
   height: ${({ height }) => `${height}px`};
 
@@ -275,13 +269,26 @@ export const ChartTable = styled(AntdTable)<{ height: number }>`
   }
 `
 
-export const ModeCheckboxWrapper = styled.div`
+export const TableSettingsWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
+
+  .search-wrapper {
+    flex-grow: 1;
+  }
+
+  .ant-input-search {
+    width: 250px;
+  }
 `
 
-export const ModeCheckbox = styled(Checkbox)`
-  margin: 10px;
+export const ModeIconWrapper = styled.div<{ checked: boolean }>`
+  font-size: 20px;
+  color: ${props => (props.checked ? '#1890ff' : 'inherit')};
+  padding: 4px;
+  transform: rotate(${props => (props.checked ? '90' : '0')}deg)
+    scaleY(${props => (props.checked ? '-1' : '1')});
+  cursor: pointer;
 `
 
 export const StyledEmpty = styled(Empty)`
@@ -290,4 +297,58 @@ export const StyledEmpty = styled(Empty)`
   align-items: center;
   flex-direction: column;
   margin: 0;
+`
+
+export const ToolboxWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+  > .toolbox-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+    border: 1px solid transparent;
+    border-radius: 100%;
+    padding: 3px;
+    cursor: pointer;
+
+    &.active {
+      border-color: #1890ff;
+      color: #fff;
+      background-color: #1890ff;
+
+      > svg {
+        fill: #fff;
+      }
+    }
+
+    &.partially-active {
+      color: #1890ff;
+
+      > svg {
+        fill: #1890ff;
+      }
+    }
+
+    &.disabled {
+      color: #d9d9d9;
+      cursor: not-allowed;
+
+      &:hover {
+        border-color: transparent;
+      }
+
+      > svg {
+        fill: #d9d9d9;
+      }
+    }
+  }
+`
+
+export const SvgWrapper = styled.span`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 `

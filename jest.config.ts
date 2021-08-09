@@ -13,9 +13,11 @@ export default {
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
 
   moduleNameMapper: {
-    '^src(.*)$': "<rootDir>/src$1",
+    '^src(.*)$': '<rootDir>/src$1',
     '(\\.(css|less|svg))$': 'identity-obj-proxy',
   },
+
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
 
   testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
 

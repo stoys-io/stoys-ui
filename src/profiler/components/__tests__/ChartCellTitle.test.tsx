@@ -1,84 +1,250 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
-import '../../../__mocks__/matchMedia.mock'
 
 import ChartCellTitle from '../ChartCellTitle'
+import { CheckedRowsContext } from '../../checkedRowsContext'
 
-beforeAll(() => {
-  HTMLCanvasElement.prototype.getContext = jest.fn(
-    () => ({ measureText: jest.fn(() => ({ width: 100 })) } as any)
-  )
-})
+jest.mock('../../icons/axes.svg', () => ({ ReactComponent: () => 'icon' }))
 
 describe('ChartCellTitle', () => {
-  it('should render table switcher', () => {
-    const { container } = render(
-      <ChartCellTitle
-        logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        tableOptions={{ isCheckboxShown: true, setChecked: jest.fn() }}
-      />
+  it("shouldn't render any checkboxes when they are disabled", () => {
+    const { queryByTestId } = render(
+      <CheckedRowsContext.Provider
+        value={{
+          checkedTableRows: ['1', '2', '3'],
+          checkedLogRows: [],
+          checkedAxisRows: [],
+          dataLength: 10,
+          setCheckedAxisRows: jest.fn(),
+          setCheckedLogRows: jest.fn(),
+          setCheckedTableRows: jest.fn(),
+        }}
+      >
+        <ChartCellTitle
+          row={{ columnName: 'id', key: 'id', children: [] }}
+          rowOptions={{
+            isLogCheckboxShown: false,
+            isAxisCheckboxShown: false,
+          }}
+          tableOptions={{ isCheckboxShown: false }}
+        />
+      </CheckedRowsContext.Provider>
     )
 
-    const icons = container.querySelectorAll('svg')
+    const tableBtn = queryByTestId('table-view-btn')
+    const logBtn = queryByTestId('log-btn')
+    const axesBtn = queryByTestId('axes-btn')
 
-    expect(icons.length).toBe(2)
-
-    const tableIconDataAttr = icons[0].dataset
-    const chartIconDataAttr = icons[1].dataset
-
-    expect(tableIconDataAttr.icon).toBe('table')
-    expect(chartIconDataAttr.icon).toBe('bar-chart')
+    expect(tableBtn).toBeNull()
+    expect(logBtn).toBeNull()
+    expect(axesBtn).toBeNull()
   })
 
-  it('should render only bar chart icon', () => {
-    const { container } = render(
-      <ChartCellTitle
-        logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-      />
+  it('should render log checkbox', () => {
+    const { queryByTestId } = render(
+      <CheckedRowsContext.Provider
+        value={{
+          checkedTableRows: ['1', '2', '3'],
+          checkedLogRows: [],
+          checkedAxisRows: [],
+          dataLength: 10,
+          setCheckedAxisRows: jest.fn(),
+          setCheckedLogRows: jest.fn(),
+          setCheckedTableRows: jest.fn(),
+        }}
+      >
+        <ChartCellTitle
+          row={{ columnName: 'id', key: 'id', children: [] }}
+          rowOptions={{
+            isLogCheckboxShown: true,
+            isAxisCheckboxShown: false,
+          }}
+          tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
+        />
+      </CheckedRowsContext.Provider>
     )
 
-    const icons = container.querySelectorAll('svg')
+    const tableBtn = queryByTestId('table-view-btn')
+    const logBtn = queryByTestId('log-btn')
+    const axesBtn = queryByTestId('axes-btn')
 
-    expect(icons.length).toBe(1)
-
-    const chartIconDataAttr = icons[0].dataset
-
-    expect(chartIconDataAttr.icon).toBe('bar-chart')
+    expect(tableBtn).toBeNull()
+    expect(logBtn).toBeTruthy()
+    expect(axesBtn).toBeNull()
   })
 
-  it('should call "tableOptions.setChecked"', () => {
+  it('should call setCheckedLogRows', () => {
     const setCheckedMock = jest.fn()
-    const { getByTestId } = render(
-      <ChartCellTitle
-        logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        tableOptions={{ isCheckboxShown: true, setChecked: setCheckedMock }}
-      />
+    const { queryByTestId } = render(
+      <CheckedRowsContext.Provider
+        value={{
+          checkedTableRows: ['1', '2', '3'],
+          checkedLogRows: ['id'],
+          checkedAxisRows: [],
+          dataLength: 10,
+          setCheckedAxisRows: jest.fn(),
+          setCheckedLogRows: setCheckedMock,
+          setCheckedTableRows: jest.fn(),
+        }}
+      >
+        <ChartCellTitle
+          row={{ columnName: 'id', key: 'id', children: [] }}
+          rowOptions={{
+            isLogCheckboxShown: true,
+            isAxisCheckboxShown: false,
+          }}
+          tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
+        />
+      </CheckedRowsContext.Provider>
     )
 
-    const tableViewBtn = getByTestId('table-view-btn')
+    const logBtn = queryByTestId('log-btn')
 
-    fireEvent.click(tableViewBtn)
+    fireEvent.click(logBtn)
 
-    expect(setCheckedMock).toBeCalledWith(true)
+    expect(setCheckedMock).toBeCalledWith([])
   })
 
-  it('should be "table" btn active via passing props', () => {
-    const { getByTestId } = render(
-      <ChartCellTitle
-        logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        tableOptions={{ isCheckboxShown: true, isUsedByDefault: true, setChecked: jest.fn() }}
-      />
+  it('should render axis checkbox', () => {
+    const { queryByTestId } = render(
+      <CheckedRowsContext.Provider
+        value={{
+          checkedTableRows: ['1', '2', '3'],
+          checkedLogRows: [],
+          checkedAxisRows: [],
+          dataLength: 10,
+          setCheckedAxisRows: jest.fn(),
+          setCheckedLogRows: jest.fn(),
+          setCheckedTableRows: jest.fn(),
+        }}
+      >
+        <ChartCellTitle
+          row={{ columnName: 'id', key: 'id', children: [] }}
+          rowOptions={{
+            isLogCheckboxShown: false,
+            isAxisCheckboxShown: true,
+          }}
+          tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
+        />
+      </CheckedRowsContext.Provider>
     )
 
-    const tableViewBtn = getByTestId('table-view-btn')
-    const chartViewBtn = getByTestId('chart-view-btn')
+    const tableBtn = queryByTestId('table-view-btn')
+    const logBtn = queryByTestId('log-btn')
+    const axesBtn = queryByTestId('axes-btn')
 
-    expect(tableViewBtn.getAttribute('checked')).toBe('')
-    expect(chartViewBtn.getAttribute('checked')).toBeNull()
+    expect(tableBtn).toBeNull()
+    expect(logBtn).toBeNull()
+    expect(axesBtn).toBeTruthy()
+  })
+
+  it('should call setCheckedAxisRows', () => {
+    const setCheckedMock = jest.fn()
+    const { queryByTestId } = render(
+      <CheckedRowsContext.Provider
+        value={{
+          checkedTableRows: ['1', '2', '3'],
+          checkedLogRows: [],
+          checkedAxisRows: [],
+          dataLength: 10,
+          setCheckedAxisRows: setCheckedMock,
+          setCheckedLogRows: jest.fn(),
+          setCheckedTableRows: jest.fn(),
+        }}
+      >
+        <ChartCellTitle
+          row={{ columnName: 'id', key: 'id', children: [] }}
+          rowOptions={{
+            isLogCheckboxShown: false,
+            isAxisCheckboxShown: true,
+          }}
+          tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
+        />
+      </CheckedRowsContext.Provider>
+    )
+
+    const axesBtn = queryByTestId('axes-btn')
+
+    fireEvent.click(axesBtn)
+
+    expect(setCheckedMock).toBeCalledWith(['id'])
+  })
+
+  it('should render table/chart switcher', () => {
+    const { queryAllByTestId, queryByTestId } = render(
+      <CheckedRowsContext.Provider
+        value={{
+          checkedTableRows: ['1', '2', '3'],
+          checkedLogRows: [],
+          checkedAxisRows: [],
+          dataLength: 10,
+          setCheckedAxisRows: jest.fn(),
+          setCheckedLogRows: jest.fn(),
+          setCheckedTableRows: jest.fn(),
+        }}
+      >
+        <ChartCellTitle
+          row={{ columnName: 'id', key: 'id', children: [] }}
+          rowOptions={{
+            isLogCheckboxShown: false,
+            isAxisCheckboxShown: false,
+          }}
+          tableOptions={{ isCheckboxShown: true, setChecked: jest.fn() }}
+        />
+      </CheckedRowsContext.Provider>
+    )
+
+    const checkboxes = queryAllByTestId('title-checkbox')
+    const tableRadioBtn = queryByTestId('table-view-btn')
+
+    expect(checkboxes.length).toBe(0)
+    expect(tableRadioBtn).toBeTruthy()
+  })
+
+  it('should call setCheckedTableRows', () => {
+    const setCheckedMock = jest.fn()
+    const baseValue = {
+      checkedLogRows: ['1'],
+      checkedAxisRows: ['1'],
+      dataLength: 10,
+      setCheckedAxisRows: jest.fn(),
+      setCheckedLogRows: jest.fn(),
+      setCheckedTableRows: setCheckedMock,
+    }
+    const valueMock = {
+      ...baseValue,
+      checkedTableRows: ['1', '2', '3'],
+    }
+    const updatedValueMock = {
+      ...baseValue,
+      checkedTableRows: ['1', '2', '3', 'id'],
+    }
+    const rowMock = { columnName: 'id', key: 'id', children: [] as any }
+    const rowOptionsMock = {
+      isLogCheckboxShown: false,
+      isAxisCheckboxShown: false,
+    }
+    const tableOptionsMock = { isCheckboxShown: true, setChecked: jest.fn() }
+    const { queryByTestId, rerender } = render(
+      <CheckedRowsContext.Provider value={valueMock}>
+        <ChartCellTitle row={rowMock} rowOptions={rowOptionsMock} tableOptions={tableOptionsMock} />
+      </CheckedRowsContext.Provider>
+    )
+
+    const tableRadioBtn = queryByTestId('table-view-btn')
+
+    fireEvent.click(tableRadioBtn)
+
+    expect(setCheckedMock).toBeCalledWith(['1', '2', '3', 'id'])
+
+    rerender(
+      <CheckedRowsContext.Provider value={updatedValueMock}>
+        <ChartCellTitle row={rowMock} rowOptions={rowOptionsMock} tableOptions={tableOptionsMock} />
+      </CheckedRowsContext.Provider>
+    )
+
+    fireEvent.click(tableRadioBtn)
+
+    expect(setCheckedMock).toBeCalledWith(['1', '2', '3'])
   })
 })

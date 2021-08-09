@@ -1,4 +1,4 @@
-# DQ Library
+# Stoys UI
 
 ## Installation
 
@@ -19,7 +19,7 @@ Running documentation locally
 
 build packages: `npm run bundle-build`
 
-Copy compiled `dqLibrary.js` from `dist` folder to your project.
+Copy compiled `stoys-ui.js` from `dist` folder to your project.
 
 #### Example of using library in Jupyter project
 

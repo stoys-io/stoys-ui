@@ -1,39 +1,65 @@
-import React, { useCallback, useState } from 'react'
-import { RadioChangeEvent } from 'antd/lib/radio'
-import BarChartOutlined from '@ant-design/icons/lib/icons/BarChartOutlined'
+import React from 'react'
 
-import ChartTableHeader from './ChartTableHeader'
+import { CheckedRowsContext } from '../checkedRowsContext'
 import { ChartCellTitleProps } from '../model'
-import ChartTableSwitcher from './ChartTableSwitcher'
+import Toolbar from './Toolbar'
 
-const ChartCellTitle = ({
-  logarithmicScale,
-  axisOptions,
-  tableOptions,
-}: ChartCellTitleProps): JSX.Element => {
-  const [activeBtn, setActiveBtn] = useState<string>(
-    tableOptions.isUsedByDefault ? 'table' : 'chart'
-  )
-
-  const onChangeRadioGroup = useCallback(
-    (event: RadioChangeEvent) => {
-      const {
-        target: { value },
-      } = event
-      setActiveBtn(value)
-      tableOptions.setChecked(value !== 'chart')
-    },
-    [tableOptions]
-  )
-
+const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps): JSX.Element => {
   return (
-    <ChartTableHeader logarithmicScale={logarithmicScale} axisOptions={axisOptions}>
-      {tableOptions.isCheckboxShown ? (
-        <ChartTableSwitcher onChange={onChangeRadioGroup} value={activeBtn} />
-      ) : (
-        <BarChartOutlined style={{ fontSize: '24px' }} />
-      )}
-    </ChartTableHeader>
+    <CheckedRowsContext.Consumer>
+      {({
+        checkedLogRows,
+        setCheckedLogRows,
+        checkedAxisRows,
+        setCheckedAxisRows,
+        checkedTableRows,
+        setCheckedTableRows,
+      }) => {
+        const isLogChecked = checkedLogRows.includes(row.columnName)
+        const isAxisChecked = checkedAxisRows.includes(row.columnName)
+        const isTableChecked = checkedTableRows.includes(row.columnName)
+
+        const setChecked =
+          (_checkedRows: Array<string>, _setChecked: (_checkedRows: Array<string>) => void) =>
+          (active: boolean) => {
+            if (!active) {
+              const checkedRowsCopy = [..._checkedRows]
+              const checkedRowIndex = checkedRowsCopy.indexOf(row.columnName)
+              checkedRowsCopy.splice(checkedRowIndex, 1)
+              _setChecked(checkedRowsCopy)
+            } else {
+              _setChecked([..._checkedRows, row.columnName])
+            }
+          }
+
+        const onChartTableClick = (active: boolean) => {
+          if (active) {
+            setCheckedTableRows([...checkedTableRows, row.columnName])
+          } else {
+            const checkedRowsCopy = [...checkedTableRows]
+            const checkedRowIndex = checkedRowsCopy.indexOf(row.columnName)
+            checkedRowsCopy.splice(checkedRowIndex, 1)
+            setCheckedTableRows(checkedRowsCopy)
+          }
+        }
+
+        return (
+          <Toolbar
+            showTableChartSwitcher={tableOptions?.isCheckboxShown}
+            showLogScale={rowOptions.isLogCheckboxShown}
+            showAxes={rowOptions.isAxisCheckboxShown}
+            activeLogScale={isLogChecked}
+            activeAxes={isAxisChecked}
+            activeTable={isTableChecked}
+            disableLogScale={isTableChecked}
+            disableAxes={isTableChecked}
+            onTableClickHandler={onChartTableClick}
+            onLogScaleClickHandler={setChecked(checkedLogRows, setCheckedLogRows)}
+            onAxesClickHandler={setChecked(checkedAxisRows, setCheckedAxisRows)}
+          />
+        )
+      }}
+    </CheckedRowsContext.Consumer>
   )
 }
 

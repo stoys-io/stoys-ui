@@ -6,3 +6,4 @@ export { React, ReactDOM }
 export { Metrics, getMetricsColumns, MetricsTableProps } from './metrics'
 export { Profiler, DataProfilerProps, Datasets } from './profiler'
 export { Quality, QualityProps, QualityData } from './quality'
+export { default as JoinRates } from './joinRates'

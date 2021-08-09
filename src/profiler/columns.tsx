@@ -2,14 +2,22 @@ import React from 'react'
 import Tooltip from 'antd/lib/tooltip'
 import { ColumnsType } from 'antd/lib/table'
 
-import ChartCellTitle from './components/ChartCellTitle'
+import {
+  COLUMNS_TITLES,
+  COLUMNS_WITH_DATES,
+  COLUMN_CHART_WIDTH,
+  LEFT_ALIGN_COLUMNS,
+  VISISBLE_COLUMNS,
+} from './constants'
+import ChartHeaderCellTitle from './components/ChartHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
 import { ChartWithTooltip, hygratePmfPlotData } from './chart'
 import { renderNumericValue } from '../helpers'
+import { transformSecondsToDate } from '../pmfPlot/helpers'
 import {
   AxisOptions,
   DataItem,
-  HydratedDataItem,
+  ChildDataItem,
   LogarithmicScale,
   Render,
   RenderedCellConfig,
@@ -17,46 +25,42 @@ import {
 } from './model'
 
 import { CellWrapper, ColorBlock } from './styles'
-import { transformSecondsToDate } from '../pmfPlot/helpers'
-import { COLUMN_CHART_WIDTH } from './constants'
 
-const renderChartCell = (data: Array<DataItem>, smallSize: boolean) => (
-  value: string,
-  row: DataItem | HydratedDataItem,
-  index: number
-) => {
-  const parent = data.find(dataItem => {
-    if ('parent' in row) {
-      return row.parent === dataItem.columnName
+const renderChartCell =
+  (data: Array<DataItem>, smallSize: boolean) =>
+  (value: string, row: DataItem | ChildDataItem, index: number) => {
+    const parent = data.find(dataItem => {
+      if ('parent' in row) {
+        return row.parent === dataItem.columnName
+      }
+
+      return false
+    })
+    const pmfPlotData = hygratePmfPlotData(parent?.children)
+    const renderedCellConfig: RenderedCellConfig = {
+      children: <ChartWithTooltip data={pmfPlotData} smallSize={smallSize} />,
+      props: {},
+    }
+    const rowSpan = parent?.children.length || 1
+
+    if ('column' in row) {
+      renderedCellConfig.props.colSpan = 0
+    } else {
+      renderedCellConfig.props.rowSpan = index === 0 ? rowSpan : 0
     }
 
-    return false
-  })
-  const pmfPlotData = hygratePmfPlotData(parent?.children)
-  const renderedCellConfig: RenderedCellConfig = {
-    children: <ChartWithTooltip data={pmfPlotData} smallSize={smallSize} />,
-    props: {},
+    return renderedCellConfig
   }
-  const rowSpan = parent?.children.length || 1
-
-  if ('column' in row) {
-    renderedCellConfig.props.colSpan = 0
-  } else {
-    renderedCellConfig.props.rowSpan = index === 0 ? rowSpan : 0
-  }
-
-  return renderedCellConfig
-}
 
 export const renderNumericCell = (value: number | string) => {
   return (
-    <Tooltip title={value}>
+    <Tooltip title={value} placement="topLeft">
       <CellWrapper>{renderNumericValue(2, true)(value)}</CellWrapper>
     </Tooltip>
   )
 }
 
-const renderRow: Render = (logarithmicScale, axisOptions, tableOptions) => (value, row) => {
+const renderRow: Render = (render, logarithmicScale, axisOptions, tableOptions) => (value, row) => {
   const renderedCellConfig: RenderedCellConfig = {
     children: null,
     props: {},
@@ -66,7 +70,7 @@ const renderRow: Render = (logarithmicScale, axisOptions, tableOptions) => (valu
     renderedCellConfig.children = (
       <>
         <ColorBlock color={row.color} />
-        {renderNumericCell(value)}
+        {render(value)}
       </>
     )
   }
@@ -88,40 +92,56 @@ const renderRow: Render = (logarithmicScale, axisOptions, tableOptions) => (valu
   return renderedCellConfig
 }
 
-const renderValue = (
+const renderValue = (value?: boolean | string | number | null): JSX.Element | null => {
+  if (value === null || value === undefined) {
+    return null
+  }
+
+  if (!isNaN(+value) && value !== '' && typeof value !== 'boolean') {
+    return renderNumericCell(value)
+  }
+
+  return (
+    <Tooltip title={value.toString()} placement="topLeft">
+      {value.toString()}
+    </Tooltip>
+  )
+}
+
+const renderMeanMinMaxValue = (
   value: string | number | null,
   row: any
 ): number | string | JSX.Element | null => {
-  const { type } = row
+  const { data_type } = row
 
   if (value === null) {
     return null
   }
 
-  if (type === 'timestamp' || type === 'date') {
+  if (data_type === 'timestamp' || data_type === 'date') {
     const date = transformSecondsToDate(value, row.type)
 
     if (typeof date === 'string') {
       return (
-        <>
+        <Tooltip title={date} placement="topLeft">
           {date.split(',').map(dateItem => (
             <React.Fragment key={dateItem}>
               {dateItem}
               <br />
             </React.Fragment>
           ))}
-        </>
+        </Tooltip>
       )
     }
 
-    return date
+    return (
+      <Tooltip title={date} placement="topLeft">
+        {date}
+      </Tooltip>
+    )
   }
 
-  if (!isNaN(+value) && value !== '') {
-    return renderNumericCell(value)
-  }
-
-  return value
+  return renderValue(value)
 }
 
 const renderChartCellTitle = (
@@ -129,7 +149,7 @@ const renderChartCellTitle = (
   axisOptions: AxisOptions,
   tableOptions: TableOptions
 ) => (
-  <ChartCellTitle
+  <ChartHeaderCellTitle
     logarithmicScale={logarithmicScale}
     axisOptions={axisOptions}
     tableOptions={tableOptions}
@@ -141,45 +161,29 @@ export const getColumns = (
   logarithmicScale: LogarithmicScale,
   axisOptions: AxisOptions,
   tableOptions: TableOptions,
-  smallSize: boolean = false
-): ColumnsType<DataItem | HydratedDataItem> => {
+  smallSize: boolean = false,
+  visibleColumns?: Array<string>
+): ColumnsType<DataItem | ChildDataItem> => {
+  const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
+
+  const columns = _visibleColumns.map((column, index) => {
+    const _column: any = {
+      title: COLUMNS_TITLES[column] || column,
+      dataIndex: column,
+      key: column,
+      align: LEFT_ALIGN_COLUMNS.includes(column) ? ('left' as 'left') : ('right' as 'right'),
+      render: COLUMNS_WITH_DATES.includes(column) ? renderMeanMinMaxValue : renderValue,
+    }
+
+    if (index === 0) {
+      _column.render = renderRow(_column.render, logarithmicScale, axisOptions, tableOptions)
+    }
+
+    return _column
+  })
+
   return [
-    {
-      title: 'nulls',
-      dataIndex: 'nulls',
-      key: 'nulls',
-      align: 'right' as 'right',
-      render: renderRow(logarithmicScale, axisOptions, tableOptions),
-    },
-    {
-      title: 'unique',
-      dataIndex: 'unique',
-      key: 'unique',
-      align: 'right' as 'right',
-      render: (value: string | number | undefined) =>
-        value || value === 0 ? renderNumericCell(value) : null,
-    },
-    {
-      title: 'mean',
-      dataIndex: 'mean',
-      key: 'mean',
-      align: 'left' as 'left',
-      render: renderValue,
-    },
-    {
-      title: 'min',
-      dataIndex: 'min',
-      key: 'min',
-      align: 'left' as 'left',
-      render: renderValue,
-    },
-    {
-      title: 'max',
-      dataIndex: 'max',
-      key: 'max',
-      align: 'left' as 'left',
-      render: renderValue,
-    },
+    ...columns,
     {
       title: renderChartCellTitle(logarithmicScale, axisOptions, tableOptions),
       key: 'chart',

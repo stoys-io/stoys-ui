@@ -26,10 +26,11 @@ const HorizontalTable = ({
     },
     [pageSize, setPageSize, setCurrentPage]
   )
-  const keys = useMemo(() => data.map(item => item.key), data)
+  const keys = useMemo(() => data.map(item => item.key), [data])
 
   return (
     <Table
+      sticky
       dataSource={data}
       columns={columns}
       expandable={{ expandIcon: () => null, expandedRowKeys: keys }}

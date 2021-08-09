@@ -1,11 +1,19 @@
 export const COLUMN_CHART_WIDTH = 520
+
 export const SMALL_COLUMN_CHART_WIDTH = 520
+
 export const TABLE_HEIGHT = 600
+
 export const TABLE_ROW_HEIGHT = 80
+
 export const MIN_TABLE_ROW_HEIGHT = 40
+
 export const MIN_CHART_CELL_HEIGHT = 150
+
 export const MIN_SMALL_CHART_CELL_HEIGHT = 80
+
 export const CELL_TABLE_HEADER_HEIGHT = 35
+
 export const COLORS = [
   '#e6194b',
   '#3cb44b',
@@ -28,3 +36,14 @@ export const COLORS = [
   '#000075',
   '#808080',
 ]
+
+export const VISISBLE_COLUMNS = ['count_nulls', 'count_unique', 'mean', 'min', 'max']
+
+export const COLUMNS_TITLES: any = {
+  count_nulls: 'nulls',
+  count_unique: 'unique',
+}
+
+export const LEFT_ALIGN_COLUMNS = ['mean', 'min', 'max']
+
+export const COLUMNS_WITH_DATES = ['mean', 'min', 'max']

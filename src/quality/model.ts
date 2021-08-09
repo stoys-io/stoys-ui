@@ -26,7 +26,7 @@ export interface RowSample {
   violated_rule_names: Array<string>
 }
 
-export interface Data {
+export interface QualityData {
   columns: Array<Column>
   rules: Array<Rule>
   row_sample: Array<RowSample>
@@ -40,15 +40,18 @@ export interface Data {
 
 export type Mode = 'column' | 'row'
 
+export type OnModeChange = (mode: Mode) => void
+
 export type QualityProps = {
-  data: Data
+  data: QualityData
   mode?: Mode
-  onModeChange?: (mode: Mode) => void
+  onModeChange?: OnModeChange
   selectedRules?: Array<string>
   onSelectedRulesChange?: (rules: Array<string>) => void
   pagination?: PaginationProps
   heightenedCell?: boolean
   smallSize?: boolean
+  showReferencedColumnsOnly?: boolean
 }
 
 export type TableCellData = {
@@ -90,6 +93,8 @@ export interface SampleTableProps {
   withoutPagination?: boolean
   heightenedCell?: boolean
   smallSize: boolean
+  showReferencedColumns: boolean
+  setShowReferencedColumns: () => void
 }
 
 export interface RulesTableSwitchersProps {

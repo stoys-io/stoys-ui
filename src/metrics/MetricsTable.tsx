@@ -43,6 +43,7 @@ export const MetricsTable = ({
 
   return (
     <StyledMetricTable
+      sticky
       columns={_columns}
       dataSource={_data}
       loading={isLoading}
