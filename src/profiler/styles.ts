@@ -282,13 +282,22 @@ export const TableSettingsWrapper = styled.div`
   }
 `
 
-export const ModeIconWrapper = styled.div<{ checked: boolean }>`
+export const IconWrapper = styled.div<{ checked: boolean }>`
   font-size: 20px;
   color: ${props => (props.checked ? '#1890ff' : 'inherit')};
   padding: 4px;
+  cursor: pointer;
+`
+
+export const ModeIconWrapper = styled(IconWrapper)<{ checked: boolean }>`
   transform: rotate(${props => (props.checked ? '90' : '0')}deg)
     scaleY(${props => (props.checked ? '-1' : '1')});
-  cursor: pointer;
+`
+
+export const JsonIconWrapper = styled(IconWrapper)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `
 
 export const StyledEmpty = styled(Empty)`
