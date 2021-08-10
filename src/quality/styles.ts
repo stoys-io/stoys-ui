@@ -53,7 +53,7 @@ export const TablesWrapper = styled.div<{ mode: string }>`
 `
 
 function getTableHeaderHeight({ smallSize }: { smallSize: boolean }): string {
-  return smallSize ? '67px' : '77px'
+  return smallSize ? '55px' : '77px'
 }
 
 export const RulesTableWrapper = styled.div<{ isNarrowMode: boolean; smallSize: boolean }>`

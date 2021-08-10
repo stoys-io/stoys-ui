@@ -54,4 +54,5 @@ export interface JoinStatisticsProps {
   columns: any
   joinRateId: string
   onRowClickHandler: any
+  smallSize: boolean
 }
