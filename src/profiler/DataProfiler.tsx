@@ -42,18 +42,6 @@ export const DataProfiler = ({
     setIsVertical(orientOptions?.type === Orient.Vertical)
   }, [orientOptions])
 
-  const _columns = useMemo(
-    () =>
-      Object.keys(
-        datasets
-          .filter(dataItem => dataItem.columns)
-          .map(dataItem => dataItem.columns)
-          .flat()
-          .reduce((acc, columns) => ({ ...acc, ...columns }), {})
-      ),
-    [datasets]
-  )
-
   const dataGrouppedByTitle = useMemo(
     () =>
       datasets
@@ -153,10 +141,17 @@ export const DataProfiler = ({
     [_rowToolbarOptions]
   )
 
-  const validVisibleColumns = useMemo(
-    () => visibleColumns?.filter(column => _columns.includes(column)),
-    [visibleColumns, _columns]
-  )
+  const validVisibleColumns = useMemo(() => {
+    const _columns = Object.keys(
+      datasets
+        .filter(dataItem => dataItem.columns)
+        .map(dataItem => dataItem.columns)
+        .flat()
+        .reduce((acc, columns) => ({ ...acc, ...columns }), {})
+    )
+
+    return visibleColumns?.filter(column => _columns.includes(column))
+  }, [visibleColumns, datasets])
 
   const columns = useMemo(
     () =>
@@ -174,7 +169,7 @@ export const DataProfiler = ({
         smallSize,
         validVisibleColumns
       ),
-    [data, tableOptions, smallSize, _rowToolbarOptions]
+    [data, tableOptions, smallSize, _rowToolbarOptions, validVisibleColumns]
   )
 
   const _setIsVerticalView = useCallback(
