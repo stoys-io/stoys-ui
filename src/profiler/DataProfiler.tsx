@@ -26,11 +26,16 @@ export const DataProfiler = ({
     () => (profilerToolbarOptions ? profilerToolbarOptions?.orientOptions : {}),
     [profilerToolbarOptions]
   )
+  const jsonOptions = useMemo(
+    () => (profilerToolbarOptions ? profilerToolbarOptions?.jsonOptions : {}),
+    [profilerToolbarOptions]
+  )
   const searchOptions = useMemo(
     () => (profilerToolbarOptions ? profilerToolbarOptions?.searchOptions : {}),
     [profilerToolbarOptions]
   )
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
+  const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
   const [searchValue, setSearchValue] = useState<string>('')
   const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
@@ -190,6 +195,14 @@ export const DataProfiler = ({
     [searchOptions]
   )
 
+  const _setJsonShown = useCallback(() => {
+    setJsonShown((prevState: boolean) => {
+      jsonOptions?.onChange?.(!prevState)
+
+      return !prevState
+    })
+  }, [jsonOptions])
+
   return (
     <CheckedRowsContext.Provider
       value={{
@@ -209,6 +222,9 @@ export const DataProfiler = ({
           onModeChange={_setIsVerticalView}
           isSearchShown={!searchOptions?.disabled}
           onSearchChangeHandler={_onSearch}
+          isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
+          isJsonSwitcherChecked={isJsonShown}
+          onJsonChange={_setJsonShown}
         />
       ) : null}
       <TableWrapper smallSize={!!smallSize}>

@@ -10,6 +10,7 @@ function Icon(props: any) {
       version="1.1"
       viewBox="0 0 512.007 512.007"
       xmlSpace="preserve"
+      fill="currentColor"
       {...props}
     >
       <path

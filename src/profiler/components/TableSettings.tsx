@@ -15,6 +15,9 @@ const TableSettings = ({
   onModeChange,
   isSearchShown,
   onSearchChangeHandler,
+  isJsonSwitcherShown,
+  isJsonSwitcherChecked,
+  onJsonChange,
 }: TableSettingsProps): JSX.Element => {
   const _onSearchChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +44,9 @@ const TableSettings = ({
       {isModeSwitcherShown ? (
         <ModeSwitcher checked={isModeSwitcherChecked} onChange={onModeChange} />
       ) : null}
-      <JsonSwitcher />
+      {isJsonSwitcherShown ? (
+        <JsonSwitcher checked={isJsonSwitcherChecked} onChange={onJsonChange} />
+      ) : null}
     </TableSettingsWrapper>
   )
 }

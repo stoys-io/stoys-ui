@@ -1,11 +1,12 @@
 import React from 'react'
 
 import JsonIcon from '../icons/Json'
+import { SwitcherProps } from '../model'
 import { JsonIconWrapper } from '../styles'
 
-const JsonSwitcher = () => {
+const JsonSwitcher = ({ checked, onChange }: SwitcherProps): JSX.Element => {
   return (
-    <JsonIconWrapper checked>
+    <JsonIconWrapper checked={checked} onClick={onChange}>
       <JsonIcon width="1em" height="1em" />
     </JsonIconWrapper>
   )

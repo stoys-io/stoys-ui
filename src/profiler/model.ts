@@ -76,6 +76,11 @@ export interface ProfilerToolbarOptions {
     isCheckboxShown?: boolean
     onOrientChange?: (orient: Orient) => void
   }
+  jsonOptions?: {
+    checked?: boolean
+    isCheckboxShown?: boolean
+    onChange?: (shown: boolean) => void
+  }
   searchOptions?: {
     disabled?: boolean
     onChange?: (value: string) => void
@@ -223,7 +228,7 @@ export interface HeaderCheckboxProps {
   title: string | JSX.Element
 }
 
-export interface ModeSwitcherProps {
+export interface SwitcherProps {
   checked: boolean
   onChange: () => void
 }
@@ -279,4 +284,7 @@ export interface TableSettingsProps {
   onModeChange: () => void
   isSearchShown: boolean
   onSearchChangeHandler: (value: string) => void
+  isJsonSwitcherShown?: boolean
+  isJsonSwitcherChecked: boolean
+  onJsonChange: () => void
 }

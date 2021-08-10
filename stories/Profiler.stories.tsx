@@ -22,6 +22,10 @@ ProfilerForOneDataset.args = {
       isCheckboxShown: true,
       onOrientChange: (orient: Orient) => console.log('orient => ', orient),
     },
+    jsonOptions: {
+      isCheckboxShown: true,
+      onChange: (shown: boolean) => console.log('json => ', shown),
+    },
     searchOptions: {
       disabled: false,
       onChange: (value: string) => console.log('search => ', value),
