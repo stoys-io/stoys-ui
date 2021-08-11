@@ -288,3 +288,8 @@ export interface TableSettingsProps {
   isJsonSwitcherChecked: boolean
   onJsonChange: () => void
 }
+
+export interface JsonDrqwerProps {
+  visible: boolean
+  onClose: () => void
+}

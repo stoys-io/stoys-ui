@@ -12,6 +12,7 @@ import HorizontalTable from './components/HorizontalTable'
 import TableSettings from './components/TableSettings'
 
 import { NoData, TableWrapper } from './styles'
+import JsonDrawer from './components/JsonDrawer'
 
 export const DataProfiler = ({
   datasets,
@@ -254,6 +255,7 @@ export const DataProfiler = ({
             withoutPagination={!!pagination?.disabled}
           />
         )}
+        <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} />
       </TableWrapper>
     </CheckedRowsContext.Provider>
   )

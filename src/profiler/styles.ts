@@ -62,6 +62,9 @@ const smallTableStyles = (props: { smallSize: boolean }) =>
     : ''
 
 export const TableWrapper = styled.div<{ smallSize: boolean }>`
+  position: relative;
+  overflow: hidden;
+
   table {
     margin-bottom: 0;
 

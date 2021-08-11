@@ -11,7 +11,7 @@ const Template: Story<DataProfilerProps> = args => <ProfilerComponent {...args} 
 export const ProfilerForOneDataset = Template.bind({})
 ProfilerForOneDataset.args = {
   datasets: [firstDatasetMock as Dataset],
-  pagination: { disabled: false },
+  pagination: { disabled: true },
   rowToolbarOptions: {
     logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
     axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
