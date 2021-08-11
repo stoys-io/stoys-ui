@@ -290,6 +290,7 @@ export interface TableSettingsProps {
 }
 
 export interface JsonDrqwerProps {
+  datasets: Datasets
   visible: boolean
   onClose: () => void
 }

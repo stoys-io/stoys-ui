@@ -255,7 +255,7 @@ export const DataProfiler = ({
             withoutPagination={!!pagination?.disabled}
           />
         )}
-        <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} />
+        <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
       </TableWrapper>
     </CheckedRowsContext.Provider>
   )
