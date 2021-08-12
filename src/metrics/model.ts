@@ -4,7 +4,6 @@ import { RadioChangeEvent } from 'antd/lib/radio'
 import { PaginationProps } from '../hooks'
 import { Maybe } from '../model'
 
-
 export type ColumnNode = {
   title: string
   columnName: string
