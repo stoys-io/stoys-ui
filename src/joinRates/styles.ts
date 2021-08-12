@@ -19,6 +19,10 @@ export const StyledJoinStatistics = styled(Table)<{ smallSize: boolean }>`
   }
 
   th.ant-table-cell {
+    min-width: 200px;
     padding: ${props => (props.smallSize ? '4px' : '16px')};
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 `
