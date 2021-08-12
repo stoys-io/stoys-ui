@@ -2,8 +2,8 @@ import { ReactNode } from 'react'
 import { RadioChangeEvent } from 'antd/lib/radio'
 
 import { PaginationProps } from '../hooks'
+import { Maybe } from '../model'
 
-export type Maybe<T> = T | null
 
 export type ColumnNode = {
   title: string
@@ -57,7 +57,7 @@ export interface MetricsData {
 }
 
 export type SaveMetricThreshold = (
-  updatedThreshold: number | null | undefined,
+  updatedThreshold: Maybe<number> | undefined,
   keyColumnsWithValue: Array<KeyValueInput>,
   valueColumnName: string
 ) => void
@@ -83,7 +83,7 @@ export interface MetricsTableData {
 }
 
 export type TrendsProps = {
-  trends: TrendNode[]
+  trends: Array<TrendNode>
 }
 
 export type ModalRadioGroupProps = {
@@ -96,7 +96,7 @@ export type ModalRadioGroupProps = {
 
 export type ThresholdProps = {
   threshold: number
-  keyColumns: ColumnNode[]
+  keyColumns: Array<ColumnNode>
   metricsDataItem: {
     [key: string]: string
   }

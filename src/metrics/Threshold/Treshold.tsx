@@ -28,14 +28,14 @@ const Threshold = ({
   const [updatedThreshold, updateThreshold] = useState<number | undefined>(threshold)
   const modalContainerRef = useRef(null)
 
-  const getKeyColumnsWithValues = (): KeyValueInput[] =>
+  const getKeyColumnsWithValues = (): Array<KeyValueInput> =>
     keyColumns.map(column => ({
       key: column.columnName,
       value: metricsDataItem[column.columnName],
     }))
 
   const [keyColumnsWithValue, updateKeyColumnsValue] =
-    useState<KeyValueInput[]>(getKeyColumnsWithValues)
+    useState<Array<KeyValueInput>>(getKeyColumnsWithValues)
 
   const onChangeHandler = (e: RadioChangeEvent, key: string) => {
     const updatedKeyColumns = keyColumnsWithValue.map(column => {

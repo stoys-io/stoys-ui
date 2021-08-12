@@ -6,6 +6,7 @@ import { CheckedRowsContext } from '../checkedRowsContext'
 import Table from '../components/Table'
 import BarChart from './BarChart'
 import { ChartWithTooltipProps, HygratePmfPlotDataItem, RenderChartProps } from '../model'
+import { Maybe } from '../../model'
 import {
   MIN_CHART_CELL_HEIGHT,
   MIN_SMALL_CHART_CELL_HEIGHT,
@@ -16,7 +17,7 @@ import { StyledEmpty } from '../styles'
 import { ChartWrapper } from '../../pmfPlot/styles'
 
 function renderChart(
-  data: Array<HygratePmfPlotDataItem> | null,
+  data: Maybe<Array<HygratePmfPlotDataItem>>,
   { checkedLogRows, checkedAxisRows, checkedTableRows, isHorizontal, smallSize }: RenderChartProps
 ) {
   if (!data) {
@@ -106,7 +107,7 @@ const ChartWithTooltip = ({
   data,
   isHorizontal,
   smallSize,
-}: ChartWithTooltipProps): JSX.Element | null => {
+}: ChartWithTooltipProps): Maybe<JSX.Element> => {
   return (
     <CheckedRowsContext.Consumer>
       {({ checkedLogRows, checkedAxisRows, checkedTableRows }) =>

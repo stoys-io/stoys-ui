@@ -23,6 +23,7 @@ import {
   RenderedCellConfig,
   TableOptions,
 } from './model'
+import { Maybe } from '../model'
 
 import { CellWrapper, ColorBlock } from './styles'
 
@@ -92,7 +93,7 @@ const renderRow: Render = (render, logarithmicScale, axisOptions, tableOptions) 
   return renderedCellConfig
 }
 
-const renderValue = (value?: boolean | string | number | null): JSX.Element | null => {
+const renderValue = (value?: Maybe<boolean | string | number>): Maybe<JSX.Element> => {
   if (value === null || value === undefined) {
     return null
   }
@@ -109,9 +110,9 @@ const renderValue = (value?: boolean | string | number | null): JSX.Element | nu
 }
 
 const renderMeanMinMaxValue = (
-  value: string | number | null,
+  value: Maybe<string | number>,
   row: any
-): number | string | JSX.Element | null => {
+): Maybe<number | string | JSX.Element> => {
   const { data_type } = row
 
   if (value === null) {

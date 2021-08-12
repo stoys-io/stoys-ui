@@ -14,8 +14,9 @@ import {
   MetricsData,
   SaveMetricThreshold,
 } from './model'
+import { Maybe } from '../model'
 
-const renderNumericColumnValue = (value: number | string | undefined | null) => (
+const renderNumericColumnValue = (value?: Maybe<number | string>): JSX.Element => (
   <UppercaseValue>{value ? renderNumericValue(2, true)(value) : '—'}</UppercaseValue>
 )
 
