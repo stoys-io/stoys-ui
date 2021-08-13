@@ -13,13 +13,16 @@ const JoinStatistics = ({
 }: JoinStatisticsProps): JSX.Element => {
   const _columns = useMemo(() => getJoinRatesColumns(columns), [data])
 
-  const getRowClassName = useCallback((dataItem: JoinStatisticsData | {}) => {
-    if ('id' in dataItem && dataItem.id === joinRateId) {
-      return 'selected-row'
-    }
+  const getRowClassName = useCallback(
+    (dataItem: JoinStatisticsData | {}) => {
+      if ('id' in dataItem && dataItem.id === joinRateId) {
+        return 'selected-row'
+      }
 
-    return ''
-  }, [])
+      return ''
+    },
+    [joinRateId]
+  )
 
   const _onRow = useCallback(
     (dataItem: JoinStatisticsData | {}) => ({
@@ -29,7 +32,7 @@ const JoinStatistics = ({
         }
       },
     }),
-    []
+    [onRowClickHandler]
   )
 
   return (
