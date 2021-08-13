@@ -13,6 +13,7 @@ import {
   ChildrenColumnType,
   MetricsData,
   SaveMetricThreshold,
+  ColumnType,
 } from './model'
 import { Maybe } from '../model'
 
@@ -39,21 +40,23 @@ export const getMetricsColumns = (
       ...column,
       id: column.columnName,
       dataIndex: column.columnName,
+      key: column.columnName,
       fixed: 'left',
       sorter: defaultSort(column.columnName),
       width: getColumnWidth(column.title),
     }
   })
 
-  let columns: Array<any> = []
+  let columns: Array<ColumnType> = []
 
   metricsData?.values?.forEach((row: Array<TableCellNode>, rowIndex: number) => {
     if (rowIndex === 0) {
-      columns = row.reduce((columnsData: Array<any>, cell) => {
+      columns = row.reduce((columnsData: Array<ColumnType>, cell) => {
         const columnKey = cell.columnName
         const isKeyColumn =
           metricsData?.columns &&
           !!metricsData?.columns.find((column: ColumnNode) => column.columnName === columnKey)
+
         if (!isKeyColumn) {
           let childrenColumns: Array<ChildrenColumnType> = [
             {
@@ -157,6 +160,7 @@ export const getMetricsColumns = (
             },
           ]
         }
+
         return columnsData
       }, keyColumns)
     }
