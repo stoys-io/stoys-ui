@@ -17,6 +17,7 @@ const SampleTable = ({
   setCurrentPage,
   setPageSize,
   withoutPagination,
+  pagination,
   heightenedCell,
   smallSize,
   showReferencedColumns,
@@ -39,7 +40,7 @@ const SampleTable = ({
     dataSource: sampleData,
     scroll: {
       x: true as true,
-      y: withoutPagination ? TABLE_HEIGHT : undefined,
+      y: TABLE_HEIGHT,
     },
     onChange: handleChangePagination,
     showSorterTooltip: false,
@@ -65,6 +66,7 @@ const SampleTable = ({
             current: currentPage,
             pageSize,
             showSizeChanger: sampleData?.length > pageSize,
+            ...pagination,
           }}
         />
       )}

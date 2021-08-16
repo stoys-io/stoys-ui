@@ -21,7 +21,7 @@ export const MetricsTable = ({
   height = TABLE_HEIGHT,
   smallSize = true,
 }: MetricsTableProps): JSX.Element => {
-  const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
+  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
   const _columns = useMemo(
     () =>
       columns ||
@@ -50,13 +50,14 @@ export const MetricsTable = ({
       scroll={{ x: true, y: pagination && pagination.disabled ? height : undefined }}
       bordered
       pagination={
-        pagination && pagination.disabled
-          ? false
-          : {
-              current: currentPage,
+        typeof pagination === 'object'
+          ? {
+              current: current,
               pageSize: pageSize,
               showSizeChanger: true,
+              ...pagination,
             }
+          : pagination
       }
       onChange={_onChange}
       smallSize={smallSize}

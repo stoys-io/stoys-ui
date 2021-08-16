@@ -102,7 +102,7 @@ SmallQuality.args = {
     ],
     metadata: {},
   },
-  pagination: { disabled: true },
+  pagination: false,
 }
 SmallQuality.storyName = 'with small dataset'
 

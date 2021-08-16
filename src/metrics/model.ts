@@ -68,7 +68,7 @@ export interface MetricsTableProps {
   isLoading?: boolean
   previousReleaseDataIsShown?: boolean
   saveMetricThreshold?: SaveMetricThreshold
-  pagination?: PaginationProps
+  pagination?: false | PaginationProps
   disabledColumns?: Array<string>
   height?: string | number
   smallSize?: boolean

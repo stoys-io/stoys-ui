@@ -39,7 +39,7 @@ export interface JoinRatesProps {
   selectRules?: (rules: Array<string>) => void
   mode?: Mode
   setMode?: (mode: Mode) => void
-  pagination?: PaginationProps
+  pagination?: PaginationProps | false
   smallSize?: boolean
 }
 

@@ -87,7 +87,7 @@ export interface DataProfilerProps {
   profilerToolbarOptions?: null | false | ProfilerToolbarOptions
   colors?: Array<string>
   rowToolbarOptions?: null | false | RowToolbarOptions
-  pagination?: PaginationProps
+  pagination?: PaginationProps | false
   smallSize?: boolean
   visibleColumns?: Array<string>
 }
@@ -147,6 +147,7 @@ export interface TableProps {
   setCurrentPage: (page: number) => void
   setPageSize: (pageSize: number) => void
   withoutPagination: boolean
+  pagination?: PaginationProps | false
 }
 
 export interface VerticalTableProps extends TableProps {

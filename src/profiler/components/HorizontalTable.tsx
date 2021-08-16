@@ -14,6 +14,7 @@ const HorizontalTable = ({
   setCurrentPage,
   setPageSize,
   withoutPagination,
+  pagination,
 }: TableProps) => {
   const handleChangePagination = useCallback(
     pagination => {
@@ -41,6 +42,7 @@ const HorizontalTable = ({
               current: currentPage,
               pageSize,
               showSizeChanger: true,
+              ...pagination,
             }
       }
       scroll={{

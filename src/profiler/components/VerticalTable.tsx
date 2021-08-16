@@ -17,6 +17,7 @@ const VerticalTable = ({
   setCurrentPage,
   setPageSize,
   withoutPagination,
+  pagination,
   rowOptions,
   tableOptions,
 }: VerticalTableProps) => {
@@ -123,6 +124,7 @@ const VerticalTable = ({
               current: currentPage,
               pageSize,
               showSizeChanger: true,
+              ...pagination,
             }
       }
       onChange={handleChangePagination}

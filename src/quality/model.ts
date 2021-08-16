@@ -48,7 +48,7 @@ export type QualityProps = {
   onModeChange?: OnModeChange
   selectedRules?: Array<string>
   onSelectedRulesChange?: (rules: Array<string>) => void
-  pagination?: PaginationProps
+  pagination?: PaginationProps | false
   heightenedCell?: boolean
   smallSize?: boolean
   showReferencedColumnsOnly?: boolean
@@ -91,6 +91,7 @@ export interface SampleTableProps {
   setCurrentPage: (page: number) => void
   setPageSize: (pageSize: number) => void
   withoutPagination?: boolean
+  pagination?: PaginationProps | false
   heightenedCell?: boolean
   smallSize: boolean
   showReferencedColumns: boolean

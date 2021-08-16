@@ -32,7 +32,7 @@ export const DataProfiler = ({
   )
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
   const [searchValue, setSearchValue] = useState<string>('')
-  const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
+  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
   if (!datasets || !Array.isArray(datasets)) {
     return <NoData>No data</NoData>
@@ -216,11 +216,12 @@ export const DataProfiler = ({
           <VerticalTable
             data={data}
             columns={columns}
-            currentPage={currentPage}
+            currentPage={current}
             setCurrentPage={setCurrentPage}
             pageSize={pageSize}
             setPageSize={setPageSize}
-            withoutPagination={!!pagination?.disabled}
+            withoutPagination={pagination === false}
+            pagination={pagination}
             rowOptions={{
               isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
               isAxisCheckboxShown: !!_rowToolbarOptions.axisOptions?.isCheckboxShown,
@@ -231,11 +232,12 @@ export const DataProfiler = ({
           <HorizontalTable
             data={data}
             columns={columns}
-            currentPage={currentPage}
+            currentPage={current}
             setCurrentPage={setCurrentPage}
             pageSize={pageSize}
             setPageSize={setPageSize}
-            withoutPagination={!!pagination?.disabled}
+            withoutPagination={pagination === false}
+            pagination={pagination}
           />
         )}
       </TableWrapper>

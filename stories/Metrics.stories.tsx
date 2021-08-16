@@ -11,7 +11,7 @@ Metrics.args = {
   data: mockedData,
   previousReleaseDataIsShown: true,
   disabledColumns: [],
-  pagination: { disabled: true },
+  pagination: false,
   saveMetricThreshold: () => {},
   smallSize: true,
 }
