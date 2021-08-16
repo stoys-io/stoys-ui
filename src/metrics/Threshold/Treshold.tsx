@@ -51,13 +51,13 @@ const Threshold = ({
   }
 
   const onSubmit = () => {
-    saveMetricThreshold(updatedThreshold, keyColumnsWithValue, valueColumnName)
+    saveMetricThreshold?.(updatedThreshold, keyColumnsWithValue, valueColumnName)
     toggleModal(false)
   }
 
   const onRemove = () => {
     updateThreshold(undefined)
-    saveMetricThreshold(null, keyColumnsWithValue, valueColumnName)
+    saveMetricThreshold?.(null, keyColumnsWithValue, valueColumnName)
     toggleModal(false)
   }
 

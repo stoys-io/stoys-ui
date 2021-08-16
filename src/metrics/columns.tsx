@@ -41,7 +41,7 @@ export const getMetricsColumns = (
       id: column.columnName,
       dataIndex: column.columnName,
       key: column.columnName,
-      fixed: 'left',
+      fixed: 'left' as 'left',
       sorter: defaultSort(column.columnName),
       width: getColumnWidth(column.title),
     }

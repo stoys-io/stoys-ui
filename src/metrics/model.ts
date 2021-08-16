@@ -35,8 +35,8 @@ export interface ColumnType {
   dataIndex: string
   title: string | ReactNode
   titleString?: string
-  fixed?: string
-  sorter?: (a: any, b: any) => 1 | -1
+  fixed?: 'left' | 'right'
+  sorter?: (a: any, b: any) => number
   render?: (value: any, item: any) => string | ReactNode
   children?: Array<ChildrenColumnType>
 }
@@ -63,7 +63,7 @@ export type SaveMetricThreshold = (
 
 export interface MetricsTableProps {
   data: MetricsData
-  columns?: any
+  columns?: Array<ColumnType>
   isLoading?: boolean
   previousReleaseDataIsShown?: boolean
   saveMetricThreshold?: SaveMetricThreshold
@@ -100,5 +100,5 @@ export type ThresholdProps = {
     [key: string]: string
   }
   valueColumnName: string
-  saveMetricThreshold?: any
+  saveMetricThreshold?: SaveMetricThreshold
 }
