@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { RadioChangeEvent } from 'antd/lib/radio'
 
 import { PaginationProps } from '../hooks'
+import { TableProps } from 'antd/lib/table'
 
 export type Maybe<T> = T | null
 
@@ -62,7 +63,7 @@ export type SaveMetricThreshold = (
   valueColumnName: string
 ) => void
 
-export interface MetricsTableProps {
+export interface MetricsTableProps extends TableProps<any> {
   data: MetricsData
   columns?: any
   isLoading?: boolean

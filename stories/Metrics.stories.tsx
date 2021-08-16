@@ -14,6 +14,7 @@ Metrics.args = {
   pagination: false,
   saveMetricThreshold: () => {},
   smallSize: true,
+  bordered: false,
 }
 
 export default {
