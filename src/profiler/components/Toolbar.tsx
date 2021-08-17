@@ -6,6 +6,7 @@ import TableOutlined from '@ant-design/icons/lib/icons/TableOutlined'
 import AxesIcon from '../icons/Axes'
 import { SvgWrapper, ToolboxWrapper } from '../styles'
 import { ToolboxProps } from '../model'
+import { Maybe } from '../../model'
 
 function getActiveClassName(isActive?: boolean): string {
   return isActive ? 'active' : ''
@@ -34,7 +35,7 @@ const Toolbox = ({
   onAxesClickHandler,
   onLogScaleClickHandler,
   onTableClickHandler,
-}: ToolboxProps): JSX.Element | null => {
+}: ToolboxProps): Maybe<JSX.Element> => {
   const _onAxesClickHandler = useCallback(() => {
     if (!disableLogScale) {
       onAxesClickHandler(!activeAxes)

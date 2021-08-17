@@ -54,7 +54,7 @@ describe('Join Rates', () => {
     fireEvent.click(otherRow!)
 
     expect(onRowClickHandlerMock).toBeCalledWith(joinRatesMockData2.id)
-    expect(selectedRow?.className).not.toContain('selected-row')
     expect(otherRow?.className).toContain('selected-row')
+    expect(selectedRow?.className).not.toContain('selected-row')
   })
 })

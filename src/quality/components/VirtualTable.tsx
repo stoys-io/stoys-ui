@@ -47,7 +47,7 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
 
   useEffect(() => resetVirtualGrid, [tableWidth])
 
-  const renderVirtualList = (rawData: object[], { scrollbarSize, ref, onScroll }: any) => {
+  const renderVirtualList = (rawData: Array<object>, { scrollbarSize, ref, onScroll }: any) => {
     ref.current = connectObject
     const totalHeight = rawData?.length * MIN_TABLE_CELL_HEIGHT
 

@@ -39,7 +39,7 @@ export const COLORS = [
 
 export const VISISBLE_COLUMNS = ['count_nulls', 'count_unique', 'mean', 'min', 'max']
 
-export const COLUMNS_TITLES: any = {
+export const COLUMNS_TITLES: { [key: string]: string } = {
   count_nulls: 'nulls',
   count_unique: 'unique',
 }

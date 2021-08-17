@@ -1,5 +1,6 @@
 import { ColumnsType } from 'antd/lib/table/interface'
 import { PaginationProps } from '../hooks'
+import { Maybe } from '../model'
 
 export enum Orient {
   Vertical = 'Vertical',
@@ -33,16 +34,16 @@ export interface Column {
   data_type_json?: string
   nullable?: boolean
   enum_values?: Array<string>
-  format?: string | null
+  format?: Maybe<string>
   count: number
-  count_empty: number | null
-  count_nulls: number | null
-  count_zeros: number | null
-  count_unique: number | null
-  max_length: number | null
-  mean: number | null
-  min: string | null
-  max: string | null
+  count_empty: Maybe<number>
+  count_nulls: Maybe<number>
+  count_zeros: Maybe<number>
+  count_unique: Maybe<number>
+  max_length: Maybe<number>
+  mean: Maybe<number>
+  min: Maybe<string>
+  max: Maybe<string>
   pmf?: Array<PmfPlotItem>
   items?: Array<DiscreteItem>
   extras?: { [key: string]: string }
@@ -102,12 +103,12 @@ interface CellProps {
   rowSpan?: number
 }
 export interface RenderedCellConfig {
-  children: number | string | JSX.Element | null
+  children: Maybe<number | string | JSX.Element>
   props: CellProps
 }
 
 export type Render = (
-  render: (value: string | number | null) => JSX.Element | string | null,
+  render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>,
   logarithmicScale: LogarithmicScale,
   axisOptions: AxisOptions,
   tableOptions: TableOptions
@@ -172,7 +173,7 @@ export interface BarChartProps {
 }
 
 export interface ChartWithTooltipProps {
-  data: Array<HygratePmfPlotDataItem> | null
+  data: Maybe<Array<HygratePmfPlotDataItem>>
   smallSize?: boolean
   isHorizontal?: boolean
 }

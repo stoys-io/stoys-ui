@@ -52,7 +52,7 @@ const JoinRates = ({
     const columns = Array.isArray(data)
       ? Object.keys(
           data.reduce(
-            (acc: any, dataItem) => ({
+            (acc: { [key: string]: string | number | Array<string> }, dataItem) => ({
               ...getTableNames(dataItem.dq_join_info),
               ...acc,
               ...dataItem.dq_join_statistics,
