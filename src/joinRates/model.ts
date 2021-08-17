@@ -57,9 +57,9 @@ export interface JoinStatisticsData {
 }
 export interface JoinStatisticsProps {
   data: Array<JoinStatisticsData>
-  columns: any
+  columns: Array<string>
   joinRateId: string
-  onRowClickHandler: any
+  onRowClickHandler: (id: string) => void
   smallSize: boolean
   tableProps: TableProps<any>
 }

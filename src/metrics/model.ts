@@ -3,8 +3,7 @@ import { RadioChangeEvent } from 'antd/lib/radio'
 import { TableProps } from 'antd/lib/table'
 
 import { PaginationProps } from '../hooks'
-
-export type Maybe<T> = T | null
+import { Maybe } from '../model'
 
 export type ColumnNode = {
   title: string
@@ -37,8 +36,8 @@ export interface ColumnType {
   dataIndex: string
   title: string | ReactNode
   titleString?: string
-  fixed?: string
-  sorter?: (a: any, b: any) => 1 | -1
+  fixed?: 'left' | 'right'
+  sorter?: (a: any, b: any) => number
   render?: (value: any, item: any) => string | ReactNode
   children?: Array<ChildrenColumnType>
 }
@@ -58,14 +57,14 @@ export interface MetricsData {
 }
 
 export type SaveMetricThreshold = (
-  updatedThreshold: number | null | undefined,
+  updatedThreshold: Maybe<number> | undefined,
   keyColumnsWithValue: Array<KeyValueInput>,
   valueColumnName: string
 ) => void
 
 export interface MetricsTableProps extends TableProps<any> {
   data: MetricsData
-  columns?: any
+  columns?: Array<ColumnType>
   isLoading?: boolean
   previousReleaseDataIsShown?: boolean
   saveMetricThreshold?: SaveMetricThreshold
@@ -84,7 +83,7 @@ export interface MetricsTableData {
 }
 
 export type TrendsProps = {
-  trends: TrendNode[]
+  trends: Array<TrendNode>
 }
 
 export type ModalRadioGroupProps = {
@@ -97,10 +96,10 @@ export type ModalRadioGroupProps = {
 
 export type ThresholdProps = {
   threshold: number
-  keyColumns: ColumnNode[]
+  keyColumns: Array<ColumnNode>
   metricsDataItem: {
     [key: string]: string
   }
   valueColumnName: string
-  saveMetricThreshold?: any
+  saveMetricThreshold?: SaveMetricThreshold
 }
