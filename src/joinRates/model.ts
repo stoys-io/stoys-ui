@@ -1,5 +1,6 @@
 import { QualityData, Mode } from '../quality/model'
 import { PaginationProps } from '../hooks/model'
+import { TableProps } from 'antd/lib/table'
 
 export interface DqJoinInfo {
   left_table_name: string
@@ -41,6 +42,11 @@ export interface JoinRatesProps {
   setMode?: (mode: Mode) => void
   pagination?: PaginationProps | false
   smallSize?: boolean
+  statisticsTableProps?: TableProps<any>
+  qualityTableProps?: {
+    rulesTableProps?: TableProps<any>
+    sampleTableProps?: TableProps<any>
+  }
 }
 
 export interface JoinStatisticsData {
@@ -55,4 +61,5 @@ export interface JoinStatisticsProps {
   joinRateId: string
   onRowClickHandler: any
   smallSize: boolean
+  tableProps: TableProps<any>
 }
