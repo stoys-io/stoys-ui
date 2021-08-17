@@ -13,15 +13,16 @@ import TableSettings from './components/TableSettings'
 
 import { NoData, TableWrapper } from './styles'
 
-export const DataProfiler = ({
-  datasets,
-  colors,
-  rowToolbarOptions,
-  pagination,
-  profilerToolbarOptions,
-  smallSize = true,
-  visibleColumns,
-}: DataProfilerProps) => {
+export const DataProfiler = (props: DataProfilerProps) => {
+  const {
+    datasets,
+    colors,
+    rowToolbarOptions,
+    pagination,
+    profilerToolbarOptions,
+    smallSize = true,
+    visibleColumns,
+  } = props
   const orientOptions = useMemo(
     () => (profilerToolbarOptions ? profilerToolbarOptions?.orientOptions : {}),
     [profilerToolbarOptions]
@@ -214,6 +215,7 @@ export const DataProfiler = ({
       <TableWrapper smallSize={!!smallSize}>
         {isVertical ? (
           <VerticalTable
+            {...props}
             data={data}
             columns={columns}
             currentPage={current}
@@ -230,6 +232,7 @@ export const DataProfiler = ({
           />
         ) : (
           <HorizontalTable
+            {...props}
             data={data}
             columns={columns}
             currentPage={current}

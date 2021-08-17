@@ -1,4 +1,6 @@
 import { ColumnsType } from 'antd/lib/table/interface'
+import { TableProps as AntdTableProps } from 'antd/lib/table'
+
 import { PaginationProps } from '../hooks'
 
 export enum Orient {
@@ -82,7 +84,7 @@ export interface ProfilerToolbarOptions {
   }
 }
 
-export interface DataProfilerProps {
+export interface DataProfilerProps extends AntdTableProps<any> {
   datasets: Datasets
   profilerToolbarOptions?: null | false | ProfilerToolbarOptions
   colors?: Array<string>
@@ -139,7 +141,7 @@ export interface DataItem {
   children: Array<ChildDataItem>
 }
 
-export interface TableProps {
+export interface TableProps extends AntdTableProps<any> {
   data: Array<DataItem>
   columns: ColumnsType<DataItem | ChildDataItem>
   currentPage: number

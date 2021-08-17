@@ -9,18 +9,20 @@ import { VerticalColumn, VerticalTableProps } from '../model'
 import { TABLE_HEIGHT } from '../constants'
 import { ColorBlock } from '../styles'
 
-const VerticalTable = ({
-  data,
-  columns,
-  currentPage,
-  pageSize,
-  setCurrentPage,
-  setPageSize,
-  withoutPagination,
-  pagination,
-  rowOptions,
-  tableOptions,
-}: VerticalTableProps) => {
+const VerticalTable = (props: VerticalTableProps) => {
+  const {
+    data,
+    columns,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+    withoutPagination,
+    pagination,
+    rowOptions,
+    tableOptions,
+    onChange,
+  } = props
   const flattenData = data.map(item => item.children).flat()
   const verticalColumns: Array<VerticalColumn> = flattenData.map((item, index) => {
     const parent = data.find(dataItem => dataItem.columnName === item.parent)
@@ -98,7 +100,9 @@ const VerticalTable = ({
   verticalColumns.unshift({ title: '', dataIndex: 'title', key: 'title', fixed: 'left' })
 
   const handleChangePagination = useCallback(
-    pagination => {
+    (pagination, filters, sorter, extra) => {
+      onChange?.(pagination, filters, sorter, extra)
+
       if (pagination.pageSize !== pageSize) {
         setPageSize(pagination.pageSize)
         setCurrentPage(1)
@@ -113,10 +117,10 @@ const VerticalTable = ({
     <Table
       sticky
       bordered
+      scroll={{ x: true, y: withoutPagination ? TABLE_HEIGHT : undefined }}
+      {...props}
       columns={verticalColumns}
       dataSource={dataSource}
-      scroll={{ x: true, y: withoutPagination ? TABLE_HEIGHT : undefined }}
-      rowClassName="horizontal-row"
       pagination={
         withoutPagination
           ? false
@@ -128,6 +132,7 @@ const VerticalTable = ({
             }
       }
       onChange={handleChangePagination}
+      rowClassName="horizontal-row"
     />
   )
 }
