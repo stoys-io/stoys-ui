@@ -1,3 +1,4 @@
+import { EChartsOption } from 'echarts-for-react/lib/types'
 import { PmfPlotItem } from '../profiler/model'
 
 export interface PmfPlotProps {
@@ -8,4 +9,5 @@ export interface PmfPlotProps {
   height?: number | string
   width?: number | string
   color?: string | Array<string>
+  plotOptions?: EChartsOption
 }
