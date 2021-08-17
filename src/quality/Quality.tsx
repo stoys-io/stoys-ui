@@ -18,6 +18,8 @@ export const Quality = ({
   heightenedCell,
   smallSize = true,
   showReferencedColumnsOnly = true,
+  rulesTableProps = {},
+  sampleTableProps = {},
 }: QualityProps): JSX.Element => {
   const [_mode, _setMode] = useState<Mode>(mode)
   const [_selectedRules, _setSelectedRules] = useState<Array<string>>(selectedRules || [])
@@ -145,6 +147,7 @@ export const Quality = ({
         setSelectRules={setSelectedRules}
         setMode={setMode}
         smallSize={!!smallSize}
+        tableProps={rulesTableProps}
       />
       <SampleTable
         sampleData={filteredSampleData}
@@ -159,6 +162,7 @@ export const Quality = ({
         smallSize={!!smallSize}
         showReferencedColumns={_showReferencedColumns}
         setShowReferencedColumns={setShowReferencedColumns}
+        tableProps={sampleTableProps}
       />
     </TablesWrapper>
   )

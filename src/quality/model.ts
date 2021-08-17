@@ -1,3 +1,4 @@
+import { TableProps } from 'antd/lib/table'
 import { PaginationProps } from '../hooks'
 
 export interface Column {
@@ -52,6 +53,8 @@ export type QualityProps = {
   heightenedCell?: boolean
   smallSize?: boolean
   showReferencedColumnsOnly?: boolean
+  rulesTableProps?: TableProps<any>
+  sampleTableProps?: TableProps<any>
 }
 
 export type TableCellData = {
@@ -75,6 +78,7 @@ export interface RulesTableProps {
   mode: Mode
   setMode: (mode: Mode) => void
   smallSize: boolean
+  tableProps: TableProps<any>
 }
 
 export interface SampleTableProps {
@@ -96,6 +100,7 @@ export interface SampleTableProps {
   smallSize: boolean
   showReferencedColumns: boolean
   setShowReferencedColumns: () => void
+  tableProps: TableProps<any>
 }
 
 export interface RulesTableSwitchersProps {
