@@ -39,6 +39,8 @@ const SampleTable = ({
   )
 
   const _tableProps = {
+    showSorterTooltip: false,
+    ...tableProps,
     columns: sampleColumns as any,
     dataSource: sampleData,
     scroll: {
@@ -46,8 +48,6 @@ const SampleTable = ({
       y: TABLE_HEIGHT,
     },
     onChange: handleChangePagination,
-    ...tableProps,
-    showSorterTooltip: false,
   }
 
   return (
@@ -61,7 +61,7 @@ const SampleTable = ({
         </IconButton>
       </TableTitleWrapper>
       {withoutPagination ? (
-        <VirtualTable {...tableProps} />
+        <VirtualTable {..._tableProps} />
       ) : (
         <Table
           {..._tableProps}
@@ -70,7 +70,7 @@ const SampleTable = ({
             current: currentPage,
             pageSize,
             showSizeChanger: sampleData?.length > pageSize,
-            ...pagination,
+            ...(pagination ? pagination : {}),
           }}
         />
       )}

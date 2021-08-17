@@ -31,8 +31,10 @@ describe('SampleTable', () => {
         setCurrentPage={setPageMock}
         setPageSize={setPageSizeMock}
         setShowReferencedColumns={jest.fn()}
+        tableProps={{}}
         smallSize
         showReferencedColumns
+        pagination={{}}
       />
     )
     const currentPageNode = container.querySelector('.ant-pagination-item-active')
@@ -57,9 +59,11 @@ describe('SampleTable', () => {
         setCurrentPage={setPageMock}
         setPageSize={setPageSizeMock}
         setShowReferencedColumns={jest.fn()}
+        tableProps={{}}
         smallSize
         withoutPagination
         showReferencedColumns
+        pagination={{}}
       />
     )
     const currentPageNode = container.querySelector('.ant-pagination-item-active')

@@ -48,6 +48,7 @@ describe('RulesTable', () => {
           smallSize={smallSize}
           setSelectRules={setSelectRulesMock}
           setMode={() => {}}
+          tableProps={{}}
         />
       )
       const idRuleRow = container.querySelector("[data-row-key='id_rule']")
@@ -68,6 +69,7 @@ describe('RulesTable', () => {
           smallSize={smallSize}
           setSelectRules={setSelectRulesMock}
           setMode={() => {}}
+          tableProps={{}}
         />
       )
       const idRuleRow = container.querySelector("[data-row-key='id_rule']")
@@ -89,6 +91,7 @@ describe('RulesTable', () => {
           smallSize={smallSize}
           setSelectRules={() => {}}
           setMode={() => {}}
+          tableProps={{}}
         />
       )
       const openSearchBtn = container.querySelector('span[role="button"]')
@@ -119,6 +122,7 @@ describe('RulesTable', () => {
           smallSize={smallSize}
           setSelectRules={() => {}}
           setMode={() => {}}
+          tableProps={{}}
         />
       )
       const openSearchBtn = container.querySelector('span[role="button"]')
