@@ -109,4 +109,41 @@ SmallQuality.storyName = 'with small dataset'
 export default {
   title: 'Data Quality/Quality',
   component: [Quality, SmallQuality],
+  argTypes: {
+    data: {
+      type: { required: true },
+    },
+    mode: {
+      options: ['column', 'row'],
+      control: { type: 'radio' },
+      defaultValue: 'row',
+    },
+    onModeChange: { action: 'clicked' },
+    selectedRules: {
+      control: 'array',
+      defaultValue: [],
+    },
+    onSelectedRulesChange: { action: 'clicked' },
+    heightenedCell: {
+      control: 'boolean',
+      defaultValue: false,
+    },
+    smallSize: {
+      control: 'boolean',
+      defaultValue: false,
+    },
+    showReferencedColumnsOnly: {
+      control: 'boolean',
+      defaultValue: true,
+    },
+    pagination: {
+      control: 'object',
+    },
+    rulesTableProps: {
+      control: 'object',
+    },
+    sampleTableProps: {
+      control: 'object',
+    },
+  },
 }
