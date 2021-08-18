@@ -12,6 +12,7 @@ import HorizontalTable from './components/HorizontalTable'
 import TableSettings from './components/TableSettings'
 
 import { NoData, TableWrapper } from './styles'
+import JsonDrawer from './components/JsonDrawer'
 
 export const DataProfiler = (props: DataProfilerProps) => {
   const {
@@ -27,11 +28,16 @@ export const DataProfiler = (props: DataProfilerProps) => {
     () => (profilerToolbarOptions ? profilerToolbarOptions?.orientOptions : {}),
     [profilerToolbarOptions]
   )
+  const jsonOptions = useMemo(
+    () => (profilerToolbarOptions ? profilerToolbarOptions?.jsonOptions : {}),
+    [profilerToolbarOptions]
+  )
   const searchOptions = useMemo(
     () => (profilerToolbarOptions ? profilerToolbarOptions?.searchOptions : {}),
     [profilerToolbarOptions]
   )
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
+  const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
   const [searchValue, setSearchValue] = useState<string>('')
   const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
@@ -191,6 +197,14 @@ export const DataProfiler = (props: DataProfilerProps) => {
     [searchOptions]
   )
 
+  const _setJsonShown = useCallback(() => {
+    setJsonShown((prevState: boolean) => {
+      jsonOptions?.onChange?.(!prevState)
+
+      return !prevState
+    })
+  }, [jsonOptions])
+
   return (
     <CheckedRowsContext.Provider
       value={{
@@ -210,6 +224,9 @@ export const DataProfiler = (props: DataProfilerProps) => {
           onModeChange={_setIsVerticalView}
           isSearchShown={!searchOptions?.disabled}
           onSearchChangeHandler={_onSearch}
+          isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
+          isJsonSwitcherChecked={isJsonShown}
+          onJsonChange={_setJsonShown}
         />
       ) : null}
       <TableWrapper smallSize={!!smallSize}>
@@ -243,6 +260,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
             pagination={pagination}
           />
         )}
+        <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
       </TableWrapper>
     </CheckedRowsContext.Provider>
   )

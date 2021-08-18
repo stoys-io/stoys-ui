@@ -11,7 +11,7 @@ const Template: Story<DataProfilerProps> = args => <ProfilerComponent {...args} 
 export const ProfilerForOneDataset = Template.bind({})
 ProfilerForOneDataset.args = {
   datasets: [firstDatasetMock as Dataset],
-  pagination: { disabled: false },
+  pagination: { disabled: true },
   rowToolbarOptions: {
     logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
     axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
@@ -21,6 +21,10 @@ ProfilerForOneDataset.args = {
     orientOptions: {
       isCheckboxShown: true,
       onOrientChange: (orient: Orient) => console.log('orient => ', orient),
+    },
+    jsonOptions: {
+      isCheckboxShown: true,
+      onChange: (shown: boolean) => console.log('json => ', shown),
     },
     searchOptions: {
       disabled: false,
