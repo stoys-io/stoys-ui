@@ -15,11 +15,12 @@ import {
   SampleCellWrapper,
 } from './styles'
 import { Column, ColumnStatistic, Rule, TableCellData } from './model'
+import { Maybe } from '../model'
 import { CELL_PADDING, CELL_SORTER_WIDTH, MAX_CELL_WIDTH } from './constants'
 
 function renderRulesColumnsCell(
   text: string,
-  item: { rule_name: string; description?: string | null; expression: string }
+  item: { rule_name: string; description?: Maybe<string>; expression: string }
 ) {
   return (
     <Tooltip
@@ -38,7 +39,7 @@ function renderRulesColumnsCell(
 
 function renderRulesDescriptionCell(
   text: string,
-  item: { rule_name: string; description?: string | null; expression?: string }
+  item: { rule_name: string; description?: Maybe<string>; expression?: string }
 ) {
   return (
     <DescriptionCell>

@@ -3,10 +3,11 @@ import React from 'react'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../columns'
 import { CELL_TABLE_HEADER_HEIGHT } from '../constants'
+import { Maybe } from '../../model'
 import { ChartTableProps, TableChartData } from '../model'
 import { ChartTable, ColorBlock } from '../styles'
 
-function renderValue(value: string | number, type: string): number | string | JSX.Element | null {
+function renderValue(value: string | number, type: string): Maybe<number | string | JSX.Element> {
   if (type === 'timestamp' || type === 'date') {
     return transformSecondsToDate(value, type)
   }

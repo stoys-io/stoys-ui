@@ -1,4 +1,5 @@
 import { PaginationProps } from '../hooks'
+import { Maybe } from '../model'
 
 export interface Column {
   name: string
@@ -7,7 +8,7 @@ export interface Column {
 export interface Rule {
   name: string
   expression: string
-  description?: string | null
+  description?: Maybe<string>
   referenced_column_names: Array<string>
 }
 
@@ -63,8 +64,8 @@ export type TableCellData = {
 
 export type RuleData = RuleStatistic & {
   failureRatio: number
-  description?: string | null
-  expression?: string | null
+  description?: Maybe<string>
+  expression?: Maybe<string>
   key: string
 }
 

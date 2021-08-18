@@ -1,8 +1,9 @@
+import { Maybe } from '../../model'
 import { ChildDataItem, HygratePmfPlotDataItem } from '../model'
 
 export function hygratePmfPlotData(
   data?: Array<ChildDataItem>
-): Array<HygratePmfPlotDataItem> | null {
+): Maybe<Array<HygratePmfPlotDataItem>> {
   if (!data) {
     return null
   }
