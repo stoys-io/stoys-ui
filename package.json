@@ -36,6 +36,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
+    "@antv/graphin": "^2.3.1",
+    "@antv/graphin-components": "^2.3.0",
     "@emotion/core": "^10.0.10",
     "@emotion/css": "^10.0.9",
     "@emotion/styled": "^10.0.10",
@@ -111,8 +113,8 @@
     "arrowParens": "avoid"
   },
   "lint-staged": {
-    "{src,test}/**/*.tsx": [
-      "npm run lint:fix"
+    "{src,test, stories}/**/*.tsx": [
+      "prettier --write"
     ]
   }
 }
