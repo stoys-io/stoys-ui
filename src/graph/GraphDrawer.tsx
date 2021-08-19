@@ -22,6 +22,7 @@ const GraphDrawer = ({ visible, setDrawerVisibility, selectedNode }: GraphDrawer
   const [table, onSelectTable] = useState('join_rates')
   return (
     <StyledDrawer
+      getContainer={false}
       placement="bottom"
       closable
       onClose={() => setDrawerVisibility(false)}

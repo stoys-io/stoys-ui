@@ -2,6 +2,7 @@ export interface Node {
   id: string
   label: string
   comboId?: string
+  violations: number
 }
 
 export type Nodes = Array<Node>

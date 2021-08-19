@@ -2,30 +2,32 @@ import React, { useRef, useState } from 'react'
 import Graphin, { Behaviors, IUserNode, GraphEvent } from '@antv/graphin'
 import { MiniMap } from '@antv/graphin-components'
 import GraphDrawer from './GraphDrawer'
+import { GraphContainer } from './styles'
 import { getData } from './helpers'
 
 const { ActivateRelations } = Behaviors
 
 const Graph = () => {
-  const graphRef = useRef(null)
+  const graphRef = useRef<Graphin>(null)
   const [selectedNode, setSelectedNode] = useState<IUserNode>()
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
 
   React.useEffect(() => {
-    // @ts-ignore
-    const { graph } = graphRef.current
-    const onNodeClick = (e: GraphEvent) => {
-      setSelectedNode(e.item.get('model'))
-      setDrawerVisibility(true)
-    }
-    graph.on('node:click', onNodeClick)
-    return () => {
-      graph.off('node:click', onNodeClick)
+    if (graphRef?.current) {
+      const { graph } = graphRef?.current
+      const onNodeClick = (e: GraphEvent) => {
+        setSelectedNode(e.item.get('model'))
+        setDrawerVisibility(true)
+      }
+      graph.on('node:click', onNodeClick)
+      return () => {
+        graph.off('node:click', onNodeClick)
+      }
     }
   }, [])
 
   return (
-    <div style={{ width: '1200px', height: '800px' }}>
+    <GraphContainer>
       <Graphin
         data={getData()}
         ref={graphRef}
@@ -87,7 +89,7 @@ const Graph = () => {
         setDrawerVisibility={setDrawerVisibility}
         selectedNode={selectedNode}
       />
-    </div>
+    </GraphContainer>
   )
 }
 
