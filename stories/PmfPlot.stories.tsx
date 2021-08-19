@@ -33,4 +33,33 @@ PmfPlotWithThreeDatasets.storyName = 'Three datasets *'
 export default {
   title: 'Chart/PmfPlot',
   component: [PmfPlotWithOneDataSet, PmfPlotWithFewDatasets, PmfPlotWithThreeDatasets],
+  argTypes: {
+    data: {
+      type: { required: true },
+    },
+    dataType: {
+      control: 'string',
+    },
+    showLogScale: {
+      control: 'boolean',
+      defaultValue: false,
+    },
+    showAxis: {
+      control: 'boolean',
+      defaultValue: false,
+    },
+    height: {
+      control: 'string',
+    },
+    width: {
+      control: 'string',
+    },
+    color: {
+      control: 'object',
+      defaultValue: [],
+    },
+    plotOptions: {
+      control: 'object',
+    },
+  },
 }
