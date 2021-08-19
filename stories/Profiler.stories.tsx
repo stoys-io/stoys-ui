@@ -63,4 +63,30 @@ Profiler.storyName = 'comparable'
 export default {
   title: 'Data Quality/Profiler',
   component: [ProfilerForOneDataset, Profiler],
+  argTypes: {
+    datasets: {
+      type: { required: true },
+    },
+    pagination: {
+      control: 'object',
+    },
+    smallSize: {
+      control: 'boolean',
+      defaultValue: false,
+    },
+    visibleColumns: {
+      control: 'array',
+      defaultValue: [],
+    },
+    colors: {
+      control: 'array',
+      defaultValue: [],
+    },
+    profilerToolbarOptions: {
+      control: 'object'
+    },
+    rowToolbarOptions: {
+      control: 'object'
+    }
+  },
 }
