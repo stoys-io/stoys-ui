@@ -14,7 +14,7 @@ ProfilerForOneDataset.args = {
   pagination: { disabled: true },
   rowToolbarOptions: {
     logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
-    axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
+    axesOptions: { isCheckboxShown: false, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
   },
   profilerToolbarOptions: {
@@ -43,7 +43,7 @@ Profiler.args = {
   pagination: { disabled: false },
   rowToolbarOptions: {
     logarithmicScaleOptions: { isCheckboxShown: true, isUsedByDefault: false },
-    axisOptions: { isCheckboxShown: true, isUsedByDefault: false },
+    axesOptions: { isCheckboxShown: true, isUsedByDefault: false },
     chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
   },
   profilerToolbarOptions: {

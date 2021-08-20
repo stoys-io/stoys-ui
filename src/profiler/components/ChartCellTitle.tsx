@@ -10,13 +10,13 @@ const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps):
       {({
         checkedLogRows,
         setCheckedLogRows,
-        checkedAxisRows,
-        setCheckedAxisRows,
+        checkedAxesRows,
+        setCheckedAxesRows,
         checkedTableRows,
         setCheckedTableRows,
       }) => {
         const isLogChecked = checkedLogRows.includes(row.columnName)
-        const isAxisChecked = checkedAxisRows.includes(row.columnName)
+        const isAxesChecked = checkedAxesRows.includes(row.columnName)
         const isTableChecked = checkedTableRows.includes(row.columnName)
 
         const setChecked =
@@ -47,15 +47,15 @@ const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps):
           <Toolbar
             showTableChartSwitcher={tableOptions?.isCheckboxShown}
             showLogScale={rowOptions.isLogCheckboxShown}
-            showAxes={rowOptions.isAxisCheckboxShown}
+            showAxes={rowOptions.isAxesCheckboxShown}
             activeLogScale={isLogChecked}
-            activeAxes={isAxisChecked}
+            activeAxes={isAxesChecked}
             activeTable={isTableChecked}
             disableLogScale={isTableChecked}
             disableAxes={isTableChecked}
             onTableClickHandler={onChartTableClick}
             onLogScaleClickHandler={setChecked(checkedLogRows, setCheckedLogRows)}
-            onAxesClickHandler={setChecked(checkedAxisRows, setCheckedAxisRows)}
+            onAxesClickHandler={setChecked(checkedAxesRows, setCheckedAxesRows)}
           />
         )
       }}

@@ -11,7 +11,7 @@ describe('BarChart', () => {
         xData={['a', 'b', 'c', 'd', 'e', 'f']}
         height={200}
         isLogScale={false}
-        haveAxis={false}
+        haveAxes={false}
       />
     )
 

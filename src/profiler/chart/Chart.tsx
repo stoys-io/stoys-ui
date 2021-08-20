@@ -18,7 +18,7 @@ import { ChartWrapper } from '../../pmfPlot/styles'
 
 function renderChart(
   data: Maybe<Array<HygratePmfPlotDataItem>>,
-  { checkedLogRows, checkedAxisRows, checkedTableRows, isHorizontal, smallSize }: RenderChartProps
+  { checkedLogRows, checkedAxesRows, checkedTableRows, isHorizontal, smallSize }: RenderChartProps
 ) {
   if (!data) {
     return null
@@ -26,7 +26,7 @@ function renderChart(
 
   const parentName = data[0].parent
   const enabledLogScale = checkedLogRows.includes(parentName)
-  const enabledAxis = checkedAxisRows.includes(parentName)
+  const enabledAxes = checkedAxesRows.includes(parentName)
   const enableTableView = checkedTableRows.includes(parentName)
   const tableRowHeight = smallSize ? MIN_TABLE_ROW_HEIGHT : TABLE_ROW_HEIGHT
   const minChartHeight = smallSize ? MIN_SMALL_CHART_CELL_HEIGHT : MIN_CHART_CELL_HEIGHT
@@ -73,7 +73,7 @@ function renderChart(
           height={height}
           xData={uniqueItems}
           isLogScale={enabledLogScale}
-          haveAxis={enabledAxis}
+          haveAxes={enabledAxes}
         />
       </ChartWrapper>
     )
@@ -96,7 +96,7 @@ function renderChart(
       data={pmfPlotDataData}
       height={height}
       dataType={data[0].type}
-      showAxis={enabledAxis}
+      showAxes={enabledAxes}
       showLogScale={enabledLogScale}
       color={color}
     />
@@ -110,10 +110,10 @@ const ChartWithTooltip = ({
 }: ChartWithTooltipProps): Maybe<JSX.Element> => {
   return (
     <CheckedRowsContext.Consumer>
-      {({ checkedLogRows, checkedAxisRows, checkedTableRows }) =>
+      {({ checkedLogRows, checkedAxesRows, checkedTableRows }) =>
         renderChart(data, {
           checkedLogRows,
-          checkedAxisRows,
+          checkedAxesRows,
           checkedTableRows,
           isHorizontal: !!isHorizontal,
           smallSize: !!smallSize,

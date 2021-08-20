@@ -44,7 +44,7 @@ export default {
       control: 'boolean',
       defaultValue: false,
     },
-    showAxis: {
+    showAxes: {
       control: 'boolean',
       defaultValue: false,
     },

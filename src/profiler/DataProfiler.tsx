@@ -104,7 +104,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
         logarithmicScaleOptions: {
           isCheckboxShown: true,
         },
-        axisOptions: {
+        axesOptions: {
           isCheckboxShown: true,
         },
         chartTableOptions: {
@@ -117,7 +117,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
         logarithmicScaleOptions: {
           isCheckboxShown: false,
         },
-        axisOptions: {
+        axesOptions: {
           isCheckboxShown: false,
         },
         chartTableOptions: {
@@ -132,8 +132,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
     _rowToolbarOptions.logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
   )
-  const [checkedAxisRows, setCheckedAxisRows] = useState<Array<string>>(
-    _rowToolbarOptions.axisOptions?.isUsedByDefault ? columnNames : []
+  const [checkedAxesRows, setCheckedAxesRows] = useState<Array<string>>(
+    _rowToolbarOptions.axesOptions?.isUsedByDefault ? columnNames : []
   )
   const [checkedTableRows, setCheckedTableRows] = useState<Array<string>>(
     _rowToolbarOptions.chartTableOptions?.isUsedByDefault ? columnNames : []
@@ -169,8 +169,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
           setChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
         },
         {
-          isCheckboxShown: !!_rowToolbarOptions.axisOptions?.isCheckboxShown,
-          setChecked: (isChecked: boolean) => setCheckedAxisRows(isChecked ? columnNames : []),
+          isCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
+          setChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
         },
         tableOptions,
         smallSize,
@@ -210,8 +210,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
       value={{
         checkedLogRows,
         setCheckedLogRows,
-        checkedAxisRows,
-        setCheckedAxisRows,
+        checkedAxesRows,
+        setCheckedAxesRows,
         checkedTableRows,
         setCheckedTableRows,
         dataLength: data.length,
@@ -243,7 +243,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
             pagination={pagination}
             rowOptions={{
               isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
-              isAxisCheckboxShown: !!_rowToolbarOptions.axisOptions?.isCheckboxShown,
+              isAxesCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
             }}
             tableOptions={tableOptions}
           />
