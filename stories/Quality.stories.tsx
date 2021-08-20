@@ -9,7 +9,7 @@ const Template: Story<QualityProps> = args => <QualityComponent {...args} />
 export const Quality = Template.bind({})
 Quality.args = {
   data: dataMock,
-  pagination: { disabled: true },
+  pagination: false,
   smallSize: true,
 }
 Quality.storyName = 'with large dataset'

@@ -38,14 +38,14 @@ const JoinStatistics = ({
 
   return (
     <StyledJoinStatistics
+      sticky
+      smallSize={smallSize}
+      pagination={false}
+      {...tableProps}
       columns={_columns}
       dataSource={data}
       rowClassName={getRowClassName}
       onRow={_onRow}
-      {...tableProps}
-      sticky
-      smallSize={smallSize}
-      pagination={false}
     />
   )
 }
