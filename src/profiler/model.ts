@@ -1,4 +1,6 @@
 import { ColumnsType } from 'antd/lib/table/interface'
+import { TableProps as AntdTableProps } from 'antd/lib/table'
+
 import { PaginationProps } from '../hooks'
 import { Maybe } from '../model'
 
@@ -88,12 +90,12 @@ export interface ProfilerToolbarOptions {
   }
 }
 
-export interface DataProfilerProps {
+export interface DataProfilerProps extends AntdTableProps<any> {
   datasets: Datasets
   profilerToolbarOptions?: null | false | ProfilerToolbarOptions
   colors?: Array<string>
   rowToolbarOptions?: null | false | RowToolbarOptions
-  pagination?: PaginationProps
+  pagination?: PaginationProps | false
   smallSize?: boolean
   visibleColumns?: Array<string>
 }
@@ -145,7 +147,7 @@ export interface DataItem {
   children: Array<ChildDataItem>
 }
 
-export interface TableProps {
+export interface TableProps extends AntdTableProps<any> {
   data: Array<DataItem>
   columns: ColumnsType<DataItem | ChildDataItem>
   currentPage: number
@@ -153,6 +155,7 @@ export interface TableProps {
   setCurrentPage: (page: number) => void
   setPageSize: (pageSize: number) => void
   withoutPagination: boolean
+  pagination?: PaginationProps | false
 }
 
 export interface VerticalTableProps extends TableProps {

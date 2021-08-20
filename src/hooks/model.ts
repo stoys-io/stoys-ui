@@ -1,13 +1,12 @@
-export interface PaginationProps {
-  disabled?: boolean
-  currentPage?: number
+import { TablePaginationConfig } from 'antd/lib/table'
+
+export interface PaginationProps extends TablePaginationConfig {
   onCurrentPageChange?: (page: number) => void
-  pageSize?: number
   onPageSizeChange?: (pageSize: number) => void
 }
 
 export interface UsePagination {
-  currentPage: number
+  current: number
   setCurrentPage: (page: number) => void
   pageSize: number
   setPageSize: (pageSize: number) => void

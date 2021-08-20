@@ -14,15 +14,16 @@ import TableSettings from './components/TableSettings'
 import { NoData, TableWrapper } from './styles'
 import JsonDrawer from './components/JsonDrawer'
 
-export const DataProfiler = ({
-  datasets,
-  colors,
-  rowToolbarOptions,
-  pagination,
-  profilerToolbarOptions,
-  smallSize = true,
-  visibleColumns,
-}: DataProfilerProps) => {
+export const DataProfiler = (props: DataProfilerProps) => {
+  const {
+    datasets,
+    colors,
+    rowToolbarOptions,
+    pagination,
+    profilerToolbarOptions,
+    smallSize = true,
+    visibleColumns,
+  } = props
   const orientOptions = useMemo(
     () => (profilerToolbarOptions ? profilerToolbarOptions?.orientOptions : {}),
     [profilerToolbarOptions]
@@ -38,7 +39,7 @@ export const DataProfiler = ({
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
   const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
   const [searchValue, setSearchValue] = useState<string>('')
-  const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
+  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
   if (!datasets || !Array.isArray(datasets)) {
     return <NoData>No data</NoData>
@@ -231,13 +232,15 @@ export const DataProfiler = ({
       <TableWrapper smallSize={!!smallSize}>
         {isVertical ? (
           <VerticalTable
+            {...props}
             data={data}
             columns={columns}
-            currentPage={currentPage}
+            currentPage={current}
             setCurrentPage={setCurrentPage}
             pageSize={pageSize}
             setPageSize={setPageSize}
-            withoutPagination={!!pagination?.disabled}
+            withoutPagination={pagination === false}
+            pagination={pagination}
             rowOptions={{
               isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
               isAxisCheckboxShown: !!_rowToolbarOptions.axisOptions?.isCheckboxShown,
@@ -246,13 +249,15 @@ export const DataProfiler = ({
           />
         ) : (
           <HorizontalTable
+            {...props}
             data={data}
             columns={columns}
-            currentPage={currentPage}
+            currentPage={current}
             setCurrentPage={setCurrentPage}
             pageSize={pageSize}
             setPageSize={setPageSize}
-            withoutPagination={!!pagination?.disabled}
+            withoutPagination={pagination === false}
+            pagination={pagination}
           />
         )}
         <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />

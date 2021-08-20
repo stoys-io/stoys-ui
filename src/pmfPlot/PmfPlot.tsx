@@ -19,6 +19,7 @@ const PmfPlot = ({
   showAxis,
   showLogScale,
   color,
+  plotOptions = {},
 }: PmfPlotProps): JSX.Element => {
   const isDataSet = Array.isArray(data[0])
   const axisType = showLogScale ? 'log' : 'value'
@@ -169,7 +170,6 @@ const PmfPlot = ({
           filterMode: 'weakFilter',
         },
       ],
-      series,
       tooltip: {
         confine: true,
         trigger: 'axis',
@@ -178,8 +178,10 @@ const PmfPlot = ({
         },
         formatter: tooltipFormatter,
       },
+      ...plotOptions,
+      series,
     }),
-    [series]
+    [series, plotOptions]
   )
 
   return (

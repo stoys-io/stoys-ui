@@ -10,6 +10,7 @@ const JoinStatistics = ({
   joinRateId,
   onRowClickHandler,
   smallSize,
+  tableProps,
 }: JoinStatisticsProps): JSX.Element => {
   const _columns = useMemo(() => getJoinRatesColumns(columns), [data])
 
@@ -39,9 +40,10 @@ const JoinStatistics = ({
     <StyledJoinStatistics
       sticky
       smallSize={smallSize}
+      pagination={false}
+      {...tableProps}
       columns={_columns}
       dataSource={data}
-      pagination={false}
       rowClassName={getRowClassName}
       onRow={_onRow}
     />
