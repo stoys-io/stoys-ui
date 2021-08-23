@@ -16,7 +16,7 @@ const PmfPlot = ({
   dataType,
   height = '100%',
   width = '100%',
-  showAxis,
+  showAxes,
   showLogScale,
   color,
   plotOptions = {},
@@ -112,20 +112,20 @@ const PmfPlot = ({
       confine: true,
       blendMode: 'multiply',
       grid: {
-        left: showAxis ? 50 : 10,
-        right: showAxis ? 25 : 10,
-        top: showAxis ? 25 : 10,
-        bottom: showAxis ? 25 : 10,
+        left: showAxes ? 50 : 10,
+        right: showAxes ? 25 : 10,
+        top: showAxes ? 25 : 10,
+        bottom: showAxes ? 25 : 10,
         borderWidth: 0,
       },
       xAxis: {
         min: minValue,
         max: maxValue,
         axisTick: {
-          show: showAxis,
+          show: showAxes,
         },
         axisLine: {
-          show: showAxis,
+          show: showAxes,
           onZero: false,
         },
         splitLine: {
@@ -133,7 +133,7 @@ const PmfPlot = ({
         },
         splitNumber: 3,
         axisLabel: {
-          show: showAxis,
+          show: showAxes,
           formatter: function (value: any) {
             if (dataType === 'timestamp' || dataType === 'date') {
               return transformSecondsToDate(value, dataType)
@@ -150,14 +150,14 @@ const PmfPlot = ({
         min: +!!showLogScale,
         type: axisType,
         axisTick: {
-          show: showAxis,
+          show: showAxes,
         },
         axisLine: {
-          show: showAxis,
+          show: showAxes,
         },
         splitNumber: 3,
         axisLabel: {
-          show: showAxis,
+          show: showAxes,
           formatter: function (value: any) {
             return renderNumericValue(2, true)(value)
           },
