@@ -7,6 +7,19 @@ export const getData = () => {
     nodes: nodes.map((node) => ({
       ...node,
       size: [150, 30],
+      // style: {
+      //   badges: [
+      //     {
+      //       position: 'RT',
+      //       type: 'text',
+      //       value: 8,
+      //       size: [20, 20],
+      //       color: '#fff',
+      //       fill: 'red',
+      //     },
+      //   ],
+      // }
+
     })),
     edges,
     combos,

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
+import { Menu } from 'antd'
 import Graphin, { Behaviors, IUserNode, GraphEvent } from '@antv/graphin'
-import { MiniMap } from '@antv/graphin-components'
+import { MiniMap, ContextMenu } from '@antv/graphin-components'
 import GraphDrawer from './GraphDrawer'
 import { GraphContainer } from './styles'
 import { getData } from './helpers'
@@ -37,6 +38,9 @@ const Graph = () => {
           nodesep: 10,
           ranksep: 50,
         }}
+        // options={{
+        //   renderer: 'svg'
+        // }}
         width={2000}
         height={900}
         defaultNode={{
@@ -81,6 +85,12 @@ const Graph = () => {
           // options={{ size: [ 400, 300] }}
           style={{ top: '0px', bottom: 'unset' }}
         />
+        <ContextMenu>
+          <Menu>
+            <Menu.Item key="1">Option 1</Menu.Item>
+            <Menu.Item key="2">Option 2</Menu.Item>
+          </Menu>
+        </ContextMenu>
         <ActivateRelations trigger="onclick" />
       </Graphin>
 
