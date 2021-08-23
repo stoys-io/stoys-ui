@@ -2,7 +2,7 @@ import React from 'react'
 
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../columns'
-import { CELL_TABLE_HEADER_HEIGHT } from '../constants'
+import { CELL_TABLE_HEADER_HEIGHT, COLORS } from '../constants'
 import { Maybe } from '../../model'
 import { ChartTableProps, TableChartData } from '../model'
 import { ChartTable, ColorBlock } from '../styles'
@@ -69,10 +69,10 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
       key: 'item',
       title: 'item',
       dataIndex: 'item',
-      render: (value: number | string, row: any) => {
+      render: (value: number | string, row: TableChartData | {}) => {
         return (
           <>
-            <ColorBlock color={row.color} />
+            <ColorBlock color={'color' in row ? row.color : COLORS[1]} />
             {renderValue(value, type)}
           </>
         )

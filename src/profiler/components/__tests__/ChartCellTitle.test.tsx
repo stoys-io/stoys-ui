@@ -13,9 +13,9 @@ describe('ChartCellTitle', () => {
         value={{
           checkedTableRows: ['1', '2', '3'],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -24,7 +24,7 @@ describe('ChartCellTitle', () => {
           row={{ columnName: 'id', key: 'id', children: [] }}
           rowOptions={{
             isLogCheckboxShown: false,
-            isAxisCheckboxShown: false,
+            isAxesCheckboxShown: false,
           }}
           tableOptions={{ isCheckboxShown: false }}
         />
@@ -46,9 +46,9 @@ describe('ChartCellTitle', () => {
         value={{
           checkedTableRows: ['1', '2', '3'],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -57,7 +57,7 @@ describe('ChartCellTitle', () => {
           row={{ columnName: 'id', key: 'id', children: [] }}
           rowOptions={{
             isLogCheckboxShown: true,
-            isAxisCheckboxShown: false,
+            isAxesCheckboxShown: false,
           }}
           tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         />
@@ -80,9 +80,9 @@ describe('ChartCellTitle', () => {
         value={{
           checkedTableRows: ['1', '2', '3'],
           checkedLogRows: ['id'],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: setCheckedMock,
           setCheckedTableRows: jest.fn(),
         }}
@@ -91,7 +91,7 @@ describe('ChartCellTitle', () => {
           row={{ columnName: 'id', key: 'id', children: [] }}
           rowOptions={{
             isLogCheckboxShown: true,
-            isAxisCheckboxShown: false,
+            isAxesCheckboxShown: false,
           }}
           tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         />
@@ -105,15 +105,15 @@ describe('ChartCellTitle', () => {
     expect(setCheckedMock).toBeCalledWith([])
   })
 
-  it('should render axis checkbox', () => {
+  it('should render axes checkbox', () => {
     const { queryByTestId } = render(
       <CheckedRowsContext.Provider
         value={{
           checkedTableRows: ['1', '2', '3'],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -122,7 +122,7 @@ describe('ChartCellTitle', () => {
           row={{ columnName: 'id', key: 'id', children: [] }}
           rowOptions={{
             isLogCheckboxShown: false,
-            isAxisCheckboxShown: true,
+            isAxesCheckboxShown: true,
           }}
           tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         />
@@ -138,16 +138,16 @@ describe('ChartCellTitle', () => {
     expect(axesBtn).toBeTruthy()
   })
 
-  it('should call setCheckedAxisRows', () => {
+  it('should call setCheckedAxesRows', () => {
     const setCheckedMock = jest.fn()
     const { queryByTestId } = render(
       <CheckedRowsContext.Provider
         value={{
           checkedTableRows: ['1', '2', '3'],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: setCheckedMock,
+          setCheckedAxesRows: setCheckedMock,
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -156,7 +156,7 @@ describe('ChartCellTitle', () => {
           row={{ columnName: 'id', key: 'id', children: [] }}
           rowOptions={{
             isLogCheckboxShown: false,
-            isAxisCheckboxShown: true,
+            isAxesCheckboxShown: true,
           }}
           tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         />
@@ -176,9 +176,9 @@ describe('ChartCellTitle', () => {
         value={{
           checkedTableRows: ['1', '2', '3'],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -187,7 +187,7 @@ describe('ChartCellTitle', () => {
           row={{ columnName: 'id', key: 'id', children: [] }}
           rowOptions={{
             isLogCheckboxShown: false,
-            isAxisCheckboxShown: false,
+            isAxesCheckboxShown: false,
           }}
           tableOptions={{ isCheckboxShown: true, setChecked: jest.fn() }}
         />
@@ -205,9 +205,9 @@ describe('ChartCellTitle', () => {
     const setCheckedMock = jest.fn()
     const baseValue = {
       checkedLogRows: ['1'],
-      checkedAxisRows: ['1'],
+      checkedAxesRows: ['1'],
       dataLength: 10,
-      setCheckedAxisRows: jest.fn(),
+      setCheckedAxesRows: jest.fn(),
       setCheckedLogRows: jest.fn(),
       setCheckedTableRows: setCheckedMock,
     }
@@ -222,7 +222,7 @@ describe('ChartCellTitle', () => {
     const rowMock = { columnName: 'id', key: 'id', children: [] as any }
     const rowOptionsMock = {
       isLogCheckboxShown: false,
-      isAxisCheckboxShown: false,
+      isAxesCheckboxShown: false,
     }
     const tableOptionsMock = { isCheckboxShown: true, setChecked: jest.fn() }
     const { queryByTestId, rerender } = render(

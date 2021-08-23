@@ -15,7 +15,7 @@ import { ChartWithTooltip, hygratePmfPlotData } from './chart'
 import { renderNumericValue } from '../helpers'
 import { transformSecondsToDate } from '../pmfPlot/helpers'
 import {
-  AxisOptions,
+  AxesOptions,
   DataItem,
   ChildDataItem,
   LogarithmicScale,
@@ -61,7 +61,7 @@ export const renderNumericCell = (value: number | string) => {
   )
 }
 
-const renderRow: Render = (render, logarithmicScale, axisOptions, tableOptions) => (value, row) => {
+const renderRow: Render = (render, logarithmicScale, axesOptions, tableOptions) => (value, row) => {
   const renderedCellConfig: RenderedCellConfig = {
     children: null,
     props: {},
@@ -82,7 +82,7 @@ const renderRow: Render = (render, logarithmicScale, axisOptions, tableOptions) 
         row={row}
         rowOptions={{
           isLogCheckboxShown: logarithmicScale.isCheckboxShown,
-          isAxisCheckboxShown: axisOptions.isCheckboxShown,
+          isAxesCheckboxShown: axesOptions.isCheckboxShown,
         }}
         tableOptions={tableOptions}
       />
@@ -147,12 +147,12 @@ const renderMeanMinMaxValue = (
 
 const renderChartCellTitle = (
   logarithmicScale: LogarithmicScale,
-  axisOptions: AxisOptions,
+  axesOptions: AxesOptions,
   tableOptions: TableOptions
 ) => (
   <ChartHeaderCellTitle
     logarithmicScale={logarithmicScale}
-    axisOptions={axisOptions}
+    axesOptions={axesOptions}
     tableOptions={tableOptions}
   />
 )
@@ -160,7 +160,7 @@ const renderChartCellTitle = (
 export const getColumns = (
   data: Array<DataItem>,
   logarithmicScale: LogarithmicScale,
-  axisOptions: AxisOptions,
+  axesOptions: AxesOptions,
   tableOptions: TableOptions,
   smallSize: boolean = false,
   visibleColumns?: Array<string>
@@ -177,7 +177,7 @@ export const getColumns = (
     }
 
     if (index === 0) {
-      _column.render = renderRow(_column.render, logarithmicScale, axisOptions, tableOptions)
+      _column.render = renderRow(_column.render, logarithmicScale, axesOptions, tableOptions)
     }
 
     return _column
@@ -186,7 +186,7 @@ export const getColumns = (
   return [
     ...columns,
     {
-      title: renderChartCellTitle(logarithmicScale, axisOptions, tableOptions),
+      title: renderChartCellTitle(logarithmicScale, axesOptions, tableOptions),
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,

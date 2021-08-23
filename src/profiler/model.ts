@@ -63,7 +63,7 @@ export interface RowToolbarOptions {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
   }
-  axisOptions?: {
+  axesOptions?: {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
   }
@@ -117,7 +117,7 @@ export interface RenderedCellConfig {
 export type Render = (
   render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>,
   logarithmicScale: LogarithmicScale,
-  axisOptions: AxisOptions,
+  axesOptions: AxesOptions,
   tableOptions: TableOptions
 ) => (value: number | string, row: DataItem | ChildDataItem, index: number) => RenderedCellConfig
 
@@ -126,7 +126,7 @@ export interface LogarithmicScale {
   setChecked: (isChecked: boolean) => void
 }
 
-export interface AxisOptions {
+export interface AxesOptions {
   setChecked: (isChecked: boolean) => void
   isCheckboxShown: boolean
 }
@@ -177,7 +177,7 @@ export interface BarChartProps {
   xData: Array<number> | Array<string>
   height: number
   isLogScale: boolean
-  haveAxis: boolean
+  haveAxes: boolean
 }
 
 export interface ChartWithTooltipProps {
@@ -188,7 +188,7 @@ export interface ChartWithTooltipProps {
 
 export interface RowOptions {
   isLogCheckboxShown: boolean
-  isAxisCheckboxShown: boolean
+  isAxesCheckboxShown: boolean
 }
 export interface TableSubheaderRowProps {
   row: DataItem
@@ -199,20 +199,20 @@ export interface TableSubheaderRowProps {
 export interface ChartTableHeaderProps {
   logarithmicScale: LogarithmicScale
   children: JSX.Element
-  axisOptions: AxisOptions
+  axesOptions: AxesOptions
 }
 
 export interface ChartHeaderCellTitleProps {
   logarithmicScale: LogarithmicScale
-  axisOptions: AxisOptions
+  axesOptions: AxesOptions
   tableOptions: TableOptions
 }
 
 export interface CheckedRowsContextProps {
   checkedLogRows: Array<string>
   setCheckedLogRows: (checkedLogRows: Array<string>) => void
-  checkedAxisRows: Array<string>
-  setCheckedAxisRows: (checkedAxisRows: Array<string>) => void
+  checkedAxesRows: Array<string>
+  setCheckedAxesRows: (checkedAxesRows: Array<string>) => void
   checkedTableRows: Array<string>
   setCheckedTableRows: (checkedTableRows: Array<string>) => void
   dataLength: number
@@ -248,6 +248,18 @@ export interface VerticalColumn {
   render?: (text: any, record: any) => any
 }
 
+export interface VerticalData {
+  [key: string]:
+    | undefined
+    | number
+    | null
+    | boolean
+    | string
+    | {}
+    | { type: string; pmf: Array<PmfPlotItem>; items: Array<DiscreteItem> }
+    | { type: string; value: string }
+}
+
 export interface ChartTableProps {
   data: Array<HygratePmfPlotDataItem>
   height: number
@@ -255,7 +267,7 @@ export interface ChartTableProps {
 
 export interface RenderChartProps {
   checkedLogRows: Array<string>
-  checkedAxisRows: Array<string>
+  checkedAxesRows: Array<string>
   checkedTableRows: Array<string>
   isHorizontal: boolean
   smallSize: boolean
