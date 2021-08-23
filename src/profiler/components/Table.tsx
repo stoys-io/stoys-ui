@@ -38,22 +38,31 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
     .filter((item): item is Array<TableChartData> => !!item)
     .flat()
 
-  const groupedDataByItem = dataSource.reduce((acc: any, item: any) => {
-    acc[item.item] = [...(acc[item.item] ? acc[item.item] : []), item]
+  const groupedDataByItem = dataSource.reduce(
+    (acc: { [key: string]: Array<TableChartData> }, item: TableChartData) => {
+      acc[item.item] = [...(acc[item.item] ? acc[item.item] : []), item]
 
-    return acc
-  }, {})
+      return acc
+    },
+    {}
+  )
 
   const sortedData = Object.values(groupedDataByItem)
-  sortedData.sort((a: any, b: any) => {
-    const aCounts = a.map((item: any) => item.count)
-    const bCounts = b.map((item: any) => item.count)
+
+  function getCounts(item: TableChartData): number {
+    return item.count
+  }
+
+  sortedData.sort((a: Array<TableChartData>, b: Array<TableChartData>) => {
+    const aCounts = a.map(getCounts)
+    const bCounts = b.map(getCounts)
     const aMax = Math.max.apply(null, aCounts)
     const bMax = Math.max.apply(null, bCounts)
+
     return bMax - aMax
   })
 
-  const tableData: any = sortedData.flat().slice(0, 10)
+  const tableData: Array<TableChartData> = sortedData.flat().slice(0, 10)
 
   const columns = [
     {

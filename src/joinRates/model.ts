@@ -1,4 +1,4 @@
-import { QualityData, Mode } from '../quality/model'
+import { QualityData, Mode, RuleData } from '../quality/model'
 import { PaginationProps } from '../hooks/model'
 import { TableProps } from 'antd/lib/table'
 
@@ -44,7 +44,7 @@ export interface JoinRatesProps {
   smallSize?: boolean
   statisticsTableProps?: TableProps<any>
   qualityTableProps?: {
-    rulesTableProps?: TableProps<any>
+    rulesTableProps?: TableProps<RuleData>
     sampleTableProps?: TableProps<any>
   }
 }
