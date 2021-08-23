@@ -39,6 +39,7 @@ export default {
     },
     dataType: {
       control: 'string',
+      defaultValue: 'integer',
     },
     showLogScale: {
       control: 'boolean',
@@ -49,10 +50,12 @@ export default {
       defaultValue: false,
     },
     height: {
-      control: 'string',
+      control: 'number',
+      defaultValue: 500,
     },
     width: {
-      control: 'string',
+      control: 'number',
+      defaultValue: 500,
     },
     color: {
       control: 'object',
