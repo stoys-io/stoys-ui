@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { IUserNode } from '@antv/graphin'
 import { Tabs } from 'antd'
 import { StyledDrawer } from './styles'
 import { JoinRates, Metrics, Profiler, Quality } from '..'
@@ -15,10 +14,9 @@ const { TabPane } = Tabs
 interface GraphDrawerProps {
   visible: boolean
   setDrawerVisibility: (visible: boolean) => void
-  selectedNode?: IUserNode
 }
 
-const GraphDrawer = ({ visible, setDrawerVisibility, selectedNode }: GraphDrawerProps) => {
+const GraphDrawer = ({ visible, setDrawerVisibility }: GraphDrawerProps) => {
   const [table, onSelectTable] = useState('join_rates')
   return (
     <StyledDrawer

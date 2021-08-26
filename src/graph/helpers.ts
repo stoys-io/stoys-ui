@@ -6,7 +6,7 @@ export const getData = () => {
   return {
     nodes: nodes.map((node) => ({
       ...node,
-      size: [150, 30],
+      // size: [150, 30],
       // style: {
       //   badges: [
       //     {
@@ -24,4 +24,11 @@ export const getData = () => {
     edges,
     combos,
   }
+}
+
+export const getLabelText = (label: string) => {
+  if (label.length > 17) {
+    return `${label.slice(0, 15)}...`
+  }
+  return label
 }

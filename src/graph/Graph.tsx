@@ -1,104 +1,156 @@
-import React, { useRef, useState } from 'react'
-import { Menu } from 'antd'
-import Graphin, { Behaviors, IUserNode, GraphEvent } from '@antv/graphin'
-import { MiniMap, ContextMenu } from '@antv/graphin-components'
+import React, { useRef, useEffect, useState } from 'react'
+import G6 from '@antv/g6'
+import { Rect, Text, Group, createNodeFromReact } from 'g6-react-node'
+import { getData, getLabelText } from './helpers'
+import { appendAutoShapeListener } from './events'
 import GraphDrawer from './GraphDrawer'
 import { GraphContainer } from './styles'
-import { getData } from './helpers'
 
-const { ActivateRelations } = Behaviors
+const data = getData()
 
 const Graph = () => {
-  const graphRef = useRef<Graphin>(null)
-  const [selectedNode, setSelectedNode] = useState<IUserNode>()
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
+  const graphRef = useRef(null)
+  let graph: any = null
 
-  React.useEffect(() => {
-    if (graphRef?.current) {
-      const { graph } = graphRef?.current
-      const onNodeClick = (e: GraphEvent) => {
-        setSelectedNode(e.item.get('model'))
-        setDrawerVisibility(true)
-      }
-      graph.on('node:click', onNodeClick)
-      return () => {
-        graph.off('node:click', onNodeClick)
-      }
+  const CustomNode = ({ cfg }: { cfg: any }) => {
+    const { label } = cfg
+    return (
+      <Group>
+        <Rect
+          style={{
+            width: 150,
+            maxWidth: 150,
+            height: 'auto',
+            fill: '#fff',
+            stroke: '#ddd',
+            shadowColor: '#eee',
+            shadowBlur: 30,
+            radius: [4],
+            padding: [8],
+            cursor: 'pointer',
+          }}
+          onClick={(evt, node, shape, graph) => {
+            setDrawerVisibility(true)
+          }}
+        >
+          <Text
+            style={{
+              fill: '#000',
+              fontSize: 16,
+              cursor: 'pointer',
+            }}
+          >
+            {getLabelText(label)}
+          </Text>
+        </Rect>
+      </Group>
+    )
+  }
+
+  useEffect(() => {
+    if (!graph) {
+      G6.registerNode('customNodeShape', createNodeFromReact(CustomNode))
+
+      const minimap = new G6.Minimap({
+        // size: [100, 100],
+        className: 'minimap',
+        // type: 'delegate',
+      })
+
+      graph = new G6.Graph({
+        // @ts-ignore
+        container: graphRef.current,
+        width: 1200,
+        height: 600,
+        plugins: [minimap],
+        workerEnabled: true,
+        modes: {
+          default: [
+            'drag-canvas',
+            'zoom-canvas',
+            {
+              type: 'activate-relations',
+              trigger: 'click',
+            },
+            {
+              type: 'collapse-expand-combo',
+              relayout: false,
+            },
+            {
+              type: 'tooltip',
+              // @ts-ignore
+              formatText(model) {
+                return model.label
+              },
+              offset: 10,
+            },
+          ],
+        },
+        defaultNode: {
+          type: 'customNodeShape',
+          size: [150, 50],
+          labelCfg: {
+            style: {
+              fill: '#000000A6',
+              fontSize: 10,
+            },
+          },
+          style: {
+            stroke: '#72CC4A',
+            width: 150,
+            height: 30,
+          },
+        },
+        defaultEdge: {
+          type: 'line',
+          size: 1,
+          color: '#ccc',
+        },
+        defaultCombo: {
+          // type: 'rect',
+          collapsed: false,
+          style: {
+            fill: '#c6eee3',
+            stroke: '#C4E3B2',
+          },
+        },
+        layout: {
+          type: 'dagre',
+          rankdir: 'LR',
+          nodesep: 10,
+          ranksep: 70,
+        },
+        // nodeStateStyles: {
+        //   active: {
+        //     stroke: 'red',
+        //     lineWidth: 3
+        //   }
+        // },
+        // edgeStateStyles: {
+        //   hover: {
+        //     stroke: 'blue',
+        //     lineWidth: 3
+        //   }
+        // }
+      })
+    }
+
+    graph.data(data)
+
+    graph.render()
+
+    appendAutoShapeListener(graph)
+
+    return () => {
+      graph.destroy()
     }
   }, [])
 
   return (
     <GraphContainer>
-      <Graphin
-        data={getData()}
-        ref={graphRef}
-        layout={{
-          type: 'dagre',
-          rankdir: 'LR',
-          nodesep: 10,
-          ranksep: 50,
-        }}
-        // options={{
-        //   renderer: 'svg'
-        // }}
-        width={2000}
-        height={900}
-        defaultNode={{
-          type: 'rect',
-        }}
-        defaultCombo={{
-          // FIXME collapsed doesn't work
-          collapsed: true,
-          style: {
-            lineWidth: 3,
-            fill: '#f8f8f8',
-          },
-        }}
-        defaultEdge={{
-          style: {
-            keyshape: {
-              stroke: '#ccc',
-              lineWidth: 2,
-            },
-            label: {},
-            halo: {},
-            status: {
-              inactive: {
-                keyshape: {
-                  stroke: '#000000',
-                },
-              },
-            },
-          },
-        }}
-        modes={{
-          default: [
-            'drag-canvas',
-            'zoom-canvas',
-            'collapse-expand-combo',
-            { type: 'tooltip', offset: 10 },
-          ],
-        }}
-      >
-        <MiniMap
-          visible
-          // options={{ size: [ 400, 300] }}
-          style={{ top: '0px', bottom: 'unset' }}
-        />
-        <ContextMenu>
-          <Menu>
-            <Menu.Item key="1">Option 1</Menu.Item>
-            <Menu.Item key="2">Option 2</Menu.Item>
-          </Menu>
-        </ContextMenu>
-        <ActivateRelations trigger="onclick" />
-      </Graphin>
-
-      <GraphDrawer
-        visible={drawerIsVisible}
-        setDrawerVisibility={setDrawerVisibility}
-        selectedNode={selectedNode}
-      />
+      <div ref={graphRef} />
+      <GraphDrawer visible={drawerIsVisible} setDrawerVisibility={setDrawerVisibility} />
     </GraphContainer>
   )
 }
