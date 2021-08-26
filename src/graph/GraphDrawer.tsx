@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { Tabs } from 'antd'
-import { StyledDrawer } from './styles'
+import { StyledDrawer, DrawerNodeLabel } from './styles'
 import { JoinRates, Metrics, Profiler, Quality } from '..'
 import joinRatesData from '../../stories/mocks/covid19_epidemiology_demographics.dq_join_result.json'
 import { dq_join_info_1 } from '../../stories/mocks/dqJoinInfo.mock'
@@ -14,10 +14,18 @@ const { TabPane } = Tabs
 interface GraphDrawerProps {
   visible: boolean
   setDrawerVisibility: (visible: boolean) => void
+  nodeLabel?: string
+  table: string
+  setDrawerTable: Dispatch<SetStateAction<string>>
 }
 
-const GraphDrawer = ({ visible, setDrawerVisibility }: GraphDrawerProps) => {
-  const [table, onSelectTable] = useState('join_rates')
+const GraphDrawer = ({
+  visible,
+  setDrawerVisibility,
+  nodeLabel,
+  table,
+  setDrawerTable,
+}: GraphDrawerProps) => {
   return (
     <StyledDrawer
       getContainer={false}
@@ -27,7 +35,7 @@ const GraphDrawer = ({ visible, setDrawerVisibility }: GraphDrawerProps) => {
       visible={visible}
       height={500}
     >
-      <Tabs activeKey={table} onChange={onSelectTable}>
+      <Tabs activeKey={table} onChange={setDrawerTable}>
         <TabPane tab="Join Rates" key="join_rates">
           <JoinRates data={{ id: 'mock', dq_join_info: dq_join_info_1, ...joinRatesData }} />
         </TabPane>
@@ -68,6 +76,7 @@ const GraphDrawer = ({ visible, setDrawerVisibility }: GraphDrawerProps) => {
         <TabPane tab="Quality" key="quality">
           <Quality data={qualityDataMock} pagination={{ disabled: true }} smallSize />
         </TabPane>
+        <DrawerNodeLabel>{nodeLabel}</DrawerNodeLabel>
       </Tabs>
     </StyledDrawer>
   )

@@ -3,6 +3,11 @@ import { Drawer } from 'antd'
 
 export const GraphContainer = styled.div`
   position: relative;
+  .minimap {
+    position: absolute;
+    top: 0;
+    background-color: #ffffff;
+  }
   .g6-tooltip {
     border: 1px solid #e2e2e2;
     border-radius: 4px;
@@ -19,6 +24,14 @@ export const GraphContainer = styled.div`
 
 export const StyledDrawer = styled(Drawer)`
   .ant-drawer-body {
+    position: relative;
     padding: 10px 16px;
   }
+`
+
+export const DrawerNodeLabel = styled.div`
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-weight: bold;
 `
