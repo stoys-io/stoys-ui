@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { Drawer } from 'antd'
+import MenuOutlined from '@ant-design/icons/MenuOutlined'
 
 export const GraphContainer = styled.div`
   position: relative;
@@ -24,14 +25,38 @@ export const GraphContainer = styled.div`
 
 export const StyledDrawer = styled(Drawer)`
   .ant-drawer-body {
-    position: relative;
     padding: 10px 16px;
+    .ant-tabs-content {
+      position: relative;
+    }
+  }
+  .ant-drawer-content {
+    overflow: unset;
   }
 `
 
 export const DrawerNodeLabel = styled.div`
   position: absolute;
-  top: 20px;
+  top: -49px;
   right: 45px;
   font-weight: bold;
+`
+
+export const ResizeIcon = styled(MenuOutlined)`
+  position: absolute;
+  top: -5px;
+  left: calc(50% - 6px);
+  font-size: 12px;
+  background-color: #ffffff;
+  cursor: pointer;
+  z-index: 5;
+`
+
+export const ResizeArea = styled.div`
+  height: 15px;
+  width: 100%;
+  position: absolute;
+  top: -5px;
+  cursor: row-resize;
+  z-index: 10;
 `
