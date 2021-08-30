@@ -1,13 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react'
 import G6 from '@antv/g6'
-import { createNodeFromReact } from 'g6-react-node'
+import { createNodeFromReact } from '@antv/g6-react-node'
 import { getData } from './helpers'
 import { appendAutoShapeListener } from './events'
 import GraphDrawer from './GraphDrawer'
 import CustomNode from './CustomNode'
 import { GraphContainer } from './styles'
 
-const data = getData()
+const graphData = getData()
 
 const Graph = () => {
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
@@ -15,6 +15,10 @@ const Graph = () => {
   const [drawerTable, setDrawerTable] = useState('')
   const graphRef = useRef(null)
   let graph: any = null
+
+  const onNodeClick = (nodeId: string) => {
+    graph.changeData(getData(nodeId))
+  }
 
   const openDrawer = (node: any, table: string) => {
     const model = node.getModel()
@@ -27,7 +31,7 @@ const Graph = () => {
     if (!graph) {
       G6.registerNode(
         'customNodeShape',
-        createNodeFromReact(({ cfg }) => CustomNode({ cfg, openDrawer }))
+        createNodeFromReact(({ cfg }) => CustomNode({ cfg, openDrawer, onNodeClick }))
       )
 
       const minimap = new G6.Minimap({
@@ -48,10 +52,6 @@ const Graph = () => {
             'drag-canvas',
             'zoom-canvas',
             {
-              type: 'activate-relations',
-              trigger: 'click',
-            },
-            {
               type: 'collapse-expand-combo',
               relayout: false,
             },
@@ -68,29 +68,10 @@ const Graph = () => {
         defaultNode: {
           type: 'customNodeShape',
         },
-        nodeStateStyles: {
-          // FIXME not working as we use custom node
-          active: {
-            stroke: '#4363d8',
-          },
-        },
         defaultEdge: {
           type: 'line',
           lineWidth: 2,
           color: '#ccc',
-        },
-        edgeStateStyles: {
-          inactive: {
-            stroke: '#ccc',
-          },
-          active: {
-            lineWidth: 4,
-            stroke: '#ccc',
-            shadowColor: '#ccc',
-            shadowBlur: 8,
-            shadowOffsetX: 0,
-            shadowOffsetY: 0,
-          },
         },
         defaultCombo: {
           // type: 'rect',
@@ -109,7 +90,7 @@ const Graph = () => {
       })
     }
 
-    graph.data(data)
+    graph.data(graphData)
 
     graph.render()
 

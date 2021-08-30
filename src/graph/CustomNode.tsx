@@ -1,5 +1,5 @@
 import React from 'react'
-import { Group, Rect, Text } from 'g6-react-node'
+import { Group, Rect, Text } from '@antv/g6-react-node'
 import { getLabelText } from './helpers'
 
 type ToolbarItemProps = {
@@ -25,10 +25,11 @@ const ToolbarItem = ({ text, table, openDrawer }: ToolbarItemProps) => (
 type CustomNodeProps = {
   cfg: any
   openDrawer: (node: any, table: string) => void
+  onNodeClick: (nodeId: string) => void
 }
 
-const CustomNode = ({ cfg, openDrawer }: CustomNodeProps) => {
-  const { label } = cfg
+const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
+  const { label, highlighted } = cfg
   return (
     <Group>
       <Rect style={{ width: 'auto', flexDirection: 'row' }}>
@@ -42,20 +43,23 @@ const CustomNode = ({ cfg, openDrawer }: CustomNodeProps) => {
           width: 150,
           height: 'auto',
           fill: '#fff',
-          stroke: '#2e2d2d',
+          stroke: highlighted ? '#1e80fe' : '#2e2d2d',
           shadowColor: '#eee',
           shadowBlur: 30,
           radius: [2],
           padding: [8],
           cursor: 'pointer',
         }}
+        onClick={(evt, node: any) => onNodeClick(node.getModel().id)}
       >
         <Text
           style={{
-            fill: '#000',
+            fill: highlighted ? '#1e80fe' : '#000000',
+            fontWeight: highlighted ? 600 : 400,
             fontSize: 16,
             cursor: 'pointer',
           }}
+          onClick={(evt, node: any) => onNodeClick(node.getModel().id)}
         >
           {getLabelText(label)}
         </Text>
