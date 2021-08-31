@@ -1,4 +1,4 @@
-import ChartWithTooltip from './Chart'
+import ChartAndTable from './ChartAndTable'
 import { hygratePmfPlotData } from './chartHelpers'
 
-export { ChartWithTooltip, hygratePmfPlotData }
+export { ChartAndTable, hygratePmfPlotData }

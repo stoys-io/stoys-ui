@@ -180,7 +180,7 @@ export interface BarChartProps {
   haveAxes: boolean
 }
 
-export interface ChartWithTooltipProps {
+export interface ChartAndTableProps {
   data: Maybe<Array<HygratePmfPlotDataItem>>
   smallSize?: boolean
   isHorizontal?: boolean
@@ -253,7 +253,7 @@ export interface ChartTableProps {
   height: number
 }
 
-export interface RenderChartProps {
+export interface RenderChartAndTableProps {
   checkedLogRows: Array<string>
   checkedAxesRows: Array<string>
   checkedTableRows: Array<string>

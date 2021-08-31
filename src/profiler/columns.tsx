@@ -11,7 +11,7 @@ import {
 } from './constants'
 import ChartHeaderCellTitle from './components/ChartHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
-import { ChartWithTooltip, hygratePmfPlotData } from './chart'
+import { ChartAndTable, hygratePmfPlotData } from './chart'
 import { renderNumericValue } from '../helpers'
 import { transformSecondsToDate } from '../pmfPlot/helpers'
 import {
@@ -39,7 +39,7 @@ const renderChartCell =
     })
     const pmfPlotData = hygratePmfPlotData(parent?.children)
     const renderedCellConfig: RenderedCellConfig = {
-      children: <ChartWithTooltip data={pmfPlotData} smallSize={smallSize} />,
+      children: <ChartAndTable data={pmfPlotData} smallSize={smallSize} />,
       props: {},
     }
     const rowSpan = parent?.children.length || 1
