@@ -1,6 +1,7 @@
 import React from 'react'
 import { Group, Rect, Text } from '@antv/g6-react-node'
 import { getLabelText } from './helpers'
+import { renderNumericValue } from '../helpers'
 
 type ToolbarItemProps = {
   text: string
@@ -29,15 +30,30 @@ type CustomNodeProps = {
 }
 
 const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
-  const { label, highlighted } = cfg
+  const { label, highlighted, violations } = cfg
   return (
     <Group>
-      <Rect style={{ width: 'auto', flexDirection: 'row' }}>
-        <ToolbarItem text={'JR'} table={'join_rates'} openDrawer={openDrawer} />
-        <ToolbarItem text={'M'} table={'metrics'} openDrawer={openDrawer} />
-        <ToolbarItem text={'P'} table={'profiler'} openDrawer={openDrawer} />
-        <ToolbarItem text={'Q'} table={'quality'} openDrawer={openDrawer} />
+      <Rect style={{ width: 150, flexDirection: 'row' }}>
+        <Rect style={{ width: 120, flexDirection: 'row' }}>
+          <ToolbarItem text={'JR'} table={'join_rates'} openDrawer={openDrawer} />
+          <ToolbarItem text={'M'} table={'metrics'} openDrawer={openDrawer} />
+          <ToolbarItem text={'P'} table={'profiler'} openDrawer={openDrawer} />
+          <ToolbarItem text={'Q'} table={'quality'} openDrawer={openDrawer} />
+        </Rect>
+        <Rect
+          style={{
+            height: 'auto',
+            width: 'auto',
+            padding: [4],
+            radius: [2],
+            stroke: '#000000',
+            fill: '#ffffff',
+          }}
+        >
+          <Text style={{ fill: '#000000' }}>{renderNumericValue(2, true)(violations)}</Text>
+        </Rect>
       </Rect>
+
       <Rect
         style={{
           width: 150,
