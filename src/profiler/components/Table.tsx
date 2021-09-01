@@ -19,6 +19,15 @@ function renderValue(value: string | number, type: string): Maybe<number | strin
   return value
 }
 
+const renderCount = (index: number) => (value: string | number, row: any) => {
+  const color = `color${index}`
+
+  return {
+    props: { style: { backgroundColor: row[color] } },
+    children: isNaN(+value) ? null : renderNumericCell(value),
+  }
+}
+
 const Table = ({ data, height }: ChartTableProps): JSX.Element => {
   const type = data[0].type
 
@@ -44,16 +53,33 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
     return acc
   }, {})
 
-  const sortedData = Object.values(groupedDataByItem)
-  sortedData.sort((a: any, b: any) => {
-    const aCounts = a.map((item: any) => item.count)
-    const bCounts = b.map((item: any) => item.count)
-    const aMax = Math.max.apply(null, aCounts)
-    const bMax = Math.max.apply(null, bCounts)
-    return bMax - aMax
+  let maxIndex = 0
+
+  const tableData = Object.keys(groupedDataByItem).map(key => {
+    return groupedDataByItem[key].reduce((acc: any, item: any, index: number) => {
+      if (maxIndex < index) {
+        maxIndex = index
+      }
+
+      return {
+        ...acc,
+        key: item.key,
+        item: item.item,
+        [`count${index}`]: item.count,
+        [`color${index}`]: item.color,
+      }
+    }, {})
   })
 
-  const tableData: any = sortedData.flat().slice(0, 10)
+  const countColumns = new Array(maxIndex + 1).fill(1).map((value, index) => {
+    return {
+      key: `count${index}`,
+      title: 'count',
+      dataIndex: `count${index}`,
+      align: 'right' as 'right',
+      render: renderCount(index),
+    }
+  })
 
   const columns = [
     {
@@ -70,13 +96,7 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
       },
       align: 'right' as 'right',
     },
-    {
-      key: 'count',
-      title: 'count',
-      dataIndex: 'count',
-      align: 'right' as 'right',
-      render: renderNumericCell,
-    },
+    ...countColumns,
   ]
 
   return (

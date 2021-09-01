@@ -83,10 +83,10 @@ export default {
       defaultValue: [],
     },
     profilerToolbarOptions: {
-      control: 'object'
+      control: 'object',
     },
     rowToolbarOptions: {
-      control: 'object'
-    }
+      control: 'object',
+    },
   },
 }
