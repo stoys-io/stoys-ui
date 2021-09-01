@@ -77,8 +77,8 @@ const Graph = () => {
           // type: 'rect',
           collapsed: false,
           style: {
-            fill: '#c6eee3',
-            stroke: '#C4E3B2',
+            fill: '#e1f1fb',
+            stroke: '#ccc',
           },
         },
         layout: {

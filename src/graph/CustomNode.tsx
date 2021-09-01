@@ -11,7 +11,14 @@ type ToolbarItemProps = {
 
 const ToolbarItem = ({ text, table, openDrawer }: ToolbarItemProps) => (
   <Rect
-    style={{ width: 'auto', fill: '#ccc', padding: 4, cursor: 'pointer' }}
+    style={{
+      width: 30,
+      stroke: '#ffffff',
+      fill: '#ccc',
+      cursor: 'pointer',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
     onClick={(evt, node, shape, graph) => openDrawer(node, table)}
   >
     <Text
@@ -33,8 +40,8 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
   const { label, highlighted, violations } = cfg
   return (
     <Group>
-      <Rect style={{ width: 150, flexDirection: 'row' }}>
-        <Rect style={{ width: 120, flexDirection: 'row' }}>
+      <Rect style={{ width: 155, flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Rect style={{ flexDirection: 'row' }}>
           <ToolbarItem text={'JR'} table={'join_rates'} openDrawer={openDrawer} />
           <ToolbarItem text={'M'} table={'metrics'} openDrawer={openDrawer} />
           <ToolbarItem text={'P'} table={'profiler'} openDrawer={openDrawer} />
@@ -44,6 +51,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
           style={{
             height: 'auto',
             width: 'auto',
+            minWidth: 35,
             padding: [4],
             radius: [2],
             stroke: '#000000',
