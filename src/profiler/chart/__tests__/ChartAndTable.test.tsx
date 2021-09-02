@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import '../../../__mocks__/matchMedia.mock'
 
-import Chart from '../Chart'
+import Chart from '../ChartAndTable'
 import { CheckedRowsContext } from '../../checkedRowsContext'
 
 beforeAll(() => {
