@@ -9,7 +9,7 @@ import {
   LEFT_ALIGN_COLUMNS,
   VISISBLE_COLUMNS,
 } from './constants'
-import ChartHeaderCellTitle from './components/ChartHeaderCellTitle'
+import ChartAndTableHeaderCellTitle from './components/ChartAndTableHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
 import { ChartAndTable, hygratePmfPlotData } from './chart'
 import { renderNumericCell } from '../common'
@@ -27,7 +27,7 @@ import { Maybe } from '../model'
 
 import { ColorBlock } from './styles'
 
-const renderChartCell =
+const renderChartAndTableCell =
   (data: Array<DataItem>, smallSize: boolean) =>
   (value: string, row: DataItem | ChildDataItem, index: number) => {
     const parent = data.find(dataItem => {
@@ -137,12 +137,12 @@ const renderMeanMinMaxValue = (
   return renderValue(value)
 }
 
-const renderChartCellTitle = (
+const renderChartAndTableCellTitle = (
   logarithmicScale: LogarithmicScale,
   axesOptions: AxesOptions,
   tableOptions: TableOptions
 ) => (
-  <ChartHeaderCellTitle
+  <ChartAndTableHeaderCellTitle
     logarithmicScale={logarithmicScale}
     axesOptions={axesOptions}
     tableOptions={tableOptions}
@@ -178,11 +178,11 @@ export const getColumns = (
   return [
     ...columns,
     {
-      title: renderChartCellTitle(logarithmicScale, axesOptions, tableOptions),
+      title: renderChartAndTableCellTitle(logarithmicScale, axesOptions, tableOptions),
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,
-      render: renderChartCell(data, smallSize),
+      render: renderChartAndTableCell(data, smallSize),
       align: 'left' as 'left',
     },
   ]

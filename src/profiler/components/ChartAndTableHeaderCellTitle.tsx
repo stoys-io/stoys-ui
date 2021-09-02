@@ -2,13 +2,13 @@ import React, { useCallback, useState } from 'react'
 
 import { CheckedRowsContext } from '../checkedRowsContext'
 import Toolbar from './Toolbar'
-import { ChartHeaderCellTitleProps } from '../model'
+import { ChartAndTableHeaderCellTitleProps } from '../model'
 
-const ChartHeaderCellTitle = ({
+const ChartAndTableHeaderCellTitle = ({
   logarithmicScale,
   axesOptions,
   tableOptions,
-}: ChartHeaderCellTitleProps): JSX.Element => {
+}: ChartAndTableHeaderCellTitleProps): JSX.Element => {
   const [isActiveTable, setIsActiveTable] = useState<boolean>(!!tableOptions.isUsedByDefault)
 
   const onChangeRadioGroup = useCallback(
@@ -51,4 +51,4 @@ const ChartHeaderCellTitle = ({
   )
 }
 
-export default ChartHeaderCellTitle
+export default ChartAndTableHeaderCellTitle
