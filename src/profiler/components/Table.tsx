@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
-import { renderNumericCell } from '../columns'
+import { renderNumericCell } from '../../common'
 import { CELL_TABLE_HEADER_HEIGHT } from '../constants'
 import { Maybe } from '../../model'
 import { ChartTableProps, TableChartData } from '../model'

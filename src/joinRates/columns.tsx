@@ -1,7 +1,7 @@
 import React from 'react'
 import Tooltip from 'antd/lib/tooltip'
 
-import { renderNumericCell } from '../profiler/columns'
+import { renderNumericCell } from '../common'
 
 export const getJoinRatesColumns = (columns: Array<string>) =>
   columns.map(column => {

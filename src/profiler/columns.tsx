@@ -12,7 +12,7 @@ import {
 import ChartHeaderCellTitle from './components/ChartHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
 import { ChartAndTable, hygratePmfPlotData } from './chart'
-import { renderNumericValue } from '../helpers'
+import { renderNumericCell } from '../common'
 import { transformSecondsToDate } from '../pmfPlot/helpers'
 import {
   AxesOptions,
@@ -25,7 +25,7 @@ import {
 } from './model'
 import { Maybe } from '../model'
 
-import { CellWrapper, ColorBlock } from './styles'
+import { ColorBlock } from './styles'
 
 const renderChartCell =
   (data: Array<DataItem>, smallSize: boolean) =>
@@ -52,14 +52,6 @@ const renderChartCell =
 
     return renderedCellConfig
   }
-
-export const renderNumericCell = (value: number | string) => {
-  return (
-    <Tooltip title={value} placement="topLeft">
-      <CellWrapper>{renderNumericValue(2, true)(value)}</CellWrapper>
-    </Tooltip>
-  )
-}
 
 const renderRow: Render = (render, logarithmicScale, axesOptions, tableOptions) => (value, row) => {
   const renderedCellConfig: RenderedCellConfig = {
