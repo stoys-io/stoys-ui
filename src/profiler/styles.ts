@@ -270,6 +270,10 @@ export const ChartTable = styled(AntdTable)<{ height: number }>`
     padding-top: 4px;
     padding-bottom: 4px;
   }
+
+  td.count-cell {
+    background-color: #e8e8e8;
+  }
 `
 
 export const TableSettingsWrapper = styled.div`

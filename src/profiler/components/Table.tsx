@@ -23,7 +23,7 @@ const renderCount = (index: number) => (value: string | number, row: any) => {
   const color = `color${index}`
 
   return {
-    props: { style: { backgroundColor: row[color] } },
+    props: { style: { backgroundColor: row[color] }, className: 'count-cell' },
     children: isNaN(+value) ? null : renderNumericCell(value),
   }
 }
