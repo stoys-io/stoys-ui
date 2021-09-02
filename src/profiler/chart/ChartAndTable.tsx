@@ -2,7 +2,7 @@ import React from 'react'
 import Empty from 'antd/lib/empty'
 
 import PmfPlot from '../../pmfPlot'
-import { CheckedRowsContext } from '../checkedRowsContext'
+import { CheckedRowsContext } from '../context'
 import Table from '../components/Table'
 import BarChart from './BarChart'
 import { ChartAndTableProps, HygratePmfPlotDataItem, RenderChartAndTableProps } from '../model'

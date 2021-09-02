@@ -4,15 +4,15 @@ import usePagination from '../hooks/usePagination'
 import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
 import { COLORS } from './constants'
-import { CheckedRowsContext } from './checkedRowsContext'
+import { CheckedRowsContext } from './context'
 import { DataItem, DataProfilerProps, ChildDataItem, Orient } from './model'
 
 import VerticalTable from './components/VerticalTable'
 import HorizontalTable from './components/HorizontalTable'
 import TableSettings from './components/TableSettings'
+import JsonDrawer from './components/JsonDrawer'
 
 import { NoData, TableWrapper } from './styles'
-import JsonDrawer from './components/JsonDrawer'
 
 export const DataProfiler = (props: DataProfilerProps) => {
   const {

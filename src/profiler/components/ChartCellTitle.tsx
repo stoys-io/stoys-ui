@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { CheckedRowsContext } from '../checkedRowsContext'
+import { CheckedRowsContext } from '../context'
 import { ChartCellTitleProps } from '../model'
 import Toolbar from './Toolbar'
 

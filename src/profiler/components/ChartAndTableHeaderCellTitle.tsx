@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import { CheckedRowsContext } from '../checkedRowsContext'
+import { CheckedRowsContext } from '../context'
 import Toolbar from './Toolbar'
 import { ChartAndTableHeaderCellTitleProps } from '../model'
 
