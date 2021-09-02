@@ -1,10 +1,10 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 
-import usePagination from '../hooks/usePagination'
+import { usePagination } from '../hooks'
 import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
 import { COLORS } from './constants'
-import { CheckedRowsContext } from './context'
+import { CheckedRowsContext, SizeContext } from './context'
 import { DataItem, DataProfilerProps, ChildDataItem, Orient } from './model'
 
 import VerticalTable from './components/VerticalTable'
@@ -173,7 +173,6 @@ export const DataProfiler = (props: DataProfilerProps) => {
           setChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
         },
         tableOptions,
-        smallSize,
         validVisibleColumns
       ),
     [data, tableOptions, smallSize, _rowToolbarOptions, validVisibleColumns]
@@ -206,62 +205,64 @@ export const DataProfiler = (props: DataProfilerProps) => {
   }, [jsonOptions])
 
   return (
-    <CheckedRowsContext.Provider
-      value={{
-        checkedLogRows,
-        setCheckedLogRows,
-        checkedAxesRows,
-        setCheckedAxesRows,
-        checkedTableRows,
-        setCheckedTableRows,
-        dataLength: data.length,
-      }}
-    >
-      {orientOptions?.isCheckboxShown || !searchOptions?.disabled ? (
-        <TableSettings
-          isModeSwitcherShown={orientOptions?.isCheckboxShown}
-          isModeSwitcherChecked={isVertical}
-          onModeChange={_setIsVerticalView}
-          isSearchShown={!searchOptions?.disabled}
-          onSearchChangeHandler={_onSearch}
-          isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
-          isJsonSwitcherChecked={isJsonShown}
-          onJsonChange={_setJsonShown}
-        />
-      ) : null}
-      <TableWrapper smallSize={!!smallSize}>
-        {isVertical ? (
-          <VerticalTable
-            {...props}
-            data={data}
-            columns={columns}
-            currentPage={current}
-            setCurrentPage={setCurrentPage}
-            pageSize={pageSize}
-            setPageSize={setPageSize}
-            withoutPagination={pagination === false}
-            pagination={pagination}
-            rowOptions={{
-              isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
-              isAxesCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
-            }}
-            tableOptions={tableOptions}
+    <SizeContext.Provider value={smallSize}>
+      <CheckedRowsContext.Provider
+        value={{
+          checkedLogRows,
+          setCheckedLogRows,
+          checkedAxesRows,
+          setCheckedAxesRows,
+          checkedTableRows,
+          setCheckedTableRows,
+          dataLength: data.length,
+        }}
+      >
+        {orientOptions?.isCheckboxShown || !searchOptions?.disabled ? (
+          <TableSettings
+            isModeSwitcherShown={orientOptions?.isCheckboxShown}
+            isModeSwitcherChecked={isVertical}
+            onModeChange={_setIsVerticalView}
+            isSearchShown={!searchOptions?.disabled}
+            onSearchChangeHandler={_onSearch}
+            isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
+            isJsonSwitcherChecked={isJsonShown}
+            onJsonChange={_setJsonShown}
           />
-        ) : (
-          <HorizontalTable
-            {...props}
-            data={data}
-            columns={columns}
-            currentPage={current}
-            setCurrentPage={setCurrentPage}
-            pageSize={pageSize}
-            setPageSize={setPageSize}
-            withoutPagination={pagination === false}
-            pagination={pagination}
-          />
-        )}
-        <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
-      </TableWrapper>
-    </CheckedRowsContext.Provider>
+        ) : null}
+        <TableWrapper smallSize={!!smallSize}>
+          {isVertical ? (
+            <VerticalTable
+              {...props}
+              data={data}
+              columns={columns}
+              currentPage={current}
+              setCurrentPage={setCurrentPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              withoutPagination={pagination === false}
+              pagination={pagination}
+              rowOptions={{
+                isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
+                isAxesCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
+              }}
+              tableOptions={tableOptions}
+            />
+          ) : (
+            <HorizontalTable
+              {...props}
+              data={data}
+              columns={columns}
+              currentPage={current}
+              setCurrentPage={setCurrentPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              withoutPagination={pagination === false}
+              pagination={pagination}
+            />
+          )}
+          <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
+        </TableWrapper>
+      </CheckedRowsContext.Provider>
+    </SizeContext.Provider>
   )
 }

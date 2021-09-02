@@ -28,8 +28,7 @@ import { Maybe } from '../model'
 import { ColorBlock } from './styles'
 
 const renderChartAndTableCell =
-  (data: Array<DataItem>, smallSize: boolean) =>
-  (value: string, row: DataItem | ChildDataItem, index: number) => {
+  (data: Array<DataItem>) => (value: string, row: DataItem | ChildDataItem, index: number) => {
     const parent = data.find(dataItem => {
       if ('parent' in row) {
         return row.parent === dataItem.columnName
@@ -39,7 +38,7 @@ const renderChartAndTableCell =
     })
     const pmfPlotData = hygratePmfPlotData(parent?.children)
     const renderedCellConfig: RenderedCellConfig = {
-      children: <ChartAndTable data={pmfPlotData} smallSize={smallSize} />,
+      children: <ChartAndTable data={pmfPlotData} />,
       props: {},
     }
     const rowSpan = parent?.children.length || 1
@@ -154,7 +153,6 @@ export const getColumns = (
   logarithmicScale: LogarithmicScale,
   axesOptions: AxesOptions,
   tableOptions: TableOptions,
-  smallSize: boolean = false,
   visibleColumns?: Array<string>
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
@@ -182,7 +180,7 @@ export const getColumns = (
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,
-      render: renderChartAndTableCell(data, smallSize),
+      render: renderChartAndTableCell(data),
       align: 'left' as 'left',
     },
   ]

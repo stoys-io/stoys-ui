@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Empty from 'antd/lib/empty'
 
 import PmfPlot from '../../pmfPlot'
-import { CheckedRowsContext } from '../context'
+import { CheckedRowsContext, SizeContext } from '../context'
 import Table from '../components/Table'
 import BarChart from './BarChart'
 import { ChartAndTableProps, HygratePmfPlotDataItem, RenderChartAndTableProps } from '../model'
@@ -109,11 +109,9 @@ function renderChartAndTable(
   )
 }
 
-const ChartAndTable = ({
-  data,
-  isHorizontal,
-  smallSize,
-}: ChartAndTableProps): Maybe<JSX.Element> => {
+const ChartAndTable = ({ data, isHorizontal }: ChartAndTableProps): Maybe<JSX.Element> => {
+  const smallSize = useContext(SizeContext)
+
   return (
     <CheckedRowsContext.Consumer>
       {({ checkedLogRows, checkedAxesRows, checkedTableRows }) =>
@@ -122,7 +120,7 @@ const ChartAndTable = ({
           checkedAxesRows,
           checkedTableRows,
           isHorizontal: !!isHorizontal,
-          smallSize: !!smallSize,
+          smallSize: smallSize,
         })
       }
     </CheckedRowsContext.Consumer>

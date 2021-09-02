@@ -182,7 +182,6 @@ export interface BarChartProps {
 
 export interface ChartAndTableProps {
   data: Maybe<Array<HygratePmfPlotDataItem>>
-  smallSize?: boolean
   isHorizontal?: boolean
 }
 
