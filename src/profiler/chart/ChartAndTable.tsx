@@ -5,7 +5,7 @@ import PmfPlot from '../../pmfPlot'
 import { CheckedRowsContext, SizeContext } from '../context'
 import Table from '../components/Table'
 import BarChart from './BarChart'
-import { ChartAndTableProps, HygratePmfPlotDataItem, RenderChartAndTableProps } from '../model'
+import { ChartAndTableProps } from '../model'
 import { Maybe } from '../../model'
 import {
   MIN_CHART_CELL_HEIGHT,
@@ -16,16 +16,10 @@ import {
 import { StyledEmpty } from '../styles'
 import { ChartWrapper } from '../../pmfPlot/styles'
 
-function renderChartAndTable(
-  data: Maybe<Array<HygratePmfPlotDataItem>>,
-  {
-    checkedLogRows,
-    checkedAxesRows,
-    checkedTableRows,
-    isHorizontal,
-    smallSize,
-  }: RenderChartAndTableProps
-) {
+const ChartAndTable = ({ data, isHorizontal }: ChartAndTableProps): Maybe<JSX.Element> => {
+  const smallSize = useContext(SizeContext)
+  const { checkedLogRows, checkedAxesRows, checkedTableRows } = useContext(CheckedRowsContext)
+
   if (!data) {
     return null
   }
@@ -106,24 +100,6 @@ function renderChartAndTable(
       showLogScale={enabledLogScale}
       color={color}
     />
-  )
-}
-
-const ChartAndTable = ({ data, isHorizontal }: ChartAndTableProps): Maybe<JSX.Element> => {
-  const smallSize = useContext(SizeContext)
-
-  return (
-    <CheckedRowsContext.Consumer>
-      {({ checkedLogRows, checkedAxesRows, checkedTableRows }) =>
-        renderChartAndTable(data, {
-          checkedLogRows,
-          checkedAxesRows,
-          checkedTableRows,
-          isHorizontal: !!isHorizontal,
-          smallSize: smallSize,
-        })
-      }
-    </CheckedRowsContext.Consumer>
   )
 }
 

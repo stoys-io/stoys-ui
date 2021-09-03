@@ -252,14 +252,6 @@ export interface ChartTableProps {
   height: number
 }
 
-export interface RenderChartAndTableProps {
-  checkedLogRows: Array<string>
-  checkedAxesRows: Array<string>
-  checkedTableRows: Array<string>
-  isHorizontal: boolean
-  smallSize: boolean
-}
-
 export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> & {
   isChecked: boolean
   title: string | JSX.Element
