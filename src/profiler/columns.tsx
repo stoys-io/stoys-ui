@@ -7,12 +7,15 @@ import {
   COLUMNS_WITH_DATES,
   COLUMN_CHART_WIDTH,
   LEFT_ALIGN_COLUMNS,
+  COUNT_COLUMNS,
   VISISBLE_COLUMNS,
 } from './constants'
 import ChartAndTableHeaderCellTitle from './components/ChartAndTableHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
 import { ChartAndTable, hygratePmfPlotData } from './chart'
+import { formatPercentage } from '../helpers'
 import { renderNumericCell } from '../common'
+
 import { transformSecondsToDate } from '../pmfPlot/helpers'
 import {
   AxesOptions,
@@ -99,6 +102,19 @@ const renderValue = (value?: Maybe<boolean | string | number>): Maybe<JSX.Elemen
   )
 }
 
+const renderPercentage = (value: number) => {
+  // TODO: Why the value can be undefined
+  if (value === undefined) {
+    return null
+  }
+
+  return (
+    <Tooltip title={formatPercentage(value)} placement="topLeft">
+      <CellWrapper>{formatPercentage(value)}</CellWrapper>
+    </Tooltip>
+  )
+}
+
 const renderMeanMinMaxValue = (
   value: Maybe<string | number>,
   row: any
@@ -144,17 +160,24 @@ export const getColumns = (
   data: Array<DataItem>,
   logarithmicScale: LogarithmicScale,
   axesOptions: AxesOptions,
+  showPercentage: boolean,
   visibleColumns?: Array<string>
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
 
   const columns = _visibleColumns.map((column, index) => {
+    const isPercentage = showPercentage && COUNT_COLUMNS.includes(column)
+
     const _column: any = {
       title: COLUMNS_TITLES[column] || column,
       dataIndex: column,
       key: column,
       align: LEFT_ALIGN_COLUMNS.includes(column) ? ('left' as 'left') : ('right' as 'right'),
-      render: COLUMNS_WITH_DATES.includes(column) ? renderMeanMinMaxValue : renderValue,
+      render: COLUMNS_WITH_DATES.includes(column)
+        ? renderMeanMinMaxValue
+        : isPercentage
+        ? renderPercentage
+        : renderValue,
     }
 
     if (index === 0) {

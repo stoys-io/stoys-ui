@@ -36,9 +36,21 @@ export const DataProfiler = (props: DataProfilerProps) => {
     () => (profilerToolbarOptions ? profilerToolbarOptions?.searchOptions : {}),
     [profilerToolbarOptions]
   )
+
+  const relativeCountOptions = useMemo(
+    () => (profilerToolbarOptions ? profilerToolbarOptions?.relativeCountOptions : {}),
+    [profilerToolbarOptions]
+  )
+
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
   const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
   const [searchValue, setSearchValue] = useState<string>('')
+
+  const [isRelCountChecked, setIsRelCountChecked] = useState<boolean>(
+    !!relativeCountOptions?.checked
+  )
+  const _countViewChange = () => setIsRelCountChecked(!isRelCountChecked)
+
   const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
   if (!datasets || !Array.isArray(datasets)) {
@@ -73,24 +85,28 @@ export const DataProfiler = (props: DataProfilerProps) => {
     return <NoData>No data</NoData>
   }
 
-  const data = useMemo(
-    () =>
-      Object.keys(dataGrouppedByTitle)
-        .filter(column => {
-          const searchRegex = new RegExp(searchValue.split('').join('.*'))
+  const data = useMemo(() => {
+    const groupedData = Object.keys(dataGrouppedByTitle)
+      .filter(column => {
+        const searchRegex = new RegExp(searchValue.split('').join('.*'))
 
-          return searchRegex.test(column.toLowerCase())
+        return searchRegex.test(column.toLowerCase())
+      })
+      .reduce((acc: Array<DataItem>, column) => {
+        acc.push({
+          columnName: column,
+          key: column,
+          children: [...dataGrouppedByTitle[column]],
         })
-        .reduce((acc: Array<DataItem>, column) => {
-          acc.push({
-            columnName: column,
-            key: column,
-            children: [...dataGrouppedByTitle[column]],
-          })
-          return acc
-        }, []),
-    [dataGrouppedByTitle, searchValue]
-  )
+        return acc
+      }, [])
+
+    if (isRelCountChecked) {
+      return transformRelativeCount(groupedData)
+    }
+
+    return groupedData
+  }, [dataGrouppedByTitle, searchValue, isRelCountChecked])
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
 
@@ -172,9 +188,10 @@ export const DataProfiler = (props: DataProfilerProps) => {
           isCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
         },
+        isRelCountChecked,
         validVisibleColumns
       ),
-    [data, _rowToolbarOptions, validVisibleColumns]
+    [data, _rowToolbarOptions, validVisibleColumns, isRelCountChecked]
   )
 
   const _setIsVerticalView = useCallback(
@@ -227,6 +244,9 @@ export const DataProfiler = (props: DataProfilerProps) => {
               isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
               isJsonSwitcherChecked={isJsonShown}
               onJsonChange={_setJsonShown}
+              onCountViewChange={_countViewChange}
+              isRelativeCountSwitcherShown={relativeCountOptions?.isCheckboxShown}
+              isCountSwitcherChecked={isRelCountChecked}
             />
           ) : null}
           <TableWrapper smallSize={!!smallSize}>
@@ -245,6 +265,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
                   isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
                   isAxesCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
                 }}
+                tableOptions={tableOptions}
+                displayRelative={isRelCountChecked}
               />
             ) : (
               <HorizontalTable
@@ -266,3 +288,19 @@ export const DataProfiler = (props: DataProfilerProps) => {
     </SizeContext.Provider>
   )
 }
+
+const transformRelativeCount = (data: Array<DataItem>) =>
+  data.map(item => ({
+    ...item,
+    children: item.children.map(child => {
+      const { count, count_empty, count_nulls, count_unique, count_zeros } = child
+
+      return {
+        ...child,
+        count_empty: count_empty === null ? null : count_empty / count,
+        count_nulls: count_nulls === null ? null : count_nulls / count,
+        count_unique: count_unique === null ? null : count_unique / count,
+        count_zeros: count_zeros === null ? null : count_zeros / count,
+      }
+    }),
+  }))

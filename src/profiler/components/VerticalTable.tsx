@@ -5,9 +5,10 @@ import ChartCellTitle from './ChartCellTitle'
 import { ChartAndTable, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
-import { VerticalColumn, VerticalTableProps, VerticalData } from '../model'
-import { TABLE_HEIGHT } from '../constants'
+import { VerticalColumn, VerticalData, VerticalTableProps } from '../model'
+import { TABLE_HEIGHT, COUNT_COLUMNS } from '../constants'
 import { ColorBlock } from '../styles'
+import { formatPercentage } from '../../helpers'
 
 const VerticalTable = (props: VerticalTableProps) => {
   const {
@@ -20,6 +21,8 @@ const VerticalTable = (props: VerticalTableProps) => {
     withoutPagination,
     pagination,
     rowOptions,
+    tableOptions,
+    displayRelative,
     onChange,
   } = props
   const flattenData = data.map(item => item.children).flat()
@@ -45,6 +48,10 @@ const VerticalTable = (props: VerticalTableProps) => {
               </>
             ),
           }
+        }
+
+        if (displayRelative && COUNT_COLUMNS.includes(row.key as string)) {
+          return formatPercentage(record.value)
         }
 
         if (row.key === 'nulls' && childrenLength > 1) {

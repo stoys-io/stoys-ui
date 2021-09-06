@@ -84,6 +84,11 @@ export interface ProfilerToolbarOptions {
     isCheckboxShown?: boolean
     onChange?: (shown: boolean) => void
   }
+  // TODO: too much optional stuff?
+  relativeCountOptions?: {
+    checked?: boolean
+    isCheckboxShown?: boolean
+  }
   searchOptions?: {
     disabled?: boolean
     onChange?: (value: string) => void
@@ -159,6 +164,10 @@ export interface TableProps extends AntdTableProps<any> {
 
 export interface VerticalTableProps extends TableProps {
   rowOptions: RowOptions
+  tableOptions: TableOptions
+
+  // TODO: Remove
+  displayRelative: boolean
 }
 
 export interface HygratePmfPlotDataItem {
@@ -288,9 +297,14 @@ export interface TableSettingsProps {
   onModeChange: () => void
   isSearchShown: boolean
   onSearchChangeHandler: (value: string) => void
+
   isJsonSwitcherShown?: boolean
   isJsonSwitcherChecked: boolean
   onJsonChange: () => void
+
+  isRelativeCountSwitcherShown?: boolean
+  onCountViewChange: () => void
+  isCountSwitcherChecked: boolean
 }
 
 export interface JsonDrqwerProps {

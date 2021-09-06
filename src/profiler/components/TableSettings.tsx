@@ -7,6 +7,8 @@ import { TableSettingsWrapper } from '../styles'
 import ModeSwitcher from './ModeSwitcher'
 import { TableSettingsProps } from '../model'
 
+import RelativeCountSwitcher from './RelativeCountSwitcher'
+
 const { Search } = Input
 
 const TableSettings = ({
@@ -18,6 +20,9 @@ const TableSettings = ({
   isJsonSwitcherShown,
   isJsonSwitcherChecked,
   onJsonChange,
+  onCountViewChange,
+  isCountSwitcherChecked,
+  isRelativeCountSwitcherShown,
 }: TableSettingsProps): JSX.Element => {
   const _onSearchChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +45,9 @@ const TableSettings = ({
             data-testid="table-search"
           />
         </div>
+      ) : null}
+      {isRelativeCountSwitcherShown ? (
+        <RelativeCountSwitcher checked={isCountSwitcherChecked} onChange={onCountViewChange} />
       ) : null}
       {isModeSwitcherShown ? (
         <ModeSwitcher checked={isModeSwitcherChecked} onChange={onModeChange} />

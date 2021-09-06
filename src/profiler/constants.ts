@@ -47,3 +47,5 @@ export const COLUMNS_TITLES: { [key: string]: string } = {
 export const LEFT_ALIGN_COLUMNS = ['mean', 'min', 'max']
 
 export const COLUMNS_WITH_DATES = ['mean', 'min', 'max']
+
+export const COUNT_COLUMNS = ['count_empty', 'count_nulls', 'count_zeros', 'count_unique']
