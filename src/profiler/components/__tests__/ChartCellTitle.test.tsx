@@ -2,33 +2,34 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 
 import ChartCellTitle from '../ChartCellTitle'
-import { CheckedRowsContext } from '../../checkedRowsContext'
+import { CheckedRowsContext, TableOptionsContext } from '../../context'
 
 jest.mock('../../icons/axes.svg', () => ({ ReactComponent: () => 'icon' }))
 
 describe('ChartCellTitle', () => {
   it("shouldn't render any checkboxes when they are disabled", () => {
     const { queryByTestId } = render(
-      <CheckedRowsContext.Provider
-        value={{
-          checkedTableRows: ['1', '2', '3'],
-          checkedLogRows: [],
-          checkedAxesRows: [],
-          dataLength: 10,
-          setCheckedAxesRows: jest.fn(),
-          setCheckedLogRows: jest.fn(),
-          setCheckedTableRows: jest.fn(),
-        }}
-      >
-        <ChartCellTitle
-          row={{ columnName: 'id', key: 'id', children: [] }}
-          rowOptions={{
-            isLogCheckboxShown: false,
-            isAxesCheckboxShown: false,
+      <TableOptionsContext.Provider value={{ isCheckboxShown: false }}>
+        <CheckedRowsContext.Provider
+          value={{
+            checkedTableRows: ['1', '2', '3'],
+            checkedLogRows: [],
+            checkedAxesRows: [],
+            dataLength: 10,
+            setCheckedAxesRows: jest.fn(),
+            setCheckedLogRows: jest.fn(),
+            setCheckedTableRows: jest.fn(),
           }}
-          tableOptions={{ isCheckboxShown: false }}
-        />
-      </CheckedRowsContext.Provider>
+        >
+          <ChartCellTitle
+            row={{ columnName: 'id', key: 'id', children: [] }}
+            rowOptions={{
+              isLogCheckboxShown: false,
+              isAxesCheckboxShown: false,
+            }}
+          />
+        </CheckedRowsContext.Provider>
+      </TableOptionsContext.Provider>
     )
 
     const tableBtn = queryByTestId('table-view-btn')
@@ -42,26 +43,27 @@ describe('ChartCellTitle', () => {
 
   it('should render log checkbox', () => {
     const { queryByTestId } = render(
-      <CheckedRowsContext.Provider
-        value={{
-          checkedTableRows: ['1', '2', '3'],
-          checkedLogRows: [],
-          checkedAxesRows: [],
-          dataLength: 10,
-          setCheckedAxesRows: jest.fn(),
-          setCheckedLogRows: jest.fn(),
-          setCheckedTableRows: jest.fn(),
-        }}
-      >
-        <ChartCellTitle
-          row={{ columnName: 'id', key: 'id', children: [] }}
-          rowOptions={{
-            isLogCheckboxShown: true,
-            isAxesCheckboxShown: false,
+      <TableOptionsContext.Provider value={{ isCheckboxShown: false, setChecked: jest.fn() }}>
+        <CheckedRowsContext.Provider
+          value={{
+            checkedTableRows: ['1', '2', '3'],
+            checkedLogRows: [],
+            checkedAxesRows: [],
+            dataLength: 10,
+            setCheckedAxesRows: jest.fn(),
+            setCheckedLogRows: jest.fn(),
+            setCheckedTableRows: jest.fn(),
           }}
-          tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        />
-      </CheckedRowsContext.Provider>
+        >
+          <ChartCellTitle
+            row={{ columnName: 'id', key: 'id', children: [] }}
+            rowOptions={{
+              isLogCheckboxShown: true,
+              isAxesCheckboxShown: false,
+            }}
+          />
+        </CheckedRowsContext.Provider>
+      </TableOptionsContext.Provider>
     )
 
     const tableBtn = queryByTestId('table-view-btn')
@@ -76,26 +78,27 @@ describe('ChartCellTitle', () => {
   it('should call setCheckedLogRows', () => {
     const setCheckedMock = jest.fn()
     const { queryByTestId } = render(
-      <CheckedRowsContext.Provider
-        value={{
-          checkedTableRows: ['1', '2', '3'],
-          checkedLogRows: ['id'],
-          checkedAxesRows: [],
-          dataLength: 10,
-          setCheckedAxesRows: jest.fn(),
-          setCheckedLogRows: setCheckedMock,
-          setCheckedTableRows: jest.fn(),
-        }}
-      >
-        <ChartCellTitle
-          row={{ columnName: 'id', key: 'id', children: [] }}
-          rowOptions={{
-            isLogCheckboxShown: true,
-            isAxesCheckboxShown: false,
+      <TableOptionsContext.Provider value={{ isCheckboxShown: false, setChecked: jest.fn() }}>
+        <CheckedRowsContext.Provider
+          value={{
+            checkedTableRows: ['1', '2', '3'],
+            checkedLogRows: ['id'],
+            checkedAxesRows: [],
+            dataLength: 10,
+            setCheckedAxesRows: jest.fn(),
+            setCheckedLogRows: setCheckedMock,
+            setCheckedTableRows: jest.fn(),
           }}
-          tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        />
-      </CheckedRowsContext.Provider>
+        >
+          <ChartCellTitle
+            row={{ columnName: 'id', key: 'id', children: [] }}
+            rowOptions={{
+              isLogCheckboxShown: true,
+              isAxesCheckboxShown: false,
+            }}
+          />
+        </CheckedRowsContext.Provider>
+      </TableOptionsContext.Provider>
     )
 
     const logBtn = queryByTestId('log-btn')
@@ -107,26 +110,27 @@ describe('ChartCellTitle', () => {
 
   it('should render axes checkbox', () => {
     const { queryByTestId } = render(
-      <CheckedRowsContext.Provider
-        value={{
-          checkedTableRows: ['1', '2', '3'],
-          checkedLogRows: [],
-          checkedAxesRows: [],
-          dataLength: 10,
-          setCheckedAxesRows: jest.fn(),
-          setCheckedLogRows: jest.fn(),
-          setCheckedTableRows: jest.fn(),
-        }}
-      >
-        <ChartCellTitle
-          row={{ columnName: 'id', key: 'id', children: [] }}
-          rowOptions={{
-            isLogCheckboxShown: false,
-            isAxesCheckboxShown: true,
+      <TableOptionsContext.Provider value={{ isCheckboxShown: false, setChecked: jest.fn() }}>
+        <CheckedRowsContext.Provider
+          value={{
+            checkedTableRows: ['1', '2', '3'],
+            checkedLogRows: [],
+            checkedAxesRows: [],
+            dataLength: 10,
+            setCheckedAxesRows: jest.fn(),
+            setCheckedLogRows: jest.fn(),
+            setCheckedTableRows: jest.fn(),
           }}
-          tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        />
-      </CheckedRowsContext.Provider>
+        >
+          <ChartCellTitle
+            row={{ columnName: 'id', key: 'id', children: [] }}
+            rowOptions={{
+              isLogCheckboxShown: false,
+              isAxesCheckboxShown: true,
+            }}
+          />
+        </CheckedRowsContext.Provider>
+      </TableOptionsContext.Provider>
     )
 
     const tableBtn = queryByTestId('table-view-btn')
@@ -141,26 +145,27 @@ describe('ChartCellTitle', () => {
   it('should call setCheckedAxesRows', () => {
     const setCheckedMock = jest.fn()
     const { queryByTestId } = render(
-      <CheckedRowsContext.Provider
-        value={{
-          checkedTableRows: ['1', '2', '3'],
-          checkedLogRows: [],
-          checkedAxesRows: [],
-          dataLength: 10,
-          setCheckedAxesRows: setCheckedMock,
-          setCheckedLogRows: jest.fn(),
-          setCheckedTableRows: jest.fn(),
-        }}
-      >
-        <ChartCellTitle
-          row={{ columnName: 'id', key: 'id', children: [] }}
-          rowOptions={{
-            isLogCheckboxShown: false,
-            isAxesCheckboxShown: true,
+      <TableOptionsContext.Provider value={{ isCheckboxShown: false, setChecked: jest.fn() }}>
+        <CheckedRowsContext.Provider
+          value={{
+            checkedTableRows: ['1', '2', '3'],
+            checkedLogRows: [],
+            checkedAxesRows: [],
+            dataLength: 10,
+            setCheckedAxesRows: setCheckedMock,
+            setCheckedLogRows: jest.fn(),
+            setCheckedTableRows: jest.fn(),
           }}
-          tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        />
-      </CheckedRowsContext.Provider>
+        >
+          <ChartCellTitle
+            row={{ columnName: 'id', key: 'id', children: [] }}
+            rowOptions={{
+              isLogCheckboxShown: false,
+              isAxesCheckboxShown: true,
+            }}
+          />
+        </CheckedRowsContext.Provider>
+      </TableOptionsContext.Provider>
     )
 
     const axesBtn = queryByTestId('axes-btn')
@@ -172,26 +177,27 @@ describe('ChartCellTitle', () => {
 
   it('should render table/chart switcher', () => {
     const { queryAllByTestId, queryByTestId } = render(
-      <CheckedRowsContext.Provider
-        value={{
-          checkedTableRows: ['1', '2', '3'],
-          checkedLogRows: [],
-          checkedAxesRows: [],
-          dataLength: 10,
-          setCheckedAxesRows: jest.fn(),
-          setCheckedLogRows: jest.fn(),
-          setCheckedTableRows: jest.fn(),
-        }}
-      >
-        <ChartCellTitle
-          row={{ columnName: 'id', key: 'id', children: [] }}
-          rowOptions={{
-            isLogCheckboxShown: false,
-            isAxesCheckboxShown: false,
+      <TableOptionsContext.Provider value={{ isCheckboxShown: true, setChecked: jest.fn() }}>
+        <CheckedRowsContext.Provider
+          value={{
+            checkedTableRows: ['1', '2', '3'],
+            checkedLogRows: [],
+            checkedAxesRows: [],
+            dataLength: 10,
+            setCheckedAxesRows: jest.fn(),
+            setCheckedLogRows: jest.fn(),
+            setCheckedTableRows: jest.fn(),
           }}
-          tableOptions={{ isCheckboxShown: true, setChecked: jest.fn() }}
-        />
-      </CheckedRowsContext.Provider>
+        >
+          <ChartCellTitle
+            row={{ columnName: 'id', key: 'id', children: [] }}
+            rowOptions={{
+              isLogCheckboxShown: false,
+              isAxesCheckboxShown: false,
+            }}
+          />
+        </CheckedRowsContext.Provider>
+      </TableOptionsContext.Provider>
     )
 
     const checkboxes = queryAllByTestId('title-checkbox')
@@ -226,9 +232,11 @@ describe('ChartCellTitle', () => {
     }
     const tableOptionsMock = { isCheckboxShown: true, setChecked: jest.fn() }
     const { queryByTestId, rerender } = render(
-      <CheckedRowsContext.Provider value={valueMock}>
-        <ChartCellTitle row={rowMock} rowOptions={rowOptionsMock} tableOptions={tableOptionsMock} />
-      </CheckedRowsContext.Provider>
+      <TableOptionsContext.Provider value={tableOptionsMock}>
+        <CheckedRowsContext.Provider value={valueMock}>
+          <ChartCellTitle row={rowMock} rowOptions={rowOptionsMock} />
+        </CheckedRowsContext.Provider>
+      </TableOptionsContext.Provider>
     )
 
     const tableRadioBtn = queryByTestId('table-view-btn')
@@ -238,9 +246,11 @@ describe('ChartCellTitle', () => {
     expect(setCheckedMock).toBeCalledWith(['1', '2', '3', 'id'])
 
     rerender(
-      <CheckedRowsContext.Provider value={updatedValueMock}>
-        <ChartCellTitle row={rowMock} rowOptions={rowOptionsMock} tableOptions={tableOptionsMock} />
-      </CheckedRowsContext.Provider>
+      <TableOptionsContext.Provider value={tableOptionsMock}>
+        <CheckedRowsContext.Provider value={updatedValueMock}>
+          <ChartCellTitle row={rowMock} rowOptions={rowOptionsMock} />
+        </CheckedRowsContext.Provider>
+      </TableOptionsContext.Provider>
     )
 
     fireEvent.click(tableRadioBtn)

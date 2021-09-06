@@ -117,8 +117,7 @@ export interface RenderedCellConfig {
 export type Render = (
   render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>,
   logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions,
-  tableOptions: TableOptions
+  axesOptions: AxesOptions
 ) => (value: number | string, row: DataItem | ChildDataItem, index: number) => RenderedCellConfig
 
 export interface LogarithmicScale {
@@ -160,7 +159,6 @@ export interface TableProps extends AntdTableProps<any> {
 
 export interface VerticalTableProps extends TableProps {
   rowOptions: RowOptions
-  tableOptions: TableOptions
 }
 
 export interface HygratePmfPlotDataItem {
@@ -192,7 +190,6 @@ export interface RowOptions {
 export interface TableSubheaderRowProps {
   row: DataItem
   rowOptions: RowOptions
-  tableOptions: TableOptions
 }
 
 export interface ChartTableHeaderProps {
@@ -204,7 +201,6 @@ export interface ChartTableHeaderProps {
 export interface ChartAndTableHeaderCellTitleProps {
   logarithmicScale: LogarithmicScale
   axesOptions: AxesOptions
-  tableOptions: TableOptions
 }
 
 export interface CheckedRowsContextProps {

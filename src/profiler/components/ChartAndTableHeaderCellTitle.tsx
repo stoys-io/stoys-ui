@@ -1,14 +1,14 @@
 import React, { useCallback, useState, useContext } from 'react'
 
-import { CheckedRowsContext } from '../context'
+import { CheckedRowsContext, TableOptionsContext } from '../context'
 import Toolbar from './Toolbar'
 import { ChartAndTableHeaderCellTitleProps } from '../model'
 
 const ChartAndTableHeaderCellTitle = ({
   logarithmicScale,
   axesOptions,
-  tableOptions,
 }: ChartAndTableHeaderCellTitleProps): JSX.Element => {
+  const tableOptions = useContext(TableOptionsContext)
   const [isActiveTable, setIsActiveTable] = useState<boolean>(!!tableOptions.isUsedByDefault)
   const { checkedLogRows, checkedAxesRows, checkedTableRows, dataLength } =
     useContext(CheckedRowsContext)

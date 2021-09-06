@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 
-import { CheckedRowsContext } from '../context'
+import { CheckedRowsContext, TableOptionsContext } from '../context'
 import { ChartCellTitleProps } from '../model'
 import Toolbar from './Toolbar'
 
-const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps): JSX.Element => {
+const ChartCellTitle = ({ row, rowOptions }: ChartCellTitleProps): JSX.Element => {
   const {
     checkedLogRows,
     setCheckedLogRows,
@@ -13,6 +13,7 @@ const ChartCellTitle = ({ row, rowOptions, tableOptions }: ChartCellTitleProps):
     checkedTableRows,
     setCheckedTableRows,
   } = useContext(CheckedRowsContext)
+  const tableOptions = useContext(TableOptionsContext)
 
   const isLogChecked = checkedLogRows.includes(row.columnName)
   const isAxesChecked = checkedAxesRows.includes(row.columnName)

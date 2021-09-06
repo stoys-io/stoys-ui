@@ -20,7 +20,6 @@ const VerticalTable = (props: VerticalTableProps) => {
     withoutPagination,
     pagination,
     rowOptions,
-    tableOptions,
     onChange,
   } = props
   const flattenData = data.map(item => item.children).flat()
@@ -41,13 +40,7 @@ const VerticalTable = (props: VerticalTableProps) => {
             props: { colSpan },
             children: (
               <>
-                {parent ? (
-                  <ChartCellTitle
-                    row={parent}
-                    rowOptions={rowOptions}
-                    tableOptions={tableOptions}
-                  />
-                ) : null}
+                {parent ? <ChartCellTitle row={parent} rowOptions={rowOptions} /> : null}
                 <ChartAndTable data={chartData} isHorizontal />
               </>
             ),

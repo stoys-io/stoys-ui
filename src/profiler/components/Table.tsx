@@ -57,10 +57,9 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
 
   const tableData = Object.keys(groupedDataByItem).map(key => {
     if (maxIndex < groupedDataByItem[key].length) {
-       maxIndex = groupedDataByItem[key].length
-     }
+      maxIndex = groupedDataByItem[key].length
+    }
     return groupedDataByItem[key].reduce((acc: any, item: any, index: number) => {
-   
       return {
         ...acc,
         key: item.key,

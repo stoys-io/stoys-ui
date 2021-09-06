@@ -52,7 +52,7 @@ const renderChartAndTableCell =
     return renderedCellConfig
   }
 
-const renderRow: Render = (render, logarithmicScale, axesOptions, tableOptions) => (value, row) => {
+const renderRow: Render = (render, logarithmicScale, axesOptions) => (value, row) => {
   const renderedCellConfig: RenderedCellConfig = {
     children: null,
     props: {},
@@ -75,7 +75,6 @@ const renderRow: Render = (render, logarithmicScale, axesOptions, tableOptions) 
           isLogCheckboxShown: logarithmicScale.isCheckboxShown,
           isAxesCheckboxShown: axesOptions.isCheckboxShown,
         }}
-        tableOptions={tableOptions}
       />
     )
     renderedCellConfig.props.colSpan = 8
@@ -138,21 +137,13 @@ const renderMeanMinMaxValue = (
 
 const renderChartAndTableCellTitle = (
   logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions,
-  tableOptions: TableOptions
-) => (
-  <ChartAndTableHeaderCellTitle
-    logarithmicScale={logarithmicScale}
-    axesOptions={axesOptions}
-    tableOptions={tableOptions}
-  />
-)
+  axesOptions: AxesOptions
+) => <ChartAndTableHeaderCellTitle logarithmicScale={logarithmicScale} axesOptions={axesOptions} />
 
 export const getColumns = (
   data: Array<DataItem>,
   logarithmicScale: LogarithmicScale,
   axesOptions: AxesOptions,
-  tableOptions: TableOptions,
   visibleColumns?: Array<string>
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
@@ -167,7 +158,7 @@ export const getColumns = (
     }
 
     if (index === 0) {
-      _column.render = renderRow(_column.render, logarithmicScale, axesOptions, tableOptions)
+      _column.render = renderRow(_column.render, logarithmicScale, axesOptions)
     }
 
     return _column
@@ -176,7 +167,7 @@ export const getColumns = (
   return [
     ...columns,
     {
-      title: renderChartAndTableCellTitle(logarithmicScale, axesOptions, tableOptions),
+      title: renderChartAndTableCellTitle(logarithmicScale, axesOptions),
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,
