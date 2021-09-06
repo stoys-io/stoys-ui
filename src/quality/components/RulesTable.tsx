@@ -132,7 +132,7 @@ const RulesTable = ({
 
   const columns = useMemo(
     () => getRulesColumns(mode === 'row', getRuleNameColumnSearchProps),
-    [getRuleNameColumnSearchProps]
+    [getRuleNameColumnSearchProps, mode]
   )
 
   return (

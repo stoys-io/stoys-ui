@@ -2,7 +2,7 @@ import React from 'react'
 
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
-import { CELL_TABLE_HEADER_HEIGHT } from '../constants'
+import { CELL_TABLE_HEADER_HEIGHT, COLORS } from '../constants'
 import { Maybe } from '../../model'
 import { ChartTableProps, TableChartData } from '../model'
 import { ChartTable, ColorBlock } from '../styles'
@@ -47,11 +47,14 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
     .filter((item): item is Array<TableChartData> => !!item)
     .flat()
 
-  const groupedDataByItem = dataSource.reduce((acc: any, item: any) => {
-    acc[item.item] = [...(acc[item.item] ? acc[item.item] : []), item]
+  const groupedDataByItem = dataSource.reduce(
+    (acc: { [key: string]: Array<TableChartData> }, item: TableChartData) => {
+      acc[item.item] = [...(acc[item.item] ? acc[item.item] : []), item]
 
-    return acc
-  }, {})
+      return acc
+    },
+    {}
+  )
 
   let maxIndex = 0
 
@@ -59,6 +62,7 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
     if (maxIndex < groupedDataByItem[key].length) {
       maxIndex = groupedDataByItem[key].length
     }
+
     return groupedDataByItem[key].reduce((acc: any, item: any, index: number) => {
       return {
         ...acc,
@@ -85,10 +89,10 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
       key: 'item',
       title: 'item',
       dataIndex: 'item',
-      render: (value: number | string, row: any) => {
+      render: (value: number | string, row: TableChartData | {}) => {
         return (
           <>
-            <ColorBlock color={row.color} />
+            <ColorBlock color={'color' in row ? row.color : COLORS[1]} />
             {renderValue(value, type)}
           </>
         )

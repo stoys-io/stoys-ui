@@ -5,7 +5,7 @@ import ChartCellTitle from './ChartCellTitle'
 import { ChartAndTable, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
-import { VerticalColumn, VerticalTableProps } from '../model'
+import { VerticalColumn, VerticalTableProps, VerticalData } from '../model'
 import { TABLE_HEIGHT } from '../constants'
 import { ColorBlock } from '../styles'
 
@@ -34,7 +34,7 @@ const VerticalTable = (props: VerticalTableProps) => {
       dataIndex: item.key,
       key: item.key,
       colSpan,
-      render: (record: any, row: any) => {
+      render: (record: any, row: VerticalData) => {
         if (row.key === 'chart') {
           return {
             props: { colSpan },
@@ -71,7 +71,7 @@ const VerticalTable = (props: VerticalTableProps) => {
     }
   })
   const dataSource = columns.map(column => {
-    const result: { [key: string]: any } = { key: column.key, title: column.title }
+    const result: VerticalData = { key: column.key, title: column.title }
 
     flattenData.forEach((item: any) => {
       if (column.key) {

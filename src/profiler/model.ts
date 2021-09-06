@@ -243,6 +243,18 @@ export interface VerticalColumn {
   render?: (text: any, record: any) => any
 }
 
+export interface VerticalData {
+  [key: string]:
+    | undefined
+    | number
+    | null
+    | boolean
+    | string
+    | {}
+    | { type: string; pmf: Array<PmfPlotItem>; items: Array<DiscreteItem> }
+    | { type: string; value: string }
+}
+
 export interface ChartTableProps {
   data: Array<HygratePmfPlotDataItem>
   height: number
