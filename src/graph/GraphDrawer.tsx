@@ -14,7 +14,7 @@ const { TabPane } = Tabs
 
 type GraphDrawerProps = {
   visible: boolean
-  setDrawerVisibility: (visible: boolean) => void
+  setDrawerVisibility: Dispatch<SetStateAction<boolean>>
   nodeLabel?: string
   table: string
   setDrawerTable: Dispatch<SetStateAction<string>>

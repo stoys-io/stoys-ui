@@ -3,6 +3,7 @@ export interface Node {
   label: string
   comboId?: string
   violations: number
+  partitions: number
 }
 
 export type Nodes = Array<Node>
@@ -21,3 +22,5 @@ export interface Combo {
 }
 
 export type Combos = Array<Combo>
+
+export type Badge = 'violations' | 'partitions'

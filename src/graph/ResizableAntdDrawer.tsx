@@ -1,9 +1,9 @@
-import React, { ReactNode, useState, useCallback } from 'react'
+import React, { ReactNode, useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { ResizeArea, ResizeIcon, StyledDrawer } from './styles'
 
 type ResizableAntdDrawerProps = {
   visible: boolean
-  setDrawerVisibility: (visible: boolean) => void
+  setDrawerVisibility: Dispatch<SetStateAction<boolean>>
   children: ReactNode
 }
 
@@ -51,7 +51,7 @@ const ResizableAntdDrawer = ({
       onClose={() => setDrawerVisibility(false)}
       height={drawerHeight}
     >
-      <ResizeIcon />
+      {visible ? <ResizeIcon /> : null}
       <ResizeArea onMouseDown={handleMousedown} />
       {children}
     </StyledDrawer>
