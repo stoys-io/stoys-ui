@@ -18,12 +18,14 @@ export const Quality = ({
   heightenedCell,
   smallSize = true,
   showReferencedColumnsOnly = true,
+  rulesTableProps = {},
+  sampleTableProps = {},
 }: QualityProps): JSX.Element => {
   const [_mode, _setMode] = useState<Mode>(mode)
   const [_selectedRules, _setSelectedRules] = useState<Array<string>>(selectedRules || [])
   const [_showReferencedColumns, _setShowReferencedColumns] =
     useState<boolean>(showReferencedColumnsOnly)
-  const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
+  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
   const { columns, rules, row_sample, statistics } = data
 
   useEffect(() => {
@@ -145,19 +147,22 @@ export const Quality = ({
         setSelectRules={setSelectedRules}
         setMode={setMode}
         smallSize={!!smallSize}
+        tableProps={rulesTableProps}
       />
       <SampleTable
         sampleData={filteredSampleData}
         sampleColumns={sampleColumns}
-        currentPage={currentPage}
+        currentPage={current}
         setCurrentPage={setCurrentPage}
         pageSize={pageSize}
         setPageSize={setPageSize}
-        withoutPagination={!!pagination?.disabled}
+        withoutPagination={pagination === false}
+        pagination={pagination}
         heightenedCell={heightenedCell}
         smallSize={!!smallSize}
         showReferencedColumns={_showReferencedColumns}
         setShowReferencedColumns={setShowReferencedColumns}
+        tableProps={sampleTableProps}
       />
     </TablesWrapper>
   )

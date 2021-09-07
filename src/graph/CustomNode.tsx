@@ -33,11 +33,12 @@ const ToolbarItem = ({ text, table, openDrawer }: ToolbarItemProps) => (
 type CustomNodeProps = {
   cfg: any
   openDrawer: (node: any, table: string) => void
-  onNodeClick: (nodeId: string) => void
+  onNodeClick: (node: any) => void
 }
 
 const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
-  const { label, highlighted, violations } = cfg
+  const { label, highlighted, badgeNumber } = cfg
+  const badge = badgeNumber ? renderNumericValue(2, true)(badgeNumber) : ''
   return (
     <Group>
       <Rect style={{ width: 155, flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -58,7 +59,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
             fill: '#ffffff',
           }}
         >
-          <Text style={{ fill: '#000000' }}>{renderNumericValue(2, true)(violations)}</Text>
+          <Text style={{ fill: '#000000' }}>{badge}</Text>
         </Rect>
       </Rect>
 
@@ -73,7 +74,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
           radius: [2],
           cursor: 'pointer',
         }}
-        onClick={(evt, node: any) => onNodeClick(node.getModel().id)}
+        onClick={(evt, node: any) => onNodeClick(node.getModel())}
       >
         <Text
           style={{
@@ -83,7 +84,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
             margin: [8],
             cursor: 'pointer',
           }}
-          onClick={(evt, node: any) => onNodeClick(node.getModel().id)}
+          onClick={(evt, node: any) => onNodeClick(node.getModel())}
         >
           {getLabelText(label)}
         </Text>

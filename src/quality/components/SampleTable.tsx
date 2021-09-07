@@ -17,13 +17,17 @@ const SampleTable = ({
   setCurrentPage,
   setPageSize,
   withoutPagination,
+  pagination,
   heightenedCell,
   smallSize,
   showReferencedColumns,
   setShowReferencedColumns,
+  tableProps,
 }: SampleTableProps): JSX.Element => {
   const handleChangePagination = useCallback(
-    pagination => {
+    (pagination, filters, sorter, extra) => {
+      tableProps.onChange?.(pagination, filters, sorter, extra)
+
       if (pagination.pageSize !== pageSize) {
         setPageSize(pagination.pageSize)
         setCurrentPage(1)
@@ -34,15 +38,16 @@ const SampleTable = ({
     [pageSize, setPageSize, setCurrentPage]
   )
 
-  const tableProps = {
+  const _tableProps = {
+    showSorterTooltip: false,
+    ...tableProps,
     columns: sampleColumns as any,
     dataSource: sampleData,
     scroll: {
       x: true as true,
-      y: withoutPagination ? TABLE_HEIGHT : undefined,
+      y: TABLE_HEIGHT,
     },
     onChange: handleChangePagination,
-    showSorterTooltip: false,
   }
 
   return (
@@ -56,15 +61,16 @@ const SampleTable = ({
         </IconButton>
       </TableTitleWrapper>
       {withoutPagination ? (
-        <VirtualTable {...tableProps} />
+        <VirtualTable {..._tableProps} />
       ) : (
         <Table
-          {...tableProps}
+          {..._tableProps}
           sticky
           pagination={{
             current: currentPage,
             pageSize,
             showSizeChanger: sampleData?.length > pageSize,
+            ...(pagination ? pagination : {}),
           }}
         />
       )}

@@ -1,31 +1,28 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useMemo } from 'react'
 import G6 from '@antv/g6'
 import { createNodeFromReact } from '@antv/g6-react-node'
 import { getData } from './helpers'
 import { appendAutoShapeListener } from './events'
 import GraphDrawer from './GraphDrawer'
 import CustomNode from './CustomNode'
-import { GraphContainer } from './styles'
-
-const graphData = getData()
+import Sidebar from './Sidebar'
+import { Container, GraphContainer } from './styles'
+import { Badge } from './model'
 
 const Graph = () => {
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
   const [drawerNodeLabel, setDrawerNodeLabel] = useState('')
   const [drawerTable, setDrawerTable] = useState('')
+  const [badge, setBadge] = useState<Badge>('violations')
+  const [selectedNodeId, setSelectedNodeId] = useState<string>('')
+  const [searchNodeId, setSearchNodeId] = useState<string>('')
   const graphRef = useRef(null)
   let graph: any = null
 
-  const onNodeClick = (nodeId: string) => {
-    graph.changeData(getData(nodeId))
-  }
-
-  const openDrawer = (node: any, table: string) => {
-    const model = node.getModel()
-    setDrawerNodeLabel(model.label)
-    setDrawerVisibility(true)
-    setDrawerTable(table)
-  }
+  const graphData = useMemo(
+    () => getData({ selectedNodeId, badge }),
+    [getData, badge, selectedNodeId]
+  )
 
   useEffect(() => {
     if (!graph) {
@@ -35,7 +32,7 @@ const Graph = () => {
       )
 
       const minimap = new G6.Minimap({
-        size: [300, 200],
+        size: [250, 200],
         className: 'minimap',
         // type: 'delegate',
       })
@@ -99,19 +96,47 @@ const Graph = () => {
     return () => {
       graph.destroy()
     }
-  }, [])
+  }, [graph, badge])
+
+  const onNodeClick = (node: any) => {
+    setSelectedNodeId(node.id)
+    setDrawerNodeLabel(node.label)
+    graph.changeData(getData({ selectedNodeId: node.id, badge }))
+  }
+
+  const openDrawer = (node: any, table: string) => {
+    const model = node.getModel()
+    setDrawerNodeLabel(model.label)
+    setDrawerVisibility(true)
+    setDrawerTable(table)
+  }
+
+  const onSearchNode = (nodeId: string) => {
+    console.log(nodeId, 'nodeId')
+    console.log(graph, 'graph')
+    // graph.focusItem(nodeId)
+  }
 
   return (
-    <GraphContainer>
-      <div ref={graphRef} />
-      <GraphDrawer
-        nodeLabel={drawerNodeLabel}
-        table={drawerTable}
-        setDrawerTable={setDrawerTable}
-        visible={drawerIsVisible}
-        setDrawerVisibility={setDrawerVisibility}
+    <Container>
+      <Sidebar
+        badge={badge}
+        changeBadge={setBadge}
+        searchNodeId={searchNodeId}
+        setSearchNodeId={setSearchNodeId}
+        onSearchNode={onSearchNode}
       />
-    </GraphContainer>
+      <GraphContainer>
+        <div ref={graphRef} />
+        <GraphDrawer
+          nodeLabel={drawerNodeLabel}
+          table={drawerTable}
+          setDrawerTable={setDrawerTable}
+          visible={drawerIsVisible}
+          setDrawerVisibility={setDrawerVisibility}
+        />
+      </GraphContainer>
+    </Container>
   )
 }
 

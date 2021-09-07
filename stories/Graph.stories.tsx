@@ -10,4 +10,7 @@ export const Graph = Template.bind({})
 export default {
   title: 'Data Quality/Graph',
   component: Graph,
+  parameters: {
+    layout: 'fullscreen',
+  }
 }

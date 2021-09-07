@@ -5,21 +5,30 @@ import ChartCellTitle from './ChartCellTitle'
 import { ChartWithTooltip, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../columns'
-import { VerticalColumn, VerticalTableProps } from '../model'
+import {
+  DiscreteItem,
+  PmfPlotItem,
+  VerticalColumn,
+  VerticalData,
+  VerticalTableProps,
+} from '../model'
 import { TABLE_HEIGHT } from '../constants'
 import { ColorBlock } from '../styles'
 
-const VerticalTable = ({
-  data,
-  columns,
-  currentPage,
-  pageSize,
-  setCurrentPage,
-  setPageSize,
-  withoutPagination,
-  rowOptions,
-  tableOptions,
-}: VerticalTableProps) => {
+const VerticalTable = (props: VerticalTableProps) => {
+  const {
+    data,
+    columns,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+    withoutPagination,
+    pagination,
+    rowOptions,
+    tableOptions,
+    onChange,
+  } = props
   const flattenData = data.map(item => item.children).flat()
   const verticalColumns: Array<VerticalColumn> = flattenData.map((item, index) => {
     const parent = data.find(dataItem => dataItem.columnName === item.parent)
@@ -32,7 +41,7 @@ const VerticalTable = ({
       dataIndex: item.key,
       key: item.key,
       colSpan,
-      render: (record: any, row: any) => {
+      render: (record: any, row: VerticalData) => {
         if (row.key === 'chart') {
           return {
             props: { colSpan },
@@ -75,7 +84,7 @@ const VerticalTable = ({
     }
   })
   const dataSource = columns.map(column => {
-    const result: { [key: string]: any } = { key: column.key, title: column.title }
+    const result: VerticalData = { key: column.key, title: column.title }
 
     flattenData.forEach((item: any) => {
       if (column.key) {
@@ -97,7 +106,9 @@ const VerticalTable = ({
   verticalColumns.unshift({ title: '', dataIndex: 'title', key: 'title', fixed: 'left' })
 
   const handleChangePagination = useCallback(
-    pagination => {
+    (pagination, filters, sorter, extra) => {
+      onChange?.(pagination, filters, sorter, extra)
+
       if (pagination.pageSize !== pageSize) {
         setPageSize(pagination.pageSize)
         setCurrentPage(1)
@@ -112,10 +123,10 @@ const VerticalTable = ({
     <Table
       sticky
       bordered
+      scroll={{ x: true, y: withoutPagination ? TABLE_HEIGHT : undefined }}
+      {...props}
       columns={verticalColumns}
       dataSource={dataSource}
-      scroll={{ x: true, y: withoutPagination ? TABLE_HEIGHT : undefined }}
-      rowClassName="horizontal-row"
       pagination={
         withoutPagination
           ? false
@@ -123,9 +134,11 @@ const VerticalTable = ({
               current: currentPage,
               pageSize,
               showSizeChanger: true,
+              ...pagination,
             }
       }
       onChange={handleChangePagination}
+      rowClassName="horizontal-row"
     />
   )
 }

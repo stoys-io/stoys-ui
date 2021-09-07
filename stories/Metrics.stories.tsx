@@ -11,12 +11,44 @@ Metrics.args = {
   data: mockedData,
   previousReleaseDataIsShown: true,
   disabledColumns: [],
-  pagination: { disabled: true },
+  pagination: false,
   saveMetricThreshold: () => {},
   smallSize: true,
+  bordered: false,
 }
 
 export default {
   title: 'Data Quality/Metrics',
   component: Metrics,
+  argTypes: {
+    data: {
+      type: { required: true },
+    },
+    columns: {
+      control: null,
+    },
+    isLoading: {
+      control: 'boolean',
+      defaultValue: false,
+    },
+    previousReleaseDataIsShown: {
+      control: 'boolean',
+      defaultValue: false,
+    },
+    saveMetricThreshold: { action: 'clicked' },
+    pagination: {
+      control: 'object',
+    },
+    disabledColumns: {
+      control: 'array',
+      defaultValue: [],
+    },
+    height: {
+      control: 'string',
+    },
+    smallSize: {
+      control: 'boolean',
+      defaultValue: false,
+    },
+  },
 }

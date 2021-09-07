@@ -80,10 +80,10 @@ const Threshold = ({
           </ThresholdEditButton>
           <div ref={modalContainerRef} style={{ position: 'fixed', top: 0, left: 0, zIndex: 9 }} />
           <Modal
-            {...({ title: 'Update the threshold' } as any)}
+            title="Update the threshold"
             visible={isModalOpen}
             onCancel={onCancel}
-            getContainer={() => modalContainerRef.current}
+            getContainer={() => modalContainerRef.current!}
             destroyOnClose
             footer={
               <ModalButtonsWrapper data-testid="treshold-modal">

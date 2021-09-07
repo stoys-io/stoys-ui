@@ -18,9 +18,9 @@ describe('Chart', () => {
         value={{
           checkedTableRows: ['1', '2', '3'],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -38,9 +38,9 @@ describe('Chart', () => {
         value={{
           checkedTableRows: ['1', '2', '3'],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -58,9 +58,9 @@ describe('Chart', () => {
         value={{
           checkedTableRows: [],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -88,9 +88,9 @@ describe('Chart', () => {
         value={{
           checkedTableRows: [],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -122,9 +122,9 @@ describe('Chart', () => {
         value={{
           checkedTableRows: [],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}
@@ -152,9 +152,9 @@ describe('Chart', () => {
         value={{
           checkedTableRows: [],
           checkedLogRows: [],
-          checkedAxisRows: [],
+          checkedAxesRows: [],
           dataLength: 10,
-          setCheckedAxisRows: jest.fn(),
+          setCheckedAxesRows: jest.fn(),
           setCheckedLogRows: jest.fn(),
           setCheckedTableRows: jest.fn(),
         }}

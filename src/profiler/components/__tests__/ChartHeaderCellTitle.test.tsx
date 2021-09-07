@@ -15,7 +15,7 @@ describe('ChartHeaderCellTitle', () => {
     const { queryByTestId } = render(
       <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
+        axesOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         tableOptions={{ isCheckboxShown: true, setChecked: jest.fn() }}
       />
     )
@@ -33,7 +33,7 @@ describe('ChartHeaderCellTitle', () => {
     const { queryByTestId } = render(
       <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
+        axesOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         tableOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
       />
     )
@@ -54,7 +54,7 @@ describe('ChartHeaderCellTitle', () => {
     const { getByTestId } = render(
       <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
+        axesOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         tableOptions={{ isCheckboxShown: true, setChecked: setCheckedMock }}
       />
     )
@@ -70,7 +70,7 @@ describe('ChartHeaderCellTitle', () => {
     const { getByTestId } = render(
       <ChartHeaderCellTitle
         logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        axisOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
+        axesOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
         tableOptions={{ isCheckboxShown: true, isUsedByDefault: true, setChecked: jest.fn() }}
       />
     )

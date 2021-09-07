@@ -14,7 +14,7 @@ const { TabPane } = Tabs
 
 type GraphDrawerProps = {
   visible: boolean
-  setDrawerVisibility: (visible: boolean) => void
+  setDrawerVisibility: Dispatch<SetStateAction<boolean>>
   nodeLabel?: string
   table: string
   setDrawerTable: Dispatch<SetStateAction<string>>
@@ -50,7 +50,7 @@ const GraphDrawer = ({
             pagination={{ disabled: false }}
             rowToolbarOptions={{
               logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
-              axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
+              axesOptions: { isCheckboxShown: false, isUsedByDefault: false },
               chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
             }}
             profilerToolbarOptions={{

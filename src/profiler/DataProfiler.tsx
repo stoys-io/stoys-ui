@@ -12,18 +12,24 @@ import HorizontalTable from './components/HorizontalTable'
 import TableSettings from './components/TableSettings'
 
 import { NoData, TableWrapper } from './styles'
+import JsonDrawer from './components/JsonDrawer'
 
-export const DataProfiler = ({
-  datasets,
-  colors,
-  rowToolbarOptions,
-  pagination,
-  profilerToolbarOptions,
-  smallSize = true,
-  visibleColumns,
-}: DataProfilerProps) => {
+export const DataProfiler = (props: DataProfilerProps) => {
+  const {
+    datasets,
+    colors,
+    rowToolbarOptions,
+    pagination,
+    profilerToolbarOptions,
+    smallSize = true,
+    visibleColumns,
+  } = props
   const orientOptions = useMemo(
     () => (profilerToolbarOptions ? profilerToolbarOptions?.orientOptions : {}),
+    [profilerToolbarOptions]
+  )
+  const jsonOptions = useMemo(
+    () => (profilerToolbarOptions ? profilerToolbarOptions?.jsonOptions : {}),
     [profilerToolbarOptions]
   )
   const searchOptions = useMemo(
@@ -31,8 +37,9 @@ export const DataProfiler = ({
     [profilerToolbarOptions]
   )
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
+  const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
   const [searchValue, setSearchValue] = useState<string>('')
-  const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
+  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
   if (!datasets || !Array.isArray(datasets)) {
     return <NoData>No data</NoData>
@@ -97,7 +104,7 @@ export const DataProfiler = ({
         logarithmicScaleOptions: {
           isCheckboxShown: true,
         },
-        axisOptions: {
+        axesOptions: {
           isCheckboxShown: true,
         },
         chartTableOptions: {
@@ -110,7 +117,7 @@ export const DataProfiler = ({
         logarithmicScaleOptions: {
           isCheckboxShown: false,
         },
-        axisOptions: {
+        axesOptions: {
           isCheckboxShown: false,
         },
         chartTableOptions: {
@@ -125,8 +132,8 @@ export const DataProfiler = ({
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
     _rowToolbarOptions.logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
   )
-  const [checkedAxisRows, setCheckedAxisRows] = useState<Array<string>>(
-    _rowToolbarOptions.axisOptions?.isUsedByDefault ? columnNames : []
+  const [checkedAxesRows, setCheckedAxesRows] = useState<Array<string>>(
+    _rowToolbarOptions.axesOptions?.isUsedByDefault ? columnNames : []
   )
   const [checkedTableRows, setCheckedTableRows] = useState<Array<string>>(
     _rowToolbarOptions.chartTableOptions?.isUsedByDefault ? columnNames : []
@@ -162,8 +169,8 @@ export const DataProfiler = ({
           setChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
         },
         {
-          isCheckboxShown: !!_rowToolbarOptions.axisOptions?.isCheckboxShown,
-          setChecked: (isChecked: boolean) => setCheckedAxisRows(isChecked ? columnNames : []),
+          isCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
+          setChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
         },
         tableOptions,
         smallSize,
@@ -190,13 +197,21 @@ export const DataProfiler = ({
     [searchOptions]
   )
 
+  const _setJsonShown = useCallback(() => {
+    setJsonShown((prevState: boolean) => {
+      jsonOptions?.onChange?.(!prevState)
+
+      return !prevState
+    })
+  }, [jsonOptions])
+
   return (
     <CheckedRowsContext.Provider
       value={{
         checkedLogRows,
         setCheckedLogRows,
-        checkedAxisRows,
-        setCheckedAxisRows,
+        checkedAxesRows,
+        setCheckedAxesRows,
         checkedTableRows,
         setCheckedTableRows,
         dataLength: data.length,
@@ -209,35 +224,43 @@ export const DataProfiler = ({
           onModeChange={_setIsVerticalView}
           isSearchShown={!searchOptions?.disabled}
           onSearchChangeHandler={_onSearch}
+          isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
+          isJsonSwitcherChecked={isJsonShown}
+          onJsonChange={_setJsonShown}
         />
       ) : null}
       <TableWrapper smallSize={!!smallSize}>
         {isVertical ? (
           <VerticalTable
+            {...props}
             data={data}
             columns={columns}
-            currentPage={currentPage}
+            currentPage={current}
             setCurrentPage={setCurrentPage}
             pageSize={pageSize}
             setPageSize={setPageSize}
-            withoutPagination={!!pagination?.disabled}
+            withoutPagination={pagination === false}
+            pagination={pagination}
             rowOptions={{
               isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
-              isAxisCheckboxShown: !!_rowToolbarOptions.axisOptions?.isCheckboxShown,
+              isAxesCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
             }}
             tableOptions={tableOptions}
           />
         ) : (
           <HorizontalTable
+            {...props}
             data={data}
             columns={columns}
-            currentPage={currentPage}
+            currentPage={current}
             setCurrentPage={setCurrentPage}
             pageSize={pageSize}
             setPageSize={setPageSize}
-            withoutPagination={!!pagination?.disabled}
+            withoutPagination={pagination === false}
+            pagination={pagination}
           />
         )}
+        <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
       </TableWrapper>
     </CheckedRowsContext.Provider>
   )

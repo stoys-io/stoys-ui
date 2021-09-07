@@ -1,3 +1,4 @@
+import { TableProps } from 'antd/lib/table'
 import { PaginationProps } from '../hooks'
 import { Maybe } from '../model'
 
@@ -49,10 +50,12 @@ export type QualityProps = {
   onModeChange?: OnModeChange
   selectedRules?: Array<string>
   onSelectedRulesChange?: (rules: Array<string>) => void
-  pagination?: PaginationProps
+  pagination?: PaginationProps | false
   heightenedCell?: boolean
   smallSize?: boolean
   showReferencedColumnsOnly?: boolean
+  rulesTableProps?: TableProps<any>
+  sampleTableProps?: TableProps<any>
 }
 
 export type TableCellData = {
@@ -76,6 +79,7 @@ export interface RulesTableProps {
   mode: Mode
   setMode: (mode: Mode) => void
   smallSize: boolean
+  tableProps: TableProps<any>
 }
 
 export interface SampleTableProps {
@@ -92,10 +96,12 @@ export interface SampleTableProps {
   setCurrentPage: (page: number) => void
   setPageSize: (pageSize: number) => void
   withoutPagination?: boolean
+  pagination?: PaginationProps | false
   heightenedCell?: boolean
   smallSize: boolean
   showReferencedColumns: boolean
   setShowReferencedColumns: () => void
+  tableProps: TableProps<any>
 }
 
 export interface RulesTableSwitchersProps {

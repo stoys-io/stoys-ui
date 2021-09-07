@@ -14,8 +14,8 @@ export const getJoinRatesColumns = (columns: Array<string>) =>
           return data.join(', ')
         }
 
-        if (data) {
-          return renderNumericCell(data as number)
+        if (data && typeof data === 'number') {
+          return renderNumericCell(data)
         }
 
         return null

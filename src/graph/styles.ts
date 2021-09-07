@@ -1,13 +1,30 @@
 import styled from '@emotion/styled'
-import { Drawer } from 'antd'
+import Drawer from 'antd/lib/drawer'
 import MenuOutlined from '@ant-design/icons/MenuOutlined'
+import Input from 'antd/lib/input'
+
+export const Container = styled.div`
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+`
+
+export const SidebarWrapper = styled.div`
+  height: 100vh;
+  width: 250px;
+  background-color: #f4f2f4;
+  padding: 250px 10px 10px 10px;
+`
 
 export const GraphContainer = styled.div`
-  position: relative;
+  width: calc(100% - 250px);
+  overflow: scroll;
   .minimap {
     position: absolute;
     top: 0;
-    background-color: #ffffff;
+    left: 0;
+    background-color: #f4f2f4;
   }
   .g6-tooltip {
     border: 1px solid #e2e2e2;
@@ -59,4 +76,11 @@ export const ResizeArea = styled.div`
   top: -5px;
   cursor: row-resize;
   z-index: 10;
+`
+
+export const MenuTitle = styled.h4`
+`
+
+export const SearchInput = styled(Input)`
+  margin-bottom: 20px;
 `

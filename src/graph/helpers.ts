@@ -1,8 +1,9 @@
 import { nodes } from './__mocks__/Nodes.mock'
 import { edges } from './__mocks__/Edges.mock'
 import { combos } from './__mocks__/Combos.mock'
+import { Badge } from './model'
 
-export const getData = (selectedNodeId?: string) => {
+export const getData = ({ selectedNodeId, badge } : { selectedNodeId: string, badge: Badge }) => {
   let highLightedNodesIds = selectedNodeId ? [selectedNodeId] : []
   const highLightedEdgesIds = edges
     .filter(edge => {
@@ -20,6 +21,7 @@ export const getData = (selectedNodeId?: string) => {
     nodes: nodes.map((node) => ({
       ...node,
       highlighted: highLightedNodesIds.includes(node.id),
+      badgeNumber: node[badge],
     })),
     edges: edges.map(edge => ({
       ...edge,

@@ -31,15 +31,13 @@
     "pre-commit": "npm run checktype && lint-staged"
   },
   "peerDependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
     "@antv/g6": "^4.3.4",
     "@antv/g6-react-node": "^1.4.2",
-    "@antv/graphin": "^2.3.1",
-    "@antv/graphin-components": "^2.3.0",
     "@emotion/core": "^10.0.10",
     "@emotion/css": "^10.0.9",
     "@emotion/styled": "^10.0.10",
@@ -85,8 +83,8 @@
     "jest": "^26.6.3",
     "lint-staged": "^11.0.0",
     "prettier": "^2.3.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "storybook-addon-react-docgen": "^1.2.42",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.0.3",
