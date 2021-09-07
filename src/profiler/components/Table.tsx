@@ -2,7 +2,7 @@ import React from 'react'
 
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
-import { CELL_TABLE_HEADER_HEIGHT, COLORS } from '../constants'
+import { CELL_TABLE_HEADER_HEIGHT } from '../constants'
 import { Maybe } from '../../model'
 import { ChartTableProps, TableChartData } from '../model'
 import { ChartTable, ColorBlock } from '../styles'
@@ -23,8 +23,13 @@ const renderCount = (index: number) => (value: string | number, row: any) => {
   const color = `color${index}`
 
   return {
-    props: { style: { backgroundColor: row[color] }, className: 'count-cell' },
-    children: isNaN(+value) ? null : renderNumericCell(value),
+    props: { className: 'count-cell' },
+    children: isNaN(+value) ? null : (
+      <>
+        <ColorBlock color={row[color]} position="top" />
+        {renderNumericCell(value)}
+      </>
+    ),
   }
 }
 
@@ -74,7 +79,7 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
     }, {})
   })
 
-  const countColumns = new Array(maxIndex + 1).fill(1).map((value, index) => {
+  const countColumns = new Array(maxIndex).fill(1).map((value, index) => {
     return {
       key: `count${index}`,
       title: 'count',
@@ -90,12 +95,7 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
       title: 'item',
       dataIndex: 'item',
       render: (value: number | string, row: TableChartData | {}) => {
-        return (
-          <>
-            <ColorBlock color={'color' in row ? row.color : COLORS[1]} />
-            {renderValue(value, type)}
-          </>
-        )
+        return renderValue(value, type)
       },
       align: 'right' as 'right',
     },

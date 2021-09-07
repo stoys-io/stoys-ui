@@ -216,12 +216,12 @@ export const TableSubheader = styled(CellWrapper)`
   height: 100%;
 `
 
-export const ColorBlock = styled.span`
+export const ColorBlock = styled.span<{color: string, position?: 'top'}>`
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
-  width: 10px;
+  height: ${props => props.position === 'top' ? '5px' : '100%'};
+  width: ${props => props.position === 'top' ? '100%' : '10px'};
   background-color: ${props => props.color};
 `
 
@@ -269,7 +269,7 @@ export const ChartTable = styled(AntdTable)<{ height: number }>`
   }
 
   td.count-cell {
-    background-color: #e8e8e8;
+    position: relative;
   }
 `
 
