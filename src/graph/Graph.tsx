@@ -98,9 +98,10 @@ const Graph = () => {
     }
   }, [graph, badge])
 
-  const onNodeClick = (nodeId: string) => {
-    setSelectedNodeId(nodeId)
-    graph.changeData(getData({ selectedNodeId: nodeId, badge }))
+  const onNodeClick = (node: any) => {
+    setSelectedNodeId(node.id)
+    setDrawerNodeLabel(node.label)
+    graph.changeData(getData({ selectedNodeId: node.id, badge }))
   }
 
   const openDrawer = (node: any, table: string) => {

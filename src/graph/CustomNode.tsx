@@ -33,7 +33,7 @@ const ToolbarItem = ({ text, table, openDrawer }: ToolbarItemProps) => (
 type CustomNodeProps = {
   cfg: any
   openDrawer: (node: any, table: string) => void
-  onNodeClick: (nodeId: string) => void
+  onNodeClick: (node: any) => void
 }
 
 const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
@@ -75,7 +75,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
           padding: [8],
           cursor: 'pointer',
         }}
-        onClick={(evt, node: any) => onNodeClick(node.getModel().id)}
+        onClick={(evt, node: any) => onNodeClick(node.getModel())}
       >
         <Text
           style={{
@@ -84,7 +84,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
             fontSize: 16,
             cursor: 'pointer',
           }}
-          onClick={(evt, node: any) => onNodeClick(node.getModel().id)}
+          onClick={(evt, node: any) => onNodeClick(node.getModel())}
         >
           {getLabelText(label)}
         </Text>
