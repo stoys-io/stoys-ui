@@ -22,7 +22,7 @@ const VerticalTable = (props: VerticalTableProps) => {
     pagination,
     rowOptions,
     tableOptions,
-    displayRelative,
+    displayNormalized,
     onChange,
   } = props
   const flattenData = data.map(item => item.children).flat()
@@ -50,7 +50,7 @@ const VerticalTable = (props: VerticalTableProps) => {
           }
         }
 
-        if (displayRelative && COUNT_COLUMNS.includes(row.key as string)) {
+        if (displayNormalized && COUNT_COLUMNS.includes(row.key as string)) {
           return formatPercentage(record.value)
         }
 

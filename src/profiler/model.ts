@@ -85,7 +85,7 @@ export interface ProfilerToolbarOptions {
     onChange?: (shown: boolean) => void
   }
   // TODO: too much optional stuff?
-  relativeCountOptions?: {
+  normalizeOptions?: {
     checked?: boolean
     isCheckboxShown?: boolean
   }
@@ -166,8 +166,8 @@ export interface VerticalTableProps extends TableProps {
   rowOptions: RowOptions
   tableOptions: TableOptions
 
-  // TODO: Remove
-  displayRelative: boolean
+  // TODO: Remove. We already create a render function in getColumns for Horizontal Table
+  displayNormalized: boolean
 }
 
 export interface HygratePmfPlotDataItem {
@@ -302,9 +302,9 @@ export interface TableSettingsProps {
   isJsonSwitcherChecked: boolean
   onJsonChange: () => void
 
-  isRelativeCountSwitcherShown?: boolean
-  onCountViewChange: () => void
-  isCountSwitcherChecked: boolean
+  isNormalizeSwitcherShown?: boolean
+  isNormalizeSwitcherChecked: boolean
+  onNormalizeChange: () => void
 }
 
 export interface JsonDrqwerProps {

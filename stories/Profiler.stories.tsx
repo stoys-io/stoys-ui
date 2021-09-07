@@ -26,7 +26,7 @@ ProfilerForOneDataset.args = {
       isCheckboxShown: true,
       onChange: (shown: boolean) => console.log('json => ', shown),
     },
-    relativeCountOptions: {
+    normalizeOptions: {
       isCheckboxShown: true,
       checked: false,
     },
@@ -51,7 +51,7 @@ Profiler.args = {
     chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
   },
   profilerToolbarOptions: {
-    relativeCountOptions: {
+    normalizeOptions: {
       isCheckboxShown: true,
       checked: false,
     },

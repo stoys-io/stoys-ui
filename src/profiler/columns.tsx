@@ -160,13 +160,13 @@ export const getColumns = (
   data: Array<DataItem>,
   logarithmicScale: LogarithmicScale,
   axesOptions: AxesOptions,
-  showPercentage: boolean,
+  displayNormalized: boolean,
   visibleColumns?: Array<string>
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
 
   const columns = _visibleColumns.map((column, index) => {
-    const isPercentage = showPercentage && COUNT_COLUMNS.includes(column)
+    const isPercentage = displayNormalized && COUNT_COLUMNS.includes(column)
 
     const _column: any = {
       title: COLUMNS_TITLES[column] || column,

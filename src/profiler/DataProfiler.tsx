@@ -37,8 +37,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
     [profilerToolbarOptions]
   )
 
-  const relativeCountOptions = useMemo(
-    () => (profilerToolbarOptions ? profilerToolbarOptions?.relativeCountOptions : {}),
+  const normalizeOptions = useMemo(
+    () => (profilerToolbarOptions ? profilerToolbarOptions?.normalizeOptions : {}),
     [profilerToolbarOptions]
   )
 
@@ -46,10 +46,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
   const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
   const [searchValue, setSearchValue] = useState<string>('')
 
-  const [isRelCountChecked, setIsRelCountChecked] = useState<boolean>(
-    !!relativeCountOptions?.checked
-  )
-  const _countViewChange = () => setIsRelCountChecked(!isRelCountChecked)
+  const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(!!normalizeOptions?.checked)
+  const _normalizeChange = () => setIsNormalizeChecked(!isNormalizeChecked)
 
   const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
@@ -101,12 +99,12 @@ export const DataProfiler = (props: DataProfilerProps) => {
         return acc
       }, [])
 
-    if (isRelCountChecked) {
-      return transformRelativeCount(groupedData)
+    if (isNormalizeChecked) {
+      return transformNormalize(groupedData)
     }
 
     return groupedData
-  }, [dataGrouppedByTitle, searchValue, isRelCountChecked])
+  }, [dataGrouppedByTitle, searchValue, isNormalizeChecked])
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
 
@@ -188,10 +186,10 @@ export const DataProfiler = (props: DataProfilerProps) => {
           isCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
         },
-        isRelCountChecked,
+        isNormalizeChecked,
         validVisibleColumns
       ),
-    [data, _rowToolbarOptions, validVisibleColumns, isRelCountChecked]
+    [data, _rowToolbarOptions, validVisibleColumns, isNormalizeChecked]
   )
 
   const _setIsVerticalView = useCallback(
@@ -244,9 +242,9 @@ export const DataProfiler = (props: DataProfilerProps) => {
               isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
               isJsonSwitcherChecked={isJsonShown}
               onJsonChange={_setJsonShown}
-              onCountViewChange={_countViewChange}
-              isRelativeCountSwitcherShown={relativeCountOptions?.isCheckboxShown}
-              isCountSwitcherChecked={isRelCountChecked}
+              isNormalizeSwitcherShown={normalizeOptions?.isCheckboxShown}
+              isNormalizeSwitcherChecked={isNormalizeChecked}
+              onNormalizeChange={_normalizeChange}
             />
           ) : null}
           <TableWrapper smallSize={!!smallSize}>
@@ -266,7 +264,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
                   isAxesCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
                 }}
                 tableOptions={tableOptions}
-                displayRelative={isRelCountChecked}
+                displayNormalized={isNormalizeChecked}
               />
             ) : (
               <HorizontalTable
@@ -289,7 +287,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
   )
 }
 
-const transformRelativeCount = (data: Array<DataItem>) =>
+const transformNormalize = (data: Array<DataItem>) =>
   data.map(item => ({
     ...item,
     children: item.children.map(child => {

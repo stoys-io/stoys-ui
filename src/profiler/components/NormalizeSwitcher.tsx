@@ -5,14 +5,14 @@ import PercentageOutlined from '@ant-design/icons/PercentageOutlined'
 import { IconWrapper } from '../styles'
 import { SwitcherProps } from '../model'
 
-const RelativeCountSwitcher = ({ checked, onChange }: SwitcherProps): JSX.Element => {
+const NormalizeSwitcher = ({ checked, onChange }: SwitcherProps): JSX.Element => {
   return (
     <IconWrapper checked={checked} onClick={onChange}>
-      <Tooltip title="Show relative count">
+      <Tooltip title="Show normalized count">
         <PercentageOutlined />
       </Tooltip>
     </IconWrapper>
   )
 }
 
-export default RelativeCountSwitcher
+export default NormalizeSwitcher
