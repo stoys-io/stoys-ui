@@ -15,6 +15,7 @@ const Graph = () => {
   const [drawerTable, setDrawerTable] = useState('')
   const [badge, setBadge] = useState<Badge>('violations')
   const [selectedNodeId, setSelectedNodeId] = useState<string>('')
+  const [searchNodeId, setSearchNodeId] = useState<string>('')
   const graphRef = useRef(null)
   let graph: any = null
 
@@ -22,18 +23,6 @@ const Graph = () => {
     () => getData({ selectedNodeId, badge }),
     [getData, badge, selectedNodeId]
   )
-
-  const onNodeClick = (nodeId: string) => {
-    setSelectedNodeId(nodeId)
-    graph.changeData(getData({ selectedNodeId: nodeId, badge }))
-  }
-
-  const openDrawer = (node: any, table: string) => {
-    const model = node.getModel()
-    setDrawerNodeLabel(model.label)
-    setDrawerVisibility(true)
-    setDrawerTable(table)
-  }
 
   useEffect(() => {
     if (!graph) {
@@ -109,9 +98,33 @@ const Graph = () => {
     }
   }, [graph, badge])
 
+  const onNodeClick = (nodeId: string) => {
+    setSelectedNodeId(nodeId)
+    graph.changeData(getData({ selectedNodeId: nodeId, badge }))
+  }
+
+  const openDrawer = (node: any, table: string) => {
+    const model = node.getModel()
+    setDrawerNodeLabel(model.label)
+    setDrawerVisibility(true)
+    setDrawerTable(table)
+  }
+
+  const onSearchNode = (nodeId: string) => {
+    console.log(nodeId, 'nodeId')
+    console.log(graph, 'graph')
+    // graph.focusItem(nodeId)
+  }
+
   return (
     <Container>
-      <Sidebar badge={badge} changeBadge={setBadge} />
+      <Sidebar
+        badge={badge}
+        changeBadge={setBadge}
+        searchNodeId={searchNodeId}
+        setSearchNodeId={setSearchNodeId}
+        onSearchNode={onSearchNode}
+      />
       <GraphContainer>
         <div ref={graphRef} />
         <GraphDrawer

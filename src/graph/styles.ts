@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
-import { Drawer } from 'antd'
+import Drawer from 'antd/lib/drawer'
 import MenuOutlined from '@ant-design/icons/MenuOutlined'
+import Input from 'antd/lib/input'
 
 export const Container = styled.div`
   display: flex;
@@ -75,4 +76,11 @@ export const ResizeArea = styled.div`
   top: -5px;
   cursor: row-resize;
   z-index: 10;
+`
+
+export const MenuTitle = styled.h4`
+`
+
+export const SearchInput = styled(Input)`
+  margin-bottom: 20px;
 `
