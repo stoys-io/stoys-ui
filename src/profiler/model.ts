@@ -30,6 +30,7 @@ export type ColumnType =
   | 'double'
   | 'boolean'
 
+export type CountColumnKey = `count_${string}`
 export interface Column {
   name: string
   data_type: ColumnType
@@ -38,10 +39,8 @@ export interface Column {
   enum_values?: Array<string>
   format?: Maybe<string>
   count: number
-  count_empty: Maybe<number>
-  count_nulls: Maybe<number>
-  count_zeros: Maybe<number>
-  count_unique: Maybe<number>
+  [key: CountColumnKey]: Maybe<number>
+
   max_length: Maybe<number>
   mean: Maybe<number>
   min: Maybe<string>

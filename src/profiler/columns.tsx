@@ -7,8 +7,8 @@ import {
   COLUMNS_WITH_DATES,
   COLUMN_CHART_WIDTH,
   LEFT_ALIGN_COLUMNS,
-  COUNT_COLUMNS,
   VISISBLE_COLUMNS,
+  NORMALIZABLE_COLUMN_PREFIX,
 } from './constants'
 import ChartAndTableHeaderCellTitle from './components/ChartAndTableHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
@@ -102,7 +102,7 @@ const renderValue = (value?: Maybe<boolean | string | number>): Maybe<JSX.Elemen
   )
 }
 
-const renderPercentage = (value: number) => {
+const renderNormalized = (value: number) => {
   // TODO: Why the value can be undefined
   if (value === undefined) {
     return null
@@ -166,7 +166,7 @@ export const getColumns = (
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
 
   const columns = _visibleColumns.map((column, index) => {
-    const isPercentage = displayNormalized && COUNT_COLUMNS.includes(column)
+    const isNormalized = displayNormalized && column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
 
     const _column: any = {
       title: COLUMNS_TITLES[column] || column,
@@ -175,8 +175,8 @@ export const getColumns = (
       align: LEFT_ALIGN_COLUMNS.includes(column) ? ('left' as 'left') : ('right' as 'right'),
       render: COLUMNS_WITH_DATES.includes(column)
         ? renderMeanMinMaxValue
-        : isPercentage
-        ? renderPercentage
+        : isNormalized
+        ? renderNormalized
         : renderValue,
     }
 

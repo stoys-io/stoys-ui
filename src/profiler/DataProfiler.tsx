@@ -3,9 +3,9 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { usePagination } from '../hooks'
 import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
-import { COLORS } from './constants'
+import { COLORS, NORMALIZABLE_COLUMN_PREFIX } from './constants'
 import { CheckedRowsContext, SizeContext, TableOptionsContext } from './context'
-import { DataItem, DataProfilerProps, ChildDataItem, Orient } from './model'
+import { DataItem, DataProfilerProps, ChildDataItem, Orient, CountColumnKey } from './model'
 
 import VerticalTable from './components/VerticalTable'
 import HorizontalTable from './components/HorizontalTable'
@@ -291,14 +291,20 @@ const transformNormalize = (data: Array<DataItem>) =>
   data.map(item => ({
     ...item,
     children: item.children.map(child => {
-      const { count, count_empty, count_nulls, count_unique, count_zeros } = child
+      const { count } = child
+      const countColumns = Object.keys(child).filter(column =>
+        column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
+      )
+      const normalizedCountValues = countColumns.reduce((acc, key) => {
+        const columnValue = child[key as CountColumnKey]
+        const normalizedValue = columnValue === null ? null : columnValue / count
+
+        return { ...acc, [key]: normalizedValue }
+      }, {})
 
       return {
         ...child,
-        count_empty: count_empty === null ? null : count_empty / count,
-        count_nulls: count_nulls === null ? null : count_nulls / count,
-        count_unique: count_unique === null ? null : count_unique / count,
-        count_zeros: count_zeros === null ? null : count_zeros / count,
+        ...normalizedCountValues,
       }
     }),
   }))

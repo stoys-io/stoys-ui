@@ -6,7 +6,7 @@ import { ChartAndTable, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
 import { VerticalColumn, VerticalData, VerticalTableProps } from '../model'
-import { TABLE_HEIGHT, COUNT_COLUMNS } from '../constants'
+import { TABLE_HEIGHT, NORMALIZABLE_COLUMN_PREFIX } from '../constants'
 import { ColorBlock } from '../styles'
 import { formatPercentage } from '../../helpers'
 
@@ -50,7 +50,7 @@ const VerticalTable = (props: VerticalTableProps) => {
           }
         }
 
-        if (displayNormalized && COUNT_COLUMNS.includes(row.key as string)) {
+        if (displayNormalized && (row.key as string).includes(NORMALIZABLE_COLUMN_PREFIX)) {
           return formatPercentage(record.value)
         }
 
