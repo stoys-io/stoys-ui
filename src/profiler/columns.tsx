@@ -4,8 +4,8 @@ import { ColumnsType } from 'antd/lib/table'
 
 import {
   COLUMNS_TITLES,
-  COLUMNS_WITH_DATES,
   COLUMN_CHART_WIDTH,
+  ITEM_VALUE_COLUMN_NAMES,
   LEFT_ALIGN_COLUMNS,
   VISISBLE_COLUMNS,
   NORMALIZABLE_COLUMN_PREFIX,
@@ -165,15 +165,15 @@ export const getColumns = (
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
 
-  const columns = _visibleColumns.map((column, index) => {
-    const isNormalized = displayNormalized && column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
+  const columns = _visibleColumns.map((columnName, index) => {
+    const isNormalized = displayNormalized && columnName.startsWith(NORMALIZABLE_COLUMN_PREFIX)
 
     const _column: any = {
-      title: COLUMNS_TITLES[column] || column,
-      dataIndex: column,
-      key: column,
-      align: LEFT_ALIGN_COLUMNS.includes(column) ? ('left' as 'left') : ('right' as 'right'),
-      render: COLUMNS_WITH_DATES.includes(column)
+      title: COLUMNS_TITLES[columnName] || columnName,
+      dataIndex: columnName,
+      key: columnName,
+      align: LEFT_ALIGN_COLUMNS.includes(columnName) ? ('left' as 'left') : ('right' as 'right'),
+      render: ITEM_VALUE_COLUMN_NAMES.includes(columnName)
         ? renderMeanMinMaxValue
         : isNormalized
         ? renderNormalized
