@@ -7,7 +7,7 @@ import GraphDrawer from './GraphDrawer'
 import CustomNode from './CustomNode'
 import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
-import { Badge } from './model'
+import { Badge, Highlight } from './model'
 
 const Graph = () => {
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
@@ -16,6 +16,7 @@ const Graph = () => {
   const [badge, setBadge] = useState<Badge>('violations')
   const [selectedNodeId, setSelectedNodeId] = useState<string>('')
   const [searchNodeId, setSearchNodeId] = useState<string>('')
+  const [highlight, setHighlight] = useState<Highlight>('nearest')
   const graphRef = useRef(null)
   let graph: any = null
 
@@ -125,6 +126,8 @@ const Graph = () => {
         searchNodeId={searchNodeId}
         setSearchNodeId={setSearchNodeId}
         onSearchNode={onSearchNode}
+        highlight={highlight}
+        setHighlight={setHighlight}
       />
       <GraphContainer>
         <div ref={graphRef} />

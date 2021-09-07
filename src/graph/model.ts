@@ -24,3 +24,5 @@ export interface Combo {
 export type Combos = Array<Combo>
 
 export type Badge = 'violations' | 'partitions'
+
+export type Highlight = 'nearest' | 'parents' | 'children'
