@@ -28,6 +28,7 @@ const RulesTable = ({
   setSelectRules,
   setMode,
   smallSize,
+  tableProps,
 }: RulesTableProps): JSX.Element => {
   const searchInput = useRef<Input>(null)
   const [isCheckedFailtureRules, setCheckedFailtureRules] = useState<boolean>(true)
@@ -131,7 +132,7 @@ const RulesTable = ({
 
   const columns = useMemo(
     () => getRulesColumns(mode === 'row', getRuleNameColumnSearchProps),
-    [getRuleNameColumnSearchProps]
+    [getRuleNameColumnSearchProps, mode]
   )
 
   return (
@@ -146,7 +147,6 @@ const RulesTable = ({
         />
       </TableTitleWrapper>
       <Table
-        sticky
         columns={columns}
         dataSource={_rulesData}
         rowSelection={{
@@ -160,6 +160,8 @@ const RulesTable = ({
         scroll={{
           y: getScrollValue(),
         }}
+        {...tableProps}
+        sticky
       />
     </RulesTableWrapper>
   )

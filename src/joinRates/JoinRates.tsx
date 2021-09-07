@@ -16,6 +16,8 @@ const JoinRates = ({
   setMode,
   pagination,
   smallSize = true,
+  statisticsTableProps = {},
+  qualityTableProps = {},
 }: JoinRatesProps): JSX.Element => {
   const getJoinRateId = useCallback(() => {
     const _joinRateId = Array.isArray(data) ? data[0].id : data.id
@@ -112,6 +114,7 @@ const JoinRates = ({
         joinRateId={_id}
         onRowClickHandler={_onRowClickHandler}
         smallSize={smallSize}
+        tableProps={statisticsTableProps}
       />
       {joinRatesDqData ? (
         <Quality
@@ -122,6 +125,7 @@ const JoinRates = ({
           onSelectedRulesChange={_selectRules}
           pagination={pagination}
           smallSize={smallSize}
+          {...qualityTableProps}
         />
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

@@ -6,17 +6,22 @@ import 'antd/lib/table/style/css'
 import { TABLE_HEIGHT } from '../constants'
 import { TableProps } from '../model'
 
-const HorizontalTable = ({
-  data,
-  columns,
-  currentPage,
-  pageSize,
-  setCurrentPage,
-  setPageSize,
-  withoutPagination,
-}: TableProps) => {
+const HorizontalTable = (props: TableProps) => {
+  const {
+    data,
+    columns,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+    withoutPagination,
+    pagination,
+    onChange,
+  } = props
   const handleChangePagination = useCallback(
-    pagination => {
+    (pagination, filters, sorter, extra) => {
+      onChange?.(pagination, filters, sorter, extra)
+
       if (pagination.pageSize !== pageSize) {
         setPageSize(pagination.pageSize)
         setCurrentPage(1)
@@ -31,9 +36,14 @@ const HorizontalTable = ({
   return (
     <Table
       sticky
+      expandable={{ expandIcon: () => null, expandedRowKeys: keys }}
+      scroll={{
+        x: true,
+        y: withoutPagination ? TABLE_HEIGHT : undefined,
+      }}
+      {...props}
       dataSource={data}
       columns={columns}
-      expandable={{ expandIcon: () => null, expandedRowKeys: keys }}
       pagination={
         withoutPagination
           ? false
@@ -41,12 +51,9 @@ const HorizontalTable = ({
               current: currentPage,
               pageSize,
               showSizeChanger: true,
+              ...pagination,
             }
       }
-      scroll={{
-        x: true,
-        y: withoutPagination ? TABLE_HEIGHT : undefined,
-      }}
       onChange={handleChangePagination}
     />
   )

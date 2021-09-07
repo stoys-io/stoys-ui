@@ -3,7 +3,7 @@ import ReactEcharts from 'echarts-for-react'
 
 import { BarChartProps } from '../model'
 
-const BarChart = ({ series, xData, height, isLogScale, haveAxis }: BarChartProps): JSX.Element => {
+const BarChart = ({ series, xData, height, isLogScale, haveAxes }: BarChartProps): JSX.Element => {
   const type = isLogScale ? 'log' : 'value'
 
   return (
@@ -13,37 +13,37 @@ const BarChart = ({ series, xData, height, isLogScale, haveAxis }: BarChartProps
       option={{
         animation: false,
         grid: {
-          left: haveAxis ? 50 : 10,
-          right: haveAxis ? 25 : 10,
-          top: haveAxis ? 25 : 10,
-          bottom: haveAxis ? 25 : 10,
+          left: haveAxes ? 50 : 10,
+          right: haveAxes ? 25 : 10,
+          top: haveAxes ? 25 : 10,
+          bottom: haveAxes ? 25 : 10,
           borderWidth: 0,
         },
         xAxis: {
           type: 'category',
           data: xData,
           axisTick: {
-            show: haveAxis,
+            show: haveAxes,
           },
           axisLine: {
-            show: haveAxis,
+            show: haveAxes,
             onZero: false,
           },
           splitLine: {
             show: false,
           },
-          axisLabel: { show: haveAxis },
+          axisLabel: { show: haveAxes },
         },
         yAxis: {
           type,
           axisTick: {
-            show: haveAxis,
+            show: haveAxes,
           },
           axisLine: {
-            show: haveAxis,
+            show: haveAxes,
             onZero: false,
           },
-          axisLabel: { show: haveAxis },
+          axisLabel: { show: haveAxes },
         },
         dataZoom: [
           {

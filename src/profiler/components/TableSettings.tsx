@@ -2,6 +2,7 @@ import React, { ChangeEvent, useCallback } from 'react'
 import Input from 'antd/lib/input'
 import debounce from 'lodash.debounce'
 
+import JsonSwitcher from './JsonSwitcher'
 import { TableSettingsWrapper } from '../styles'
 import ModeSwitcher from './ModeSwitcher'
 import { TableSettingsProps } from '../model'
@@ -14,6 +15,9 @@ const TableSettings = ({
   onModeChange,
   isSearchShown,
   onSearchChangeHandler,
+  isJsonSwitcherShown,
+  isJsonSwitcherChecked,
+  onJsonChange,
 }: TableSettingsProps): JSX.Element => {
   const _onSearchChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +43,9 @@ const TableSettings = ({
       ) : null}
       {isModeSwitcherShown ? (
         <ModeSwitcher checked={isModeSwitcherChecked} onChange={onModeChange} />
+      ) : null}
+      {isJsonSwitcherShown ? (
+        <JsonSwitcher checked={isJsonSwitcherChecked} onChange={onJsonChange} />
       ) : null}
     </TableSettingsWrapper>
   )

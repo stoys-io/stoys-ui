@@ -10,18 +10,20 @@ import { StyledMetricTable } from './styles'
 
 const TABLE_HEIGHT = 600
 
-export const MetricsTable = ({
-  columns,
-  data,
-  isLoading,
-  previousReleaseDataIsShown,
-  saveMetricThreshold,
-  pagination,
-  disabledColumns,
-  height = TABLE_HEIGHT,
-  smallSize = true,
-}: MetricsTableProps): JSX.Element => {
-  const { currentPage, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
+export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
+  const {
+    columns,
+    data,
+    isLoading,
+    previousReleaseDataIsShown,
+    saveMetricThreshold,
+    pagination,
+    disabledColumns,
+    height = TABLE_HEIGHT,
+    smallSize = true,
+    onChange,
+  } = props
+  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
   const _columns = useMemo(
     () =>
       columns ||
@@ -30,7 +32,9 @@ export const MetricsTable = ({
   )
   const _data = useMemo(() => getMetricsTableData(data), [data])
   const _onChange = useCallback(
-    p => {
+    (p, filters, sorter, extra) => {
+      onChange?.(p, filters, sorter, extra)
+
       if (p.pageSize !== pageSize) {
         setPageSize(p.pageSize)
         setCurrentPage(1)
@@ -43,23 +47,25 @@ export const MetricsTable = ({
 
   return (
     <StyledMetricTable
-      sticky
-      columns={_columns}
-      dataSource={_data}
       loading={isLoading}
       scroll={{ x: true, y: pagination && pagination.disabled ? height : undefined }}
+      smallSize={smallSize}
       bordered
+      sticky
+      {...props}
+      columns={_columns}
+      dataSource={_data}
       pagination={
-        pagination && pagination.disabled
-          ? false
-          : {
-              current: currentPage,
+        typeof pagination === 'object'
+          ? {
+              current: current,
               pageSize: pageSize,
               showSizeChanger: true,
+              ...pagination,
             }
+          : pagination
       }
       onChange={_onChange}
-      smallSize={smallSize}
     />
   )
 }

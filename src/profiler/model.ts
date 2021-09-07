@@ -1,4 +1,6 @@
 import { ColumnsType } from 'antd/lib/table/interface'
+import { TableProps as AntdTableProps } from 'antd/lib/table'
+
 import { PaginationProps } from '../hooks'
 import { Maybe } from '../model'
 
@@ -61,7 +63,7 @@ export interface RowToolbarOptions {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
   }
-  axisOptions?: {
+  axesOptions?: {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
   }
@@ -77,18 +79,23 @@ export interface ProfilerToolbarOptions {
     isCheckboxShown?: boolean
     onOrientChange?: (orient: Orient) => void
   }
+  jsonOptions?: {
+    checked?: boolean
+    isCheckboxShown?: boolean
+    onChange?: (shown: boolean) => void
+  }
   searchOptions?: {
     disabled?: boolean
     onChange?: (value: string) => void
   }
 }
 
-export interface DataProfilerProps {
+export interface DataProfilerProps extends AntdTableProps<any> {
   datasets: Datasets
   profilerToolbarOptions?: null | false | ProfilerToolbarOptions
   colors?: Array<string>
   rowToolbarOptions?: null | false | RowToolbarOptions
-  pagination?: PaginationProps
+  pagination?: PaginationProps | false
   smallSize?: boolean
   visibleColumns?: Array<string>
 }
@@ -110,7 +117,7 @@ export interface RenderedCellConfig {
 export type Render = (
   render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>,
   logarithmicScale: LogarithmicScale,
-  axisOptions: AxisOptions,
+  axesOptions: AxesOptions,
   tableOptions: TableOptions
 ) => (value: number | string, row: DataItem | ChildDataItem, index: number) => RenderedCellConfig
 
@@ -119,7 +126,7 @@ export interface LogarithmicScale {
   setChecked: (isChecked: boolean) => void
 }
 
-export interface AxisOptions {
+export interface AxesOptions {
   setChecked: (isChecked: boolean) => void
   isCheckboxShown: boolean
 }
@@ -140,7 +147,7 @@ export interface DataItem {
   children: Array<ChildDataItem>
 }
 
-export interface TableProps {
+export interface TableProps extends AntdTableProps<any> {
   data: Array<DataItem>
   columns: ColumnsType<DataItem | ChildDataItem>
   currentPage: number
@@ -148,6 +155,7 @@ export interface TableProps {
   setCurrentPage: (page: number) => void
   setPageSize: (pageSize: number) => void
   withoutPagination: boolean
+  pagination?: PaginationProps | false
 }
 
 export interface VerticalTableProps extends TableProps {
@@ -169,7 +177,7 @@ export interface BarChartProps {
   xData: Array<number> | Array<string>
   height: number
   isLogScale: boolean
-  haveAxis: boolean
+  haveAxes: boolean
 }
 
 export interface ChartWithTooltipProps {
@@ -180,7 +188,7 @@ export interface ChartWithTooltipProps {
 
 export interface RowOptions {
   isLogCheckboxShown: boolean
-  isAxisCheckboxShown: boolean
+  isAxesCheckboxShown: boolean
 }
 export interface TableSubheaderRowProps {
   row: DataItem
@@ -191,20 +199,20 @@ export interface TableSubheaderRowProps {
 export interface ChartTableHeaderProps {
   logarithmicScale: LogarithmicScale
   children: JSX.Element
-  axisOptions: AxisOptions
+  axesOptions: AxesOptions
 }
 
 export interface ChartHeaderCellTitleProps {
   logarithmicScale: LogarithmicScale
-  axisOptions: AxisOptions
+  axesOptions: AxesOptions
   tableOptions: TableOptions
 }
 
 export interface CheckedRowsContextProps {
   checkedLogRows: Array<string>
   setCheckedLogRows: (checkedLogRows: Array<string>) => void
-  checkedAxisRows: Array<string>
-  setCheckedAxisRows: (checkedAxisRows: Array<string>) => void
+  checkedAxesRows: Array<string>
+  setCheckedAxesRows: (checkedAxesRows: Array<string>) => void
   checkedTableRows: Array<string>
   setCheckedTableRows: (checkedTableRows: Array<string>) => void
   dataLength: number
@@ -224,7 +232,7 @@ export interface HeaderCheckboxProps {
   title: string | JSX.Element
 }
 
-export interface ModeSwitcherProps {
+export interface SwitcherProps {
   checked: boolean
   onChange: () => void
 }
@@ -240,6 +248,18 @@ export interface VerticalColumn {
   render?: (text: any, record: any) => any
 }
 
+export interface VerticalData {
+  [key: string]:
+    | undefined
+    | number
+    | null
+    | boolean
+    | string
+    | {}
+    | { type: string; pmf: Array<PmfPlotItem>; items: Array<DiscreteItem> }
+    | { type: string; value: string }
+}
+
 export interface ChartTableProps {
   data: Array<HygratePmfPlotDataItem>
   height: number
@@ -247,7 +267,7 @@ export interface ChartTableProps {
 
 export interface RenderChartProps {
   checkedLogRows: Array<string>
-  checkedAxisRows: Array<string>
+  checkedAxesRows: Array<string>
   checkedTableRows: Array<string>
   isHorizontal: boolean
   smallSize: boolean
@@ -280,4 +300,13 @@ export interface TableSettingsProps {
   onModeChange: () => void
   isSearchShown: boolean
   onSearchChangeHandler: (value: string) => void
+  isJsonSwitcherShown?: boolean
+  isJsonSwitcherChecked: boolean
+  onJsonChange: () => void
+}
+
+export interface JsonDrqwerProps {
+  datasets: Datasets
+  visible: boolean
+  onClose: () => void
 }

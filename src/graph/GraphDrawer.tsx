@@ -50,7 +50,7 @@ const GraphDrawer = ({
             pagination={{ disabled: false }}
             rowToolbarOptions={{
               logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
-              axisOptions: { isCheckboxShown: false, isUsedByDefault: false },
+              axesOptions: { isCheckboxShown: false, isUsedByDefault: false },
               chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
             }}
             profilerToolbarOptions={{

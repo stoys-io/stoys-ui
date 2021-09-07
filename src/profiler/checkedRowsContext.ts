@@ -9,8 +9,8 @@ function initFunc() {
 export const CheckedRowsContext = createContext<CheckedRowsContextProps>({
   checkedLogRows: [],
   setCheckedLogRows: initFunc,
-  checkedAxisRows: [],
-  setCheckedAxisRows: initFunc,
+  checkedAxesRows: [],
+  setCheckedAxesRows: initFunc,
   checkedTableRows: [],
   setCheckedTableRows: initFunc,
   dataLength: 0,
