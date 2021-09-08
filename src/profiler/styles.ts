@@ -216,12 +216,12 @@ export const TableSubheader = styled(CellWrapper)`
   height: 100%;
 `
 
-export const ColorBlock = styled.span<{color: string, position?: 'top'}>`
+export const ColorBlock = styled.span<{ color: string; position?: 'top' }>`
   position: absolute;
   top: 0;
   left: 0;
-  height: ${props => props.position === 'top' ? '5px' : '100%'};
-  width: ${props => props.position === 'top' ? '100%' : '10px'};
+  height: ${props => (props.position === 'top' ? '5px' : '100%')};
+  width: ${props => (props.position === 'top' ? '100%' : '10px')};
   background-color: ${props => props.color};
 `
 
