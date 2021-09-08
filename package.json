@@ -23,8 +23,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "checktype": "tsc --noEmit -p tsconfig.checktype.json",
-    "lint:check": "prettier --check \"**/*.*\"",
-    "lint:fix": "prettier --write \"**/*.*\"",
+    "lint:check": "prettier --check \"**/*.{js,ts,tsx}\"",
+    "lint:fix": "prettier --write \"**/*.{js,ts,tsx}\"",
     "app-link": "bash app-link.sh",
     "prepare": "husky install && echo 'PATH=$PATH:'$PATH >> .husky/_/husky.sh",
     "commitlint": "commitlint -E HUSKY_GIT_PARAMS",
@@ -111,7 +111,7 @@
     "arrowParens": "avoid"
   },
   "lint-staged": {
-    "{src,test}/**/*.tsx": [
+    "{src,test}/**/*.{js,ts,tsx}": [
       "npm run lint:fix"
     ]
   }
