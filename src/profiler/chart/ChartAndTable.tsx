@@ -16,7 +16,11 @@ import {
 import { StyledEmpty } from '../styles'
 import { ChartWrapper } from '../../pmfPlot/styles'
 
-const ChartAndTable = ({ data, isHorizontal }: ChartAndTableProps): Maybe<JSX.Element> => {
+const ChartAndTable = ({
+  data,
+  isHorizontal,
+  displayNormalized = false,
+}: ChartAndTableProps): Maybe<JSX.Element> => {
   const smallSize = useContext(SizeContext)
   const { checkedLogRows, checkedAxesRows, checkedTableRows } = useContext(CheckedRowsContext)
 
@@ -34,7 +38,7 @@ const ChartAndTable = ({ data, isHorizontal }: ChartAndTableProps): Maybe<JSX.El
   const height: number = cellHeight < minChartHeight || isHorizontal ? minChartHeight : cellHeight
 
   if (enableTableView) {
-    return <Table data={data} height={height} />
+    return <Table data={data} height={height} displayNormalized={displayNormalized} />
   }
 
   if (data[0].type === 'string') {

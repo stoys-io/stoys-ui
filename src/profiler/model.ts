@@ -172,6 +172,7 @@ export interface VerticalTableProps extends TableProps {
 export interface HygratePmfPlotDataItem {
   pmf?: Array<PmfPlotItem>
   items?: Array<DiscreteItem>
+  itemsTotalCount: number
   color: string
   name: string
   parent: string
@@ -189,6 +190,7 @@ export interface BarChartProps {
 export interface ChartAndTableProps {
   data: Maybe<Array<HygratePmfPlotDataItem>>
   isHorizontal?: boolean
+  displayNormalized?: boolean
 }
 
 export interface RowOptions {
@@ -267,6 +269,7 @@ export interface VerticalData {
 export interface ChartTableProps {
   data: Array<HygratePmfPlotDataItem>
   height: number
+  displayNormalized?: boolean
 }
 
 export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> & {

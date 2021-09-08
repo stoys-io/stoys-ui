@@ -31,7 +31,8 @@ import { Maybe } from '../model'
 import { ColorBlock } from './styles'
 
 const renderChartAndTableCell =
-  (data: Array<DataItem>) => (value: string, row: DataItem | ChildDataItem, index: number) => {
+  (data: Array<DataItem>, displayNormalized: boolean) =>
+  (value: string, row: DataItem | ChildDataItem, index: number) => {
     const parent = data.find(dataItem => {
       if ('parent' in row) {
         return row.parent === dataItem.columnName
@@ -41,7 +42,7 @@ const renderChartAndTableCell =
     })
     const pmfPlotData = hygratePmfPlotData(parent?.children)
     const renderedCellConfig: RenderedCellConfig = {
-      children: <ChartAndTable data={pmfPlotData} />,
+      children: <ChartAndTable data={pmfPlotData} displayNormalized={displayNormalized} />,
       props: {},
     }
     const rowSpan = parent?.children.length || 1
@@ -102,7 +103,7 @@ const renderValue = (value?: Maybe<boolean | string | number>): Maybe<JSX.Elemen
   )
 }
 
-const renderNormalized = (value: number) => {
+export const renderNormalized = (value: number) => {
   // TODO: Why the value can be undefined
   if (value === undefined) {
     return null
@@ -110,7 +111,7 @@ const renderNormalized = (value: number) => {
 
   return (
     <Tooltip title={formatPercentage(value)} placement="topLeft">
-      <CellWrapper>{formatPercentage(value)}</CellWrapper>
+      {formatPercentage(value)}
     </Tooltip>
   )
 }
@@ -194,7 +195,7 @@ export const getColumns = (
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,
-      render: renderChartAndTableCell(data),
+      render: renderChartAndTableCell(data, displayNormalized),
       align: 'left' as 'left',
     },
   ]

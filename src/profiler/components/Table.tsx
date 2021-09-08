@@ -2,7 +2,8 @@ import React from 'react'
 
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
-import { CELL_TABLE_HEADER_HEIGHT } from '../constants'
+import { renderNormalized } from '../columns'
+import { CELL_TABLE_HEADER_HEIGHT, COLORS } from '../constants'
 import { Maybe } from '../../model'
 import { ChartTableProps, TableChartData } from '../model'
 import { ChartTable, ColorBlock } from '../styles'
@@ -26,26 +27,28 @@ const renderCount = (index: number) => (value: string | number) => {
   }
 }
 
-const Table = ({ data, height }: ChartTableProps): JSX.Element => {
-  const type = data[0].type
+const Table = ({ data, height, displayNormalized = false }: ChartTableProps): JSX.Element => {
+  const dataType = data[0].type
 
   const colors = data.map(dataItem => dataItem.color)
 
   const dataSource: Array<TableChartData> = data
-    .map((item, index) => {
-      const { name, color, items } = item
+    .map((dataItem, index) => {
+      const { name, color, items } = dataItem
 
       return items?.length
         ? items.map(({ item, count }) => ({
             key: `${name}-${color}-${Math.random()}`,
             item,
-            count,
+            count: displayNormalized
+              ? count / dataItem.itemsTotalCount // display normalized count
+              : count,
             color,
             index,
           }))
         : undefined
     })
-    .filter((item): item is Array<TableChartData> => !!item)
+    .filter((dataItem): dataItem is Array<TableChartData> => !!dataItem)
     .flat()
 
   const groupedDataByItem = dataSource.reduce(
@@ -70,22 +73,20 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
     }, {})
   })
 
-  const countColumns = new Array(columnsCount).fill(1).map((value, index) => {
-    return {
-      key: `count${index}`,
-      title: (...props: any) => {
-        return (
-          <>
-            <ColorBlock color={colors[index]} position="top" />
-            count
-          </>
-        )
-      },
-      dataIndex: `count${index}`,
-      align: 'right' as 'right',
-      render: renderCount(index),
-    }
-  })
+  const countColumns = new Array(columnsCount).fill(1).map((value, index) => ({
+    key: `count${index}`,
+    title: (...props: any) => {
+      return (
+        <>
+          <ColorBlock color={colors[index]} position="top" />
+          {displayNormalized ? 'count / total' : 'count'}
+        </>
+      )
+    },
+    dataIndex: `count${index}`,
+    align: 'right' as 'right',
+    render: displayNormalized ? renderNormalized : renderCount(index),
+  }))
 
   const columns = [
     {
@@ -93,7 +94,7 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
       title: 'item',
       dataIndex: 'item',
       render: (value: number | string, row: TableChartData | {}) => {
-        return renderValue(value, type)
+        return renderValue(value, dataType)
       },
       align: 'right' as 'right',
     },
