@@ -1,7 +1,1 @@
-.DS_Store
-.prettierignore
-.gitignore
-app-link.sh
-.husky
 coverage
-*.svg
