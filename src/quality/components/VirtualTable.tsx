@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { VariableSizeGrid as Grid } from 'react-window'
 import ResizeObserver from 'rc-resize-observer'
 import classNames from 'classnames'
@@ -11,7 +11,10 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
   const [tableWidth, setTableWidth] = useState(0)
 
   const columnCount = columns!.length
-  const totalColumnWidth = columns!.reduce((acc, column) => acc + Number(column.width), 0)
+  const totalColumnWidth = useMemo(
+    () => columns!.reduce((acc, column) => acc + Number(column.width), 0),
+    [columns]
+  )
   const mergedColumns = columns!.map(column => {
     if (column.width && totalColumnWidth > tableWidth) {
       return column
@@ -45,7 +48,7 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
     })
   }
 
-  useEffect(() => resetVirtualGrid, [tableWidth])
+  useEffect(() => resetVirtualGrid, [tableWidth, totalColumnWidth])
 
   const renderVirtualList = (rawData: Array<object>, { scrollbarSize, ref, onScroll }: any) => {
     ref.current = connectObject
