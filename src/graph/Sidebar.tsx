@@ -8,8 +8,8 @@ import { SidebarWrapper, MenuTitle, SelectVersion } from './styles'
 type SidebarProps = {
   badge: Badge
   changeBadge: Dispatch<SetStateAction<Badge>>
-  searchNodeId: string
-  setSearchNodeId: Dispatch<SetStateAction<string>>
+  searchInputValue: string
+  setSearchInputValue: Dispatch<SetStateAction<string>>
   onSearchNode: (nodeId: string) => void
   highlight: Highlight
   setHighlight: Dispatch<SetStateAction<Highlight>>
@@ -18,8 +18,8 @@ type SidebarProps = {
 const Sidebar = ({
   badge,
   changeBadge,
-  searchNodeId,
-  setSearchNodeId,
+  searchInputValue,
+  setSearchInputValue,
   onSearchNode,
   highlight,
   setHighlight,
@@ -34,8 +34,8 @@ const Sidebar = ({
     <SidebarWrapper>
       <Input
         placeholder="Search node"
-        value={searchNodeId}
-        onChange={e => setSearchNodeId(e.target.value)}
+        value={searchInputValue}
+        onChange={e => setSearchInputValue(e.target.value)}
         onPressEnter={event => {
           const element = event.target as HTMLInputElement
           element?.value && onSearchNode(element.value)
