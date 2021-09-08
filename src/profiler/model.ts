@@ -218,6 +218,7 @@ export interface TableChartData {
   item: string
   count: number
   color: string
+  index: number
 }
 
 export interface HeaderCheckboxProps {

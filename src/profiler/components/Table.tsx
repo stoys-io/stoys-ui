@@ -28,12 +28,11 @@ const renderCount = (index: number) => (value: string | number) => {
 
 const Table = ({ data, height }: ChartTableProps): JSX.Element => {
   const type = data[0].type
-  console.log(data)
 
   const colors = data.map(dataItem => dataItem.color)
 
   const dataSource: Array<TableChartData> = data
-    .map(item => {
+    .map((item, index) => {
       const { name, color, items } = item
 
       return items?.length
@@ -42,6 +41,7 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
             item,
             count,
             color,
+            index,
           }))
         : undefined
     })
@@ -57,24 +57,20 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
     {}
   )
 
-  let maxIndex = 0
+  const columnsCount = data.length
 
   const tableData = Object.keys(groupedDataByItem).map(key => {
-    if (maxIndex < groupedDataByItem[key].length) {
-      maxIndex = groupedDataByItem[key].length
-    }
-
-    return groupedDataByItem[key].reduce((acc: any, item: any, index: number) => {
+    return groupedDataByItem[key].reduce((acc: any, item: any) => {
       return {
         ...acc,
         key: item.key,
         item: item.item,
-        [`count${index}`]: item.count,
+        [`count${item.index}`]: item.count,
       }
     }, {})
   })
 
-  const countColumns = new Array(maxIndex).fill(1).map((value, index) => {
+  const countColumns = new Array(columnsCount).fill(1).map((value, index) => {
     return {
       key: `count${index}`,
       title: (...props: any) => {
