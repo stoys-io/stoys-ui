@@ -81,7 +81,7 @@ const Graph = () => {
         layout: {
           type: 'dagre',
           rankdir: 'LR',
-          nodesep: 10,
+          nodesep: 30,
           ranksep: 70,
         },
       })
