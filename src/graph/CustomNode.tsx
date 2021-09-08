@@ -65,14 +65,13 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
 
       <Rect
         style={{
-          width: 150,
+          width: 210,
           height: 'auto',
           fill: '#fff',
           stroke: highlighted ? '#1e80fe' : '#2e2d2d',
           shadowColor: '#eee',
           shadowBlur: 30,
           radius: [2],
-          padding: [8],
           cursor: 'pointer',
         }}
         onClick={(evt, node: any) => onNodeClick(node.getModel())}
@@ -82,12 +81,18 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
             fill: highlighted ? '#1e80fe' : '#000000',
             fontWeight: highlighted ? 600 : 400,
             fontSize: 16,
+            margin: [8],
             cursor: 'pointer',
           }}
           onClick={(evt, node: any) => onNodeClick(node.getModel())}
         >
           {getLabelText(label)}
         </Text>
+        <Rect style={{ stroke: '#2e2d2d', height: 60 }}>
+          <Text style={{ fontSize: 14, fill: '#000000', margin: [3] }}>Lorem ipsum 1</Text>
+          <Text style={{ fontSize: 14, fill: '#000000', margin: [3] }}>Lorem ipsum 2</Text>
+          <Text style={{ fontSize: 14, fill: '#000000', margin: [3] }}>Lorem ipsum 3</Text>
+        </Rect>
       </Rect>
     </Group>
   )
