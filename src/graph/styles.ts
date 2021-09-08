@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import Drawer from 'antd/lib/drawer'
 import MenuOutlined from '@ant-design/icons/MenuOutlined'
-import Input from 'antd/lib/input'
+import Select from 'antd/lib/select'
 
 export const Container = styled.div`
   display: flex;
@@ -15,6 +15,7 @@ export const SidebarWrapper = styled.div`
   width: 250px;
   background-color: #f4f2f4;
   padding: 250px 10px 10px 10px;
+  overflow-y: auto;
 `
 
 export const GraphContainer = styled.div`
@@ -79,8 +80,9 @@ export const ResizeArea = styled.div`
 `
 
 export const MenuTitle = styled.h4`
+  margin-top: 20px;
 `
 
-export const SearchInput = styled(Input)`
-  margin-bottom: 20px;
+export const SelectVersion = styled(Select)`
+  width: 100%;
 `
