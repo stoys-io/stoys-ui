@@ -19,22 +19,18 @@ function renderValue(value: string | number, type: string): Maybe<number | strin
   return value
 }
 
-const renderCount = (index: number) => (value: string | number, row: any) => {
-  const color = `color${index}`
-
+const renderCount = (index: number) => (value: string | number) => {
   return {
     props: { className: 'count-cell' },
-    children: isNaN(+value) ? null : (
-      <>
-        <ColorBlock color={row[color]} position="top" />
-        {renderNumericCell(value)}
-      </>
-    ),
+    children: isNaN(+value) ? null : renderNumericCell(value),
   }
 }
 
 const Table = ({ data, height }: ChartTableProps): JSX.Element => {
   const type = data[0].type
+  console.log(data)
+
+  const colors = data.map(dataItem => dataItem.color)
 
   const dataSource: Array<TableChartData> = data
     .map(item => {
@@ -74,7 +70,6 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
         key: item.key,
         item: item.item,
         [`count${index}`]: item.count,
-        [`color${index}`]: item.color,
       }
     }, {})
   })
@@ -82,7 +77,14 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
   const countColumns = new Array(maxIndex).fill(1).map((value, index) => {
     return {
       key: `count${index}`,
-      title: 'count',
+      title: (...props: any) => {
+        return (
+          <>
+            <ColorBlock color={colors[index]} position="top" />
+            count
+          </>
+        )
+      },
       dataIndex: `count${index}`,
       align: 'right' as 'right',
       render: renderCount(index),
