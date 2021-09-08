@@ -10,7 +10,7 @@ type SidebarProps = {
   changeBadge: Dispatch<SetStateAction<Badge>>
   searchInputValue: string
   setSearchInputValue: Dispatch<SetStateAction<string>>
-  onSearchNode: (nodeId: string) => void
+  onSearchNode: () => void
   highlight: Highlight
   setHighlight: Dispatch<SetStateAction<Highlight>>
 }
@@ -38,7 +38,7 @@ const Sidebar = ({
         onChange={e => setSearchInputValue(e.target.value)}
         onPressEnter={event => {
           const element = event.target as HTMLInputElement
-          element?.value && onSearchNode(element.value)
+          element?.value && onSearchNode()
         }}
       />
       <MenuTitle>Select previous run:</MenuTitle>

@@ -8,6 +8,7 @@ import CustomNode from './CustomNode'
 import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
 import { Badge, Highlight } from './model'
+import { nodes } from './__mocks__/Nodes.mock'
 
 const Graph = () => {
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
@@ -26,65 +27,68 @@ const Graph = () => {
   let graph: any = null
 
   const initializeGraph = () => {
-    G6.registerNode(
-      'customNodeShape',
-      createNodeFromReact(({ cfg }) => CustomNode({ cfg, openDrawer, onNodeClick }))
-    )
-
-    const minimap = new G6.Minimap({
-      size: [250, 200],
-      className: 'minimap',
-      // type: 'delegate',
-    })
-
-    return new G6.Graph({
-      // @ts-ignore
-      container: graphRef.current,
-      width: 1500,
-      height: 900,
-      plugins: [minimap],
-      workerEnabled: true,
-      modes: {
-        default: [
-          'drag-canvas',
-          'zoom-canvas',
-          {
-            type: 'collapse-expand-combo',
-            relayout: false,
-          },
-          {
-            type: 'tooltip',
-            // @ts-ignore
-            formatText(model) {
-              return model.label
+    if (!graph) {
+      G6.registerNode(
+        'customNodeShape',
+        createNodeFromReact(({ cfg }) => CustomNode({ cfg, openDrawer, onNodeClick }))
+      )
+      const minimap = new G6.Minimap({
+        size: [250, 200],
+        className: 'minimap',
+        // type: 'delegate',
+      })
+      graph = new G6.Graph({
+        // @ts-ignore
+        container: graphRef.current,
+        width: 1500,
+        height: 900,
+        plugins: [minimap],
+        workerEnabled: true,
+        modes: {
+          default: [
+            'drag-canvas',
+            'zoom-canvas',
+            {
+              type: 'collapse-expand-combo',
+              relayout: false,
             },
-            offset: 10,
-          },
-        ],
-      },
-      defaultNode: {
-        type: 'customNodeShape',
-      },
-      defaultEdge: {
-        type: 'line',
-        lineWidth: 2,
-        color: '#ccc',
-      },
-      defaultCombo: {
-        // type: 'rect',
-        collapsed: false,
-        style: {
-          fill: '#e1f1fb',
-          stroke: '#ccc',
+            {
+              type: 'tooltip',
+              // @ts-ignore
+              formatText(model) {
+                return model.label
+              },
+              offset: 10,
+            },
+          ],
         },
-      },
-      layout: {
-        type: 'dagre',
-        rankdir: 'LR',
-        nodesep: 10,
-        ranksep: 70,
-      },
-    })
+        defaultNode: {
+          type: 'customNodeShape',
+        },
+        defaultEdge: {
+          type: 'line',
+          lineWidth: 2,
+          color: '#ccc',
+        },
+        defaultCombo: {
+          // type: 'rect',
+          collapsed: false,
+          style: {
+            fill: '#e1f1fb',
+            stroke: '#ccc',
+          },
+        },
+        layout: {
+          type: 'dagre',
+          rankdir: 'LR',
+          nodesep: 10,
+          ranksep: 70,
+        },
+      })
+    }
+    graph.data(graphData)
+    graph.render()
+    appendAutoShapeListener(graph)
   }
 
   const graphData = useMemo(
@@ -93,17 +97,26 @@ const Graph = () => {
   )
 
   useEffect(() => {
-    if (!graph) {
-      graph = initializeGraph()
-    }
-    graph.data(graphData)
-    graph.render()
-    appendAutoShapeListener(graph)
-
+    initializeGraph()
     return () => {
       graph.destroy()
     }
-  }, [graph, badge])
+  }, [])
+
+  useEffect(() => {
+    initializeGraph()
+    return () => {
+      graph.destroy()
+    }
+  }, [badge])
+
+  useEffect(() => {
+    initializeGraph()
+    graph.focusItem(searchedNodeId)
+    return () => {
+      graph.destroy()
+    }
+  }, [searchedNodeId])
 
   const onNodeClick = (node: any) => {
     setSelectedNodeId(node.id)
@@ -118,8 +131,13 @@ const Graph = () => {
     setDrawerTable(table)
   }
 
-  const onSearchNode = (nodeId: string) => {
-    // setSearchedNodeId('sink @ 47:1')
+  const onSearchNode = () => {
+    if (searchInputValue) {
+      const node = nodes.find(node => node.label.indexOf(searchInputValue) !== -1)
+      if (node) {
+        setSearchedNodeId(node.id)
+      }
+    }
   }
 
   return (
