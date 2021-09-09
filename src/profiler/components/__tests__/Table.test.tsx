@@ -75,13 +75,13 @@ describe('Chart Table', () => {
         ],
       },
     ]
-    const { queryAllByText, debug } = render(<Table height={100} data={dataMock} />)
+    const { queryAllByText } = render(<Table height={100} data={dataMock} />)
 
     const convertedDates1 = queryAllByText(convertToDate(date1))
     const convertedDates2 = queryAllByText(convertToDate(date2))
 
-    expect(convertedDates1.length).toBe(2)
-    expect(convertedDates2.length).toBe(2)
+    expect(convertedDates1.length).toBe(1)
+    expect(convertedDates2.length).toBe(1)
   })
 
   it('should render table with strings', () => {

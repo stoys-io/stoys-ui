@@ -117,8 +117,7 @@ export interface RenderedCellConfig {
 export type Render = (
   render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>,
   logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions,
-  tableOptions: TableOptions
+  axesOptions: AxesOptions
 ) => (value: number | string, row: DataItem | ChildDataItem, index: number) => RenderedCellConfig
 
 export interface LogarithmicScale {
@@ -160,7 +159,6 @@ export interface TableProps extends AntdTableProps<any> {
 
 export interface VerticalTableProps extends TableProps {
   rowOptions: RowOptions
-  tableOptions: TableOptions
 }
 
 export interface HygratePmfPlotDataItem {
@@ -180,9 +178,8 @@ export interface BarChartProps {
   haveAxes: boolean
 }
 
-export interface ChartWithTooltipProps {
+export interface ChartAndTableProps {
   data: Maybe<Array<HygratePmfPlotDataItem>>
-  smallSize?: boolean
   isHorizontal?: boolean
 }
 
@@ -193,7 +190,6 @@ export interface RowOptions {
 export interface TableSubheaderRowProps {
   row: DataItem
   rowOptions: RowOptions
-  tableOptions: TableOptions
 }
 
 export interface ChartTableHeaderProps {
@@ -202,10 +198,9 @@ export interface ChartTableHeaderProps {
   axesOptions: AxesOptions
 }
 
-export interface ChartHeaderCellTitleProps {
+export interface ChartAndTableHeaderCellTitleProps {
   logarithmicScale: LogarithmicScale
   axesOptions: AxesOptions
-  tableOptions: TableOptions
 }
 
 export interface CheckedRowsContextProps {
@@ -223,6 +218,7 @@ export interface TableChartData {
   item: string
   count: number
   color: string
+  index: number
 }
 
 export interface HeaderCheckboxProps {
@@ -263,14 +259,6 @@ export interface VerticalData {
 export interface ChartTableProps {
   data: Array<HygratePmfPlotDataItem>
   height: number
-}
-
-export interface RenderChartProps {
-  checkedLogRows: Array<string>
-  checkedAxesRows: Array<string>
-  checkedTableRows: Array<string>
-  isHorizontal: boolean
-  smallSize: boolean
 }
 
 export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> & {

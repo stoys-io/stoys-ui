@@ -9,10 +9,10 @@ import {
   LEFT_ALIGN_COLUMNS,
   VISISBLE_COLUMNS,
 } from './constants'
-import ChartHeaderCellTitle from './components/ChartHeaderCellTitle'
+import ChartAndTableHeaderCellTitle from './components/ChartAndTableHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
-import { ChartWithTooltip, hygratePmfPlotData } from './chart'
-import { renderNumericValue } from '../helpers'
+import { ChartAndTable, hygratePmfPlotData } from './chart'
+import { renderNumericCell } from '../common'
 import { transformSecondsToDate } from '../pmfPlot/helpers'
 import {
   AxesOptions,
@@ -25,11 +25,10 @@ import {
 } from './model'
 import { Maybe } from '../model'
 
-import { CellWrapper, ColorBlock } from './styles'
+import { ColorBlock } from './styles'
 
-const renderChartCell =
-  (data: Array<DataItem>, smallSize: boolean) =>
-  (value: string, row: DataItem | ChildDataItem, index: number) => {
+const renderChartAndTableCell =
+  (data: Array<DataItem>) => (value: string, row: DataItem | ChildDataItem, index: number) => {
     const parent = data.find(dataItem => {
       if ('parent' in row) {
         return row.parent === dataItem.columnName
@@ -39,7 +38,7 @@ const renderChartCell =
     })
     const pmfPlotData = hygratePmfPlotData(parent?.children)
     const renderedCellConfig: RenderedCellConfig = {
-      children: <ChartWithTooltip data={pmfPlotData} smallSize={smallSize} />,
+      children: <ChartAndTable data={pmfPlotData} />,
       props: {},
     }
     const rowSpan = parent?.children.length || 1
@@ -53,15 +52,7 @@ const renderChartCell =
     return renderedCellConfig
   }
 
-export const renderNumericCell = (value: number | string) => {
-  return (
-    <Tooltip title={value} placement="topLeft">
-      <CellWrapper>{renderNumericValue(2, true)(value)}</CellWrapper>
-    </Tooltip>
-  )
-}
-
-const renderRow: Render = (render, logarithmicScale, axesOptions, tableOptions) => (value, row) => {
+const renderRow: Render = (render, logarithmicScale, axesOptions) => (value, row) => {
   const renderedCellConfig: RenderedCellConfig = {
     children: null,
     props: {},
@@ -84,7 +75,6 @@ const renderRow: Render = (render, logarithmicScale, axesOptions, tableOptions) 
           isLogCheckboxShown: logarithmicScale.isCheckboxShown,
           isAxesCheckboxShown: axesOptions.isCheckboxShown,
         }}
-        tableOptions={tableOptions}
       />
     )
     renderedCellConfig.props.colSpan = 8
@@ -145,24 +135,15 @@ const renderMeanMinMaxValue = (
   return renderValue(value)
 }
 
-const renderChartCellTitle = (
+const renderChartAndTableCellTitle = (
   logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions,
-  tableOptions: TableOptions
-) => (
-  <ChartHeaderCellTitle
-    logarithmicScale={logarithmicScale}
-    axesOptions={axesOptions}
-    tableOptions={tableOptions}
-  />
-)
+  axesOptions: AxesOptions
+) => <ChartAndTableHeaderCellTitle logarithmicScale={logarithmicScale} axesOptions={axesOptions} />
 
 export const getColumns = (
   data: Array<DataItem>,
   logarithmicScale: LogarithmicScale,
   axesOptions: AxesOptions,
-  tableOptions: TableOptions,
-  smallSize: boolean = false,
   visibleColumns?: Array<string>
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
@@ -177,7 +158,7 @@ export const getColumns = (
     }
 
     if (index === 0) {
-      _column.render = renderRow(_column.render, logarithmicScale, axesOptions, tableOptions)
+      _column.render = renderRow(_column.render, logarithmicScale, axesOptions)
     }
 
     return _column
@@ -186,11 +167,11 @@ export const getColumns = (
   return [
     ...columns,
     {
-      title: renderChartCellTitle(logarithmicScale, axesOptions, tableOptions),
+      title: renderChartAndTableCellTitle(logarithmicScale, axesOptions),
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,
-      render: renderChartCell(data, smallSize),
+      render: renderChartAndTableCell(data),
       align: 'left' as 'left',
     },
   ]

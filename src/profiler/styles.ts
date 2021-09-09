@@ -4,6 +4,7 @@ import Radio from 'antd/lib/radio'
 import AntdTable from 'antd/lib/table'
 import Empty from 'antd/lib/empty'
 
+import { CellWrapper } from '../common/styles'
 import {
   MIN_CHART_CELL_HEIGHT,
   MIN_TABLE_ROW_HEIGHT,
@@ -11,10 +12,6 @@ import {
   COLUMN_CHART_WIDTH,
   SMALL_COLUMN_CHART_WIDTH,
 } from './constants'
-
-export const CellWrapper = styled.div`
-  padding: 12px 8px;
-`
 
 const smallTableStyles = (props: { smallSize: boolean }) =>
   props.smallSize
@@ -219,12 +216,12 @@ export const TableSubheader = styled(CellWrapper)`
   height: 100%;
 `
 
-export const ColorBlock = styled.span`
+export const ColorBlock = styled.span<{ color: string; position?: 'top' }>`
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
-  width: 10px;
+  height: ${props => (props.position === 'top' ? '5px' : '100%')};
+  width: ${props => (props.position === 'top' ? '100%' : '10px')};
   background-color: ${props => props.color};
 `
 
@@ -269,6 +266,10 @@ export const ChartTable = styled(AntdTable)<{ height: number }>`
   th.ant-table-cell {
     padding-top: 4px;
     padding-bottom: 4px;
+  }
+
+  td.count-cell {
+    position: relative;
   }
 `
 

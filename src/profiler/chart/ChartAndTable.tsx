@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Empty from 'antd/lib/empty'
 
 import PmfPlot from '../../pmfPlot'
-import { CheckedRowsContext } from '../checkedRowsContext'
+import { CheckedRowsContext, SizeContext } from '../context'
 import Table from '../components/Table'
 import BarChart from './BarChart'
-import { ChartWithTooltipProps, HygratePmfPlotDataItem, RenderChartProps } from '../model'
+import { ChartAndTableProps } from '../model'
 import { Maybe } from '../../model'
 import {
   MIN_CHART_CELL_HEIGHT,
@@ -16,10 +16,10 @@ import {
 import { StyledEmpty } from '../styles'
 import { ChartWrapper } from '../../pmfPlot/styles'
 
-function renderChart(
-  data: Maybe<Array<HygratePmfPlotDataItem>>,
-  { checkedLogRows, checkedAxesRows, checkedTableRows, isHorizontal, smallSize }: RenderChartProps
-) {
+const ChartAndTable = ({ data, isHorizontal }: ChartAndTableProps): Maybe<JSX.Element> => {
+  const smallSize = useContext(SizeContext)
+  const { checkedLogRows, checkedAxesRows, checkedTableRows } = useContext(CheckedRowsContext)
+
   if (!data) {
     return null
   }
@@ -103,24 +103,4 @@ function renderChart(
   )
 }
 
-const ChartWithTooltip = ({
-  data,
-  isHorizontal,
-  smallSize,
-}: ChartWithTooltipProps): Maybe<JSX.Element> => {
-  return (
-    <CheckedRowsContext.Consumer>
-      {({ checkedLogRows, checkedAxesRows, checkedTableRows }) =>
-        renderChart(data, {
-          checkedLogRows,
-          checkedAxesRows,
-          checkedTableRows,
-          isHorizontal: !!isHorizontal,
-          smallSize: !!smallSize,
-        })
-      }
-    </CheckedRowsContext.Consumer>
-  )
-}
-
-export default ChartWithTooltip
+export default ChartAndTable

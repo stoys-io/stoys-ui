@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
-import { renderNumericCell } from '../columns'
-import { CELL_TABLE_HEADER_HEIGHT, COLORS } from '../constants'
+import { renderNumericCell } from '../../common'
+import { CELL_TABLE_HEADER_HEIGHT } from '../constants'
 import { Maybe } from '../../model'
 import { ChartTableProps, TableChartData } from '../model'
 import { ChartTable, ColorBlock } from '../styles'
@@ -19,11 +19,20 @@ function renderValue(value: string | number, type: string): Maybe<number | strin
   return value
 }
 
+const renderCount = (index: number) => (value: string | number) => {
+  return {
+    props: { className: 'count-cell' },
+    children: isNaN(+value) ? null : renderNumericCell(value),
+  }
+}
+
 const Table = ({ data, height }: ChartTableProps): JSX.Element => {
   const type = data[0].type
 
+  const colors = data.map(dataItem => dataItem.color)
+
   const dataSource: Array<TableChartData> = data
-    .map(item => {
+    .map((item, index) => {
       const { name, color, items } = item
 
       return items?.length
@@ -32,6 +41,7 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
             item,
             count,
             color,
+            index,
           }))
         : undefined
     })
@@ -47,22 +57,35 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
     {}
   )
 
-  const sortedData = Object.values(groupedDataByItem)
+  const columnsCount = data.length
 
-  function getCounts(item: TableChartData): number {
-    return item.count
-  }
-
-  sortedData.sort((a: Array<TableChartData>, b: Array<TableChartData>) => {
-    const aCounts = a.map(getCounts)
-    const bCounts = b.map(getCounts)
-    const aMax = Math.max.apply(null, aCounts)
-    const bMax = Math.max.apply(null, bCounts)
-
-    return bMax - aMax
+  const tableData = Object.keys(groupedDataByItem).map(key => {
+    return groupedDataByItem[key].reduce((acc: any, item: any) => {
+      return {
+        ...acc,
+        key: item.key,
+        item: item.item,
+        [`count${item.index}`]: item.count,
+      }
+    }, {})
   })
 
-  const tableData: Array<TableChartData> = sortedData.flat().slice(0, 10)
+  const countColumns = new Array(columnsCount).fill(1).map((value, index) => {
+    return {
+      key: `count${index}`,
+      title: (...props: any) => {
+        return (
+          <>
+            <ColorBlock color={colors[index]} position="top" />
+            count
+          </>
+        )
+      },
+      dataIndex: `count${index}`,
+      align: 'right' as 'right',
+      render: renderCount(index),
+    }
+  })
 
   const columns = [
     {
@@ -70,22 +93,11 @@ const Table = ({ data, height }: ChartTableProps): JSX.Element => {
       title: 'item',
       dataIndex: 'item',
       render: (value: number | string, row: TableChartData | {}) => {
-        return (
-          <>
-            <ColorBlock color={'color' in row ? row.color : COLORS[1]} />
-            {renderValue(value, type)}
-          </>
-        )
+        return renderValue(value, type)
       },
       align: 'right' as 'right',
     },
-    {
-      key: 'count',
-      title: 'count',
-      dataIndex: 'count',
-      align: 'right' as 'right',
-      render: renderNumericCell,
-    },
+    ...countColumns,
   ]
 
   return (

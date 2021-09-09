@@ -2,8 +2,8 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import '../../../__mocks__/matchMedia.mock'
 
-import Chart from '../Chart'
-import { CheckedRowsContext } from '../../checkedRowsContext'
+import Chart from '../ChartAndTable'
+import { CheckedRowsContext, SizeContext } from '../../context'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -14,19 +14,21 @@ beforeAll(() => {
 describe('Chart', () => {
   it('should be empty whren data is null', () => {
     const { container } = render(
-      <CheckedRowsContext.Provider
-        value={{
-          checkedTableRows: ['1', '2', '3'],
-          checkedLogRows: [],
-          checkedAxesRows: [],
-          dataLength: 10,
-          setCheckedAxesRows: jest.fn(),
-          setCheckedLogRows: jest.fn(),
-          setCheckedTableRows: jest.fn(),
-        }}
-      >
-        <Chart data={null} />
-      </CheckedRowsContext.Provider>
+      <SizeContext.Provider value={true}>
+        <CheckedRowsContext.Provider
+          value={{
+            checkedTableRows: ['1', '2', '3'],
+            checkedLogRows: [],
+            checkedAxesRows: [],
+            dataLength: 10,
+            setCheckedAxesRows: jest.fn(),
+            setCheckedLogRows: jest.fn(),
+            setCheckedTableRows: jest.fn(),
+          }}
+        >
+          <Chart data={null} />
+        </CheckedRowsContext.Provider>
+      </SizeContext.Provider>
     )
 
     expect(container.firstChild).toBeNull()

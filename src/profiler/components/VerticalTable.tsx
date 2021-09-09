@@ -2,16 +2,10 @@ import React, { useCallback } from 'react'
 import Table from 'antd/lib/table'
 
 import ChartCellTitle from './ChartCellTitle'
-import { ChartWithTooltip, hygratePmfPlotData } from '../chart'
+import { ChartAndTable, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
-import { renderNumericCell } from '../columns'
-import {
-  DiscreteItem,
-  PmfPlotItem,
-  VerticalColumn,
-  VerticalData,
-  VerticalTableProps,
-} from '../model'
+import { renderNumericCell } from '../../common'
+import { VerticalColumn, VerticalTableProps, VerticalData } from '../model'
 import { TABLE_HEIGHT } from '../constants'
 import { ColorBlock } from '../styles'
 
@@ -26,7 +20,6 @@ const VerticalTable = (props: VerticalTableProps) => {
     withoutPagination,
     pagination,
     rowOptions,
-    tableOptions,
     onChange,
   } = props
   const flattenData = data.map(item => item.children).flat()
@@ -47,14 +40,8 @@ const VerticalTable = (props: VerticalTableProps) => {
             props: { colSpan },
             children: (
               <>
-                {parent ? (
-                  <ChartCellTitle
-                    row={parent}
-                    rowOptions={rowOptions}
-                    tableOptions={tableOptions}
-                  />
-                ) : null}
-                <ChartWithTooltip data={chartData} isHorizontal />
+                {parent ? <ChartCellTitle row={parent} rowOptions={rowOptions} /> : null}
+                <ChartAndTable data={chartData} isHorizontal />
               </>
             ),
           }
