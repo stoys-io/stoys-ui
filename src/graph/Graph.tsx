@@ -22,6 +22,7 @@ const Graph = () => {
 
   const [searchInputValue, setSearchInputValue] = useState<string>('')
   const [searchedNodeId, setSearchedNodeId] = useState('')
+  const [searchHasError, setSearchHasError] = useState(false)
 
   const graphRef = useRef(null)
   let graph: any = null
@@ -101,21 +102,12 @@ const Graph = () => {
     return () => {
       graph.destroy()
     }
-  }, [])
+  }, [badge, searchedNodeId])
 
   useEffect(() => {
-    initializeGraph()
-    return () => {
-      graph.destroy()
-    }
-  }, [badge])
-
-  useEffect(() => {
-    initializeGraph()
+    setSelectedNodeId(searchedNodeId)
+    graph.changeData(getData({ selectedNodeId: searchedNodeId, badge }))
     graph.focusItem(searchedNodeId)
-    return () => {
-      graph.destroy()
-    }
   }, [searchedNodeId])
 
   const onNodeClick = (node: any) => {
@@ -136,6 +128,8 @@ const Graph = () => {
       const node = nodes.find(node => node.label.indexOf(searchInputValue) !== -1)
       if (node) {
         setSearchedNodeId(node.id)
+      } else {
+        setSearchHasError(true)
       }
     }
   }
@@ -148,6 +142,7 @@ const Graph = () => {
         searchInputValue={searchInputValue}
         setSearchInputValue={setSearchInputValue}
         onSearchNode={onSearchNode}
+        searchHasError={searchHasError}
         highlight={highlight}
         setHighlight={setHighlight}
       />

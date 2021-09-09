@@ -1,9 +1,8 @@
 import React, { SetStateAction, Dispatch } from 'react'
 import Radio, { RadioChangeEvent } from 'antd/lib/radio'
 import Space from 'antd/lib/space'
-import Input from 'antd/lib/input'
 import { Badge, Highlight } from './model'
-import { SidebarWrapper, MenuTitle, SelectVersion } from './styles'
+import { SidebarWrapper, MenuTitle, NodeSearch, SelectVersion } from './styles'
 
 type SidebarProps = {
   badge: Badge
@@ -11,6 +10,7 @@ type SidebarProps = {
   searchInputValue: string
   setSearchInputValue: Dispatch<SetStateAction<string>>
   onSearchNode: () => void
+  searchHasError: boolean
   highlight: Highlight
   setHighlight: Dispatch<SetStateAction<Highlight>>
 }
@@ -21,6 +21,7 @@ const Sidebar = ({
   searchInputValue,
   setSearchInputValue,
   onSearchNode,
+  searchHasError,
   highlight,
   setHighlight,
 }: SidebarProps) => {
@@ -32,14 +33,13 @@ const Sidebar = ({
   }
   return (
     <SidebarWrapper>
-      <Input
+      <NodeSearch
+        hasError={searchHasError}
         placeholder="Search node"
+        allowClear
         value={searchInputValue}
         onChange={e => setSearchInputValue(e.target.value)}
-        onPressEnter={event => {
-          const element = event.target as HTMLInputElement
-          element?.value && onSearchNode()
-        }}
+        onSearch={onSearchNode}
       />
       <MenuTitle>Select previous run:</MenuTitle>
       <SelectVersion

@@ -2,6 +2,8 @@ import styled from '@emotion/styled'
 import Drawer from 'antd/lib/drawer'
 import MenuOutlined from '@ant-design/icons/MenuOutlined'
 import Select from 'antd/lib/select'
+import Input from 'antd/lib/input'
+const { Search } = Input
 
 export const Container = styled.div`
   display: flex;
@@ -85,4 +87,10 @@ export const MenuTitle = styled.h4`
 
 export const SelectVersion = styled(Select)`
   width: 100%;
+`
+
+export const NodeSearch = styled(Search)<{ hasError: boolean }>`
+  .ant-input-search-button, .ant-input-affix-wrapper, .ant-input-affix-wrapper:hover {
+    border-color: ${props => props.hasError ? 'red' : ''};
+  }
 `
