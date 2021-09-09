@@ -134,7 +134,7 @@ export default {
     },
     showReferencedColumnsOnly: {
       control: 'boolean',
-      defaultValue: true,
+      defaultValue: false,
     },
     pagination: {
       control: 'object',

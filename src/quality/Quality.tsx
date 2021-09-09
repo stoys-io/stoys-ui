@@ -17,7 +17,7 @@ export const Quality = ({
   pagination,
   heightenedCell,
   smallSize = true,
-  showReferencedColumnsOnly = true,
+  showReferencedColumnsOnly = false,
   rulesTableProps = {},
   sampleTableProps = {},
 }: QualityProps): JSX.Element => {
