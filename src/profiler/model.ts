@@ -30,6 +30,7 @@ export type ColumnType =
   | 'double'
   | 'boolean'
 
+export type CountColumnKey = `count_${string}`
 export interface Column {
   name: string
   data_type: ColumnType
@@ -38,10 +39,8 @@ export interface Column {
   enum_values?: Array<string>
   format?: Maybe<string>
   count: number
-  count_empty: Maybe<number>
-  count_nulls: Maybe<number>
-  count_zeros: Maybe<number>
-  count_unique: Maybe<number>
+  [key: CountColumnKey]: Maybe<number>
+
   max_length: Maybe<number>
   mean: Maybe<number>
   min: Maybe<string>
@@ -83,6 +82,11 @@ export interface ProfilerToolbarOptions {
     checked?: boolean
     isCheckboxShown?: boolean
     onChange?: (shown: boolean) => void
+  }
+  // TODO: too much optional stuff?
+  normalizeOptions?: {
+    checked?: boolean
+    isCheckboxShown?: boolean
   }
   searchOptions?: {
     disabled?: boolean
@@ -159,11 +163,16 @@ export interface TableProps extends AntdTableProps<any> {
 
 export interface VerticalTableProps extends TableProps {
   rowOptions: RowOptions
+  tableOptions: TableOptions
+
+  // TODO: Remove. We already create a render function in getColumns for Horizontal Table
+  displayNormalized: boolean
 }
 
 export interface HygratePmfPlotDataItem {
   pmf?: Array<PmfPlotItem>
   items?: Array<DiscreteItem>
+  itemsTotalCount: number
   color: string
   name: string
   parent: string
@@ -181,6 +190,7 @@ export interface BarChartProps {
 export interface ChartAndTableProps {
   data: Maybe<Array<HygratePmfPlotDataItem>>
   isHorizontal?: boolean
+  displayNormalized?: boolean
 }
 
 export interface RowOptions {
@@ -259,6 +269,7 @@ export interface VerticalData {
 export interface ChartTableProps {
   data: Array<HygratePmfPlotDataItem>
   height: number
+  displayNormalized?: boolean
 }
 
 export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> & {
@@ -288,9 +299,14 @@ export interface TableSettingsProps {
   onModeChange: () => void
   isSearchShown: boolean
   onSearchChangeHandler: (value: string) => void
+
   isJsonSwitcherShown?: boolean
   isJsonSwitcherChecked: boolean
   onJsonChange: () => void
+
+  isNormalizeSwitcherShown?: boolean
+  isNormalizeSwitcherChecked: boolean
+  onNormalizeChange: () => void
 }
 
 export interface JsonDrqwerProps {

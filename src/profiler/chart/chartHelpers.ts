@@ -8,14 +8,17 @@ export function hygratePmfPlotData(
     return null
   }
 
-  return data.map(({ pmf, parent, color, items, data_type }, index: number) => {
-    return {
-      name: `${parent}-${index}`,
-      parent,
-      pmf,
-      items,
-      color,
-      type: data_type,
+  return data.map(
+    ({ pmf, parent, color, items, data_type, count: itemsTotalCount }, index: number) => {
+      return {
+        name: `${parent}-${index}`,
+        parent,
+        pmf,
+        items,
+        itemsTotalCount,
+        color,
+        type: data_type,
+      }
     }
-  })
+  )
 }

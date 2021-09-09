@@ -47,7 +47,9 @@ describe('Chart', () => {
           setCheckedTableRows: jest.fn(),
         }}
       >
-        <Chart data={[{ parent: '1', color: '#fff', name: 'id', type: 'string' }]} />
+        <Chart
+          data={[{ parent: '1', color: '#fff', name: 'id', type: 'string', itemsTotalCount: 0 }]}
+        />
       </CheckedRowsContext.Provider>
     )
 
@@ -75,6 +77,7 @@ describe('Chart', () => {
               name: 'id',
               type: 'string',
               items: [],
+              itemsTotalCount: 0,
             },
           ]}
         />
@@ -109,6 +112,7 @@ describe('Chart', () => {
                 { count: 2, item: '1' },
                 { count: 1.5, item: '2' },
               ],
+              itemsTotalCount: 5,
             },
           ]}
         />
@@ -139,6 +143,7 @@ describe('Chart', () => {
               name: 'id',
               type: 'number',
               pmf: [],
+              itemsTotalCount: 0,
             },
           ]}
         />
@@ -173,6 +178,7 @@ describe('Chart', () => {
                 { count: 2, low: 1, high: 2 },
                 { count: 1.5, low: 2, high: 3 },
               ],
+              itemsTotalCount: 5,
             },
           ]}
         />

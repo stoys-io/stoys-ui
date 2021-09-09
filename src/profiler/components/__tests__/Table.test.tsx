@@ -17,6 +17,7 @@ describe('Chart Table', () => {
           { item: '1', count: 100 },
           { item: '2', count: 200 },
         ],
+        itemsTotalCount: 300,
       },
       {
         color: 'green',
@@ -28,6 +29,7 @@ describe('Chart Table', () => {
           { item: '1', count: 300 },
           { item: '2', count: 400 },
         ],
+        itemsTotalCount: 700,
       },
     ]
     const { queryByText } = render(<Table height={100} data={dataMock} />)
@@ -62,6 +64,7 @@ describe('Chart Table', () => {
           { item: date1, count: 100 },
           { item: date2, count: 200 },
         ],
+        itemsTotalCount: 300,
       },
       {
         color: 'green',
@@ -73,6 +76,7 @@ describe('Chart Table', () => {
           { item: date1, count: 300 },
           { item: date2, count: 400 },
         ],
+        itemsTotalCount: 700,
       },
     ]
     const { queryAllByText } = render(<Table height={100} data={dataMock} />)
@@ -96,6 +100,7 @@ describe('Chart Table', () => {
           { item: '1', count: 100 },
           { item: '2', count: 200 },
         ],
+        itemsTotalCount: 300,
       },
       {
         color: 'green',
@@ -107,6 +112,7 @@ describe('Chart Table', () => {
           { item: '1', count: 300 },
           { item: '2', count: 400 },
         ],
+        itemsTotalCount: 700,
       },
     ]
     const { queryByText } = render(<Table height={100} data={dataMock} />)

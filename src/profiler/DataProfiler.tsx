@@ -3,9 +3,9 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { usePagination } from '../hooks'
 import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
-import { COLORS } from './constants'
+import { COLORS, NORMALIZABLE_COLUMN_PREFIX } from './constants'
 import { CheckedRowsContext, SizeContext, TableOptionsContext } from './context'
-import { DataItem, DataProfilerProps, ChildDataItem, Orient } from './model'
+import { DataItem, DataProfilerProps, ChildDataItem, Orient, CountColumnKey } from './model'
 
 import VerticalTable from './components/VerticalTable'
 import HorizontalTable from './components/HorizontalTable'
@@ -36,9 +36,19 @@ export const DataProfiler = (props: DataProfilerProps) => {
     () => (profilerToolbarOptions ? profilerToolbarOptions?.searchOptions : {}),
     [profilerToolbarOptions]
   )
+
+  const normalizeOptions = useMemo(
+    () => (profilerToolbarOptions ? profilerToolbarOptions?.normalizeOptions : {}),
+    [profilerToolbarOptions]
+  )
+
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
   const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
   const [searchValue, setSearchValue] = useState<string>('')
+
+  const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(!!normalizeOptions?.checked)
+  const _normalizeChange = () => setIsNormalizeChecked(!isNormalizeChecked)
+
   const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
   if (!datasets || !Array.isArray(datasets)) {
@@ -73,24 +83,28 @@ export const DataProfiler = (props: DataProfilerProps) => {
     return <NoData>No data</NoData>
   }
 
-  const data = useMemo(
-    () =>
-      Object.keys(dataGrouppedByTitle)
-        .filter(column => {
-          const searchRegex = new RegExp(searchValue.split('').join('.*'))
+  const data = useMemo(() => {
+    const groupedData = Object.keys(dataGrouppedByTitle)
+      .filter(column => {
+        const searchRegex = new RegExp(searchValue.split('').join('.*'))
 
-          return searchRegex.test(column.toLowerCase())
+        return searchRegex.test(column.toLowerCase())
+      })
+      .reduce((acc: Array<DataItem>, column) => {
+        acc.push({
+          columnName: column,
+          key: column,
+          children: [...dataGrouppedByTitle[column]],
         })
-        .reduce((acc: Array<DataItem>, column) => {
-          acc.push({
-            columnName: column,
-            key: column,
-            children: [...dataGrouppedByTitle[column]],
-          })
-          return acc
-        }, []),
-    [dataGrouppedByTitle, searchValue]
-  )
+        return acc
+      }, [])
+
+    if (isNormalizeChecked) {
+      return transformNormalize(groupedData)
+    }
+
+    return groupedData
+  }, [dataGrouppedByTitle, searchValue, isNormalizeChecked])
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
 
@@ -172,9 +186,10 @@ export const DataProfiler = (props: DataProfilerProps) => {
           isCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
           setChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
         },
+        isNormalizeChecked,
         validVisibleColumns
       ),
-    [data, _rowToolbarOptions, validVisibleColumns]
+    [data, _rowToolbarOptions, validVisibleColumns, isNormalizeChecked]
   )
 
   const _setIsVerticalView = useCallback(
@@ -227,6 +242,9 @@ export const DataProfiler = (props: DataProfilerProps) => {
               isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
               isJsonSwitcherChecked={isJsonShown}
               onJsonChange={_setJsonShown}
+              isNormalizeSwitcherShown={normalizeOptions?.isCheckboxShown}
+              isNormalizeSwitcherChecked={isNormalizeChecked}
+              onNormalizeChange={_normalizeChange}
             />
           ) : null}
           <TableWrapper smallSize={!!smallSize}>
@@ -245,6 +263,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
                   isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
                   isAxesCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
                 }}
+                tableOptions={tableOptions}
+                displayNormalized={isNormalizeChecked}
               />
             ) : (
               <HorizontalTable
@@ -266,3 +286,25 @@ export const DataProfiler = (props: DataProfilerProps) => {
     </SizeContext.Provider>
   )
 }
+
+const transformNormalize = (data: Array<DataItem>) =>
+  data.map(item => ({
+    ...item,
+    children: item.children.map(child => {
+      const { count } = child
+      const countColumns = Object.keys(child).filter(column =>
+        column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
+      )
+      const normalizedCountValues = countColumns.reduce((acc, key) => {
+        const columnValue = child[key as CountColumnKey]
+        const normalizedValue = columnValue === null ? null : columnValue / count
+
+        return { ...acc, [key]: normalizedValue }
+      }, {})
+
+      return {
+        ...child,
+        ...normalizedCountValues,
+      }
+    }),
+  }))

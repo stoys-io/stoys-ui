@@ -5,9 +5,10 @@ import ChartCellTitle from './ChartCellTitle'
 import { ChartAndTable, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
-import { VerticalColumn, VerticalTableProps, VerticalData } from '../model'
-import { TABLE_HEIGHT } from '../constants'
+import { VerticalColumn, VerticalData, VerticalTableProps } from '../model'
+import { TABLE_HEIGHT, NORMALIZABLE_COLUMN_PREFIX } from '../constants'
 import { ColorBlock } from '../styles'
+import { formatPercentage } from '../../helpers'
 
 const VerticalTable = (props: VerticalTableProps) => {
   const {
@@ -20,6 +21,7 @@ const VerticalTable = (props: VerticalTableProps) => {
     withoutPagination,
     pagination,
     rowOptions,
+    displayNormalized,
     onChange,
   } = props
   const flattenData = data.map(item => item.children).flat()
@@ -41,10 +43,18 @@ const VerticalTable = (props: VerticalTableProps) => {
             children: (
               <>
                 {parent ? <ChartCellTitle row={parent} rowOptions={rowOptions} /> : null}
-                <ChartAndTable data={chartData} isHorizontal />
+                <ChartAndTable
+                  data={chartData}
+                  isHorizontal
+                  displayNormalized={displayNormalized}
+                />
               </>
             ),
           }
+        }
+
+        if (displayNormalized && (row.key as string).includes(NORMALIZABLE_COLUMN_PREFIX)) {
+          return formatPercentage(record.value)
         }
 
         if (row.key === 'nulls' && childrenLength > 1) {

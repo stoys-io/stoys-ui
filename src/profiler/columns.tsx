@@ -4,15 +4,18 @@ import { ColumnsType } from 'antd/lib/table'
 
 import {
   COLUMNS_TITLES,
-  COLUMNS_WITH_DATES,
   COLUMN_CHART_WIDTH,
+  ITEM_VALUE_COLUMN_NAMES,
   LEFT_ALIGN_COLUMNS,
   VISISBLE_COLUMNS,
+  NORMALIZABLE_COLUMN_PREFIX,
 } from './constants'
 import ChartAndTableHeaderCellTitle from './components/ChartAndTableHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
 import { ChartAndTable, hygratePmfPlotData } from './chart'
+import { formatPercentage } from '../helpers'
 import { renderNumericCell } from '../common'
+
 import { transformSecondsToDate } from '../pmfPlot/helpers'
 import {
   AxesOptions,
@@ -28,7 +31,8 @@ import { Maybe } from '../model'
 import { ColorBlock } from './styles'
 
 const renderChartAndTableCell =
-  (data: Array<DataItem>) => (value: string, row: DataItem | ChildDataItem, index: number) => {
+  (data: Array<DataItem>, displayNormalized: boolean) =>
+  (value: string, row: DataItem | ChildDataItem, index: number) => {
     const parent = data.find(dataItem => {
       if ('parent' in row) {
         return row.parent === dataItem.columnName
@@ -38,7 +42,7 @@ const renderChartAndTableCell =
     })
     const pmfPlotData = hygratePmfPlotData(parent?.children)
     const renderedCellConfig: RenderedCellConfig = {
-      children: <ChartAndTable data={pmfPlotData} />,
+      children: <ChartAndTable data={pmfPlotData} displayNormalized={displayNormalized} />,
       props: {},
     }
     const rowSpan = parent?.children.length || 1
@@ -99,6 +103,19 @@ const renderValue = (value?: Maybe<boolean | string | number>): Maybe<JSX.Elemen
   )
 }
 
+export const renderNormalized = (value: number) => {
+  // TODO: Why the value can be undefined
+  if (value === undefined) {
+    return null
+  }
+
+  return (
+    <Tooltip title={formatPercentage(value)} placement="topLeft">
+      {formatPercentage(value)}
+    </Tooltip>
+  )
+}
+
 const renderMeanMinMaxValue = (
   value: Maybe<string | number>,
   row: any
@@ -144,17 +161,24 @@ export const getColumns = (
   data: Array<DataItem>,
   logarithmicScale: LogarithmicScale,
   axesOptions: AxesOptions,
+  displayNormalized: boolean,
   visibleColumns?: Array<string>
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
 
-  const columns = _visibleColumns.map((column, index) => {
+  const columns = _visibleColumns.map((columnName, index) => {
+    const isNormalized = displayNormalized && columnName.startsWith(NORMALIZABLE_COLUMN_PREFIX)
+
     const _column: any = {
-      title: COLUMNS_TITLES[column] || column,
-      dataIndex: column,
-      key: column,
-      align: LEFT_ALIGN_COLUMNS.includes(column) ? ('left' as 'left') : ('right' as 'right'),
-      render: COLUMNS_WITH_DATES.includes(column) ? renderMeanMinMaxValue : renderValue,
+      title: COLUMNS_TITLES[columnName] || columnName,
+      dataIndex: columnName,
+      key: columnName,
+      align: LEFT_ALIGN_COLUMNS.includes(columnName) ? ('left' as 'left') : ('right' as 'right'),
+      render: ITEM_VALUE_COLUMN_NAMES.includes(columnName)
+        ? renderMeanMinMaxValue
+        : isNormalized
+        ? renderNormalized
+        : renderValue,
     }
 
     if (index === 0) {
@@ -171,7 +195,7 @@ export const getColumns = (
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,
-      render: renderChartAndTableCell(data),
+      render: renderChartAndTableCell(data, displayNormalized),
       align: 'left' as 'left',
     },
   ]

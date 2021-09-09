@@ -26,6 +26,10 @@ ProfilerForOneDataset.args = {
       isCheckboxShown: true,
       onChange: (shown: boolean) => console.log('json => ', shown),
     },
+    normalizeOptions: {
+      isCheckboxShown: true,
+      checked: false,
+    },
     searchOptions: {
       disabled: false,
       onChange: (value: string) => console.log('search => ', value),
@@ -47,6 +51,10 @@ Profiler.args = {
     chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
   },
   profilerToolbarOptions: {
+    normalizeOptions: {
+      isCheckboxShown: true,
+      checked: false,
+    },
     searchOptions: {
       disabled: false,
       onChange: (value: string) => console.log('search => ', value),
