@@ -40,6 +40,7 @@ const renderChartAndTableCell =
 
       return false
     })
+
     const pmfPlotData = hygratePmfPlotData(parent?.children)
     const renderedCellConfig: RenderedCellConfig = {
       children: <ChartAndTable data={pmfPlotData} displayNormalized={displayNormalized} />,
@@ -53,6 +54,7 @@ const renderChartAndTableCell =
       renderedCellConfig.props.rowSpan = index === 0 ? rowSpan : 0
     }
 
+    /* console.log('render cell') */
     return renderedCellConfig
   }
 
@@ -166,6 +168,7 @@ export const getColumns = (
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
 
+  /* console.log('test') */
   const columns = _visibleColumns.map((columnName, index) => {
     const isNormalized = displayNormalized && columnName.startsWith(NORMALIZABLE_COLUMN_PREFIX)
 

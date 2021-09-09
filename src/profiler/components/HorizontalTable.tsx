@@ -33,6 +33,7 @@ const HorizontalTable = (props: TableProps) => {
   )
   const keys = useMemo(() => data.map(item => item.key), [data])
 
+  console.log('ant table')
   return (
     <Table
       sticky

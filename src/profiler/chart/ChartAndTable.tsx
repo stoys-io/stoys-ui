@@ -28,6 +28,8 @@ const ChartAndTable = ({
     return null
   }
 
+  /* console.log('chart and table') */
+
   const parentName = data[0].parent
   const enabledLogScale = checkedLogRows.includes(parentName)
   const enabledAxes = checkedAxesRows.includes(parentName)

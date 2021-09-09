@@ -21,6 +21,11 @@ const PmfPlot = ({
   color,
   plotOptions = {},
 }: PmfPlotProps): JSX.Element => {
+  /* console.log({
+   *   data,
+   *   dataType,
+   * }) */
+
   const isDataSet = Array.isArray(data[0])
   const axisType = showLogScale ? 'log' : 'value'
   const values = isDataSet ? data.flat() : data
