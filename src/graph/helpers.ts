@@ -21,6 +21,7 @@ export const getData = ({ selectedNodeId, badge } : { selectedNodeId: string, ba
     nodes: nodes.map((node) => ({
       ...node,
       highlighted: highLightedNodesIds.includes(node.id),
+      selected: node.id === selectedNodeId,
       badgeNumber: node[badge],
     })),
     edges: edges.map(edge => ({
@@ -35,8 +36,8 @@ export const getData = ({ selectedNodeId, badge } : { selectedNodeId: string, ba
 }
 
 export const getLabelText = (label: string) => {
-  if (label.length > 17) {
-    return `${label.slice(0, 15)}...`
+  if (label.length > 24) {
+    return `${label.slice(0, 22)}...`
   }
   return label
 }

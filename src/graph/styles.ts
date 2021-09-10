@@ -89,8 +89,8 @@ export const SelectVersion = styled(Select)`
   width: 100%;
 `
 
-export const NodeSearch = styled(Search)<{ hasError: boolean }>`
+export const NodeSearch = styled(Search)<{ error: string }>`
   .ant-input-search-button, .ant-input-affix-wrapper, .ant-input-affix-wrapper:hover {
-    border-color: ${props => props.hasError ? 'red' : ''};
+    border-color: ${props => props.error ? 'red' : ''};
   }
 `

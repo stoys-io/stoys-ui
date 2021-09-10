@@ -22,7 +22,7 @@ const Graph = () => {
 
   const [searchInputValue, setSearchInputValue] = useState<string>('')
   const [searchedNodeId, setSearchedNodeId] = useState('')
-  const [searchHasError, setSearchHasError] = useState(false)
+  const [searchHasError, setSearchHasError] = useState<boolean>(false)
 
   const graphRef = useRef(null)
   let graph: any = null

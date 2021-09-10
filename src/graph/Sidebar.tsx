@@ -34,7 +34,7 @@ const Sidebar = ({
   return (
     <SidebarWrapper>
       <NodeSearch
-        hasError={searchHasError}
+        error={searchHasError ? 'true' : ''}
         placeholder="Search node"
         allowClear
         value={searchInputValue}

@@ -37,7 +37,7 @@ type CustomNodeProps = {
 }
 
 const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
-  const { label, highlighted, badgeNumber } = cfg
+  const { label, badgeNumber, highlighted, selected } = cfg
   const badge = badgeNumber ? renderNumericValue(2, true)(badgeNumber) : ''
   return (
     <Group>
@@ -69,9 +69,10 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
           height: 'auto',
           fill: '#fff',
           stroke: highlighted ? '#1e80fe' : '#2e2d2d',
+          lineWidth: highlighted ? '2' : '1',
+          radius: [2],
           shadowColor: '#eee',
           shadowBlur: 30,
-          radius: [2],
           cursor: 'pointer',
         }}
         onClick={(evt, node: any) => onNodeClick(node.getModel())}
@@ -88,10 +89,23 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
         >
           {getLabelText(label)}
         </Text>
-        <Rect style={{ stroke: '#2e2d2d', height: 60 }}>
-          <Text style={{ fontSize: 14, fill: '#000000', margin: [3] }}>Lorem ipsum 1</Text>
-          <Text style={{ fontSize: 14, fill: '#000000', margin: [3] }}>Lorem ipsum 2</Text>
-          <Text style={{ fontSize: 14, fill: '#000000', margin: [3] }}>Lorem ipsum 3</Text>
+        <Rect
+          style={{
+            stroke: selected ? '#1e80fe' : '#2e2d2d',
+            lineWidth: selected ? '2' : '1',
+            radius: [0, 0, 2, 2],
+            height: 60,
+          }}
+        >
+          <Text style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}>
+            Lorem ipsum 1
+          </Text>
+          <Text style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}>
+            Lorem ipsum 2
+          </Text>
+          <Text style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}>
+            Lorem ipsum 3
+          </Text>
         </Rect>
       </Rect>
     </Group>
