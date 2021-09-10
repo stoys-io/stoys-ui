@@ -57,81 +57,50 @@ export interface Dataset {
 
 export type Datasets = Array<Dataset>
 
-export interface RowToolbarOptions {
-  logarithmicScaleOptions?:
-    | boolean
-    | {
-        isCheckboxShown?: boolean
-        isUsedByDefault?: boolean
-      }
-  axesOptions?:
-    | boolean
-    | {
-        isCheckboxShown?: boolean
-        isUsedByDefault?: boolean
-      }
-  chartTableOptions?:
-    | boolean
-    | {
-        isCheckboxShown?: boolean
-        isUsedByDefault?: boolean
-      }
-}
-export interface ToolbarOptions {
-  logarithmicScaleOptions?: {
-    isCheckboxShown?: boolean
-    isUsedByDefault?: boolean
-  }
-  axesOptions?: {
-    isCheckboxShown?: boolean
-    isUsedByDefault?: boolean
-  }
-  chartTableOptions?: {
-    isCheckboxShown?: boolean
-    isUsedByDefault?: boolean
-  }
-}
+export interface ConfigProps {
+  colors?: Array<string>
+  smallSize?: boolean
+  visibleColumns?: Array<string>
+  pagination?: boolean
 
-export interface ProfilerToolbarOptions {
-  orientOptions?:
-    | boolean
-    | {
-        type?: Orient
-        isCheckboxShown?: boolean
-        onOrientChange?: (orient: Orient) => void
-      }
-  jsonOptions?:
-    | boolean
-    | {
-        checked?: boolean
-        isCheckboxShown?: boolean
-        onChange?: (shown: boolean) => void
-      }
-  // TODO: too much optional stuff?
-  normalizeOptions?:
-    | boolean
-    | {
-        checked?: boolean
-        isCheckboxShown?: boolean
-      }
-  searchOptions?:
-    | boolean
-    | {
-        disabled?: boolean
-        onChange?: (value: string) => void
-      }
+  showProfilerToolbar?: boolean
+  showRowToolbar?: boolean
+
+  showOrientSwitcher?: boolean
+  orientType?: Orient
+  onOrientChange?: (orient: Orient) => void
+
+  showJsonSwitcher?: boolean
+  jsonChecked?: boolean
+  onJsonChange?: (shown: boolean) => void
+
+  /*TODO: make it in one way? 
+
+    showSwitcher?: boolean
+    checked?: boolean
+    onChange: Function
+
+    for search => searchValue?: string
+  */
+  showNormalizeSwitcher?: boolean
+  normalizeChecked?: boolean
+
+  showSearch?: boolean
+  onSearchChange?: (value: string) => void
+
+  showLogarithmicSwitcher?: boolean
+  logarithmicChecked?: boolean
+
+  showAxesSwitcher?: boolean
+  axesChecked?: boolean
+
+  showChartTableSwitcher?: boolean
+  chartTableChecked?: boolean
 }
 
 export interface DataProfilerProps extends AntdTableProps<any> {
   datasets: Datasets
-  config?: {
-    profilerToolbarOptions?: null | false | ProfilerToolbarOptions
-    rowToolbarOptions?: null | false | RowToolbarOptions
-    colors?: Array<string>
-    smallSize?: boolean
-    visibleColumns?: Array<string>
-    pagination?: boolean
-  }
+  config?: ConfigProps
   pagination?: PaginationProps | false
 }
 

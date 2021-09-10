@@ -13,29 +13,17 @@ ProfilerForOneDataset.args = {
   datasets: [firstDatasetMock as Dataset],
   config: {
     pagination: false,
-    rowToolbarOptions: {
-      logarithmicScaleOptions: true,
-      axesOptions: true,
-      chartTableOptions: true,
-    },
-    profilerToolbarOptions: {
-      orientOptions: {
-        isCheckboxShown: true,
-        onOrientChange: (orient: Orient) => console.log('orient => ', orient),
-      },
-      jsonOptions: {
-        isCheckboxShown: true,
-        onChange: (shown: boolean) => console.log('json => ', shown),
-      },
-      normalizeOptions: {
-        isCheckboxShown: true,
-        checked: false,
-      },
-      searchOptions: {
-        disabled: false,
-        onChange: (value: string) => console.log('search => ', value),
-      },
-    },
+    showLogarithmicSwitcher: true,
+    showAxesSwitcher: true,
+    showChartTableSwitcher: true,
+    showOrientSwitcher: true,
+    onOrientChange: (orient: Orient) => console.log('orient => ', orient),
+    showJsonSwitcher: true,
+    onJsonChange: (shown: boolean) => console.log('json => ', shown),
+    showNormalizeSwitcher: true,
+    normalizeChecked: false,
+    showSearch: true,
+    onSearchChange: (value: string) => console.log('search => ', value),
     visibleColumns: ['count_nulls', 'count_unique', 'mean', 'min', 'max', 'nullable'],
     smallSize: true,
     colors: ['#4363d8'],
@@ -48,29 +36,17 @@ Profiler.args = {
   datasets: [firstDatasetMock as Dataset, secondDatasetMock as Dataset],
   pagination: { disabled: false },
   config: {
-    rowToolbarOptions: {
-      logarithmicScaleOptions: { isCheckboxShown: true, isUsedByDefault: false },
-      axesOptions: { isCheckboxShown: true, isUsedByDefault: false },
-      chartTableOptions: { isCheckboxShown: true, isUsedByDefault: false },
-    },
-    profilerToolbarOptions: {
-      normalizeOptions: {
-        isCheckboxShown: true,
-        checked: false,
-      },
-      jsonOptions: {
-        isCheckboxShown: true,
-        onChange: (shown: boolean) => console.log('json => ', shown),
-      },
-      searchOptions: {
-        disabled: false,
-        onChange: (value: string) => console.log('search => ', value),
-      },
-      orientOptions: {
-        isCheckboxShown: true,
-        onOrientChange: (orient: Orient) => console.log('orient => ', orient),
-      },
-    },
+    showLogarithmicSwitcher: true,
+    showAxesSwitcher: true,
+    showChartTableSwitcher: true,
+    showOrientSwitcher: true,
+    onOrientChange: (orient: Orient) => console.log('orient => ', orient),
+    showJsonSwitcher: true,
+    onJsonChange: (shown: boolean) => console.log('json => ', shown),
+    showNormalizeSwitcher: true,
+    normalizeChecked: false,
+    showSearch: true,
+    onSearchChange: (value: string) => console.log('search => ', value),
     smallSize: false,
   },
 }

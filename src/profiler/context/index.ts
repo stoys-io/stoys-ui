@@ -1,5 +1,4 @@
 import { CheckedRowsContext } from './checkedRowsContext'
-import { SizeContext } from './sizeContext'
-import { TableOptionsContext } from './tableOptionsContext'
+import { ConfigContext } from './configContext'
 
-export { CheckedRowsContext, SizeContext, TableOptionsContext }
+export { CheckedRowsContext, ConfigContext }

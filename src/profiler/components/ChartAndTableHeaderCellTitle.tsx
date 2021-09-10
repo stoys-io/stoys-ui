@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useContext } from 'react'
 
-import { CheckedRowsContext, TableOptionsContext } from '../context'
+import { CheckedRowsContext, ConfigContext } from '../context'
 import Toolbar from './Toolbar'
 import { ChartAndTableHeaderCellTitleProps } from '../model'
 
@@ -8,22 +8,23 @@ const ChartAndTableHeaderCellTitle = ({
   logarithmicScale,
   axesOptions,
 }: ChartAndTableHeaderCellTitleProps): JSX.Element => {
-  const tableOptions = useContext(TableOptionsContext)
-  const [isActiveTable, setIsActiveTable] = useState<boolean>(!!tableOptions.isUsedByDefault)
+  const { showChartTableSwitcher, chartTableChecked, setChartTableChecked } =
+    useContext(ConfigContext)
+  const [isActiveTable, setIsActiveTable] = useState<boolean>(!!chartTableChecked)
   const { checkedLogRows, checkedAxesRows, checkedTableRows, dataLength } =
     useContext(CheckedRowsContext)
 
   const onChangeRadioGroup = useCallback(
     (active: boolean) => {
       setIsActiveTable(active)
-      tableOptions?.setChecked?.(active)
+      setChartTableChecked?.(active)
     },
-    [tableOptions]
+    [setChartTableChecked]
   )
 
   return (
     <Toolbar
-      showTableChartSwitcher={tableOptions?.isCheckboxShown}
+      showTableChartSwitcher={showChartTableSwitcher}
       showLogScale={logarithmicScale.isCheckboxShown}
       showAxes={axesOptions.isCheckboxShown}
       activeLogScale={checkedLogRows.length === dataLength}

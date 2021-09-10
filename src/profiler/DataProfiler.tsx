@@ -4,15 +4,8 @@ import { usePagination } from '../hooks'
 import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
 import { COLORS, NORMALIZABLE_COLUMN_PREFIX } from './constants'
-import { CheckedRowsContext, SizeContext, TableOptionsContext } from './context'
-import {
-  DataItem,
-  DataProfilerProps,
-  ChildDataItem,
-  Orient,
-  CountColumnKey,
-  ToolbarOptions,
-} from './model'
+import { CheckedRowsContext, ConfigContext } from './context'
+import { DataItem, DataProfilerProps, ChildDataItem, Orient, CountColumnKey } from './model'
 
 import VerticalTable from './components/VerticalTable'
 import HorizontalTable from './components/HorizontalTable'
@@ -22,79 +15,35 @@ import JsonDrawer from './components/JsonDrawer'
 import { NoData, TableWrapper } from './styles'
 
 export const DataProfiler = (props: DataProfilerProps) => {
+  const { datasets, pagination, config = {} } = props
   const {
-    datasets,
-    pagination,
-    config: {
-      colors,
-      rowToolbarOptions,
-      profilerToolbarOptions,
-      smallSize = true,
-      visibleColumns,
-    } = {},
-  } = props
+    smallSize,
+    colors,
+    visibleColumns,
+    showProfilerToolbar = true,
+    showOrientSwitcher = true,
+    orientType,
+    onOrientChange,
+    showJsonSwitcher = true,
+    jsonChecked,
+    onJsonChange,
+    showNormalizeSwitcher = true,
+    normalizeChecked,
+    showSearch = true,
+    onSearchChange,
+    showLogarithmicSwitcher,
+    logarithmicChecked,
+    showAxesSwitcher,
+    axesChecked,
+    showChartTableSwitcher,
+    chartTableChecked,
+  } = config
 
-  const orientOptions = useMemo(() => {
-    if (!profilerToolbarOptions) {
-      return {}
-    }
-
-    if (typeof profilerToolbarOptions.orientOptions === 'boolean') {
-      return {
-        isCheckboxShown: profilerToolbarOptions.orientOptions,
-      }
-    }
-
-    return profilerToolbarOptions.orientOptions
-  }, [profilerToolbarOptions])
-
-  const jsonOptions = useMemo(() => {
-    if (!profilerToolbarOptions) {
-      return {}
-    }
-
-    if (typeof profilerToolbarOptions.jsonOptions === 'boolean') {
-      return {
-        isCheckboxShown: profilerToolbarOptions.jsonOptions,
-      }
-    }
-
-    return profilerToolbarOptions.jsonOptions
-  }, [profilerToolbarOptions])
-
-  const searchOptions = useMemo(() => {
-    if (!profilerToolbarOptions) {
-      return {}
-    }
-
-    if (typeof profilerToolbarOptions.searchOptions === 'boolean') {
-      return {
-        disabled: !profilerToolbarOptions.searchOptions,
-      }
-    }
-
-    return profilerToolbarOptions.searchOptions
-  }, [profilerToolbarOptions])
-
-  const normalizeOptions = useMemo(() => {
-    if (!profilerToolbarOptions) {
-      return {}
-    }
-
-    if (typeof profilerToolbarOptions.normalizeOptions === 'boolean') {
-      return {
-        isCheckboxShown: profilerToolbarOptions.normalizeOptions,
-      }
-    }
-
-    return profilerToolbarOptions.normalizeOptions
-  }, [profilerToolbarOptions])
-
-  const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
-  const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
+  const [isVertical, setIsVertical] = useState<boolean>(orientType === Orient.Vertical)
+  const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonChecked)
   const [searchValue, setSearchValue] = useState<string>('')
 
-  const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(!!normalizeOptions?.checked)
+  const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(!!normalizeChecked)
   const _normalizeChange = () => setIsNormalizeChecked(!isNormalizeChecked)
 
   const _pagination =
@@ -107,8 +56,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
   }
 
   useEffect(() => {
-    setIsVertical(orientOptions?.type === Orient.Vertical)
-  }, [orientOptions])
+    setIsVertical(orientType === Orient.Vertical)
+  }, [config])
 
   const dataGrouppedByTitle = useMemo(
     () =>
@@ -159,76 +108,23 @@ export const DataProfiler = (props: DataProfilerProps) => {
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
 
-  const _rowToolbarOptions: ToolbarOptions = useMemo(() => {
-    if (
-      (typeof rowToolbarOptions === 'boolean' && rowToolbarOptions) ||
-      rowToolbarOptions === undefined ||
-      rowToolbarOptions === null
-    ) {
-      return {
-        logarithmicScaleOptions: {
-          isCheckboxShown: true,
-        },
-        axesOptions: {
-          isCheckboxShown: true,
-        },
-        chartTableOptions: {
-          isCheckboxShown: true,
-        },
-      }
-    }
-
-    if (typeof rowToolbarOptions === 'boolean' && !rowToolbarOptions) {
-      return {
-        logarithmicScaleOptions: {
-          isCheckboxShown: false,
-        },
-        axesOptions: {
-          isCheckboxShown: false,
-        },
-        chartTableOptions: {
-          isCheckboxShown: false,
-        },
-      }
-    }
-
-    let options: ToolbarOptions = {}
-
-    options.axesOptions =
-      typeof rowToolbarOptions.axesOptions === 'boolean'
-        ? { isCheckboxShown: rowToolbarOptions.axesOptions }
-        : { ...rowToolbarOptions.axesOptions }
-
-    options.logarithmicScaleOptions =
-      typeof rowToolbarOptions.logarithmicScaleOptions === 'boolean'
-        ? { isCheckboxShown: rowToolbarOptions.logarithmicScaleOptions }
-        : { ...rowToolbarOptions.logarithmicScaleOptions }
-
-    options.chartTableOptions =
-      typeof rowToolbarOptions.chartTableOptions === 'boolean'
-        ? { isCheckboxShown: rowToolbarOptions.chartTableOptions }
-        : { ...rowToolbarOptions.chartTableOptions }
-
-    return options
-  }, [rowToolbarOptions])
-
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
-    _rowToolbarOptions.logarithmicScaleOptions?.isUsedByDefault ? columnNames : []
+    logarithmicChecked ? columnNames : []
   )
   const [checkedAxesRows, setCheckedAxesRows] = useState<Array<string>>(
-    _rowToolbarOptions.axesOptions?.isUsedByDefault ? columnNames : []
+    axesChecked ? columnNames : []
   )
   const [checkedTableRows, setCheckedTableRows] = useState<Array<string>>(
-    _rowToolbarOptions.chartTableOptions?.isUsedByDefault ? columnNames : []
+    chartTableChecked ? columnNames : []
   )
 
   const tableOptions = useMemo(
     () => ({
-      isCheckboxShown: !!_rowToolbarOptions.chartTableOptions?.isCheckboxShown,
+      isCheckboxShown: !!showChartTableSwitcher,
       setChecked: (isChecked: boolean) => setCheckedTableRows(isChecked ? columnNames : []),
-      isUsedByDefault: !!_rowToolbarOptions.chartTableOptions?.isUsedByDefault,
+      isUsedByDefault: !!chartTableChecked,
     }),
-    [_rowToolbarOptions]
+    [config]
   )
 
   const validVisibleColumns = useMemo(() => {
@@ -248,23 +144,23 @@ export const DataProfiler = (props: DataProfilerProps) => {
       getColumns(
         data,
         {
-          isCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
+          isCheckboxShown: !!showLogarithmicSwitcher,
           setChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
         },
         {
-          isCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
+          isCheckboxShown: !!showAxesSwitcher,
           setChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
         },
         isNormalizeChecked,
         validVisibleColumns
       ),
-    [data, _rowToolbarOptions, validVisibleColumns, isNormalizeChecked]
+    [data, config, validVisibleColumns, isNormalizeChecked]
   )
 
   const _setIsVerticalView = useCallback(
     () =>
       setIsVertical((prevState: boolean) => {
-        orientOptions?.onOrientChange?.(!prevState ? Orient.Vertical : Orient.Horizontal)
+        onOrientChange?.(!prevState ? Orient.Vertical : Orient.Horizontal)
 
         return !prevState
       }),
@@ -273,86 +169,84 @@ export const DataProfiler = (props: DataProfilerProps) => {
 
   const _onSearch = useCallback(
     (value: string) => {
-      searchOptions?.onChange?.(value)
+      onSearchChange?.(value)
       setSearchValue(value)
     },
-    [searchOptions]
+    [config]
   )
 
   const _setJsonShown = useCallback(() => {
     setJsonShown((prevState: boolean) => {
-      jsonOptions?.onChange?.(!prevState)
+      onJsonChange?.(!prevState)
 
       return !prevState
     })
-  }, [jsonOptions])
+  }, [config])
 
   return (
-    <SizeContext.Provider value={smallSize}>
-      <TableOptionsContext.Provider value={tableOptions}>
-        <CheckedRowsContext.Provider
-          value={{
-            checkedLogRows,
-            setCheckedLogRows,
-            checkedAxesRows,
-            setCheckedAxesRows,
-            checkedTableRows,
-            setCheckedTableRows,
-            dataLength: data.length,
-          }}
-        >
-          {orientOptions?.isCheckboxShown || !searchOptions?.disabled ? (
-            <TableSettings
-              isModeSwitcherShown={orientOptions?.isCheckboxShown}
-              isModeSwitcherChecked={isVertical}
-              onModeChange={_setIsVerticalView}
-              isSearchShown={!searchOptions?.disabled}
-              onSearchChangeHandler={_onSearch}
-              isJsonSwitcherShown={jsonOptions?.isCheckboxShown}
-              isJsonSwitcherChecked={isJsonShown}
-              onJsonChange={_setJsonShown}
-              isNormalizeSwitcherShown={normalizeOptions?.isCheckboxShown}
-              isNormalizeSwitcherChecked={isNormalizeChecked}
-              onNormalizeChange={_normalizeChange}
+    <ConfigContext.Provider value={{ ...config, setChartTableChecked: tableOptions.setChecked }}>
+      <CheckedRowsContext.Provider
+        value={{
+          checkedLogRows,
+          setCheckedLogRows,
+          checkedAxesRows,
+          setCheckedAxesRows,
+          checkedTableRows,
+          setCheckedTableRows,
+          dataLength: data.length,
+        }}
+      >
+        {showProfilerToolbar ? (
+          <TableSettings
+            isModeSwitcherShown={showOrientSwitcher}
+            isModeSwitcherChecked={isVertical}
+            onModeChange={_setIsVerticalView}
+            isSearchShown={!!showSearch}
+            onSearchChangeHandler={_onSearch}
+            isJsonSwitcherShown={showJsonSwitcher}
+            isJsonSwitcherChecked={isJsonShown}
+            onJsonChange={_setJsonShown}
+            isNormalizeSwitcherShown={showNormalizeSwitcher}
+            isNormalizeSwitcherChecked={isNormalizeChecked}
+            onNormalizeChange={_normalizeChange}
+          />
+        ) : null}
+        <TableWrapper smallSize={!!smallSize}>
+          {isVertical ? (
+            <VerticalTable
+              {...props}
+              data={data}
+              columns={columns}
+              currentPage={current}
+              setCurrentPage={setCurrentPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              withoutPagination={_pagination === false}
+              pagination={pagination}
+              rowOptions={{
+                isLogCheckboxShown: !!showLogarithmicSwitcher,
+                isAxesCheckboxShown: !!showAxesSwitcher,
+              }}
+              tableOptions={tableOptions}
+              displayNormalized={isNormalizeChecked}
             />
-          ) : null}
-          <TableWrapper smallSize={!!smallSize}>
-            {isVertical ? (
-              <VerticalTable
-                {...props}
-                data={data}
-                columns={columns}
-                currentPage={current}
-                setCurrentPage={setCurrentPage}
-                pageSize={pageSize}
-                setPageSize={setPageSize}
-                withoutPagination={pagination === false}
-                pagination={pagination}
-                rowOptions={{
-                  isLogCheckboxShown: !!_rowToolbarOptions.logarithmicScaleOptions?.isCheckboxShown,
-                  isAxesCheckboxShown: !!_rowToolbarOptions.axesOptions?.isCheckboxShown,
-                }}
-                tableOptions={tableOptions}
-                displayNormalized={isNormalizeChecked}
-              />
-            ) : (
-              <HorizontalTable
-                {...props}
-                data={data}
-                columns={columns}
-                currentPage={current}
-                setCurrentPage={setCurrentPage}
-                pageSize={pageSize}
-                setPageSize={setPageSize}
-                withoutPagination={pagination === false}
-                pagination={pagination}
-              />
-            )}
-            <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
-          </TableWrapper>
-        </CheckedRowsContext.Provider>
-      </TableOptionsContext.Provider>
-    </SizeContext.Provider>
+          ) : (
+            <HorizontalTable
+              {...props}
+              data={data}
+              columns={columns}
+              currentPage={current}
+              setCurrentPage={setCurrentPage}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              withoutPagination={_pagination === false}
+              pagination={pagination}
+            />
+          )}
+          <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
+        </TableWrapper>
+      </CheckedRowsContext.Provider>
+    </ConfigContext.Provider>
   )
 }
 
