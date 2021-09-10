@@ -34,7 +34,6 @@ export const UnderMiniMapBackground = styled.div`
 
 export const GraphContainer = styled.div`
   width: calc(100% - 250px);
-  overflow: scroll;
   .minimap {
     position: absolute;
     top: 0;

@@ -37,13 +37,12 @@ const Graph = () => {
       const minimap = new G6.Minimap({
         size: [235, 200],
         className: 'minimap',
-        // type: 'delegate',
       })
       graph = new G6.Graph({
         // @ts-ignore
         container: graphRef.current,
-        width: 1500,
-        height: 900,
+        width: document.documentElement.clientWidth - 250, // 250px - width of the left-hand sidebar
+        height: document.documentElement.clientHeight,
         plugins: [minimap],
         workerEnabled: true,
         modes: {
