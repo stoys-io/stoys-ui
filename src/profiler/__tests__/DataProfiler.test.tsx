@@ -40,7 +40,9 @@ describe('Profiler', () => {
       const { container } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{ orientOptions: { type: Orient.Vertical } }}
+          config={{
+            profilerToolbarOptions: { orientOptions: { type: Orient.Vertical } },
+          }}
         />
       )
       const tableHeaderCell = container.querySelectorAll('th')
@@ -74,7 +76,9 @@ describe('Profiler', () => {
       const { container, queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{ orientOptions: { isCheckboxShown: true } }}
+          config={{
+            profilerToolbarOptions: { orientOptions: { isCheckboxShown: true } },
+          }}
         />
       )
 
@@ -97,8 +101,10 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{
-            orientOptions: { isCheckboxShown: true, onOrientChange: onOrientChangeMock },
+          config={{
+            profilerToolbarOptions: {
+              orientOptions: { isCheckboxShown: true, onOrientChange: onOrientChangeMock },
+            },
           }}
         />
       )
@@ -122,9 +128,11 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{
-            orientOptions: { isCheckboxShown: true },
-            searchOptions: { disabled: true },
+          config={{
+            profilerToolbarOptions: {
+              orientOptions: { isCheckboxShown: true },
+              searchOptions: { disabled: true },
+            },
           }}
         />
       )
@@ -149,7 +157,9 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{ searchOptions: { onChange: onSearchMock } }}
+          config={{
+            profilerToolbarOptions: { searchOptions: { onChange: onSearchMock } },
+          }}
         />
       )
       const search = queryByTestId('table-search')
