@@ -12,12 +12,24 @@ export const Container = styled.div`
   position: relative;
 `
 
-export const SidebarWrapper = styled.div`
-  height: 100vh;
+export const SidebarWrapper = styled.div<{ drawerHeight: number }>`
+  height: ${props => `calc(100vh - ${props.drawerHeight}px)`};
   width: 250px;
   background-color: #f4f2f4;
-  padding: 250px 10px 10px 10px;
   overflow-y: auto;
+`
+
+export const SidebarContentWrapper = styled.div`
+  padding: 20px 10px 10px 10px;
+  background-color: #f4f2f4;
+  position: relative;
+  z-index: 3;
+`
+
+export const UnderMiniMapBackground = styled.div`
+  width: 100%;
+  height: 200px;
+  background-color: transparent;
 `
 
 export const GraphContainer = styled.div`

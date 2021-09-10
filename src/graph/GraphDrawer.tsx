@@ -13,6 +13,8 @@ import qualityDataMock from '../../stories/mocks/yellow_tripdata_2020-02.csv.dq_
 const { TabPane } = Tabs
 
 type GraphDrawerProps = {
+  drawerHeight: number
+  setDrawerHeight: Dispatch<SetStateAction<number>>
   visible: boolean
   setDrawerVisibility: Dispatch<SetStateAction<boolean>>
   nodeLabel?: string
@@ -21,6 +23,8 @@ type GraphDrawerProps = {
 }
 
 const GraphDrawer = ({
+  drawerHeight,
+  setDrawerHeight,
   visible,
   setDrawerVisibility,
   nodeLabel,
@@ -28,7 +32,12 @@ const GraphDrawer = ({
   setDrawerTable,
 }: GraphDrawerProps) => {
   return (
-    <ResizableAntdDrawer setDrawerVisibility={setDrawerVisibility} visible={visible}>
+    <ResizableAntdDrawer
+      drawerHeight={drawerHeight}
+      setDrawerHeight={setDrawerHeight}
+      setDrawerVisibility={setDrawerVisibility}
+      visible={visible}
+    >
       <Tabs activeKey={table} onChange={setDrawerTable}>
         <DrawerNodeLabel>{nodeLabel}</DrawerNodeLabel>
         <TabPane tab="Join Rates" key="join_rates">

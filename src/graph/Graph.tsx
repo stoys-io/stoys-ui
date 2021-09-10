@@ -14,6 +14,7 @@ const Graph = () => {
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
   const [drawerNodeLabel, setDrawerNodeLabel] = useState('')
   const [drawerTable, setDrawerTable] = useState('')
+  const [drawerHeight, setDrawerHeight] = useState(500)
 
   const [badge, setBadge] = useState<Badge>('violations')
 
@@ -34,7 +35,7 @@ const Graph = () => {
         createNodeFromReact(({ cfg }) => CustomNode({ cfg, openDrawer, onNodeClick }))
       )
       const minimap = new G6.Minimap({
-        size: [250, 200],
+        size: [235, 200],
         className: 'minimap',
         // type: 'delegate',
       })
@@ -137,6 +138,7 @@ const Graph = () => {
   return (
     <Container>
       <Sidebar
+        drawerHeight={drawerIsVisible ? drawerHeight : 0}
         badge={badge}
         changeBadge={setBadge}
         searchInputValue={searchInputValue}
@@ -149,6 +151,8 @@ const Graph = () => {
       <GraphContainer>
         <div ref={graphRef} />
         <GraphDrawer
+          drawerHeight={drawerHeight}
+          setDrawerHeight={setDrawerHeight}
           nodeLabel={drawerNodeLabel}
           table={drawerTable}
           setDrawerTable={setDrawerTable}
