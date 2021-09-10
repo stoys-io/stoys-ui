@@ -58,6 +58,26 @@ export interface Dataset {
 export type Datasets = Array<Dataset>
 
 export interface RowToolbarOptions {
+  logarithmicScaleOptions?:
+    | boolean
+    | {
+        isCheckboxShown?: boolean
+        isUsedByDefault?: boolean
+      }
+  axesOptions?:
+    | boolean
+    | {
+        isCheckboxShown?: boolean
+        isUsedByDefault?: boolean
+      }
+  chartTableOptions?:
+    | boolean
+    | {
+        isCheckboxShown?: boolean
+        isUsedByDefault?: boolean
+      }
+}
+export interface ToolbarOptions {
   logarithmicScaleOptions?: {
     isCheckboxShown?: boolean
     isUsedByDefault?: boolean
@@ -73,35 +93,46 @@ export interface RowToolbarOptions {
 }
 
 export interface ProfilerToolbarOptions {
-  orientOptions?: {
-    type?: Orient
-    isCheckboxShown?: boolean
-    onOrientChange?: (orient: Orient) => void
-  }
-  jsonOptions?: {
-    checked?: boolean
-    isCheckboxShown?: boolean
-    onChange?: (shown: boolean) => void
-  }
+  orientOptions?:
+    | boolean
+    | {
+        type?: Orient
+        isCheckboxShown?: boolean
+        onOrientChange?: (orient: Orient) => void
+      }
+  jsonOptions?:
+    | boolean
+    | {
+        checked?: boolean
+        isCheckboxShown?: boolean
+        onChange?: (shown: boolean) => void
+      }
   // TODO: too much optional stuff?
-  normalizeOptions?: {
-    checked?: boolean
-    isCheckboxShown?: boolean
-  }
-  searchOptions?: {
-    disabled?: boolean
-    onChange?: (value: string) => void
-  }
+  normalizeOptions?:
+    | boolean
+    | {
+        checked?: boolean
+        isCheckboxShown?: boolean
+      }
+  searchOptions?:
+    | boolean
+    | {
+        disabled?: boolean
+        onChange?: (value: string) => void
+      }
 }
 
 export interface DataProfilerProps extends AntdTableProps<any> {
   datasets: Datasets
-  profilerToolbarOptions?: null | false | ProfilerToolbarOptions
-  colors?: Array<string>
-  rowToolbarOptions?: null | false | RowToolbarOptions
+  config?: {
+    profilerToolbarOptions?: null | false | ProfilerToolbarOptions
+    rowToolbarOptions?: null | false | RowToolbarOptions
+    colors?: Array<string>
+    smallSize?: boolean
+    visibleColumns?: Array<string>
+    pagination?: false
+  }
   pagination?: PaginationProps | false
-  smallSize?: boolean
-  visibleColumns?: Array<string>
 }
 
 export interface HydratedColumn extends Column {

@@ -5,7 +5,14 @@ import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
 import { COLORS, NORMALIZABLE_COLUMN_PREFIX } from './constants'
 import { CheckedRowsContext, SizeContext, TableOptionsContext } from './context'
-import { DataItem, DataProfilerProps, ChildDataItem, Orient, CountColumnKey } from './model'
+import {
+  DataItem,
+  DataProfilerProps,
+  ChildDataItem,
+  Orient,
+  CountColumnKey,
+  ToolbarOptions,
+} from './model'
 
 import VerticalTable from './components/VerticalTable'
 import HorizontalTable from './components/HorizontalTable'
@@ -17,30 +24,71 @@ import { NoData, TableWrapper } from './styles'
 export const DataProfiler = (props: DataProfilerProps) => {
   const {
     datasets,
-    colors,
-    rowToolbarOptions,
     pagination,
-    profilerToolbarOptions,
-    smallSize = true,
-    visibleColumns,
+    config: {
+      colors,
+      rowToolbarOptions,
+      profilerToolbarOptions,
+      smallSize = true,
+      visibleColumns,
+    } = {},
   } = props
-  const orientOptions = useMemo(
-    () => (profilerToolbarOptions ? profilerToolbarOptions?.orientOptions : {}),
-    [profilerToolbarOptions]
-  )
-  const jsonOptions = useMemo(
-    () => (profilerToolbarOptions ? profilerToolbarOptions?.jsonOptions : {}),
-    [profilerToolbarOptions]
-  )
-  const searchOptions = useMemo(
-    () => (profilerToolbarOptions ? profilerToolbarOptions?.searchOptions : {}),
-    [profilerToolbarOptions]
-  )
 
-  const normalizeOptions = useMemo(
-    () => (profilerToolbarOptions ? profilerToolbarOptions?.normalizeOptions : {}),
-    [profilerToolbarOptions]
-  )
+  const orientOptions = useMemo(() => {
+    if (!profilerToolbarOptions) {
+      return {}
+    }
+
+    if (typeof profilerToolbarOptions.orientOptions === 'boolean') {
+      return {
+        isCheckboxShown: profilerToolbarOptions.orientOptions,
+      }
+    }
+
+    return profilerToolbarOptions.orientOptions
+  }, [profilerToolbarOptions])
+
+  const jsonOptions = useMemo(() => {
+    if (!profilerToolbarOptions) {
+      return {}
+    }
+
+    if (typeof profilerToolbarOptions.jsonOptions === 'boolean') {
+      return {
+        isCheckboxShown: profilerToolbarOptions.jsonOptions,
+      }
+    }
+
+    return profilerToolbarOptions.jsonOptions
+  }, [profilerToolbarOptions])
+
+  const searchOptions = useMemo(() => {
+    if (!profilerToolbarOptions) {
+      return {}
+    }
+
+    if (typeof profilerToolbarOptions.searchOptions === 'boolean') {
+      return {
+        disabled: !profilerToolbarOptions.searchOptions,
+      }
+    }
+
+    return profilerToolbarOptions.searchOptions
+  }, [profilerToolbarOptions])
+
+  const normalizeOptions = useMemo(() => {
+    if (!profilerToolbarOptions) {
+      return {}
+    }
+
+    if (typeof profilerToolbarOptions.normalizeOptions === 'boolean') {
+      return {
+        isCheckboxShown: profilerToolbarOptions.normalizeOptions,
+      }
+    }
+
+    return profilerToolbarOptions.normalizeOptions
+  }, [profilerToolbarOptions])
 
   const [isVertical, setIsVertical] = useState<boolean>(orientOptions?.type === Orient.Vertical)
   const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonOptions?.checked)
@@ -49,7 +97,10 @@ export const DataProfiler = (props: DataProfilerProps) => {
   const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(!!normalizeOptions?.checked)
   const _normalizeChange = () => setIsNormalizeChecked(!isNormalizeChecked)
 
-  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
+  const _pagination =
+    typeof props.config?.pagination === 'boolean' ? props.config.pagination : pagination
+
+  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(_pagination)
 
   if (!datasets || !Array.isArray(datasets)) {
     return <NoData>No data</NoData>
@@ -108,7 +159,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
 
   const columnNames = useMemo(() => data.map(item => item.columnName), [data])
 
-  const _rowToolbarOptions = useMemo(() => {
+  const _rowToolbarOptions: ToolbarOptions = useMemo(() => {
     if (
       (typeof rowToolbarOptions === 'boolean' && rowToolbarOptions) ||
       rowToolbarOptions === undefined ||
@@ -126,6 +177,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
         },
       }
     }
+
     if (typeof rowToolbarOptions === 'boolean' && !rowToolbarOptions) {
       return {
         logarithmicScaleOptions: {
@@ -140,7 +192,24 @@ export const DataProfiler = (props: DataProfilerProps) => {
       }
     }
 
-    return rowToolbarOptions
+    let options: ToolbarOptions = {}
+
+    options.axesOptions =
+      typeof rowToolbarOptions.axesOptions === 'boolean'
+        ? { isCheckboxShown: rowToolbarOptions.axesOptions }
+        : { ...rowToolbarOptions.axesOptions }
+
+    options.logarithmicScaleOptions =
+      typeof rowToolbarOptions.logarithmicScaleOptions === 'boolean'
+        ? { isCheckboxShown: rowToolbarOptions.logarithmicScaleOptions }
+        : { ...rowToolbarOptions.logarithmicScaleOptions }
+
+    options.chartTableOptions =
+      typeof rowToolbarOptions.chartTableOptions === 'boolean'
+        ? { isCheckboxShown: rowToolbarOptions.chartTableOptions }
+        : { ...rowToolbarOptions.chartTableOptions }
+
+    return options
   }, [rowToolbarOptions])
 
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
