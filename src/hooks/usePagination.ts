@@ -2,14 +2,18 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { PaginationProps, UsePagination } from './model'
 
-const usePagination = (pagination?: PaginationProps | false): UsePagination => {
-  const [_currentPage, _setCurrentPage] = useState<number>((pagination && pagination?.current) || 1)
+const usePagination = (pagination?: PaginationProps | boolean): UsePagination => {
+  const [_currentPage, _setCurrentPage] = useState<number>(
+    (pagination && typeof pagination !== 'boolean' && pagination?.current) || 1
+  )
 
-  const [_pageSize, _setPageSize] = useState<number>((pagination && pagination?.pageSize) || 10)
+  const [_pageSize, _setPageSize] = useState<number>(
+    (pagination && typeof pagination !== 'boolean' && pagination?.pageSize) || 10
+  )
 
   const updatePageSize = useCallback(
     pageSize => {
-      if (pagination && pagination?.onPageSizeChange) {
+      if (pagination && typeof pagination !== 'boolean' && pagination?.onPageSizeChange) {
         pagination?.onPageSizeChange(pageSize)
       } else {
         _setPageSize(pageSize)
@@ -20,7 +24,7 @@ const usePagination = (pagination?: PaginationProps | false): UsePagination => {
 
   const updateCurrentPage = useCallback(
     page => {
-      if (pagination && pagination?.onCurrentPageChange) {
+      if (pagination && typeof pagination !== 'boolean' && pagination?.onCurrentPageChange) {
         pagination?.onCurrentPageChange(page)
       } else {
         _setCurrentPage(page)
@@ -30,11 +34,11 @@ const usePagination = (pagination?: PaginationProps | false): UsePagination => {
   )
 
   useEffect(() => {
-    _setCurrentPage((pagination && pagination?.current) || 1)
+    _setCurrentPage((pagination && typeof pagination !== 'boolean' && pagination?.current) || 1)
   }, [pagination])
 
   useEffect(() => {
-    _setPageSize((pagination && pagination?.pageSize) || 10)
+    _setPageSize((pagination && typeof pagination !== 'boolean' && pagination?.pageSize) || 10)
   }, [pagination])
 
   return {

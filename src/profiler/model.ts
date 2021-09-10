@@ -130,7 +130,7 @@ export interface DataProfilerProps extends AntdTableProps<any> {
     colors?: Array<string>
     smallSize?: boolean
     visibleColumns?: Array<string>
-    pagination?: false
+    pagination?: boolean
   }
   pagination?: PaginationProps | false
 }
