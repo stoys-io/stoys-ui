@@ -1,6 +1,4 @@
-import { Combos } from '../model'
-
-export const combos: Combos = [
+export const combos = [
   {
     id: 'accepted_matches',
     label: 'accepted_matches',

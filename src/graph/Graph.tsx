@@ -1,16 +1,16 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react'
 import G6 from '@antv/g6'
 import { createNodeFromReact } from '@antv/g6-react-node'
-import { getData } from './helpers'
+import { getGraphData } from './helpers'
 import { appendAutoShapeListener } from './events'
 import GraphDrawer from './GraphDrawer'
 import CustomNode from './CustomNode'
 import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
-import { Badge, Highlight } from './model'
-import { nodes } from './__mocks__/Nodes.mock'
+import { Badge, GraphProps, Highlight } from './model'
 
-const Graph = () => {
+const Graph = ({ nodes, edges, combos }: GraphProps) => {
+  const data = { nodes, edges, combos }
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
   const [drawerNodeLabel, setDrawerNodeLabel] = useState('')
   const [drawerTable, setDrawerTable] = useState('')
@@ -93,8 +93,8 @@ const Graph = () => {
   }
 
   const graphData = useMemo(
-    () => getData({ selectedNodeId, badge }),
-    [getData, badge, selectedNodeId]
+    () => getGraphData({ data, selectedNodeId, badge }),
+    [badge, selectedNodeId]
   )
 
   useEffect(() => {
@@ -106,14 +106,14 @@ const Graph = () => {
 
   useEffect(() => {
     setSelectedNodeId(searchedNodeId)
-    graph.changeData(getData({ selectedNodeId: searchedNodeId, badge }))
+    graph.changeData(getGraphData({ data, selectedNodeId: searchedNodeId, badge }))
     graph.focusItem(searchedNodeId)
   }, [searchedNodeId])
 
   const onNodeClick = (node: any) => {
     setSelectedNodeId(node.id)
     setDrawerNodeLabel(node.label)
-    graph.changeData(getData({ selectedNodeId: node.id, badge }))
+    graph.changeData(getGraphData({ data, selectedNodeId: node.id, badge }))
   }
 
   const openDrawer = (node: any, table: string) => {

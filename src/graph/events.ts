@@ -6,26 +6,6 @@ export type ShapeEventListner = (
   graph: Graph,
 ) => void
 
-export interface EventAttrs {
-  onClick?: ShapeEventListner;
-  onDBClick?: ShapeEventListner;
-  onMouseEnter?: ShapeEventListner;
-  onMouseMove?: ShapeEventListner;
-  onMouseOut?: ShapeEventListner;
-  onMouseOver?: ShapeEventListner;
-  onMouseLeave?: ShapeEventListner;
-  onMouseDown?: ShapeEventListner;
-  onMouseUp?: ShapeEventListner;
-  onDragStart?: ShapeEventListner;
-  onDrag?: ShapeEventListner;
-  onDragEnd?: ShapeEventListner;
-  onDragEnter?: ShapeEventListner;
-  onDragLeave?: ShapeEventListner;
-  onDragOver?: ShapeEventListner;
-  onDrop?: ShapeEventListner;
-  onContextMenu?: ShapeEventListner;
-}
-
 const propsToEventMap = {
   click: 'onClick',
   dbclick: 'onDBClick',

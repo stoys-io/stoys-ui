@@ -1,6 +1,4 @@
-import { Nodes } from '../model'
-
-export const nodes: Nodes =[
+export const nodes =[
   {
     id: 'power_sim_output',
     label: 'power_sim_output @ 12:1',

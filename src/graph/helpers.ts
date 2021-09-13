@@ -1,9 +1,17 @@
-import { nodes } from './__mocks__/Nodes.mock'
-import { edges } from './__mocks__/Edges.mock'
-import { combos } from './__mocks__/Combos.mock'
-import { Badge } from './model'
+import { Nodes, Edges, Combos, Badge } from './model'
 
-export const getData = ({ selectedNodeId, badge } : { selectedNodeId: string, badge: Badge }) => {
+type GetGraphDataArgsType = {
+  data: {
+    nodes: Nodes,
+    edges: Edges,
+    combos?: Combos
+  },
+  selectedNodeId: string,
+  badge: Badge
+}
+
+export const getGraphData = ({ data, selectedNodeId, badge } : GetGraphDataArgsType) => {
+  const { nodes, edges, combos } = data
   let highLightedNodesIds = selectedNodeId ? [selectedNodeId] : []
   const highLightedEdgesIds = edges
     .filter(edge => {

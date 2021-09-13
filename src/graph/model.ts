@@ -26,3 +26,9 @@ export type Combos = Array<Combo>
 export type Badge = 'violations' | 'partitions'
 
 export type Highlight = 'nearest' | 'parents' | 'children'
+
+export interface GraphProps {
+  nodes: Nodes
+  edges: Edges
+  combos: Combos
+}

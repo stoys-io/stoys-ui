@@ -1,6 +1,4 @@
-import { Edges } from '../model'
-
-export const edges: Edges = [
+export const edges = [
   {
     id: 'power_sim_output_full-power_sim_output',
     source: 'power_sim_output_full',
