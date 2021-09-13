@@ -8,9 +8,19 @@ import { smallDataset } from '../__mocks__/ProfilerData.mock'
 import { Orient } from '../model'
 
 beforeAll(() => {
-  HTMLCanvasElement.prototype.getContext = jest.fn(
-    () => ({ measureText: jest.fn(() => ({ width: 100 })) } as any)
-  )
+  HTMLCanvasElement.prototype.getContext = jest.fn(() => {
+    const ctxMock = { measureText: jest.fn(() => ({ width: 100 })) }
+
+    // this mocks canvas api
+    return new Proxy(ctxMock, {
+      get: function (target, key, _) {
+        if (key in ctxMock) {
+          return Reflect.get(target, key)
+        }
+        return () => {}
+      },
+    }) as any
+  })
 })
 
 describe('Profiler', () => {
