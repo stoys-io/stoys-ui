@@ -61,7 +61,7 @@ export interface ConfigProps {
   colors?: Array<string>
   smallSize?: boolean
   visibleColumns?: Array<string>
-  pagination?: boolean
+  pagination?: PaginationProps | false
 
   showProfilerToolbar?: boolean
   showRowToolbar?: boolean
@@ -101,7 +101,6 @@ export interface ConfigProps {
 export interface DataProfilerProps extends AntdTableProps<any> {
   datasets: Datasets
   config?: ConfigProps
-  pagination?: PaginationProps | false
 }
 
 export interface HydratedColumn extends Column {

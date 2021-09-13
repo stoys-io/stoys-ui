@@ -15,7 +15,7 @@ import JsonDrawer from './components/JsonDrawer'
 import { NoData, TableWrapper } from './styles'
 
 export const DataProfiler = (props: DataProfilerProps) => {
-  const { datasets, pagination, config = {} } = props
+  const { datasets, config = {} } = props
   const {
     smallSize,
     colors,
@@ -37,6 +37,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
     axesChecked,
     showChartTableSwitcher,
     chartTableChecked,
+    pagination,
   } = config
 
   const [isVertical, setIsVertical] = useState<boolean>(orientType === Orient.Vertical)
@@ -46,10 +47,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
   const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(!!normalizeChecked)
   const _normalizeChange = () => setIsNormalizeChecked(!isNormalizeChecked)
 
-  const _pagination =
-    typeof props.config?.pagination === 'boolean' ? props.config.pagination : pagination
-
-  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(_pagination)
+  const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
 
   if (!datasets || !Array.isArray(datasets)) {
     return <NoData>No data</NoData>
@@ -218,7 +216,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
               setCurrentPage={setCurrentPage}
               pageSize={pageSize}
               setPageSize={setPageSize}
-              withoutPagination={_pagination === false}
+              withoutPagination={pagination === false}
               pagination={pagination}
               displayNormalized={isNormalizeChecked}
             />
@@ -231,7 +229,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
               setCurrentPage={setCurrentPage}
               pageSize={pageSize}
               setPageSize={setPageSize}
-              withoutPagination={_pagination === false}
+              withoutPagination={pagination === false}
               pagination={pagination}
             />
           )}
