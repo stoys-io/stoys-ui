@@ -41,7 +41,7 @@ describe('Profiler', () => {
         <Profiler
           datasets={smallDataset}
           config={{
-            profilerToolbarOptions: { orientOptions: { type: Orient.Vertical } },
+            orientType: Orient.Vertical,
           }}
         />
       )
@@ -66,7 +66,9 @@ describe('Profiler', () => {
 
   describe('mode switcher', () => {
     it("shouldn't show mode switcher", () => {
-      const { queryByTestId } = render(<Profiler datasets={smallDataset} />)
+      const { queryByTestId } = render(
+        <Profiler datasets={smallDataset} config={{ showOrientSwitcher: false }} />
+      )
 
       expect(queryByTestId('vertical-mode')).toBeNull()
       expect(queryByTestId('horizontal-mode')).toBeNull()
@@ -77,7 +79,7 @@ describe('Profiler', () => {
         <Profiler
           datasets={smallDataset}
           config={{
-            profilerToolbarOptions: { orientOptions: { isCheckboxShown: true } },
+            showOrientSwitcher: true,
           }}
         />
       )
@@ -102,9 +104,8 @@ describe('Profiler', () => {
         <Profiler
           datasets={smallDataset}
           config={{
-            profilerToolbarOptions: {
-              orientOptions: { isCheckboxShown: true, onOrientChange: onOrientChangeMock },
-            },
+            showOrientSwitcher: true,
+            onOrientChange: onOrientChangeMock,
           }}
         />
       )
@@ -129,10 +130,8 @@ describe('Profiler', () => {
         <Profiler
           datasets={smallDataset}
           config={{
-            profilerToolbarOptions: {
-              orientOptions: { isCheckboxShown: true },
-              searchOptions: { disabled: true },
-            },
+            showOrientSwitcher: true,
+            showSearch: false,
           }}
         />
       )
@@ -158,7 +157,7 @@ describe('Profiler', () => {
         <Profiler
           datasets={smallDataset}
           config={{
-            profilerToolbarOptions: { searchOptions: { onChange: onSearchMock } },
+            onSearchChange: onSearchMock,
           }}
         />
       )
