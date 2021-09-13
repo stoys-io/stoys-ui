@@ -105,9 +105,17 @@ const Graph = ({ nodes, edges, combos }: GraphProps) => {
   }, [badge, searchedNodeId])
 
   useEffect(() => {
-    setSelectedNodeId(searchedNodeId)
-    graph.changeData(getGraphData({ data, selectedNodeId: searchedNodeId, badge }))
-    graph.focusItem(searchedNodeId)
+    if (searchedNodeId) {
+      setSelectedNodeId(searchedNodeId)
+      graph.changeData(getGraphData({ data, selectedNodeId: searchedNodeId, badge }))
+
+      // When we start searching one node after another we have an issue with the calculation
+      // of the node position in the ViewController.focus
+      // (@antv/g6-core/lib/graph/controller/view)
+      // We need this timeout to be sure that graph is ready after initialization
+      // and we can get proper coordinates of the node
+      setTimeout(() => graph.focusItem(searchedNodeId), 0)
+    }
   }, [searchedNodeId])
 
   const onNodeClick = (node: any) => {
@@ -126,11 +134,10 @@ const Graph = ({ nodes, edges, combos }: GraphProps) => {
   const onSearchNode = () => {
     if (searchInputValue) {
       const node = nodes.find(node => node.label.indexOf(searchInputValue) !== -1)
-      if (node) {
-        setSearchedNodeId(node.id)
-      } else {
-        setSearchHasError(true)
+      if (!node) {
+        return setSearchHasError(true)
       }
+      setSearchedNodeId(node.id)
     }
   }
 
