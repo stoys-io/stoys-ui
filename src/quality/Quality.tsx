@@ -8,19 +8,18 @@ import SampleTable from './components/SampleTable'
 
 import { QualityProps, Mode } from './model'
 
-export const Quality = ({
-  data,
-  selectedRules,
-  onSelectedRulesChange,
-  mode = 'row',
-  onModeChange,
-  pagination,
-  heightenedCell,
-  smallSize = true,
-  showReferencedColumnsOnly = false,
-  rulesTableProps = {},
-  sampleTableProps = {},
-}: QualityProps): JSX.Element => {
+export const Quality = ({ data, config = {} }: QualityProps): JSX.Element => {
+  const {
+    selectedRules,
+    onSelectedRulesChange,
+    mode = 'row',
+    onModeChange,
+    smallSize = true,
+    showReferencedColumnsOnly = false,
+    rulesTableProps = {},
+    sampleTableProps = {},
+    pagination,
+  } = config
   const [_mode, _setMode] = useState<Mode>(mode)
   const [_selectedRules, _setSelectedRules] = useState<Array<string>>(selectedRules || [])
   const [_showReferencedColumns, _setShowReferencedColumns] =
@@ -158,7 +157,6 @@ export const Quality = ({
         setPageSize={setPageSize}
         withoutPagination={pagination === false}
         pagination={pagination}
-        heightenedCell={heightenedCell}
         smallSize={!!smallSize}
         showReferencedColumns={_showReferencedColumns}
         setShowReferencedColumns={setShowReferencedColumns}

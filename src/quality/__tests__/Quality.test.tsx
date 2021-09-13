@@ -42,14 +42,14 @@ describe('Quality', () => {
 
     it('should render passed mode via props', () => {
       const mode = 'column'
-      const { container } = render(<Quality data={simpleData} mode={mode} />)
+      const { container } = render(<Quality data={simpleData} config={{ mode }} />)
       expect(container.querySelector(`[mode="${mode}"]`)).toBeTruthy()
     })
 
     it('should call onModeChange if mode changed', () => {
       const onModeChangeHandler = jest.fn()
       const { container, getByTestId } = render(
-        <Quality data={simpleData} mode="column" onModeChange={onModeChangeHandler} />
+        <Quality data={simpleData} config={{ mode: 'column', onModeChange: onModeChangeHandler }} />
       )
       const expandBtn = getByTestId('shrink-rules-table-btn')
 
@@ -111,7 +111,7 @@ describe('Quality', () => {
     })
 
     it('should render passed selectedRules', () => {
-      const { container } = render(<Quality data={data} selectedRules={['id_rule']} />)
+      const { container } = render(<Quality data={data} config={{ selectedRules: ['id_rule'] }} />)
       const idRuleCheckbox = container
         .querySelector("[data-row-key='id_rule']")
         .querySelector('input[type="checkbox"]')
@@ -126,7 +126,7 @@ describe('Quality', () => {
     it('should call onSelectedRulesChange', () => {
       const onSelectedRulesChangeHandler = jest.fn()
       const { container } = render(
-        <Quality data={data} onSelectedRulesChange={onSelectedRulesChangeHandler} />
+        <Quality data={data} config={{ onSelectedRulesChange: onSelectedRulesChangeHandler }} />
       )
       const idRuleRow = container.querySelector("[data-row-key='id_rule']")
       const idRuleCheckboxLabel = container
