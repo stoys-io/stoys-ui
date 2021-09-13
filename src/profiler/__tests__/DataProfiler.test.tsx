@@ -40,7 +40,9 @@ describe('Profiler', () => {
       const { container } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{ orientOptions: { type: Orient.Vertical } }}
+          config={{
+            orientType: Orient.Vertical,
+          }}
         />
       )
       const tableHeaderCell = container.querySelectorAll('th')
@@ -64,7 +66,9 @@ describe('Profiler', () => {
 
   describe('mode switcher', () => {
     it("shouldn't show mode switcher", () => {
-      const { queryByTestId } = render(<Profiler datasets={smallDataset} />)
+      const { queryByTestId } = render(
+        <Profiler datasets={smallDataset} config={{ showOrientSwitcher: false }} />
+      )
 
       expect(queryByTestId('vertical-mode')).toBeNull()
       expect(queryByTestId('horizontal-mode')).toBeNull()
@@ -74,7 +78,9 @@ describe('Profiler', () => {
       const { container, queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{ orientOptions: { isCheckboxShown: true } }}
+          config={{
+            showOrientSwitcher: true,
+          }}
         />
       )
 
@@ -97,8 +103,9 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{
-            orientOptions: { isCheckboxShown: true, onOrientChange: onOrientChangeMock },
+          config={{
+            showOrientSwitcher: true,
+            onOrientChange: onOrientChangeMock,
           }}
         />
       )
@@ -122,9 +129,9 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{
-            orientOptions: { isCheckboxShown: true },
-            searchOptions: { disabled: true },
+          config={{
+            showOrientSwitcher: true,
+            showSearch: false,
           }}
         />
       )
@@ -149,7 +156,9 @@ describe('Profiler', () => {
       const { queryByTestId } = render(
         <Profiler
           datasets={smallDataset}
-          profilerToolbarOptions={{ searchOptions: { onChange: onSearchMock } }}
+          config={{
+            onSearchChange: onSearchMock,
+          }}
         />
       )
       const search = queryByTestId('table-search')

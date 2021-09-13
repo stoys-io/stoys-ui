@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 
-import { CheckedRowsContext, TableOptionsContext } from '../context'
+import { CheckedRowsContext, ConfigContext } from '../context'
 import { ChartCellTitleProps } from '../model'
 import Toolbar from './Toolbar'
 
-const ChartCellTitle = ({ row, rowOptions }: ChartCellTitleProps): JSX.Element => {
+const ChartCellTitle = ({ row }: ChartCellTitleProps): JSX.Element => {
   const {
     checkedLogRows,
     setCheckedLogRows,
@@ -13,7 +13,8 @@ const ChartCellTitle = ({ row, rowOptions }: ChartCellTitleProps): JSX.Element =
     checkedTableRows,
     setCheckedTableRows,
   } = useContext(CheckedRowsContext)
-  const tableOptions = useContext(TableOptionsContext)
+  const { showChartTableSwitcher, showAxesSwitcher, showLogarithmicSwitcher } =
+    useContext(ConfigContext)
 
   const isLogChecked = checkedLogRows.includes(row.columnName)
   const isAxesChecked = checkedAxesRows.includes(row.columnName)
@@ -45,9 +46,9 @@ const ChartCellTitle = ({ row, rowOptions }: ChartCellTitleProps): JSX.Element =
 
   return (
     <Toolbar
-      showTableChartSwitcher={tableOptions?.isCheckboxShown}
-      showLogScale={rowOptions.isLogCheckboxShown}
-      showAxes={rowOptions.isAxesCheckboxShown}
+      showTableChartSwitcher={showChartTableSwitcher}
+      showLogScale={showLogarithmicSwitcher}
+      showAxes={showAxesSwitcher}
       activeLogScale={isLogChecked}
       activeAxes={isAxesChecked}
       activeTable={isTableChecked}

@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import Empty from 'antd/lib/empty'
 
 import PmfPlot from '../../pmfPlot'
-import { CheckedRowsContext, SizeContext } from '../context'
+import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'
 import BarChart from './BarChart'
 import { ChartAndTableProps } from '../model'
@@ -21,7 +21,7 @@ const ChartAndTable = ({
   isHorizontal,
   displayNormalized = false,
 }: ChartAndTableProps): Maybe<JSX.Element> => {
-  const smallSize = useContext(SizeContext)
+  const { smallSize } = useContext(ConfigContext)
   const { checkedLogRows, checkedAxesRows, checkedTableRows } = useContext(CheckedRowsContext)
 
   if (!data) {

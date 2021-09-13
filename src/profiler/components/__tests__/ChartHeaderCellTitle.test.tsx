@@ -3,7 +3,7 @@ import { render, fireEvent } from '@testing-library/react'
 import '../../../__mocks__/matchMedia.mock'
 
 import ChartAndTableHeaderCellTitle from '../ChartAndTableHeaderCellTitle'
-import { TableOptionsContext } from '../../context'
+import { ConfigContext } from '../../context'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -14,12 +14,15 @@ beforeAll(() => {
 describe('ChartAndTableHeaderCellTitle', () => {
   it('should render table switcher', () => {
     const { queryByTestId } = render(
-      <TableOptionsContext.Provider value={{ isCheckboxShown: true, setChecked: jest.fn() }}>
-        <ChartAndTableHeaderCellTitle
-          logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-          axesOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        />
-      </TableOptionsContext.Provider>
+      <ConfigContext.Provider
+        value={{
+          showChartTableSwitcher: true,
+          showLogarithmicSwitcher: false,
+          showAxesSwitcher: false,
+        }}
+      >
+        <ChartAndTableHeaderCellTitle />
+      </ConfigContext.Provider>
     )
 
     const tableBtn = queryByTestId('table-view-btn')
@@ -33,12 +36,15 @@ describe('ChartAndTableHeaderCellTitle', () => {
 
   it("shouldn't render toolbox", () => {
     const { queryByTestId } = render(
-      <TableOptionsContext.Provider value={{ isCheckboxShown: false, setChecked: jest.fn() }}>
-        <ChartAndTableHeaderCellTitle
-          logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-          axesOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        />
-      </TableOptionsContext.Provider>
+      <ConfigContext.Provider
+        value={{
+          showChartTableSwitcher: false,
+          showLogarithmicSwitcher: false,
+          showAxesSwitcher: false,
+        }}
+      >
+        <ChartAndTableHeaderCellTitle />
+      </ConfigContext.Provider>
     )
 
     const tableBtn = queryByTestId('table-view-btn')
@@ -55,12 +61,16 @@ describe('ChartAndTableHeaderCellTitle', () => {
   it('should call "tableOptions.setChecked"', () => {
     const setCheckedMock = jest.fn()
     const { getByTestId } = render(
-      <TableOptionsContext.Provider value={{ isCheckboxShown: true, setChecked: setCheckedMock }}>
-        <ChartAndTableHeaderCellTitle
-          logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-          axesOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        />
-      </TableOptionsContext.Provider>
+      <ConfigContext.Provider
+        value={{
+          showChartTableSwitcher: true,
+          showLogarithmicSwitcher: false,
+          showAxesSwitcher: false,
+          setChartTableChecked: setCheckedMock,
+        }}
+      >
+        <ChartAndTableHeaderCellTitle />
+      </ConfigContext.Provider>
     )
 
     const tableViewBtn = getByTestId('table-view-btn')
@@ -72,14 +82,16 @@ describe('ChartAndTableHeaderCellTitle', () => {
 
   it('should be "table" btn active via passing props', () => {
     const { getByTestId } = render(
-      <TableOptionsContext.Provider
-        value={{ isCheckboxShown: true, isUsedByDefault: true, setChecked: jest.fn() }}
+      <ConfigContext.Provider
+        value={{
+          showChartTableSwitcher: true,
+          showLogarithmicSwitcher: false,
+          showAxesSwitcher: false,
+          chartTableChecked: true,
+        }}
       >
-        <ChartAndTableHeaderCellTitle
-          logarithmicScale={{ isCheckboxShown: false, setChecked: jest.fn() }}
-          axesOptions={{ isCheckboxShown: false, setChecked: jest.fn() }}
-        />
-      </TableOptionsContext.Provider>
+        <ChartAndTableHeaderCellTitle />
+      </ConfigContext.Provider>
     )
 
     const tableViewBtn = getByTestId('table-view-btn')

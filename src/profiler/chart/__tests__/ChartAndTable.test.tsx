@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import '../../../__mocks__/matchMedia.mock'
 
 import Chart from '../ChartAndTable'
-import { CheckedRowsContext, SizeContext } from '../../context'
+import { CheckedRowsContext, ConfigContext } from '../../context'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -14,7 +14,7 @@ beforeAll(() => {
 describe('Chart', () => {
   it('should be empty whren data is null', () => {
     const { container } = render(
-      <SizeContext.Provider value={true}>
+      <ConfigContext.Provider value={{ smallSize: true }}>
         <CheckedRowsContext.Provider
           value={{
             checkedTableRows: ['1', '2', '3'],
@@ -28,7 +28,7 @@ describe('Chart', () => {
         >
           <Chart data={null} />
         </CheckedRowsContext.Provider>
-      </SizeContext.Provider>
+      </ConfigContext.Provider>
     )
 
     expect(container.firstChild).toBeNull()

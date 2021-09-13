@@ -20,7 +20,6 @@ const VerticalTable = (props: VerticalTableProps) => {
     setPageSize,
     withoutPagination,
     pagination,
-    rowOptions,
     displayNormalized,
     onChange,
   } = props
@@ -42,7 +41,7 @@ const VerticalTable = (props: VerticalTableProps) => {
             props: { colSpan },
             children: (
               <>
-                {parent ? <ChartCellTitle row={parent} rowOptions={rowOptions} /> : null}
+                {parent ? <ChartCellTitle row={parent} /> : null}
                 <ChartAndTable
                   data={chartData}
                   isHorizontal
