@@ -24,7 +24,6 @@ import {
   LogarithmicScale,
   Render,
   RenderedCellConfig,
-  TableOptions,
 } from './model'
 import { Maybe } from '../model'
 
@@ -56,7 +55,7 @@ const renderChartAndTableCell =
     return renderedCellConfig
   }
 
-const renderRow: Render = (render, logarithmicScale, axesOptions) => (value, row) => {
+const renderRow: Render = render => (value, row) => {
   const renderedCellConfig: RenderedCellConfig = {
     children: null,
     props: {},
@@ -72,15 +71,7 @@ const renderRow: Render = (render, logarithmicScale, axesOptions) => (value, row
   }
 
   if ('columnName' in row) {
-    renderedCellConfig.children = (
-      <TableSubheaderRow
-        row={row}
-        rowOptions={{
-          isLogCheckboxShown: logarithmicScale.isCheckboxShown,
-          isAxesCheckboxShown: axesOptions.isCheckboxShown,
-        }}
-      />
-    )
+    renderedCellConfig.children = <TableSubheaderRow row={row} />
     renderedCellConfig.props.colSpan = 8
   }
 
@@ -103,7 +94,7 @@ const renderValue = (value?: Maybe<boolean | string | number>): Maybe<JSX.Elemen
   )
 }
 
-export const renderNormalized = (value: number) => {
+export const renderNormalized = (value?: number) => {
   // TODO: Why the value can be undefined
   if (value === undefined) {
     return null
@@ -152,15 +143,8 @@ const renderMeanMinMaxValue = (
   return renderValue(value)
 }
 
-const renderChartAndTableCellTitle = (
-  logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions
-) => <ChartAndTableHeaderCellTitle logarithmicScale={logarithmicScale} axesOptions={axesOptions} />
-
 export const getColumns = (
   data: Array<DataItem>,
-  logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions,
   displayNormalized: boolean,
   visibleColumns?: Array<string>
 ): ColumnsType<DataItem | ChildDataItem> => {
@@ -182,7 +166,7 @@ export const getColumns = (
     }
 
     if (index === 0) {
-      _column.render = renderRow(_column.render, logarithmicScale, axesOptions)
+      _column.render = renderRow(_column.render)
     }
 
     return _column
@@ -191,7 +175,7 @@ export const getColumns = (
   return [
     ...columns,
     {
-      title: renderChartAndTableCellTitle(logarithmicScale, axesOptions),
+      title: <ChartAndTableHeaderCellTitle />,
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,

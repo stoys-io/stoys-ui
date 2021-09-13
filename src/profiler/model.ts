@@ -119,9 +119,7 @@ export interface RenderedCellConfig {
 }
 
 export type Render = (
-  render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>,
-  logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions
+  render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>
 ) => (value: number | string, row: DataItem | ChildDataItem, index: number) => RenderedCellConfig
 
 export interface LogarithmicScale {
@@ -132,12 +130,6 @@ export interface LogarithmicScale {
 export interface AxesOptions {
   setChecked: (isChecked: boolean) => void
   isCheckboxShown: boolean
-}
-
-export interface TableOptions {
-  setChecked?: (isChecked: boolean) => void
-  isCheckboxShown: boolean
-  isUsedByDefault?: boolean
 }
 
 export interface ChildDataItem extends Omit<HydratedColumn, 'name'> {
@@ -162,9 +154,6 @@ export interface TableProps extends AntdTableProps<any> {
 }
 
 export interface VerticalTableProps extends TableProps {
-  rowOptions: RowOptions
-  tableOptions: TableOptions
-
   // TODO: Remove. We already create a render function in getColumns for Horizontal Table
   displayNormalized: boolean
 }
@@ -193,23 +182,13 @@ export interface ChartAndTableProps {
   displayNormalized?: boolean
 }
 
-export interface RowOptions {
-  isLogCheckboxShown: boolean
-  isAxesCheckboxShown: boolean
-}
 export interface TableSubheaderRowProps {
   row: DataItem
-  rowOptions: RowOptions
 }
 
 export interface ChartTableHeaderProps {
   logarithmicScale: LogarithmicScale
   children: JSX.Element
-  axesOptions: AxesOptions
-}
-
-export interface ChartAndTableHeaderCellTitleProps {
-  logarithmicScale: LogarithmicScale
   axesOptions: AxesOptions
 }
 

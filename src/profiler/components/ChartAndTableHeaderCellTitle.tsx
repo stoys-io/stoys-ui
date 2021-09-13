@@ -2,14 +2,17 @@ import React, { useCallback, useState, useContext } from 'react'
 
 import { CheckedRowsContext, ConfigContext } from '../context'
 import Toolbar from './Toolbar'
-import { ChartAndTableHeaderCellTitleProps } from '../model'
 
-const ChartAndTableHeaderCellTitle = ({
-  logarithmicScale,
-  axesOptions,
-}: ChartAndTableHeaderCellTitleProps): JSX.Element => {
-  const { showChartTableSwitcher, chartTableChecked, setChartTableChecked } =
-    useContext(ConfigContext)
+const ChartAndTableHeaderCellTitle = (): JSX.Element => {
+  const {
+    showChartTableSwitcher,
+    chartTableChecked,
+    setChartTableChecked,
+    showLogarithmicSwitcher,
+    setLogChecked,
+    showAxesSwitcher,
+    setAxesChecked,
+  } = useContext(ConfigContext)
   const [isActiveTable, setIsActiveTable] = useState<boolean>(!!chartTableChecked)
   const { checkedLogRows, checkedAxesRows, checkedTableRows, dataLength } =
     useContext(CheckedRowsContext)
@@ -25,8 +28,8 @@ const ChartAndTableHeaderCellTitle = ({
   return (
     <Toolbar
       showTableChartSwitcher={showChartTableSwitcher}
-      showLogScale={logarithmicScale.isCheckboxShown}
-      showAxes={axesOptions.isCheckboxShown}
+      showLogScale={showLogarithmicSwitcher}
+      showAxes={showAxesSwitcher}
       activeLogScale={checkedLogRows.length === dataLength}
       activeAxes={checkedAxesRows.length === dataLength}
       partiallyActiveAxes={checkedAxesRows.length !== 0 && checkedAxesRows.length !== dataLength}
@@ -36,8 +39,8 @@ const ChartAndTableHeaderCellTitle = ({
       disableLogScale={isActiveTable || checkedTableRows.length === dataLength}
       disableAxes={isActiveTable || checkedTableRows.length === dataLength}
       onTableClickHandler={onChangeRadioGroup}
-      onLogScaleClickHandler={logarithmicScale.setChecked}
-      onAxesClickHandler={axesOptions.setChecked}
+      onLogScaleClickHandler={setLogChecked!}
+      onAxesClickHandler={setAxesChecked!}
     />
   )
 }

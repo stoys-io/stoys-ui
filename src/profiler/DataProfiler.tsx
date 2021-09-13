@@ -118,12 +118,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
     chartTableChecked ? columnNames : []
   )
 
-  const tableOptions = useMemo(
-    () => ({
-      isCheckboxShown: !!showChartTableSwitcher,
-      setChecked: (isChecked: boolean) => setCheckedTableRows(isChecked ? columnNames : []),
-      isUsedByDefault: !!chartTableChecked,
-    }),
+  const setChartTableChecked = useCallback(
+    (isChecked: boolean) => setCheckedTableRows(isChecked ? columnNames : []),
     [config]
   )
 
@@ -140,21 +136,22 @@ export const DataProfiler = (props: DataProfilerProps) => {
   }, [visibleColumns, datasets])
 
   const columns = useMemo(
-    () =>
-      getColumns(
-        data,
-        {
-          isCheckboxShown: !!showLogarithmicSwitcher,
-          setChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
-        },
-        {
-          isCheckboxShown: !!showAxesSwitcher,
-          setChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
-        },
-        isNormalizeChecked,
-        validVisibleColumns
-      ),
+    () => getColumns(data, isNormalizeChecked, validVisibleColumns),
     [data, config, validVisibleColumns, isNormalizeChecked]
+  )
+
+  const _config = useMemo(
+    () => ({
+      smallSize,
+      showChartTableSwitcher,
+      chartTableChecked,
+      setChartTableChecked,
+      showLogarithmicSwitcher,
+      setLogChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
+      showAxesSwitcher,
+      setAxesChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
+    }),
+    [config, setChartTableChecked, setCheckedAxesRows, setCheckedLogRows, columnNames]
   )
 
   const _setIsVerticalView = useCallback(
@@ -184,7 +181,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
   }, [config])
 
   return (
-    <ConfigContext.Provider value={{ ...config, setChartTableChecked: tableOptions.setChecked }}>
+    <ConfigContext.Provider value={_config}>
       <CheckedRowsContext.Provider
         value={{
           checkedLogRows,
@@ -223,11 +220,6 @@ export const DataProfiler = (props: DataProfilerProps) => {
               setPageSize={setPageSize}
               withoutPagination={_pagination === false}
               pagination={pagination}
-              rowOptions={{
-                isLogCheckboxShown: !!showLogarithmicSwitcher,
-                isAxesCheckboxShown: !!showAxesSwitcher,
-              }}
-              tableOptions={tableOptions}
               displayNormalized={isNormalizeChecked}
             />
           ) : (
