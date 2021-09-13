@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import ReactEcharts from 'echarts-for-react'
+import { Opts } from 'echarts-for-react/lib/types'
 
 import { renderNumericValue } from '../helpers'
 import { transformSecondsToDate, renderItem, removeZeroData } from './helpers'
@@ -29,8 +30,8 @@ const PmfPlot = ({
   const highValues = values.map((item: any) => item.high)
   const maxValue = Math.max.apply(null, highValues)
 
-  const opts = useMemo(() => ({ renderer: 'svg' as 'svg' }), [])
-  const style = useMemo(() => ({ width, height }), [height, width])
+  const opts: Opts = { renderer: 'canvas' }
+  const style = { width, height }
 
   const pmfPlotData = (isDataSet ? data : [data])
     .map((dataSet: any, index: number) =>
