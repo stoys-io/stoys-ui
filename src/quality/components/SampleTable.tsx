@@ -18,7 +18,6 @@ const SampleTable = ({
   setPageSize,
   withoutPagination,
   pagination,
-  heightenedCell,
   smallSize,
   showReferencedColumns,
   setShowReferencedColumns,
@@ -51,7 +50,7 @@ const SampleTable = ({
   }
 
   return (
-    <SampleTableWrapper heightenedCell={heightenedCell} smallSize={smallSize}>
+    <SampleTableWrapper smallSize={smallSize}>
       <TableTitleWrapper>
         <TableTitle>Data Sample</TableTitle>
         <IconButton role="button" onClick={setShowReferencedColumns}>

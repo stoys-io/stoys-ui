@@ -119,13 +119,15 @@ const JoinRates = ({
       {joinRatesDqData ? (
         <Quality
           data={joinRatesDqData}
-          mode={mode}
-          onModeChange={setMode}
-          selectedRules={_selectedRules}
-          onSelectedRulesChange={_selectRules}
-          pagination={pagination}
-          smallSize={smallSize}
-          {...qualityTableProps}
+          config={{
+            mode,
+            onModeChange: setMode,
+            selectedRules: _selectedRules,
+            onSelectedRulesChange: _selectRules,
+            pagination,
+            smallSize,
+            ...qualityTableProps,
+          }}
         />
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

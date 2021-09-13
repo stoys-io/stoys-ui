@@ -44,18 +44,21 @@ export type Mode = 'column' | 'row'
 
 export type OnModeChange = (mode: Mode) => void
 
-export type QualityProps = {
-  data: QualityData
+export interface ConfigProps {
   mode?: Mode
   onModeChange?: OnModeChange
   selectedRules?: Array<string>
   onSelectedRulesChange?: (rules: Array<string>) => void
-  pagination?: PaginationProps | false
-  heightenedCell?: boolean
   smallSize?: boolean
   showReferencedColumnsOnly?: boolean
   rulesTableProps?: TableProps<any>
   sampleTableProps?: TableProps<any>
+  pagination?: PaginationProps | false
+}
+
+export type QualityProps = {
+  data: QualityData
+  config?: ConfigProps
 }
 
 export type TableCellData = {
@@ -97,7 +100,6 @@ export interface SampleTableProps {
   setPageSize: (pageSize: number) => void
   withoutPagination?: boolean
   pagination?: PaginationProps | false
-  heightenedCell?: boolean
   smallSize: boolean
   showReferencedColumns: boolean
   setShowReferencedColumns: () => void
