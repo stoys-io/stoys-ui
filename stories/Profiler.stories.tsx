@@ -34,7 +34,6 @@ ProfilerForOneDataset.storyName = 'simple'
 export const Profiler = Template.bind({})
 Profiler.args = {
   datasets: [firstDatasetMock as Dataset, secondDatasetMock as Dataset],
-  pagination: { disabled: false },
   config: {
     showLogarithmicSwitcher: true,
     showAxesSwitcher: true,
@@ -58,9 +57,6 @@ export default {
   argTypes: {
     datasets: {
       type: { required: true },
-    },
-    pagination: {
-      control: 'object',
     },
     config: {
       control: 'object',
