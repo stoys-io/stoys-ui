@@ -9,11 +9,13 @@ const Template: Story<MetricsTableProps> = args => <MetricsComponent {...args} /
 export const Metrics = Template.bind({})
 Metrics.args = {
   data: mockedData,
-  previousReleaseDataIsShown: true,
-  disabledColumns: [],
-  pagination: false,
-  saveMetricThreshold: () => {},
-  smallSize: true,
+  config: {
+    previousReleaseDataIsShown: true,
+    disabledColumns: [],
+    pagination: false,
+    saveMetricThreshold: () => {},
+    smallSize: true,
+  },
   bordered: false,
 }
 
@@ -24,31 +26,8 @@ export default {
     data: {
       type: { required: true },
     },
-    columns: {
-      control: null,
-    },
-    isLoading: {
-      control: 'boolean',
-      defaultValue: false,
-    },
-    previousReleaseDataIsShown: {
-      control: 'boolean',
-      defaultValue: false,
-    },
-    saveMetricThreshold: { action: 'clicked' },
-    pagination: {
+    config: {
       control: 'object',
-    },
-    disabledColumns: {
-      control: 'array',
-      defaultValue: [],
-    },
-    height: {
-      control: 'string',
-    },
-    smallSize: {
-      control: 'boolean',
-      defaultValue: false,
     },
   },
 }

@@ -14,13 +14,15 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
   const {
     columns,
     data,
-    isLoading,
-    previousReleaseDataIsShown,
-    saveMetricThreshold,
-    pagination,
-    disabledColumns,
-    height = TABLE_HEIGHT,
-    smallSize = true,
+    config: {
+      isLoading,
+      previousReleaseDataIsShown,
+      saveMetricThreshold,
+      pagination,
+      disabledColumns,
+      height = TABLE_HEIGHT,
+      smallSize = true,
+    } = {},
     onChange,
   } = props
   const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)

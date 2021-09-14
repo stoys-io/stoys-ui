@@ -62,8 +62,7 @@ export type SaveMetricThreshold = (
   valueColumnName: string
 ) => void
 
-export interface MetricsTableProps extends TableProps<any> {
-  data: MetricsData
+export interface ConfigProps {
   columns?: Array<ColumnType>
   isLoading?: boolean
   previousReleaseDataIsShown?: boolean
@@ -72,6 +71,10 @@ export interface MetricsTableProps extends TableProps<any> {
   disabledColumns?: Array<string>
   height?: string | number
   smallSize?: boolean
+}
+export interface MetricsTableProps extends TableProps<any> {
+  data: MetricsData
+  config?: ConfigProps
 }
 
 export interface SorterValue {
