@@ -3,16 +3,13 @@ import { Tabs } from 'antd'
 import ResizableAntdDrawer from './ResizableAntdDrawer'
 import { DrawerNodeLabel } from './styles'
 import { JoinRates, Metrics, Profiler, Quality } from '..'
-import joinRatesData from '../../stories/mocks/covid19_epidemiology_demographics.dq_join_result.json'
-import { dq_join_info_1 } from '../../stories/mocks/dqJoinInfo.mock'
-import metricsData from '../../stories/mocks/yellow_tripdata_2020-02_vs_2020_03.metrics_data.json'
-import { Dataset, Orient } from '../profiler/model'
-import profilerDatasetMock from '../../stories/mocks/yellow_tripdata_2020-02.csv.dp_result.json'
-import qualityDataMock from '../../stories/mocks/yellow_tripdata_2020-02.csv.dq_result.json'
+import { Orient } from '../profiler/model'
+import { Table } from './model'
 
 const { TabPane } = Tabs
 
 type GraphDrawerProps = {
+  data?: Table
   drawerHeight: number
   setDrawerHeight: Dispatch<SetStateAction<number>>
   visible: boolean
@@ -23,6 +20,7 @@ type GraphDrawerProps = {
 }
 
 const GraphDrawer = ({
+  data,
   drawerHeight,
   setDrawerHeight,
   visible,
@@ -41,44 +39,54 @@ const GraphDrawer = ({
       <Tabs activeKey={table} onChange={setDrawerTable}>
         <DrawerNodeLabel>{nodeLabel}</DrawerNodeLabel>
         <TabPane tab="Join Rates" key="join_rates">
-          <JoinRates data={{ id: 'mock', dq_join_info: dq_join_info_1, ...joinRatesData }} />
+          {data?.dq_join_results ? <JoinRates data={data.dq_join_results} /> : <>No data</>}
         </TabPane>
         <TabPane tab="Metrics" key="metrics">
-          <Metrics
-            data={metricsData}
-            previousReleaseDataIsShown
-            disabledColumns={[]}
-            pagination={{ disabled: true }}
-            saveMetricThreshold={() => {}}
-            smallSize
-          />
+          {data?.metrics ? (
+            <Metrics
+              data={data.metrics}
+              previousReleaseDataIsShown
+              disabledColumns={[]}
+              pagination={{ disabled: true }}
+              saveMetricThreshold={() => {}}
+              smallSize
+            />
+          ) : (
+            <>No data</>
+          )}
         </TabPane>
         <TabPane tab="Profiler" key="profiler">
-          <Profiler
-            datasets={[profilerDatasetMock as Dataset]}
-            pagination={{ disabled: false }}
-            rowToolbarOptions={{
-              logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
-              axesOptions: { isCheckboxShown: false, isUsedByDefault: false },
-              chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
-            }}
-            profilerToolbarOptions={{
-              orientOptions: {
-                isCheckboxShown: true,
-                onOrientChange: (orient: Orient) => console.log('orient => ', orient),
-              },
-              searchOptions: {
-                disabled: false,
-                onChange: (value: string) => console.log('search => ', value),
-              },
-            }}
-            visibleColumns={['count_nulls', 'count_unique', 'mean', 'min', 'max', 'nullable']}
-            smallSize
-            colors={['#4363d8']}
-          />
+          {data?.dp_result ? (
+            <Profiler
+              datasets={[data.dp_result]}
+              pagination={{ disabled: false }}
+              rowToolbarOptions={{
+                logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
+                axesOptions: { isCheckboxShown: false, isUsedByDefault: false },
+                chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
+              }}
+              profilerToolbarOptions={{
+                orientOptions: {
+                  isCheckboxShown: true,
+                  onOrientChange: (orient: Orient) => console.log('orient => ', orient),
+                },
+                searchOptions: {
+                  disabled: false,
+                  onChange: (value: string) => console.log('search => ', value),
+                },
+              }}
+              smallSize
+            />
+          ) : (
+            <>No data</>
+          )}
         </TabPane>
         <TabPane tab="Quality" key="quality">
-          <Quality data={qualityDataMock} pagination={{ disabled: true }} smallSize />
+          {data?.dq_result ? (
+            <Quality data={data.dq_result} pagination={{ disabled: true }} smallSize />
+          ) : (
+            <>No data</>
+          )}
         </TabPane>
       </Tabs>
     </ResizableAntdDrawer>

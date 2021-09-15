@@ -17,7 +17,7 @@ const Graph = (props: GraphProps) => {
     id: table.id,
     label: table.name,
     columns: table.columns,
-    // TODO: add violation, partitions, compboId
+    // TODO: add violation, partitions, comboId
     // violation: table.violation,
     // partitions: table.partitions
   }))
@@ -27,6 +27,7 @@ const Graph = (props: GraphProps) => {
   )
   const edgesObj: any = tables.reduce((acc: any, table) => {
     table.dependencies?.forEach(dependency => (acc[dependency] = table.id))
+
     return acc
   }, {})
   const edges: Edges = Object.keys(edgesObj).map(source => ({
@@ -39,6 +40,7 @@ const Graph = (props: GraphProps) => {
   const data = { nodes, edges, combos }
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
   const [drawerNodeLabel, setDrawerNodeLabel] = useState('')
+  const [drawerNodeId, setDrawerNodeId] = useState('')
   const [drawerTable, setDrawerTable] = useState('')
   const [drawerHeight, setDrawerHeight] = useState(500)
 
@@ -153,6 +155,7 @@ const Graph = (props: GraphProps) => {
   const openDrawer = (node: any, table: string) => {
     const model = node.getModel()
     setDrawerNodeLabel(model.label)
+    setDrawerNodeId(model.id)
     setDrawerVisibility(true)
     setDrawerTable(table)
   }
@@ -166,6 +169,8 @@ const Graph = (props: GraphProps) => {
       setSearchedNodeId(node.id)
     }
   }
+
+  const drawerData = tables.find(table => table.id === drawerNodeId)
 
   return (
     <Container>
@@ -183,6 +188,7 @@ const Graph = (props: GraphProps) => {
       <GraphContainer>
         <div ref={graphRef} />
         <GraphDrawer
+          data={drawerData}
           drawerHeight={drawerHeight}
           setDrawerHeight={setDrawerHeight}
           nodeLabel={drawerNodeLabel}
