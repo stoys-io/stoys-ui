@@ -43,7 +43,7 @@ export const getGraphData = ({ data, selectedNodeId, badge } : GetGraphDataArgsT
   }
 }
 
-export const getLabelText = (label: string) => {
+export const trimText = (label: string) => {
   if (label.length > 24) {
     return `${label.slice(0, 22)}...`
   }

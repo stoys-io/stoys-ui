@@ -21,6 +21,10 @@ const Graph = (props: GraphProps) => {
     // violation: table.violation,
     // partitions: table.partitions
   }))
+  const columnsMaxLength = tables.reduce(
+    (length, table) => (length > table.columns.length ? length : table.columns.length),
+    0
+  )
   const edgesObj: any = tables.reduce((acc: any, table) => {
     table.dependencies?.forEach(dependency => (acc[dependency] = table.id))
     return acc
@@ -104,7 +108,7 @@ const Graph = (props: GraphProps) => {
         layout: {
           type: 'dagre',
           rankdir: 'LR',
-          nodesep: 30,
+          nodesep: 8 * columnsMaxLength,
           ranksep: 70,
         },
       })

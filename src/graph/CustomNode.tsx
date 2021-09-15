@@ -1,7 +1,8 @@
 import React from 'react'
 import { Group, Rect, Text } from '@antv/g6-react-node'
-import { getLabelText } from './helpers'
+import { trimText } from './helpers'
 import { renderNumericValue } from '../helpers'
+import { Column } from './model'
 
 type ToolbarItemProps = {
   text: string
@@ -37,30 +38,35 @@ type CustomNodeProps = {
 }
 
 const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
-  const { label, badgeNumber, highlighted, selected } = cfg
+  const { label, badgeNumber, highlighted, selected, columns } = cfg
   const badge = badgeNumber ? renderNumericValue(2, true)(badgeNumber) : ''
+
   return (
     <Group>
-      <Rect style={{ width: 155, flexDirection: 'row', justifyContent: 'space-between' }}>
+      <Rect
+        style={{ width: 155, flexDirection: 'row', justifyContent: 'space-between', minHeight: 18 }}
+      >
         <Rect style={{ flexDirection: 'row' }}>
           <ToolbarItem text={'JR'} table={'join_rates'} openDrawer={openDrawer} />
           <ToolbarItem text={'M'} table={'metrics'} openDrawer={openDrawer} />
           <ToolbarItem text={'P'} table={'profiler'} openDrawer={openDrawer} />
           <ToolbarItem text={'Q'} table={'quality'} openDrawer={openDrawer} />
         </Rect>
-        <Rect
-          style={{
-            height: 'auto',
-            width: 'auto',
-            minWidth: 35,
-            padding: [4],
-            radius: [2],
-            stroke: '#000000',
-            fill: '#ffffff',
-          }}
-        >
-          <Text style={{ fill: '#000000' }}>{badge}</Text>
-        </Rect>
+        {badge ? (
+          <Rect
+            style={{
+              height: 'auto',
+              width: 'auto',
+              minWidth: 35,
+              padding: [4],
+              radius: [2],
+              stroke: '#000000',
+              fill: '#ffffff',
+            }}
+          >
+            <Text style={{ fill: '#000000' }}>{badge}</Text>
+          </Rect>
+        ) : null}
       </Rect>
 
       <Rect
@@ -87,25 +93,24 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
           }}
           onClick={(evt, node: any) => onNodeClick(node.getModel())}
         >
-          {getLabelText(label)}
+          {trimText(label)}
         </Text>
         <Rect
           style={{
             stroke: selected ? '#1e80fe' : '#2e2d2d',
             lineWidth: selected ? '2' : '1',
             radius: [0, 0, 2, 2],
-            height: 60,
+            height: 20 * columns.length,
           }}
         >
-          <Text style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}>
-            Lorem ipsum 1
-          </Text>
-          <Text style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}>
-            Lorem ipsum 2
-          </Text>
-          <Text style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}>
-            Lorem ipsum 3
-          </Text>
+          {columns.map((column: Column) => (
+            <Text
+              key={column.id}
+              style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}
+            >
+              {trimText(column.name)}
+            </Text>
+          ))}
         </Rect>
       </Rect>
     </Group>
