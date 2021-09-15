@@ -7,9 +7,31 @@ import GraphDrawer from './GraphDrawer'
 import CustomNode from './CustomNode'
 import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
-import { Badge, GraphProps, Highlight } from './model'
+import { Badge, Combos, Edges, GraphProps, Highlight, Nodes } from './model'
 
-const Graph = ({ nodes, edges, combos }: GraphProps) => {
+const Graph = (props: GraphProps) => {
+  const {
+    data: { tables },
+  } = props
+  const nodes: Nodes = tables.map(table => ({
+    id: table.id,
+    label: table.name,
+    columns: table.columns,
+    // TODO: add violation, partitions, compboId
+    // violation: table.violation,
+    // partitions: table.partitions
+  }))
+  const edgesObj: any = tables.reduce((acc: any, table) => {
+    table.dependencies?.forEach(dependency => (acc[dependency] = table.id))
+    return acc
+  }, {})
+  const edges: Edges = Object.keys(edgesObj).map(source => ({
+    id: `${source}-${edgesObj[source]}`,
+    source,
+    target: edgesObj[source],
+  }))
+  const combos: Combos = []
+
   const data = { nodes, edges, combos }
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
   const [drawerNodeLabel, setDrawerNodeLabel] = useState('')
