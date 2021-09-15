@@ -93,8 +93,8 @@ const Graph = ({ nodes, edges, combos }: GraphProps) => {
   }
 
   const graphData = useMemo(
-    () => getGraphData({ data, selectedNodeId, badge }),
-    [badge, selectedNodeId]
+    () => getGraphData({ data, selectedNodeId, badge, highlight }),
+    [badge, selectedNodeId, highlight]
   )
 
   useEffect(() => {
@@ -102,12 +102,12 @@ const Graph = ({ nodes, edges, combos }: GraphProps) => {
     return () => {
       graph.destroy()
     }
-  }, [badge, searchedNodeId])
+  }, [badge, searchedNodeId, highlight])
 
   useEffect(() => {
     if (searchedNodeId) {
       setSelectedNodeId(searchedNodeId)
-      graph.changeData(getGraphData({ data, selectedNodeId: searchedNodeId, badge }))
+      graph.changeData(getGraphData({ data, selectedNodeId: searchedNodeId, badge, highlight }))
 
       // When we start searching one node after another we have an issue with the calculation
       // of the node position in the ViewController.focus
@@ -121,7 +121,7 @@ const Graph = ({ nodes, edges, combos }: GraphProps) => {
   const onNodeClick = (node: any) => {
     setSelectedNodeId(node.id)
     setDrawerNodeLabel(node.label)
-    graph.changeData(getGraphData({ data, selectedNodeId: node.id, badge }))
+    graph.changeData(getGraphData({ data, selectedNodeId: node.id, badge, highlight }))
   }
 
   const openDrawer = (node: any, table: string) => {
