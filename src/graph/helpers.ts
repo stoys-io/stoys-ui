@@ -1,4 +1,4 @@
-import { Nodes, Edges, Combos, Badge } from './model'
+import { Nodes, Edges, Combos, Badge, Highlight } from './model'
 
 type GetGraphDataArgsType = {
   data: {
@@ -8,22 +8,61 @@ type GetGraphDataArgsType = {
   },
   selectedNodeId: string,
   badge: Badge
+  highlight: Highlight
 }
 
-export const getGraphData = ({ data, selectedNodeId, badge } : GetGraphDataArgsType) => {
+export const getGraphData = ({ data, selectedNodeId, badge, highlight } : GetGraphDataArgsType) => {
   const { nodes, edges, combos } = data
   let highLightedNodesIds = selectedNodeId ? [selectedNodeId] : []
-  const highLightedEdgesIds = edges
-    .filter(edge => {
-      if (edge.source === selectedNodeId && !highLightedNodesIds.includes(edge.target)) {
-        highLightedNodesIds = [...highLightedNodesIds, edge.target]
-      }
-      if (edge.target === selectedNodeId && !highLightedNodesIds.includes(edge.source)) {
-        highLightedNodesIds = [...highLightedNodesIds, edge.source]
-      }
-      return (edge.source === selectedNodeId) || (edge.target === selectedNodeId)
-    })
-    .map(edge => edge.id)
+  let highLightedEdgesIds: string[] = []
+
+  if (highlight === 'nearest') {
+    highLightedEdgesIds = edges
+      .filter(edge => {
+        if (edge.source === selectedNodeId && !highLightedNodesIds.includes(edge.target)) {
+          highLightedNodesIds = [...highLightedNodesIds, edge.target]
+        }
+        if (edge.target === selectedNodeId && !highLightedNodesIds.includes(edge.source)) {
+          highLightedNodesIds = [...highLightedNodesIds, edge.source]
+        }
+        return (edge.source === selectedNodeId) || (edge.target === selectedNodeId)
+      })
+      .map(edge => edge.id)
+  }
+
+  if (highlight === 'parents') {
+    const findSources = (nodeId: string) => {
+      edges.forEach(edge => {
+        if (nodeId === edge.target) {
+          if (!highLightedEdgesIds.includes(edge.id)) {
+            highLightedEdgesIds = [...highLightedEdgesIds, edge.id]
+          }
+          if (!highLightedNodesIds.includes(edge.source)) {
+            highLightedNodesIds = [...highLightedNodesIds, edge.source]
+          }
+          findSources(edge.source)
+        }
+      })
+    }
+    findSources(selectedNodeId)
+  }
+
+  if (highlight === 'children') {
+    const findTargets = (nodeId: string) => {
+      edges.forEach(edge => {
+        if (nodeId === edge.source) {
+          if (!highLightedEdgesIds.includes(edge.id)) {
+            highLightedEdgesIds = [...highLightedEdgesIds, edge.id]
+          }
+          if (!highLightedNodesIds.includes(edge.target)) {
+            highLightedNodesIds = [...highLightedNodesIds, edge.target]
+            findTargets(edge.target)
+          }
+        }
+      })
+    }
+    findTargets(selectedNodeId)
+  }
 
   return {
     nodes: nodes.map((node) => ({

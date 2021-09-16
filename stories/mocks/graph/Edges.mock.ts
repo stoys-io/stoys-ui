@@ -435,7 +435,6 @@ export const edges = [
     source: 'num_matches_with_nuna_pcp_equal_caresource_pcp',
     target: 'nuna_match_metrics',
   },
-  { id: 'nuna_match_metrics-nuna_match_metrics', source: 'nuna_match_metrics', target: 'nuna_match_metrics' },
   {
     id: 'assignment_history-accepted_acknowledged_non_excluded_matches_w_control',
     source: 'assignment_history',
