@@ -18872,51 +18872,37 @@
         {
           "id": "dd0e93de-9689-410c-be00-48745a771d56",
           "name": "location",
-          "dependencies": [
-            "e50bc8da-6bee-4444-b5f3-a722cf11282c"
-          ]
+          "dependencies": ["e50bc8da-6bee-4444-b5f3-a722cf11282c"]
         },
         {
           "id": "c3936b4a-e2cc-4df1-926b-eacf1a5a3ee5",
           "name": "date",
-          "dependencies": [
-            "3a8349d6-ab07-4c90-a90e-c2d68af744b8"
-          ]
+          "dependencies": ["3a8349d6-ab07-4c90-a90e-c2d68af744b8"]
         },
         {
           "id": "83d59aee-8d17-4966-9174-8a5b9e6f29c6",
           "name": "cases",
-          "dependencies": [
-            "91ccf7fe-c8be-4a5a-ba62-7af747daa3ce"
-          ]
+          "dependencies": ["91ccf7fe-c8be-4a5a-ba62-7af747daa3ce"]
         },
         {
           "id": "99a6b7f6-a759-4fd2-b1ed-6904bdb08449",
           "name": "deaths",
-          "dependencies": [
-            "f4e9ed11-bb92-416e-9e33-5a66dd5792dd"
-          ]
+          "dependencies": ["f4e9ed11-bb92-416e-9e33-5a66dd5792dd"]
         },
         {
           "id": "8c0abd3a-5d91-49e4-8421-94ada57ab51a",
           "name": "excess_deaths",
-          "dependencies": [
-            "150f4826-f9f4-4088-aae9-08691c035092"
-          ]
+          "dependencies": ["150f4826-f9f4-4088-aae9-08691c035092"]
         },
         {
           "id": "c2c13fab-1b85-4c33-9158-4823af544799",
           "name": "average_deaths",
-          "dependencies": [
-            "f8505ff0-a5f5-4f86-b5b6-ddd36e41cfd0"
-          ]
+          "dependencies": ["f8505ff0-a5f5-4f86-b5b6-ddd36e41cfd0"]
         },
         {
           "id": "fb9b4e85-7891-4871-91c5-6f0e861710dd",
           "name": "vaccinations",
-          "dependencies": [
-            "1ec32af4-9885-4f98-85b3-1d43730f1462"
-          ]
+          "dependencies": ["1ec32af4-9885-4f98-85b3-1d43730f1462"]
         }
       ],
       "measures": {
@@ -18956,23 +18942,17 @@
           {
             "name": "location___not_null",
             "expression": "location IS NOT NULL",
-            "referenced_column_names": [
-              "location"
-            ]
+            "referenced_column_names": ["location"]
           },
           {
             "name": "cases__non_negative",
             "expression": "(cases IS NULL) OR (cases >= 0)",
-            "referenced_column_names": [
-              "cases"
-            ]
+            "referenced_column_names": ["cases"]
           },
           {
             "name": "deaths__non_negative",
             "expression": "(deaths IS NULL) OR (deaths >= 0)",
-            "referenced_column_names": [
-              "deaths"
-            ]
+            "referenced_column_names": ["deaths"]
           }
         ],
         "statistics": {
@@ -19027,337 +19007,95 @@
         },
         "row_sample": [
           {
-            "row": [
-              null,
-              null,
-              "234.0",
-              "10.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null"
-            ]
+            "row": [null, null, "234.0", "10.0", null, null, null],
+            "violated_rule_names": ["location___not_null"]
           },
           {
-            "row": [
-              null,
-              null,
-              "6651.0",
-              "175.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null"
-            ]
+            "row": [null, null, "6651.0", "175.0", null, null, null],
+            "violated_rule_names": ["location___not_null"]
           },
           {
-            "row": [
-              null,
-              null,
-              "10612.0",
-              "337.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null"
-            ]
+            "row": [null, null, "10612.0", "337.0", null, null, null],
+            "violated_rule_names": ["location___not_null"]
           },
           {
-            "row": [
-              null,
-              null,
-              "9.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null"
-            ]
+            "row": [null, null, "9.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null"]
           },
           {
-            "row": [
-              null,
-              null,
-              "13.0",
-              "2.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null"
-            ]
+            "row": [null, null, "13.0", "2.0", null, null, null],
+            "violated_rule_names": ["location___not_null"]
           },
           {
-            "row": [
-              null,
-              null,
-              "304.0",
-              "10.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null"
-            ]
+            "row": [null, null, "304.0", "10.0", null, null, null],
+            "violated_rule_names": ["location___not_null"]
           },
           {
-            "row": [
-              null,
-              null,
-              "565.0",
-              "10.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null"
-            ]
+            "row": [null, null, "565.0", "10.0", null, null, null],
+            "violated_rule_names": ["location___not_null"]
           },
           {
-            "row": [
-              null,
-              null,
-              "0.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null"
-            ]
+            "row": [null, null, "0.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-42.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-42.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "1274.0",
-              "-34.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "1274.0", "-34.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "78.0",
-              "-6.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "78.0", "-6.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-3226.0",
-              "81.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-3226.0", "81.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "2128.0",
-              "-6.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "2128.0", "-6.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-50.0",
-              "18.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-50.0", "18.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-209.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-209.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "2.0",
-              "-6.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "2.0", "-6.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "220.0",
-              "-11.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "220.0", "-11.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "2737.0",
-              "-31.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "2737.0", "-31.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-10.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-10.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-1348.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-1348.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-647.0",
-              "106.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-647.0", "106.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-6.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-6.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-5.0",
-              "-1.0",
-              null,
-              null,
-              null
-            ],
+            "row": [null, null, "-5.0", "-1.0", null, null, null],
             "violated_rule_names": [
               "location___not_null",
               "cases__non_negative",
@@ -19365,30 +19103,11 @@
             ]
           },
           {
-            "row": [
-              null,
-              null,
-              "466.0",
-              "-5.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "466.0", "-5.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-372.0",
-              "-1918.0",
-              null,
-              null,
-              null
-            ],
+            "row": [null, null, "-372.0", "-1918.0", null, null, null],
             "violated_rule_names": [
               "location___not_null",
               "cases__non_negative",
@@ -19396,15 +19115,7 @@
             ]
           },
           {
-            "row": [
-              null,
-              null,
-              "-46121.0",
-              "-34.0",
-              null,
-              null,
-              null
-            ],
+            "row": [null, null, "-46121.0", "-34.0", null, null, null],
             "violated_rule_names": [
               "location___not_null",
               "cases__non_negative",
@@ -19412,72 +19123,23 @@
             ]
           },
           {
-            "row": [
-              null,
-              null,
-              "-34.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-34.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              "Czechia",
-              "2021-08-04",
-              "257.0",
-              "-6.0",
-              null,
-              null,
-              "46531"
-            ],
-            "violated_rule_names": [
-              "deaths__non_negative"
-            ]
+            "row": ["Czechia", "2021-08-04", "257.0", "-6.0", null, null, "46531"],
+            "violated_rule_names": ["deaths__non_negative"]
           },
           {
-            "row": [
-              "Israel",
-              "2021-04-17",
-              "-53.0",
-              "15.0",
-              null,
-              null,
-              "10980"
-            ],
-            "violated_rule_names": [
-              "cases__non_negative"
-            ]
+            "row": ["Israel", "2021-04-17", "-53.0", "15.0", null, null, "10980"],
+            "violated_rule_names": ["cases__non_negative"]
           },
           {
-            "row": [
-              "Austria",
-              "2021-08-31",
-              "1229.0",
-              "-10.0",
-              null,
-              null,
-              "13008"
-            ],
-            "violated_rule_names": [
-              "deaths__non_negative"
-            ]
+            "row": ["Austria", "2021-08-31", "1229.0", "-10.0", null, null, "13008"],
+            "violated_rule_names": ["deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-439.0",
-              "-80.0",
-              null,
-              null,
-              null
-            ],
+            "row": [null, null, "-439.0", "-80.0", null, null, null],
             "violated_rule_names": [
               "location___not_null",
               "cases__non_negative",
@@ -19485,60 +19147,19 @@
             ]
           },
           {
-            "row": [
-              null,
-              null,
-              "-110.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-110.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-17076.0",
-              "1052.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-17076.0", "1052.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "14305.0",
-              "-1358.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "14305.0", "-1358.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-1858.0",
-              "-39.0",
-              null,
-              null,
-              null
-            ],
+            "row": [null, null, "-1858.0", "-39.0", null, null, null],
             "violated_rule_names": [
               "location___not_null",
               "cases__non_negative",
@@ -19546,121 +19167,36 @@
             ]
           },
           {
-            "row": [
-              "Peru",
-              "2021-07-10",
-              "4629.0",
-              "-679.0",
-              null,
-              null,
-              "185098"
-            ],
-            "violated_rule_names": [
-              "deaths__non_negative"
-            ]
+            "row": ["Peru", "2021-07-10", "4629.0", "-679.0", null, null, "185098"],
+            "violated_rule_names": ["deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "7.0",
-              "-6.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "7.0", "-6.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "6616.0",
-              "-21.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "6616.0", "-21.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              "Bosnia and Herzegovina",
-              "2021-07-10",
-              "98.0",
-              "-11.0",
-              null,
-              null,
-              "7222"
-            ],
-            "violated_rule_names": [
-              "deaths__non_negative"
-            ]
+            "row": ["Bosnia and Herzegovina", "2021-07-10", "98.0", "-11.0", null, null, "7222"],
+            "violated_rule_names": ["deaths__non_negative"]
           },
           {
-            "row": [
-              "Czechia",
-              "2021-03-22",
-              "-2214.0",
-              "143.0",
-              null,
-              null,
-              "36891"
-            ],
-            "violated_rule_names": [
-              "cases__non_negative"
-            ]
+            "row": ["Czechia", "2021-03-22", "-2214.0", "143.0", null, null, "36891"],
+            "violated_rule_names": ["cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "142.0",
-              "-8.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "deaths__non_negative"
-            ]
+            "row": [null, null, "142.0", "-8.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "deaths__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-21.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-21.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           },
           {
-            "row": [
-              null,
-              null,
-              "-92.0",
-              "0.0",
-              null,
-              null,
-              null
-            ],
-            "violated_rule_names": [
-              "location___not_null",
-              "cases__non_negative"
-            ]
+            "row": [null, null, "-92.0", "0.0", null, null, null],
+            "violated_rule_names": ["location___not_null", "cases__non_negative"]
           }
         ],
         "metadata": {
@@ -19674,12 +19210,8 @@
           "dq_join_info": {
             "left_table_name": "excess_mortality_csv",
             "right_table_name": "vaccinations_csv",
-            "left_key_column_names": [
-              "location"
-            ],
-            "right_key_column_names": [
-              "location"
-            ],
+            "left_key_column_names": ["location"],
+            "right_key_column_names": ["location"],
             "join_type": "UNDEFINED",
             "join_condition": "(excess_mortality_csv.`location` <=> vaccinations_csv.`location`)"
           },
@@ -19727,30 +19259,22 @@
               {
                 "name": "left_key__dropping",
                 "expression": "left_rows > 0",
-                "referenced_column_names": [
-                  "left_rows"
-                ]
+                "referenced_column_names": ["left_rows"]
               },
               {
                 "name": "right_key__dropping",
                 "expression": "right_rows > 0",
-                "referenced_column_names": [
-                  "right_rows"
-                ]
+                "referenced_column_names": ["right_rows"]
               },
               {
                 "name": "left_key__multiplying",
                 "expression": "left_rows <= 1",
-                "referenced_column_names": [
-                  "left_rows"
-                ]
+                "referenced_column_names": ["left_rows"]
               },
               {
                 "name": "right_key__multiplying",
                 "expression": "right_rows <= 1",
-                "referenced_column_names": [
-                  "right_rows"
-                ]
+                "referenced_column_names": ["right_rows"]
               }
             ],
             "statistics": {
@@ -19813,116 +19337,32 @@
             },
             "row_sample": [
               {
-                "row": [
-                  "[Montserrat]",
-                  "false",
-                  "0",
-                  "208",
-                  "0",
-                  "0",
-                  "208",
-                  "208"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Montserrat]", "false", "0", "208", "0", "0", "208", "208"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Mauritania]",
-                  "false",
-                  "0",
-                  "160",
-                  "0",
-                  "0",
-                  "160",
-                  "160"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Mauritania]", "false", "0", "160", "0", "0", "160", "160"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Asia]",
-                  "false",
-                  "0",
-                  "266",
-                  "0",
-                  "0",
-                  "266",
-                  "266"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Asia]", "false", "0", "266", "0", "0", "266", "266"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Djibouti]",
-                  "false",
-                  "0",
-                  "138",
-                  "0",
-                  "0",
-                  "138",
-                  "138"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Djibouti]", "false", "0", "138", "0", "0", "138", "138"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Slovenia]",
-                  "false",
-                  "87",
-                  "254",
-                  "22098",
-                  "22098",
-                  "22098",
-                  "22098"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Slovenia]", "false", "87", "254", "22098", "22098", "22098", "22098"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Malawi]",
-                  "false",
-                  "0",
-                  "174",
-                  "0",
-                  "0",
-                  "174",
-                  "174"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Malawi]", "false", "0", "174", "0", "0", "174", "174"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Botswana]",
-                  "false",
-                  "0",
-                  "161",
-                  "0",
-                  "0",
-                  "161",
-                  "161"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Botswana]", "false", "0", "161", "0", "0", "161", "161"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
                 "row": [
@@ -19935,345 +19375,91 @@
                   "23229",
                   "23229"
                 ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Germany]",
-                  "false",
-                  "87",
-                  "254",
-                  "22098",
-                  "22098",
-                  "22098",
-                  "22098"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Germany]", "false", "87", "254", "22098", "22098", "22098", "22098"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Madagascar]",
-                  "false",
-                  "0",
-                  "118",
-                  "0",
-                  "0",
-                  "118",
-                  "118"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Madagascar]", "false", "0", "118", "0", "0", "118", "118"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Australia]",
-                  "false",
-                  "87",
-                  "204",
-                  "17748",
-                  "17748",
-                  "17748",
-                  "17748"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Australia]", "false", "87", "204", "17748", "17748", "17748", "17748"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Guinea]",
-                  "false",
-                  "0",
-                  "159",
-                  "0",
-                  "0",
-                  "159",
-                  "159"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Guinea]", "false", "0", "159", "0", "0", "159", "159"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Tokelau]",
-                  "false",
-                  "0",
-                  "57",
-                  "0",
-                  "0",
-                  "57",
-                  "57"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Tokelau]", "false", "0", "57", "0", "0", "57", "57"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Martinique]",
-                  "false",
-                  "87",
-                  "0",
-                  "0",
-                  "87",
-                  "0",
-                  "87"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping",
-                  "left_key__multiplying"
-                ]
+                "row": ["[Martinique]", "false", "87", "0", "0", "87", "0", "87"],
+                "violated_rule_names": ["right_key__dropping", "left_key__multiplying"]
               },
               {
-                "row": [
-                  "[Pakistan]",
-                  "false",
-                  "0",
-                  "217",
-                  "0",
-                  "0",
-                  "217",
-                  "217"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Pakistan]", "false", "0", "217", "0", "0", "217", "217"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Wales]",
-                  "false",
-                  "0",
-                  "267",
-                  "0",
-                  "0",
-                  "267",
-                  "267"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Wales]", "false", "0", "267", "0", "0", "267", "267"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Bonaire Sint Eustatius and Saba]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[Bonaire Sint Eustatius and Saba]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[Transnistria]",
-                  "false",
-                  "20",
-                  "0",
-                  "0",
-                  "20",
-                  "0",
-                  "20"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping",
-                  "left_key__multiplying"
-                ]
+                "row": ["[Transnistria]", "false", "20", "0", "0", "20", "0", "20"],
+                "violated_rule_names": ["right_key__dropping", "left_key__multiplying"]
               },
               {
-                "row": [
-                  "[Dominican Republic]",
-                  "false",
-                  "0",
-                  "203",
-                  "0",
-                  "0",
-                  "203",
-                  "203"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Dominican Republic]", "false", "0", "203", "0", "0", "203", "203"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Croatia]",
-                  "false",
-                  "87",
-                  "250",
-                  "21750",
-                  "21750",
-                  "21750",
-                  "21750"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Croatia]", "false", "87", "250", "21750", "21750", "21750", "21750"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Ukraine]",
-                  "false",
-                  "20",
-                  "195",
-                  "3900",
-                  "3900",
-                  "3900",
-                  "3900"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Ukraine]", "false", "20", "195", "3900", "3900", "3900", "3900"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Kiribati]",
-                  "false",
-                  "0",
-                  "87",
-                  "0",
-                  "0",
-                  "87",
-                  "87"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Kiribati]", "false", "0", "87", "0", "0", "87", "87"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Taiwan]",
-                  "false",
-                  "87",
-                  "170",
-                  "14790",
-                  "14790",
-                  "14790",
-                  "14790"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Taiwan]", "false", "87", "170", "14790", "14790", "14790", "14790"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Haiti]",
-                  "false",
-                  "0",
-                  "50",
-                  "0",
-                  "0",
-                  "50",
-                  "50"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Haiti]", "false", "0", "50", "0", "0", "50", "50"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Equatorial Guinea]",
-                  "false",
-                  "0",
-                  "173",
-                  "0",
-                  "0",
-                  "173",
-                  "173"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Equatorial Guinea]", "false", "0", "173", "0", "0", "173", "173"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Uganda]",
-                  "false",
-                  "0",
-                  "178",
-                  "0",
-                  "0",
-                  "178",
-                  "178"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Uganda]", "false", "0", "178", "0", "0", "178", "178"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Trinidad and Tobago]",
-                  "false",
-                  "0",
-                  "204",
-                  "0",
-                  "0",
-                  "204",
-                  "204"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Trinidad and Tobago]", "false", "0", "204", "0", "0", "204", "204"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Italy]",
-                  "false",
-                  "87",
-                  "254",
-                  "22098",
-                  "22098",
-                  "22098",
-                  "22098"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Italy]", "false", "87", "254", "22098", "22098", "22098", "22098"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Reunion]",
-                  "false",
-                  "87",
-                  "0",
-                  "0",
-                  "87",
-                  "0",
-                  "87"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping",
-                  "left_key__multiplying"
-                ]
+                "row": ["[Reunion]", "false", "87", "0", "0", "87", "0", "87"],
+                "violated_rule_names": ["right_key__dropping", "left_key__multiplying"]
               },
               {
                 "row": [
@@ -20286,170 +19472,47 @@
                   "22533",
                   "22533"
                 ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Israel]",
-                  "false",
-                  "87",
-                  "261",
-                  "22707",
-                  "22707",
-                  "22707",
-                  "22707"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Israel]", "false", "87", "261", "22707", "22707", "22707", "22707"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Cape Verde]",
-                  "false",
-                  "0",
-                  "167",
-                  "0",
-                  "0",
-                  "167",
-                  "167"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Cape Verde]", "false", "0", "167", "0", "0", "167", "167"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[England & Wales]",
-                  "false",
-                  "87",
-                  "0",
-                  "0",
-                  "87",
-                  "0",
-                  "87"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping",
-                  "left_key__multiplying"
-                ]
+                "row": ["[England & Wales]", "false", "87", "0", "0", "87", "0", "87"],
+                "violated_rule_names": ["right_key__dropping", "left_key__multiplying"]
               },
               {
-                "row": [
-                  "[Guadeloupe]",
-                  "false",
-                  "87",
-                  "0",
-                  "0",
-                  "87",
-                  "0",
-                  "87"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping",
-                  "left_key__multiplying"
-                ]
+                "row": ["[Guadeloupe]", "false", "87", "0", "0", "87", "0", "87"],
+                "violated_rule_names": ["right_key__dropping", "left_key__multiplying"]
               },
               {
-                "row": [
-                  "[Malaysia]",
-                  "false",
-                  "20",
-                  "195",
-                  "3900",
-                  "3900",
-                  "3900",
-                  "3900"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Malaysia]", "false", "20", "195", "3900", "3900", "3900", "3900"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Mayotte]",
-                  "false",
-                  "87",
-                  "0",
-                  "0",
-                  "87",
-                  "0",
-                  "87"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping",
-                  "left_key__multiplying"
-                ]
+                "row": ["[Mayotte]", "false", "87", "0", "0", "87", "0", "87"],
+                "violated_rule_names": ["right_key__dropping", "left_key__multiplying"]
               },
               {
-                "row": [
-                  "[French Guiana]",
-                  "false",
-                  "87",
-                  "0",
-                  "0",
-                  "87",
-                  "0",
-                  "87"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping",
-                  "left_key__multiplying"
-                ]
+                "row": ["[French Guiana]", "false", "87", "0", "0", "87", "0", "87"],
+                "violated_rule_names": ["right_key__dropping", "left_key__multiplying"]
               },
               {
-                "row": [
-                  "[Mali]",
-                  "false",
-                  "0",
-                  "161",
-                  "0",
-                  "0",
-                  "161",
-                  "161"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Mali]", "false", "0", "161", "0", "0", "161", "161"],
+                "violated_rule_names": ["left_key__dropping", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Netherlands]",
-                  "false",
-                  "87",
-                  "239",
-                  "20793",
-                  "20793",
-                  "20793",
-                  "20793"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Netherlands]", "false", "87", "239", "20793", "20793", "20793", "20793"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               },
               {
-                "row": [
-                  "[Tunisia]",
-                  "false",
-                  "86",
-                  "178",
-                  "15308",
-                  "15308",
-                  "15308",
-                  "15308"
-                ],
-                "violated_rule_names": [
-                  "left_key__multiplying",
-                  "right_key__multiplying"
-                ]
+                "row": ["[Tunisia]", "false", "86", "178", "15308", "15308", "15308", "15308"],
+                "violated_rule_names": ["left_key__multiplying", "right_key__multiplying"]
               }
             ],
             "metadata": {
@@ -20463,14 +19526,8 @@
           "dq_join_info": {
             "left_table_name": "vaccinations_csv",
             "right_table_name": "jhu_csv",
-            "left_key_column_names": [
-              "location",
-              "date"
-            ],
-            "right_key_column_names": [
-              "date",
-              "location"
-            ],
+            "left_key_column_names": ["location", "date"],
+            "right_key_column_names": ["date", "location"],
             "join_type": "UNDEFINED",
             "join_condition": "((vaccinations_csv.`location` <=> jhu_csv.`location`) AND (vaccinations_csv.`date` <=> jhu_csv.`date`))"
           },
@@ -20518,30 +19575,22 @@
               {
                 "name": "left_key__dropping",
                 "expression": "left_rows > 0",
-                "referenced_column_names": [
-                  "left_rows"
-                ]
+                "referenced_column_names": ["left_rows"]
               },
               {
                 "name": "right_key__dropping",
                 "expression": "right_rows > 0",
-                "referenced_column_names": [
-                  "right_rows"
-                ]
+                "referenced_column_names": ["right_rows"]
               },
               {
                 "name": "left_key__multiplying",
                 "expression": "left_rows <= 1",
-                "referenced_column_names": [
-                  "left_rows"
-                ]
+                "referenced_column_names": ["left_rows"]
               },
               {
                 "name": "right_key__multiplying",
                 "expression": "right_rows <= 1",
-                "referenced_column_names": [
-                  "right_rows"
-                ]
+                "referenced_column_names": ["right_rows"]
               }
             ],
             "statistics": {
@@ -20604,604 +19653,164 @@
             },
             "row_sample": [
               {
-                "row": [
-                  "[2020-07-16, Africa]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-07-16, Africa]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-06-21, Albania]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-06-21, Albania]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-12-16, Albania]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-12-16, Albania]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-09-27, Algeria]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-09-27, Algeria]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-07-21, Andorra]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-07-21, Andorra]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-12-30, Andorra]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-12-30, Andorra]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-03-23, Angola]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-03-23, Angola]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[Anguilla, 2021-02-07]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Anguilla, 2021-02-07]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-04-24, Antigua and Barbuda]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-04-24, Antigua and Barbuda]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-11-18, Argentina]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-11-18, Argentina]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-03-05, Armenia]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-03-05, Armenia]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-05-21, Armenia]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-05-21, Armenia]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-11-16, Armenia]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-11-16, Armenia]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2021-01-27, Armenia]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2021-01-27, Armenia]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[Aruba, 2021-05-15]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Aruba, 2021-05-15]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-10-31, Australia]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-10-31, Australia]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-03-01, Austria]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-03-01, Austria]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-03-09, Austria]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-03-09, Austria]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-06-05, Austria]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-06-05, Austria]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-04-27, Azerbaijan]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-04-27, Azerbaijan]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2020-08-12, Azerbaijan]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2020-08-12, Azerbaijan]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[2021-01-16, Azerbaijan]",
-                  "false",
-                  "0",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "left_key__dropping"
-                ]
+                "row": ["[2021-01-16, Azerbaijan]", "false", "0", "1", "0", "0", "1", "1"],
+                "violated_rule_names": ["left_key__dropping"]
               },
               {
-                "row": [
-                  "[Bermuda, 2021-08-17]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Bermuda, 2021-08-17]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Curacao, 2021-05-11]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Curacao, 2021-05-11]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[England, 2021-06-22]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[England, 2021-06-22]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[England, 2021-07-04]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[England, 2021-07-04]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Faeroe Islands, 2021-04-22]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Faeroe Islands, 2021-04-22]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Faeroe Islands, 2021-08-10]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Faeroe Islands, 2021-08-10]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Falkland Islands, 2021-03-27]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Falkland Islands, 2021-03-27]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[French Polynesia, 2021-08-05]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[French Polynesia, 2021-08-05]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Greenland, 2021-04-18]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Greenland, 2021-04-18]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Greenland, 2021-05-26]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Greenland, 2021-05-26]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Guernsey, 2021-01-25]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Guernsey, 2021-01-25]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Guernsey, 2021-04-22]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Guernsey, 2021-04-22]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[High income, 2021-02-09]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[High income, 2021-02-09]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Jersey, 2021-06-16]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Jersey, 2021-06-16]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Jersey, 2021-06-26]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Jersey, 2021-06-26]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Low income, 2021-07-12]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Low income, 2021-07-12]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Macao, 2021-08-30]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Macao, 2021-08-30]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               },
               {
-                "row": [
-                  "[Montserrat, 2021-08-17]",
-                  "false",
-                  "1",
-                  "0",
-                  "0",
-                  "1",
-                  "0",
-                  "1"
-                ],
-                "violated_rule_names": [
-                  "right_key__dropping"
-                ]
+                "row": ["[Montserrat, 2021-08-17]", "false", "1", "0", "0", "1", "0", "1"],
+                "violated_rule_names": ["right_key__dropping"]
               }
             ],
             "metadata": {
@@ -24709,17 +23318,17 @@
                 "count": 1
               },
               {
-                "low": -5.3088087308613536e-05,
+                "low": -5.3088087308613536e-5,
                 "high": 0.000735264672718975,
                 "count": 1
               },
               {
-                "low": 8.665655627580207e-06,
+                "low": 8.665655627580207e-6,
                 "high": 0.0007970184156551687,
                 "count": 1
               },
               {
-                "low": 4.674940132364891e-05,
+                "low": 4.674940132364891e-5,
                 "high": 0.0008351021613512375,
                 "count": 1
               },
@@ -26071,9 +24680,7 @@
         {
           "id": "133a1a9f-2ecb-4a5d-9b38-55fa7e4a81ad",
           "name": "location",
-          "dependencies": [
-            "dd0e93de-9689-410c-be00-48745a771d56"
-          ]
+          "dependencies": ["dd0e93de-9689-410c-be00-48745a771d56"]
         },
         {
           "id": "858bb974-60af-427d-8182-6f083a4490aa",
@@ -26104,7 +24711,8 @@
         "rows": 178
       },
       "dependencies": [
-        "aa646e52-23c2-4ec4-9938-c857a8b881e1"
+        "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+        "b4c74f2f-94ad-4445-9030-e0f558a3cdd9"
       ],
       "metadata": {
         "foo": "bar"
