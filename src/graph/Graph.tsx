@@ -37,7 +37,6 @@ const Graph = (props: GraphProps) => {
 
   const data = { nodes, edges, combos }
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
-  const [drawerNodeLabel, setDrawerNodeLabel] = useState('')
   const [drawerNodeId, setDrawerNodeId] = useState('')
   const [drawerTable, setDrawerTable] = useState('')
   const [drawerHeight, setDrawerHeight] = useState(500)
@@ -148,13 +147,12 @@ const Graph = (props: GraphProps) => {
 
   const onNodeClick = (node: any) => {
     setSelectedNodeId(node.id)
-    setDrawerNodeLabel(node.label)
+    setDrawerNodeId(node.id)
     graph.changeData(getGraphData({ data, selectedNodeId: node.id, badge }))
   }
 
   const openDrawer = (node: any, table: string) => {
     const model = node.getModel()
-    setDrawerNodeLabel(model.label)
     setDrawerNodeId(model.id)
     setDrawerVisibility(true)
     setDrawerTable(table)
@@ -170,7 +168,10 @@ const Graph = (props: GraphProps) => {
     }
   }
 
-  const drawerData = tables?.find(table => table.id === drawerNodeId)
+  const drawerData = useMemo(
+    () => tables?.find(table => table.id === drawerNodeId),
+    [tables, drawerNodeId]
+  )
 
   return (
     <Container>
@@ -191,7 +192,6 @@ const Graph = (props: GraphProps) => {
           data={drawerData}
           drawerHeight={drawerHeight}
           setDrawerHeight={setDrawerHeight}
-          nodeLabel={drawerNodeLabel}
           table={drawerTable}
           setDrawerTable={setDrawerTable}
           visible={drawerIsVisible}

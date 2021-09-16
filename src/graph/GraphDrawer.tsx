@@ -14,7 +14,6 @@ type GraphDrawerProps = {
   setDrawerHeight: Dispatch<SetStateAction<number>>
   visible: boolean
   setDrawerVisibility: Dispatch<SetStateAction<boolean>>
-  nodeLabel?: string
   table: string
   setDrawerTable: Dispatch<SetStateAction<string>>
 }
@@ -25,7 +24,6 @@ const GraphDrawer = ({
   setDrawerHeight,
   visible,
   setDrawerVisibility,
-  nodeLabel,
   table,
   setDrawerTable,
 }: GraphDrawerProps) => {
@@ -37,7 +35,7 @@ const GraphDrawer = ({
       visible={visible}
     >
       <Tabs activeKey={table} onChange={setDrawerTable}>
-        <DrawerNodeLabel>{nodeLabel}</DrawerNodeLabel>
+        <DrawerNodeLabel>{data?.name}</DrawerNodeLabel>
         <TabPane tab="Join Rates" key="join_rates">
           {data?.dq_join_results ? <JoinRates data={data.dq_join_results} /> : <>No data</>}
         </TabPane>
