@@ -5,7 +5,7 @@ import { QualityData } from '../quality/model'
 export interface Node {
   id: string
   label: string
-  columns: Array<Column>
+  columns?: Array<Column>
   comboId?: string
   violations?: number
   partitions?: number
@@ -33,7 +33,10 @@ export type Badge = 'violations' | 'partitions'
 export type Highlight = 'nearest' | 'parents' | 'children'
 
 export interface GraphProps {
-  data: Graph
+  data?: Graph
+  nodes?: Nodes
+  edges?: Edges
+  combos?: Combos
 }
 
 export interface Column {

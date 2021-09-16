@@ -10,28 +10,30 @@ import { Container, GraphContainer } from './styles'
 import { Badge, Combos, Edges, GraphProps, Highlight, Nodes } from './model'
 
 const Graph = (props: GraphProps) => {
-  const {
-    data: { tables },
-  } = props
-  const nodes: Nodes = tables.map(table => ({
-    id: table.id,
-    label: table.name,
-    columns: table.columns,
-    // TODO: add violation, partitions, comboId
-    // violation: table.violation,
-    // partitions: table.partitions
-  }))
-  const edgesObj: any = tables.reduce((acc: any, table) => {
+  const { data: { tables } = {} } = props
+  const nodes: Nodes =
+    props.nodes ||
+    tables!.map(table => ({
+      id: table.id,
+      label: table.name,
+      columns: table.columns,
+      // TODO: add violation, partitions, comboId
+      // violation: table.violation,
+      // partitions: table.partitions
+    }))
+  const edgesObj: any = tables?.reduce((acc: any, table) => {
     table.dependencies?.forEach(dependency => (acc[dependency] = table.id))
 
     return acc
   }, {})
-  const edges: Edges = Object.keys(edgesObj).map(source => ({
-    id: `${source}-${edgesObj[source]}`,
-    source,
-    target: edgesObj[source],
-  }))
-  const combos: Combos = []
+  const edges: Edges =
+    props.edges ||
+    Object.keys(edgesObj).map(source => ({
+      id: `${source}-${edgesObj[source]}`,
+      source,
+      target: edgesObj[source],
+    }))
+  const combos: Combos = props.combos || []
 
   const data = { nodes, edges, combos }
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
@@ -107,7 +109,7 @@ const Graph = (props: GraphProps) => {
           type: 'dagre',
           rankdir: 'LR',
           nodesepFunc: (node: any) => {
-            return 15 * node.columns.length
+            return 15 * node.columns?.length || 30
           },
           ranksep: 70,
         },
@@ -168,7 +170,7 @@ const Graph = (props: GraphProps) => {
     }
   }
 
-  const drawerData = tables.find(table => table.id === drawerNodeId)
+  const drawerData = tables?.find(table => table.id === drawerNodeId)
 
   return (
     <Container>

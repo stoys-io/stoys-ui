@@ -95,23 +95,25 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
         >
           {trimText(label)}
         </Text>
-        <Rect
-          style={{
-            stroke: selected ? '#1e80fe' : '#2e2d2d',
-            lineWidth: selected ? '2' : '1',
-            radius: [0, 0, 2, 2],
-            height: 20 * columns.length,
-          }}
-        >
-          {columns.map((column: Column) => (
-            <Text
-              key={column.id}
-              style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}
-            >
-              {trimText(column.name)}
-            </Text>
-          ))}
-        </Rect>
+        {columns?.length ? (
+          <Rect
+            style={{
+              stroke: selected ? '#1e80fe' : '#2e2d2d',
+              lineWidth: selected ? '2' : '1',
+              radius: [0, 0, 2, 2],
+              height: 20 * columns.length,
+            }}
+          >
+            {columns.map((column: Column) => (
+              <Text
+                key={column.id}
+                style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}
+              >
+                {trimText(column.name)}
+              </Text>
+            ))}
+          </Rect>
+        ) : null}
       </Rect>
     </Group>
   )
