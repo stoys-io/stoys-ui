@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
+import { NodeBody, NodeToolbar } from './styles'
 
 export const DagNode = ({ data, isConnectable }: NodeProps): JSX.Element => {
   return (
@@ -8,16 +9,22 @@ export const DagNode = ({ data, isConnectable }: NodeProps): JSX.Element => {
       <Handle
         type="target"
         position={Position['Top']}
-        style={{ background: '#555' }}
-        onConnect={params => console.log('handle onConnect', params)}
+        style={{ top: -3, background: '#555' }}
         isConnectable={isConnectable}
       />
-      <div>{data.label}</div>
+      <NodeBody>
+        <div>{data.label}</div>
+        <NodeToolbar>
+          <button>JR</button>
+          <button>M</button>
+          <button>P</button>
+          <button>Q</button>
+        </NodeToolbar>
+      </NodeBody>
       <Handle
         type="source"
         position={Position['Bottom']}
-        id="a"
-        style={{ bottom: 10, background: '#555' }}
+        style={{ bottom: -3, background: '#555' }}
         isConnectable={isConnectable}
       />
     </>

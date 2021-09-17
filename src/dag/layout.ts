@@ -1,17 +1,24 @@
-import { isNode, Position } from 'react-flow-renderer'
+import { Edge, isNode, Node, Position } from 'react-flow-renderer'
 import dagre from 'dagre'
+import { NODE_HEIGHT, NODE_WIDTH } from './constants'
 
 const dagreGraph = new dagre.graphlib.Graph()
 
 dagreGraph.setDefaultEdgeLabel(() => ({}))
-const nodeWidth = 172
-const nodeHeight = 36
+const nodeWidth = NODE_WIDTH
+const nodeHeight = NODE_HEIGHT
 
-export const getLayoutedElements = (elements: any, direction = 'TB') => {
-  const isHorizontal = direction === 'LR'
-  dagreGraph.setGraph({ rankdir: direction })
+export const getLayoutedElements = (elements: Array<Node | Edge>) => {
+  const direction = 'TB'
+  const isHorizontal = false // direction === 'LR'
+  dagreGraph.setGraph({
+    rankdir: direction,
+    // acyclicer: 'greedy',
+    align: 'UL',
+    ranker: 'longest-path',
+  })
 
-  elements.forEach((el: any) => {
+  elements.forEach(el => {
     if (isNode(el)) {
       dagreGraph.setNode(el.id, { width: nodeWidth, height: nodeHeight })
     } else {
@@ -21,7 +28,7 @@ export const getLayoutedElements = (elements: any, direction = 'TB') => {
 
   dagre.layout(dagreGraph)
 
-  return elements.map((el: any) => {
+  return elements.map(el => {
     if (isNode(el)) {
       const nodeWithPosition = dagreGraph.node(el.id)
       el.targetPosition = (isHorizontal ? 'left' : 'top') as Position
