@@ -80,6 +80,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
           shadowColor: '#eee',
           shadowBlur: 30,
           cursor: 'pointer',
+          marginTop: 0,
         }}
         onClick={(evt, node: any) => onNodeClick(node.getModel())}
       >
