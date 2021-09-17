@@ -5,6 +5,7 @@ import { DrawerNodeLabel } from './styles'
 import { JoinRates, Metrics, Profiler, Quality } from '..'
 import { Orient } from '../profiler/model'
 import { Table } from './model'
+import { NoData } from '../profiler/styles'
 
 const { TabPane } = Tabs
 
@@ -37,7 +38,11 @@ const GraphDrawer = ({
       <Tabs activeKey={table} onChange={setDrawerTable}>
         <DrawerNodeLabel>{data?.name}</DrawerNodeLabel>
         <TabPane tab="Join Rates" key="join_rates">
-          {data?.dq_join_results ? <JoinRates data={data.dq_join_results} /> : <>No data</>}
+          {data?.dq_join_results ? (
+            <JoinRates data={data.dq_join_results} />
+          ) : (
+            <NoData>No data</NoData>
+          )}
         </TabPane>
         <TabPane tab="Metrics" key="metrics">
           {data?.metrics ? (
@@ -50,7 +55,7 @@ const GraphDrawer = ({
               smallSize
             />
           ) : (
-            <>No data</>
+            <NoData>No data</NoData>
           )}
         </TabPane>
         <TabPane tab="Profiler" key="profiler">
@@ -76,14 +81,14 @@ const GraphDrawer = ({
               smallSize
             />
           ) : (
-            <>No data</>
+            <NoData>No data</NoData>
           )}
         </TabPane>
         <TabPane tab="Quality" key="quality">
           {data?.dq_result ? (
             <Quality data={data.dq_result} pagination={{ disabled: true }} smallSize />
           ) : (
-            <>No data</>
+            <NoData>No data</NoData>
           )}
         </TabPane>
       </Tabs>
