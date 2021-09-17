@@ -35,32 +35,7 @@ export default {
     data: {
       type: { required: true },
     },
-    joinRateId: {
-      control: 'string',
-    },
-    onRowClickHandler: { action: 'clicked' },
-    selectedRules: {
-      control: 'array',
-      defaultValue: [],
-    },
-    onSelectedRulesChange: { action: 'clicked' },
-    mode: {
-      options: ['column', 'row'],
-      control: { type: 'radio' },
-      defaultValue: 'row',
-    },
-    onModeChange: { action: 'clicked' },
-    pagination: {
-      control: 'object',
-    },
-    smallSize: {
-      control: 'boolean',
-      defaultValue: false,
-    },
-    statisticsTableProps: {
-      control: 'object',
-    },
-    qualityTableProps: {
+    config: {
       control: 'object',
     },
   },

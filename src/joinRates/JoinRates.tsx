@@ -8,16 +8,18 @@ import { JoinRatesProps } from './model'
 
 const JoinRates = ({
   data,
-  joinRateId,
-  onRowClickHandler,
-  selectedRules,
-  selectRules,
-  mode,
-  setMode,
-  pagination,
-  smallSize = true,
-  statisticsTableProps = {},
-  qualityTableProps = {},
+  config: {
+    joinRateId,
+    onRowClickHandler,
+    selectedRules,
+    selectRules,
+    mode,
+    setMode,
+    pagination,
+    smallSize = true,
+    statisticsTableProps = {},
+    qualityTableProps = {},
+  } = {},
 }: JoinRatesProps): JSX.Element => {
   const getJoinRateId = useCallback(() => {
     const _joinRateId = Array.isArray(data) ? data[0].id : data.id
