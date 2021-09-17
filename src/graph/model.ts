@@ -50,6 +50,7 @@ export interface Table {
   columns: Array<Column>
   measures: {
     rows: number
+    violations?: number
   }
   dependencies?: Array<string>
   dp_result?: ProfilerData

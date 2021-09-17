@@ -17,9 +17,9 @@ const Graph = (props: GraphProps) => {
       id: table.id,
       label: table.name,
       columns: table.columns,
-      // TODO: add violation, partitions, comboId
-      // violation: table.violation,
-      // partitions: table.partitions
+      violations: table.measures.violations,
+      partitions: table.measures.rows,
+      // TODO: add comboId
     }))
   const edgesObj: any = tables?.reduce((acc: any, table) => {
     table.dependencies?.forEach(dependency => (acc[dependency] = table.id))
