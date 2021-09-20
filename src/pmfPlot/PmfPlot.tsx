@@ -14,13 +14,15 @@ function marker(color: string): string {
 
 const PmfPlot = ({
   data,
-  dataType,
-  height = '100%',
-  width = '100%',
-  showAxes,
-  showLogScale,
-  color,
-  plotOptions = {},
+  config: {
+    dataType,
+    height = '100%',
+    width = '100%',
+    showAxes,
+    showLogScale,
+    color,
+    plotOptions = {},
+  } = {},
 }: PmfPlotProps): JSX.Element => {
   const isDataSet = Array.isArray(data[0])
   const axisType = showLogScale ? 'log' : 'value'

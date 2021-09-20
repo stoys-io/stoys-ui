@@ -98,11 +98,13 @@ const ChartAndTable = ({
   return (
     <PmfPlot
       data={pmfPlotDataData}
-      height={height}
-      dataType={data[0].type}
-      showAxes={enabledAxes}
-      showLogScale={enabledLogScale}
-      color={color}
+      config={{
+        height,
+        dataType: data[0].type,
+        showAxes: enabledAxes,
+        showLogScale: enabledLogScale,
+        color,
+      }}
     />
   )
 }
