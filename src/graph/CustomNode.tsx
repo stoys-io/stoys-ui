@@ -23,7 +23,7 @@ const ToolbarItem = ({ text, table, openDrawer }: ToolbarItemProps) => (
     onClick={(evt, node, shape, graph) => openDrawer(node, table)}
   >
     <Text
-      style={{ fill: '#000000', cursor: 'pointer' }}
+      style={{ fill: '#000000', cursor: 'pointer', fontSize: 14 }}
       onClick={(evt, node, shape, graph) => openDrawer(node, table)}
     >
       {text}
