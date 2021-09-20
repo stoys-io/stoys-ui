@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import G6 from '@antv/g6'
 import { createNodeFromReact } from '@antv/g6-react-node'
 import { getGraphData } from './helpers'
@@ -87,14 +87,21 @@ const Graph = ({ nodes, edges, combos, chromaticScale }: GraphProps) => {
         },
       })
     }
-    graph.data(graphData)
+    graph.data(getData())
     graph.render()
     appendAutoShapeListener(graph)
   }
 
-  const graphData = useMemo(
-    () => getGraphData({ data, selectedNodeId, badge, highlight, chromaticScale }),
-    [badge, selectedNodeId, highlight]
+  const getData = useCallback(
+    (args?: { selectedNodeId?: string }) =>
+      getGraphData({
+        data,
+        selectedNodeId: args?.selectedNodeId || selectedNodeId,
+        badge,
+        highlight,
+        chromaticScale,
+      }),
+    [data, badge, selectedNodeId, highlight]
   )
 
   useEffect(() => {
@@ -107,9 +114,7 @@ const Graph = ({ nodes, edges, combos, chromaticScale }: GraphProps) => {
   useEffect(() => {
     if (searchedNodeId) {
       setSelectedNodeId(searchedNodeId)
-      graph.changeData(
-        getGraphData({ data, selectedNodeId: searchedNodeId, badge, highlight, chromaticScale })
-      )
+      graph.changeData(getData({ selectedNodeId: searchedNodeId }))
 
       // When we start searching one node after another we have an issue with the calculation
       // of the node position in the ViewController.focus
@@ -123,9 +128,7 @@ const Graph = ({ nodes, edges, combos, chromaticScale }: GraphProps) => {
   const onNodeClick = (node: any) => {
     setSelectedNodeId(node.id)
     setDrawerNodeLabel(node.label)
-    graph.changeData(
-      getGraphData({ data, selectedNodeId: node.id, badge, highlight, chromaticScale })
-    )
+    graph.changeData(getData({ selectedNodeId: node.id }))
   }
 
   const openDrawer = (node: any, table: string) => {
@@ -138,6 +141,9 @@ const Graph = ({ nodes, edges, combos, chromaticScale }: GraphProps) => {
   const onSearchNode = () => {
     if (searchInputValue) {
       const node = nodes.find(node => node.label.indexOf(searchInputValue) !== -1)
+      if (searchHasError) {
+        setSearchHasError(false)
+      }
       if (!node) {
         return setSearchHasError(true)
       }
