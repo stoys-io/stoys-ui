@@ -10,7 +10,7 @@ const Template: Story<GraphProps> = args => <GraphComponent {...args} />
 export const Graph = Template.bind({})
 
 Graph.args = {
-  nodes, edges, combos
+  chromaticScale: 'interpolateWarm', nodes, edges, combos
 }
 
 export default {

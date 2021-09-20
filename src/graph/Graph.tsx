@@ -9,7 +9,7 @@ import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
 import { Badge, GraphProps, Highlight } from './model'
 
-const Graph = ({ nodes, edges, combos }: GraphProps) => {
+const Graph = ({ nodes, edges, combos, chromaticScale }: GraphProps) => {
   const data = { nodes, edges, combos }
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
   const [drawerNodeLabel, setDrawerNodeLabel] = useState('')
@@ -93,7 +93,7 @@ const Graph = ({ nodes, edges, combos }: GraphProps) => {
   }
 
   const graphData = useMemo(
-    () => getGraphData({ data, selectedNodeId, badge, highlight }),
+    () => getGraphData({ data, selectedNodeId, badge, highlight, chromaticScale }),
     [badge, selectedNodeId, highlight]
   )
 
@@ -107,7 +107,9 @@ const Graph = ({ nodes, edges, combos }: GraphProps) => {
   useEffect(() => {
     if (searchedNodeId) {
       setSelectedNodeId(searchedNodeId)
-      graph.changeData(getGraphData({ data, selectedNodeId: searchedNodeId, badge, highlight }))
+      graph.changeData(
+        getGraphData({ data, selectedNodeId: searchedNodeId, badge, highlight, chromaticScale })
+      )
 
       // When we start searching one node after another we have an issue with the calculation
       // of the node position in the ViewController.focus
@@ -121,7 +123,9 @@ const Graph = ({ nodes, edges, combos }: GraphProps) => {
   const onNodeClick = (node: any) => {
     setSelectedNodeId(node.id)
     setDrawerNodeLabel(node.label)
-    graph.changeData(getGraphData({ data, selectedNodeId: node.id, badge, highlight }))
+    graph.changeData(
+      getGraphData({ data, selectedNodeId: node.id, badge, highlight, chromaticScale })
+    )
   }
 
   const openDrawer = (node: any, table: string) => {

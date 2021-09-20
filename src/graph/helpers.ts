@@ -1,5 +1,5 @@
 import * as d3ScaleChromatic from 'd3-scale-chromatic'
-import { Nodes, Edges, Combos, Badge, Highlight } from './model'
+import { Nodes, Edges, Combos, Badge, Highlight, ChromaticScale } from './model'
 
 type GetGraphDataArgsType = {
   data: {
@@ -10,11 +10,17 @@ type GetGraphDataArgsType = {
   selectedNodeId: string,
   badge: Badge
   highlight: Highlight
+  chromaticScale?: ChromaticScale
 }
 
-export const getGraphData = ({ data, selectedNodeId, badge, highlight } : GetGraphDataArgsType) => {
+export const getGraphData = ({ data, selectedNodeId, badge, highlight, chromaticScale } : GetGraphDataArgsType) => {
   const { nodes, edges, combos } = data
-  const getScaleChromaticColor = (t: number) => d3ScaleChromatic.interpolateWarm(t)
+
+  const getScaleChromaticColor = (t: number) => {
+    const scale = d3ScaleChromatic[chromaticScale || 'interpolateWarm'] as any
+    return scale(t)
+  }
+
   let nodesWithColors = [
     { id: selectedNodeId, color: getScaleChromaticColor(0.5)}
   ]
