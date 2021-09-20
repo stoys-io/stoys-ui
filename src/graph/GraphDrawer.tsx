@@ -28,6 +28,7 @@ const GraphDrawer = ({
   table,
   setDrawerTable,
 }: GraphDrawerProps) => {
+  console.log(data)
   return (
     <ResizableAntdDrawer
       drawerHeight={drawerHeight}
@@ -91,6 +92,11 @@ const GraphDrawer = ({
             <NoData>No data</NoData>
           )}
         </TabPane>
+        {data?.metadata ? (
+          <TabPane tab="Metadata" key="metadata">
+            <pre>{JSON.stringify(data.metadata, null, 2)}</pre>
+          </TabPane>
+        ) : null}
       </Tabs>
     </ResizableAntdDrawer>
   )
