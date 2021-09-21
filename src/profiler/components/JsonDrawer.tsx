@@ -1,11 +1,34 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Drawer from 'antd/lib/drawer'
+import { BigJsonViewerDom } from 'big-json-viewer'
 
 import 'antd/lib/drawer/style/css'
+import 'big-json-viewer/styles/default.css'
 
 import { JsonDrqwerProps } from '../model'
 
 const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Element => {
+  const jsonViewerRef = useRef<any>(null)
+
+  useEffect(() => {
+    const initJsonViewer = async () => {
+      const viewer = await BigJsonViewerDom.fromObject(datasets, {
+        linkLabelCopyPath: undefined,
+        linkLabelExpandAll: undefined,
+      })
+      const node = viewer.getRootElement()
+      jsonViewerRef.current.appendChild(node)
+      await node.openAll()
+
+      if (!visible) {
+        viewer.destroy()
+      }
+    }
+
+    // tslint:disable-next-line: no-floating-promises
+    initJsonViewer()
+  }, [datasets, visible])
+
   return (
     <Drawer
       placement="right"
@@ -17,7 +40,8 @@ const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Elemen
       style={{ position: 'absolute' }}
       destroyOnClose
     >
-      <pre>{JSON.stringify(datasets, null, 2)}</pre>
+      <div ref={jsonViewerRef} />
+      {/* <pre>{JSON.stringify(datasets, null, 2)}</pre> */}
     </Drawer>
   )
 }
