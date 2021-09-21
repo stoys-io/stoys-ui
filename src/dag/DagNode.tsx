@@ -3,7 +3,14 @@ import React from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import { NodeBody, NodeToolbar } from './styles'
 
-export const DagNode = ({ data, isConnectable }: NodeProps): JSX.Element => {
+export const DagNode = ({
+  data: {
+    label,
+    controls: { onClick },
+    highlight,
+  },
+  isConnectable,
+}: NodeProps): JSX.Element => {
   return (
     <>
       <Handle
@@ -12,13 +19,13 @@ export const DagNode = ({ data, isConnectable }: NodeProps): JSX.Element => {
         style={{ top: -3, background: '#555' }}
         isConnectable={isConnectable}
       />
-      <NodeBody>
-        <div>{data.label}</div>
+      <NodeBody highlight={highlight}>
+        <div>{label}</div>
         <NodeToolbar>
-          <button>JR</button>
-          <button>M</button>
-          <button>P</button>
-          <button>Q</button>
+          <button onClick={onClick}>JR</button>
+          <button onClick={onClick}>M</button>
+          <button onClick={onClick}>P</button>
+          <button onClick={onClick}>Q</button>
         </NodeToolbar>
       </NodeBody>
       <Handle
