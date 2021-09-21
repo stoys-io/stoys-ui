@@ -17,53 +17,91 @@ export const getGraphData = ({ data, selectedNodeId, badge, highlight, chromatic
   const { nodes, edges, combos } = data
 
   const getScaleChromaticColor = (t: number) => {
-    const scale = d3ScaleChromatic[chromaticScale || 'interpolateWarm'] as any
+    const scale = d3ScaleChromatic[chromaticScale || 'interpolatePuOr'] as any
     return scale(t)
   }
 
-  let nodesWithColors = [
-    { id: selectedNodeId, color: getScaleChromaticColor(0.5)}
-  ]
+  let nodesWithColors: { id: string, color: string }[] = []
   let edgesWithColors: { id: string, color: string }[] = []
 
-  if (highlight === 'nearest') {
+  if (selectedNodeId && highlight === 'nearest') {
     edges.forEach(edge => {
       if (edge.source === selectedNodeId && !nodesWithColors.find(n => n.id === edge.target)) {
-      nodesWithColors = [...nodesWithColors, { id: edge.target, color: getScaleChromaticColor(1)}]
-      edgesWithColors = [ ...edgesWithColors, { id: edge.id, color: getScaleChromaticColor(1)}]
+      nodesWithColors = [...nodesWithColors, { id: edge.target, color: getScaleChromaticColor(0.75)}]
+      edgesWithColors = [ ...edgesWithColors, { id: edge.id, color: getScaleChromaticColor(0.75)}]
       }
       if (edge.target === selectedNodeId && !nodesWithColors.find(n => n.id === edge.source)) {
-      nodesWithColors = [...nodesWithColors, { id: edge.source, color: getScaleChromaticColor(0)}]
-      edgesWithColors = [ ...edgesWithColors, { id: edge.id, color: getScaleChromaticColor(0)}]
+      nodesWithColors = [...nodesWithColors, { id: edge.source, color: getScaleChromaticColor(0.25)}]
+      edgesWithColors = [ ...edgesWithColors, { id: edge.id, color: getScaleChromaticColor(0.25)}]
       }
     })
   }
 
-  if (highlight === 'parents') {
+  if (selectedNodeId && (highlight === 'parents' || highlight === 'children')) {
+    const getDepthGradientParams = (maxDepth: number) => {
+      let lowParam = 0
+      let highParam = 0.25
+      if ( highlight === 'children') {
+        lowParam = 0.75
+        highParam = 1
+      }
+      let remainDiff = highParam - lowParam
+      const depthGradientParams: { [key: number]: number } = {}
+      for (let i = 1; i < maxDepth; i++) {
+        if (i === 1) {
+          depthGradientParams[i] = highlight === 'children' ? lowParam : highParam
+        } else {
+          depthGradientParams[i] = highlight === 'children' ? (depthGradientParams[i - 1] + remainDiff / 2) : (depthGradientParams[i - 1] - remainDiff / 2)
+          remainDiff = remainDiff / 2
+        }
+      }
+      depthGradientParams[maxDepth] = highlight === 'children' ? highParam : lowParam
+      return depthGradientParams
+    }
+
     let nodesWithDepth: { id: string, depth: number }[] = []
     let edgesWithDepth: { id: string, depth: number }[] = []
     let maxDepth = 0
-    const findSources = (nodeId: string, depth: number) => {
-      edges.forEach(edge => {
-        if (nodeId === edge.target) {
-          if (!nodesWithDepth.find(n => (n.id === edge.source) || (n.id === selectedNodeId))) {
-            nodesWithDepth = [...nodesWithDepth, { id: edge.source, depth }]
-            edgesWithDepth = [ ...edgesWithDepth, { id: edge.id, depth }]
-            maxDepth = maxDepth > depth ? maxDepth : depth
-            findSources(edge.source, depth + 1)
-          }
-        }
-      })
-    }
-    findSources(selectedNodeId, 1)
 
-    const colorSchemaStep = 0.5/maxDepth
+    if (highlight === 'parents') {
+      const findSources = (nodeId: string, depth: number) => {
+        edges.forEach(edge => {
+          if (nodeId === edge.target) {
+            if (!nodesWithDepth.find(n => (n.id === edge.source) || (n.id === selectedNodeId))) {
+              nodesWithDepth = [...nodesWithDepth, { id: edge.source, depth }]
+              edgesWithDepth = [ ...edgesWithDepth, { id: edge.id, depth }]
+              maxDepth = maxDepth > depth ? maxDepth : depth
+              findSources(edge.source, depth + 1)
+            }
+          }
+        })
+      }
+      findSources(selectedNodeId, 1)
+    }
+
+    if (highlight === 'children') {
+      const findTargets = (nodeId: string, depth: number) => {
+        edges.forEach(edge => {
+          if (nodeId === edge.source) {
+            if (!nodesWithDepth.find(n => (n.id === edge.target) || (n.id === selectedNodeId))) {
+              nodesWithDepth = [...nodesWithDepth, { id: edge.target, depth }]
+              edgesWithDepth = [ ...edgesWithDepth, { id: edge.id, depth }]
+              maxDepth = maxDepth > depth ? maxDepth : depth
+              findTargets(edge.target, depth + 1)
+            }
+          }
+        })
+      }
+      findTargets(selectedNodeId, 1)
+    }
+
+    const depthGradientParams = getDepthGradientParams(maxDepth)
     nodesWithColors = [
       ...nodesWithColors,
       ...nodesWithDepth.map(node => {
         return {
           id: node.id,
-          color: getScaleChromaticColor(0.5 - node.depth * colorSchemaStep)
+          color: getScaleChromaticColor(depthGradientParams[node.depth])
         }
       })
     ]
@@ -72,46 +110,7 @@ export const getGraphData = ({ data, selectedNodeId, badge, highlight, chromatic
       ...edgesWithDepth.map(edge => {
         return {
           id: edge.id,
-          color: getScaleChromaticColor(0.5 - edge.depth * colorSchemaStep)
-        }
-      })
-    ]
-  }
-
-  if (highlight === 'children') {
-    let nodesWithDepth: { id: string, depth: number }[] = []
-    let edgesWithDepth: { id: string, depth: number }[] = []
-    let maxDepth = 0
-    const findTargets = (nodeId: string, depth: number) => {
-      edges.forEach(edge => {
-        if (nodeId === edge.source) {
-          if (!nodesWithDepth.find(n => (n.id === edge.target) || (n.id === selectedNodeId))) {
-            nodesWithDepth = [...nodesWithDepth, { id: edge.target, depth }]
-            edgesWithDepth = [ ...edgesWithDepth, { id: edge.id, depth }]
-            maxDepth = maxDepth > depth ? maxDepth : depth
-            findTargets(edge.target, depth + 1)
-          }
-        }
-      })
-    }
-    findTargets(selectedNodeId, 1)
-
-    const colorSchemaStep = 0.5/maxDepth
-    nodesWithColors = [
-      ...nodesWithColors,
-      ...nodesWithDepth.map(node => {
-        return {
-          id: node.id,
-          color: getScaleChromaticColor(0.5 + node.depth * colorSchemaStep)
-        }
-      })
-    ]
-    edgesWithColors = [
-      ...edgesWithColors,
-      ...edgesWithDepth.map(edge => {
-        return {
-          id: edge.id,
-          color: getScaleChromaticColor(0.5 + edge.depth * colorSchemaStep)
+          color: getScaleChromaticColor(depthGradientParams[edge.depth])
         }
       })
     ]

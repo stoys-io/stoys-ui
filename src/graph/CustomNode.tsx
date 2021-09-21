@@ -37,7 +37,7 @@ type CustomNodeProps = {
 }
 
 const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
-  const { label, badgeNumber, highlightingColor } = cfg
+  const { label, badgeNumber, highlightingColor, selected } = cfg
   const badge = badgeNumber ? renderNumericValue(2, true)(badgeNumber) : ''
   return (
     <Group>
@@ -68,8 +68,8 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
           width: 210,
           height: 'auto',
           fill: '#fff',
-          stroke: highlightingColor || '#2e2d2d',
-          lineWidth: highlightingColor ? '2' : '1',
+          stroke: selected ? '#000000' : highlightingColor || '#2e2d2d',
+          lineWidth: selected ? '3' : highlightingColor ? '2' : '1',
           radius: [2],
           shadowColor: '#eee',
           shadowBlur: 30,
@@ -80,7 +80,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
         <Text
           style={{
             fill: highlightingColor || '#000000',
-            fontWeight: highlightingColor ? 600 : 400,
+            fontWeight: selected || highlightingColor ? 600 : 400,
             fontSize: 16,
             margin: [8],
             cursor: 'pointer',
@@ -92,7 +92,7 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
         <Rect
           style={{
             stroke: highlightingColor || '#2e2d2d',
-            lineWidth: highlightingColor ? '2' : '1',
+            lineWidth: selected || highlightingColor ? '2' : '1',
             radius: [0, 0, 2, 2],
             height: 60,
           }}
