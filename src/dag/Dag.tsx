@@ -7,7 +7,7 @@ import { getLayoutedElements } from './layout'
 
 import { DagNode } from './DagNode'
 import { Sidebar } from './Sidebar'
-import { Wrap, Container, Content, Aside } from './styles'
+import { Wrap, Container, Content } from './styles'
 import {
   findNeighborNodes,
   findChildNodes,
@@ -91,9 +91,7 @@ const Dag = ({ data, enableGrouping = false }: Props) => {
 
   return (
     <Container>
-      <Aside>
-        <Sidebar highlight={highlightMode} onHighlightChange={onHighlightChange} />
-      </Aside>
+      <Sidebar highlight={highlightMode} onHighlightChange={onHighlightChange} />
       <Content>
         <div style={{ height: '100vh', width: '100%' }}>
           <ReactFlow
