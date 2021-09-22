@@ -1,9 +1,10 @@
 import styled from '@emotion/styled'
-import { NODE_HEIGHT, NODE_WIDTH } from './constants'
+import { NODE_HEIGHT, NODE_WIDTH, NODE_HEIGHT2, NODE_WIDTH2 } from './constants'
 
-export const NodeBody = styled.div<{ highlight: boolean }>`
-  height: ${NODE_HEIGHT}px;
-  width: ${NODE_WIDTH}px;
+export const NodeBody = styled.div<{ highlight: boolean; expand: boolean }>`
+  height: ${props => (props.expand ? NODE_HEIGHT2 : NODE_HEIGHT)}px;
+  width: ${props => (props.expand ? NODE_WIDTH2 : NODE_WIDTH)}px;
+
   border: 2px solid ${props => (props.highlight ? 'green' : 'magenta')};
   border-radius: 5px;
 

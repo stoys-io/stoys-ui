@@ -8,6 +8,7 @@ export const DagNode = ({
     label,
     controls: { onClick },
     highlight,
+    expand,
   },
   isConnectable,
 }: NodeProps): JSX.Element => {
@@ -19,7 +20,7 @@ export const DagNode = ({
         style={{ top: -3, background: '#555' }}
         isConnectable={isConnectable}
       />
-      <NodeBody highlight={highlight}>
+      <NodeBody highlight={highlight} expand={expand}>
         <div>{label}</div>
         <NodeToolbar>
           <button onClick={onClick}>JR</button>

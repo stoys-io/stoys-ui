@@ -14,60 +14,25 @@ import { Wrap, Container, Content, Aside, Radio } from './styles'
 import { edges as edgesMock } from './Edges.mock'
 import { nodes as nodesMock } from './Nodes.mock'
 
-interface MockData {
-  edges: Array<{ id: string; source: string; target: string }>
-  nodes: Array<{ id: string; label: string }>
-}
+const Dag = ({ data, enableGrouping = false }: Props) => {
+  const initialNodes = !data
+    ? initialMockNodes
+    : !enableGrouping
+    ? mapInitialNodes(data)
+    : mapInitialNodesGrouping(data)
 
-const nodeControls = {
-  onClick: () => console.log('Open drawer'),
-}
+  const initialEdges = !data
+    ? initialMockEdges
+    : !enableGrouping
+    ? mapInitialEdges(data)
+    : mapInitialEdgesGrouping(data)
 
-const transformMockElements = ({ edges, nodes }: MockData): Graph => {
-  const newEdges: Edge[] = edges.map(edge => ({ ...edge, id: `el-${edge.id}` }))
-  const newNodes: Node[] = nodes.map(node => ({
-    id: node.id,
-    data: {
-      label: node.label,
-      highlight: false,
-      controls: nodeControls,
-    },
-    position: initialPosition,
-    type: 'dagNode',
-  }))
+  const [graph, setGraph] = useState<Graph>({
+    nodes: initialNodes,
+    edges: initialEdges,
+  })
 
-  return { edges: newEdges, nodes: newNodes }
-}
-
-const Dag = ({ data }: Data) => {
-  const initialNodes: Node<DataPayload>[] = data.tables.map((table: Table) => ({
-    id: table.id,
-    data: {
-      label: table.name,
-      controls: nodeControls,
-      highlight: false,
-    },
-    position: initialPosition,
-    type: 'dagNode',
-  }))
-
-  const initialEdges: Edge[] = data.tables
-    .filter((t: Table) => t.dependencies !== undefined)
-    .reduce((acc: Edge[], table: Table) => {
-      const items = table.dependencies!.map(dep => ({
-        id: `el-${dep}`,
-        source: table.id,
-        target: dep,
-      }))
-
-      return [...acc, ...items]
-    }, [])
-
-  const [graph, setGraph] = useState<Graph>({ nodes: initialNodes, edges: initialEdges })
-  /* const [graph, setGraph] = useState<Graph>(
-   *   transformMockElements({ nodes: nodesMock, edges: edgesMock })
-   * ) */
-  const [showWrap, setShowWrap] = useState<boolean>(false)
+  const [showWrap, _] = useState<boolean>(false)
 
   const [highlightMode, setHighlightMode] = useState<string>('nearest')
   const onHighlightChange = (event: any) => {
@@ -77,8 +42,29 @@ const Dag = ({ data }: Data) => {
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges])
 
-  const onElementExpand = (event: React.MouseEvent<Element, MouseEvent>, element: Node | Edge) =>
-    isNode(element) && setShowWrap(!showWrap)
+  const expandNode =
+    (id: string) =>
+    (graph: Graph): Graph => ({
+      ...graph,
+      nodes: graph.nodes.map((node: Node<DataPayload>) =>
+        node.id !== id
+          ? node
+          : {
+              ...node,
+              data: {
+                ...node.data,
+                highlight: node.data?.highlight ?? false, // TODO: Remove this line
+                expand: !node.data?.expand ?? false,
+              },
+            }
+      ),
+    })
+
+  /* const onElementExpand = (event: React.MouseEvent<Element, MouseEvent>, element: Node | Edge) =>
+   *   isNode(element) && setShowWrap(!showWrap) */
+
+  const onElementExpand = (_: any, element: Node | Edge) =>
+    isNode(element) && setGraph(expandNode(element.id))
 
   const highlightNode = (graph: Graph, id: string) => ({
     ...graph,
@@ -267,30 +253,120 @@ const Dag = ({ data }: Data) => {
 
 export { Dag }
 
-const nodeTypes = {
-  dagNode: DagNode,
-}
-
-const initialPosition = { x: 0, y: 0 }
-
-interface Data {
+interface Props {
   data: {
     tables: Table[]
   }
+  enableGrouping: boolean
 }
 
 interface Table {
   id: string
   name: string
   dependencies?: string[]
+  comboId?: string
 }
 
 interface DataPayload {
   highlight: boolean
   controls?: any
+  expand?: boolean
 }
 
 interface Graph {
   nodes: Node<DataPayload>[]
   edges: Edge[]
 }
+
+const nodeTypes = {
+  dagNode: DagNode,
+}
+
+const initialPosition = { x: 0, y: 0 }
+
+const nodeControls = {
+  onClick: () => console.log('Open drawer'),
+}
+
+const initialMockEdges: Edge[] = edgesMock.map(edge => ({ ...edge, id: `el-${edge.id}` }))
+const initialMockNodes: Node[] = nodesMock.map(node => ({
+  id: node.id,
+  data: {
+    label: node.label,
+    highlight: false,
+    controls: nodeControls,
+  },
+  position: initialPosition,
+  type: 'dagNode',
+}))
+
+const mapInitialNodes = (data: Props['data']): Node<DataPayload>[] =>
+  data.tables.map((table: Table) => ({
+    id: table.id,
+    data: {
+      label: table.name,
+      controls: nodeControls,
+      highlight: false,
+    },
+    position: initialPosition,
+    type: 'dagNode',
+  }))
+
+const mapInitialEdges = (data: Props['data']): Edge[] =>
+  data.tables
+    .filter((t: Table) => t.dependencies !== undefined)
+    .reduce((acc: Edge[], table: Table) => {
+      const items = table.dependencies!.map(dep => ({
+        id: `el-${dep}`,
+        source: table.id,
+        target: dep,
+      }))
+
+      return [...acc, ...items]
+    }, [])
+
+const mapInitialNodesGrouping = (data: Props['data']): Node<DataPayload>[] => {
+  const restNodes = data.tables
+    .filter(table => !table.comboId)
+    .map((table: Table) => ({
+      id: table.id,
+      data: {
+        label: table.name,
+        controls: nodeControls,
+        highlight: false,
+      },
+      position: initialPosition,
+      type: 'dagNode',
+    }))
+
+  const comb = data.tables.find(table => !!table.comboId)
+  const comboNodeNode =
+    comb !== undefined
+      ? {
+          id: comb.comboId!,
+          data: {
+            label: `combo ${comb.comboId}`,
+            controls: nodeControls,
+            highlight: false,
+            expand: true,
+          },
+          position: initialPosition,
+          type: 'dagNode',
+        }
+      : undefined
+
+  return comboNodeNode ? restNodes.concat(comboNodeNode) : restNodes
+}
+
+const mapInitialEdgesGrouping = (data: Props['data']): Edge[] =>
+  data.tables
+    .filter((t: Table) => t.dependencies !== undefined)
+    .reduce((acc: Edge[], table: Table) => {
+      const items = table.dependencies!.map(dep => ({
+        id: `el-${dep}`,
+        source: table.id,
+        target: dep,
+      }))
+
+      return [...acc, ...items]
+    }, [])
