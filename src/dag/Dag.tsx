@@ -1,18 +1,13 @@
 import React, { useState } from 'react'
-import ReactFlow, {
-  ReactFlowProvider,
-  Background,
-  isNode,
-  Node,
-  Edge,
-  MiniMap,
-} from 'react-flow-renderer'
-import { getLayoutedElements } from './layout'
-import { DagNode } from './DagNode'
-import { Wrap, Container, Content, Aside, Radio } from './styles'
+import ReactFlow, { Background, isNode, Node, Edge } from 'react-flow-renderer'
 
 import { edges as edgesMock } from './Edges.mock'
 import { nodes as nodesMock } from './Nodes.mock'
+import { getLayoutedElements } from './layout'
+
+import { DagNode } from './DagNode'
+import { Sidebar } from './Sidebar'
+import { Wrap, Container, Content, Aside } from './styles'
 
 const Dag = ({ data, enableGrouping = false }: Props) => {
   const initialNodes = !data
@@ -34,10 +29,10 @@ const Dag = ({ data, enableGrouping = false }: Props) => {
 
   const [showWrap, _] = useState<boolean>(false)
 
-  const [highlightMode, setHighlightMode] = useState<string>('nearest')
-  const onHighlightChange = (event: any) => {
+  const [highlightMode, setHighlightMode] = useState<Highlight>('nearest')
+  const onHighlightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGraph(resetHighlight)
-    setHighlightMode(event.target.value)
+    setHighlightMode(event.target.value as Highlight)
   }
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges])
@@ -180,74 +175,26 @@ const Dag = ({ data, enableGrouping = false }: Props) => {
   }
 
   return (
-    <ReactFlowProvider>
-      <Container>
-        <Aside>
-          <MiniMap
-            style={{ position: 'static' }}
-            nodeColor={(node: Node) => {
-              switch (node.type) {
-                case 'input':
-                  return 'red'
-                case 'default':
-                  return '#00ff00'
-                case 'output':
-                  return 'rgb(0,0,255)'
-                default:
-                  return '#eee'
-              }
-            }}
-          />
-          <Radio>
-            <div>
-              <input
-                type="radio"
-                id="nearest"
-                value="nearest"
-                onChange={onHighlightChange}
-                checked={highlightMode === 'nearest'}
-              />
-              Nearest
-            </div>
-            <div>
-              <input
-                type="radio"
-                id="parents"
-                value="parents"
-                onChange={onHighlightChange}
-                checked={highlightMode === 'parents'}
-              />
-              Downstream (parents)
-            </div>
-            <div>
-              <input
-                type="radio"
-                id="children"
-                value="children"
-                onChange={onHighlightChange}
-                checked={highlightMode === 'children'}
-              />
-              Upstream (children)
-            </div>
-          </Radio>
-        </Aside>
-        <Content>
-          <div style={{ height: '100vh', width: '100%' }}>
-            <ReactFlow
-              nodesDraggable={true}
-              onElementClick={onElementClick}
-              onNodeDoubleClick={onElementExpand}
-              onPaneClick={onPaneClick}
-              nodeTypes={nodeTypes}
-              elements={elements}
-            >
-              <Background />
-              {showWrap && <Wrap />}
-            </ReactFlow>
-          </div>
-        </Content>
-      </Container>
-    </ReactFlowProvider>
+    <Container>
+      <Aside>
+        <Sidebar highlight={highlightMode} onHighlightChange={onHighlightChange} />
+      </Aside>
+      <Content>
+        <div style={{ height: '100vh', width: '100%' }}>
+          <ReactFlow
+            nodesDraggable={true}
+            onElementClick={onElementClick}
+            onNodeDoubleClick={onElementExpand}
+            onPaneClick={onPaneClick}
+            nodeTypes={nodeTypes}
+            elements={elements}
+          >
+            <Background />
+            {showWrap && <Wrap />}
+          </ReactFlow>
+        </div>
+      </Content>
+    </Container>
   )
 }
 
@@ -277,6 +224,8 @@ interface Graph {
   nodes: Node<DataPayload>[]
   edges: Edge[]
 }
+
+type Highlight = 'nearest' | 'parents' | 'children'
 
 const nodeTypes = {
   dagNode: DagNode,
