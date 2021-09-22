@@ -28,7 +28,6 @@ const GraphDrawer = ({
   table,
   setDrawerTable,
 }: GraphDrawerProps) => {
-  console.log(data)
   return (
     <ResizableAntdDrawer
       drawerHeight={drawerHeight}
