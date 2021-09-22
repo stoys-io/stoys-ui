@@ -1,42 +1,19 @@
 import React from 'react'
-import { ReactFlowProvider, MiniMap, Node } from 'react-flow-renderer'
+import { ReactFlowProvider, MiniMap } from 'react-flow-renderer'
 
-import { Radio } from './styles'
+import Radio from 'antd/lib/radio'
+import Space from 'antd/lib/space'
+import { Node, Highlight } from './model'
 
 export const Sidebar = ({ highlight, onHighlightChange }: Props) => (
   <>
-    <Radio>
-      <div>
-        <input
-          type="radio"
-          id="nearest"
-          value="nearest"
-          onChange={onHighlightChange}
-          checked={highlight === 'nearest'}
-        />
-        Nearest
-      </div>
-      <div>
-        <input
-          type="radio"
-          id="parents"
-          value="parents"
-          onChange={onHighlightChange}
-          checked={highlight === 'parents'}
-        />
-        Downstream (parents)
-      </div>
-      <div>
-        <input
-          type="radio"
-          id="children"
-          value="children"
-          onChange={onHighlightChange}
-          checked={highlight === 'children'}
-        />
-        Upstream (children)
-      </div>
-    </Radio>
+    <Radio.Group onChange={onHighlightChange} value={highlight}>
+      <Space direction="vertical">
+        <Radio value={'nearest'}>Nearest</Radio>
+        <Radio value={'children'}>Downstream (children)</Radio>
+        <Radio value={'parents'}>Upstream (parents)</Radio>
+      </Space>
+    </Radio.Group>
   </>
 )
 
@@ -68,6 +45,6 @@ export const SidebarWithMiniMap = (props: Props) => (
 )
 
 interface Props {
-  highlight: 'nearest' | 'parents' | 'children'
+  highlight: Highlight
   onHighlightChange: (_: any) => void
 }

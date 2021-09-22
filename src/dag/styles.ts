@@ -38,8 +38,3 @@ export const Aside = styled.div`
   height: 100vh;
   background-color: lightgrey;
 `
-
-export const Radio = styled.div`
-  display: flex;
-  flex-direction: column;
-`
