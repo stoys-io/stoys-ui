@@ -74,8 +74,8 @@ const Sidebar = ({
         <Radio.Group onChange={onSetHighlight} value={highlight}>
           <Space direction="vertical">
             <Radio value={'nearest'}>Nearest</Radio>
-            <Radio value={'parents'}>Downstream (parents)</Radio>
-            <Radio value={'children'}>Upstream (children)</Radio>
+            <Radio value={'parents'}>Upstream (parents)</Radio>
+            <Radio value={'children'}>Downstream (children)</Radio>
           </Space>
         </Radio.Group>
       </SidebarContentWrapper>

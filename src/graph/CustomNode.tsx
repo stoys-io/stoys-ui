@@ -38,9 +38,8 @@ type CustomNodeProps = {
 }
 
 const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
-  const { label, badgeNumber, highlighted, selected, columns } = cfg
+  const { label, badgeNumber, highlightingColor, selected, columns } = cfg
   const badge = badgeNumber ? renderNumericValue(2, true)(badgeNumber) : ''
-
   return (
     <Group>
       <Rect
@@ -74,8 +73,8 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
           width: 210,
           height: 'auto',
           fill: '#fff',
-          stroke: highlighted ? '#1e80fe' : '#2e2d2d',
-          lineWidth: highlighted ? '2' : '1',
+          stroke: selected ? '#000000' : highlightingColor || '#2e2d2d',
+          lineWidth: selected ? '3' : highlightingColor ? '2' : '1',
           radius: [2],
           shadowColor: '#eee',
           shadowBlur: 30,
@@ -86,8 +85,8 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
       >
         <Text
           style={{
-            fill: highlighted ? '#1e80fe' : '#000000',
-            fontWeight: highlighted ? 600 : 400,
+            fill: highlightingColor || '#000000',
+            fontWeight: selected || highlightingColor ? 600 : 400,
             fontSize: 16,
             margin: [8],
             cursor: 'pointer',
@@ -99,17 +98,14 @@ const CustomNode = ({ cfg, openDrawer, onNodeClick }: CustomNodeProps) => {
         {columns?.length ? (
           <Rect
             style={{
-              stroke: selected ? '#1e80fe' : '#2e2d2d',
-              lineWidth: selected ? '2' : '1',
+              stroke: highlightingColor || '#2e2d2d',
+              lineWidth: selected || highlightingColor ? '2' : '1',
               radius: [0, 0, 2, 2],
               height: 20 * columns.length,
             }}
           >
             {columns.map((column: Column) => (
-              <Text
-                key={column.id}
-                style={{ fontSize: 14, fill: selected ? '#1e80fe' : '#000000', margin: [3] }}
-              >
+              <Text key={column.id} style={{ fontSize: 14, fill: '#000000', margin: [3] }}>
                 {trimText(column.name)}
               </Text>
             ))}

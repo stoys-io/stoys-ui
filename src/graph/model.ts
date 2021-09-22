@@ -1,6 +1,6 @@
 import { JoinRatesData } from '../joinRates/model'
 import { Dataset as ProfilerData } from '../profiler/model'
-import { QualityData } from '../quality/model'
+import { QualityData } from '../quality'
 
 export interface Node {
   id: string
@@ -32,11 +32,25 @@ export type Badge = 'violations' | 'partitions'
 
 export type Highlight = 'nearest' | 'parents' | 'children'
 
+type D3Scale = 'interpolateBrBG' | 'interpolatePRGn' | 'interpolatePiYG' | 'interpolatePuOr' | 'interpolateRdBu'
+  | 'interpolateRdGy' | 'interpolateRdYlBu' | 'interpolateRdYlGn' | 'interpolateSpectral' | 'interpolateBlues'
+  | 'interpolateGreens' | 'interpolateGreys' | 'interpolateOranges' | 'interpolatePurples' | 'interpolateReds'
+  | 'interpolateTurbo' | 'interpolateViridis' | 'interpolateInferno' | 'interpolateMagma' | 'interpolatePlasma'
+  | 'interpolateCividis' | 'interpolateWarm' | 'interpolateCool' | 'interpolateRainbow' | 'interpolateSinebow'
+  | 'interpolateCubehelixDefault' | 'interpolateBuGn' | 'interpolateBuPu' | 'interpolateGnBu' | 'interpolateOrRd'
+  | 'interpolatePuBuGn' | 'interpolatePuBu' | 'interpolatePuRd' | 'interpolateRdPu' | 'interpolateYlGnBu'
+  | 'interpolateYlGn' | 'interpolateYlOrBr' | 'interpolateYlOrRd'
+
+export type ChromaticScale = D3Scale
+
 export interface GraphProps {
   data?: Graph
   nodes?: Nodes
   edges?: Edges
   combos?: Combos
+  // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
+  // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
+  chromaticScale?: ChromaticScale
 }
 
 export interface Column {

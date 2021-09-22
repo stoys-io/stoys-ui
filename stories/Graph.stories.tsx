@@ -12,7 +12,8 @@ const Template: Story<GraphProps> = args => <GraphComponent {...args} />
 export const Graph = Template.bind({})
 Graph.storyName = 'Small data'
 Graph.args = {
-  data: dataMock as any // TODO: profiler props not match 
+  chromaticScale: 'interpolatePuOr',
+  data: dataMock as any // TODO: profiler props not match
 }
 
 export const BigGraph = Template.bind({})

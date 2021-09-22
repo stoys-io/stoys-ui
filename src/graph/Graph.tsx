@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react'
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import G6 from '@antv/g6'
 import { createNodeFromReact } from '@antv/g6-react-node'
 import { getGraphData } from './helpers'
@@ -10,7 +10,7 @@ import { Container, GraphContainer } from './styles'
 import { Badge, Combos, Edges, GraphProps, Highlight, Nodes } from './model'
 
 const Graph = (props: GraphProps) => {
-  const { data: { tables } = {} } = props
+  const { data: { tables } = {}, chromaticScale } = props
   const nodes: Nodes =
     props.nodes ||
     tables!.map(table => ({
@@ -108,20 +108,27 @@ const Graph = (props: GraphProps) => {
           type: 'dagre',
           rankdir: 'LR',
           nodesepFunc: (node: any) => {
-            return 15 * node.columns?.length || 30
+            return 15 * node.columns?.length || 10
           },
           ranksep: 70,
         },
       })
     }
-    graph.data(graphData)
+    graph.data(getData())
     graph.render()
     appendAutoShapeListener(graph)
   }
 
-  const graphData = useMemo(
-    () => getGraphData({ data, selectedNodeId, badge, highlight }),
-    [badge, selectedNodeId, highlight]
+  const getData = useCallback(
+    (args?: { selectedNodeId?: string }) =>
+      getGraphData({
+        data,
+        selectedNodeId: args?.selectedNodeId || selectedNodeId,
+        badge,
+        highlight,
+        chromaticScale,
+      }),
+    [data, badge, selectedNodeId, highlight]
   )
 
   useEffect(() => {
@@ -134,7 +141,7 @@ const Graph = (props: GraphProps) => {
   useEffect(() => {
     if (searchedNodeId) {
       setSelectedNodeId(searchedNodeId)
-      graph.changeData(getGraphData({ data, selectedNodeId: searchedNodeId, badge, highlight }))
+      graph.changeData(getData({ selectedNodeId: searchedNodeId }))
 
       // When we start searching one node after another we have an issue with the calculation
       // of the node position in the ViewController.focus
@@ -148,7 +155,7 @@ const Graph = (props: GraphProps) => {
   const onNodeClick = (node: any) => {
     setSelectedNodeId(node.id)
     setDrawerNodeId(node.id)
-    graph.changeData(getGraphData({ data, selectedNodeId: node.id, badge, highlight }))
+    graph.changeData(getData({ selectedNodeId: node.id }))
   }
 
   const openDrawer = (node: any, table: string) => {
@@ -161,6 +168,9 @@ const Graph = (props: GraphProps) => {
   const onSearchNode = () => {
     if (searchInputValue) {
       const node = nodes.find(node => node.label.indexOf(searchInputValue) !== -1)
+      if (searchHasError) {
+        setSearchHasError(false)
+      }
       if (!node) {
         return setSearchHasError(true)
       }
