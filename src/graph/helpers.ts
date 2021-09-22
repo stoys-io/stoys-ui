@@ -27,12 +27,12 @@ export const getGraphData = ({ data, selectedNodeId, badge, highlight, chromatic
   if (selectedNodeId && highlight === 'nearest') {
     edges.forEach(edge => {
       if (edge.source === selectedNodeId && !nodesWithColors.find(n => n.id === edge.target)) {
-      nodesWithColors = [...nodesWithColors, { id: edge.target, color: getScaleChromaticColor(0.75)}]
-      edgesWithColors = [ ...edgesWithColors, { id: edge.id, color: getScaleChromaticColor(0.75)}]
+      nodesWithColors = [...nodesWithColors, { id: edge.target, color: getScaleChromaticColor(0.25)}]
+      edgesWithColors = [ ...edgesWithColors, { id: edge.id, color: getScaleChromaticColor(0.25)}]
       }
       if (edge.target === selectedNodeId && !nodesWithColors.find(n => n.id === edge.source)) {
-      nodesWithColors = [...nodesWithColors, { id: edge.source, color: getScaleChromaticColor(0.25)}]
-      edgesWithColors = [ ...edgesWithColors, { id: edge.id, color: getScaleChromaticColor(0.25)}]
+      nodesWithColors = [...nodesWithColors, { id: edge.source, color: getScaleChromaticColor(0.75)}]
+      edgesWithColors = [ ...edgesWithColors, { id: edge.id, color: getScaleChromaticColor(0.75)}]
       }
     })
   }
@@ -41,7 +41,7 @@ export const getGraphData = ({ data, selectedNodeId, badge, highlight, chromatic
     const getDepthGradientParams = (maxDepth: number) => {
       let lowParam = 0
       let highParam = 0.25
-      if ( highlight === 'children') {
+      if ( highlight === 'parents') {
         lowParam = 0.75
         highParam = 1
       }
@@ -49,13 +49,13 @@ export const getGraphData = ({ data, selectedNodeId, badge, highlight, chromatic
       const depthGradientParams: { [key: number]: number } = {}
       for (let i = 1; i < maxDepth; i++) {
         if (i === 1) {
-          depthGradientParams[i] = highlight === 'children' ? lowParam : highParam
+          depthGradientParams[i] = highlight === 'parents' ? lowParam : highParam
         } else {
-          depthGradientParams[i] = highlight === 'children' ? (depthGradientParams[i - 1] + remainDiff / 2) : (depthGradientParams[i - 1] - remainDiff / 2)
+          depthGradientParams[i] = highlight === 'parents' ? (depthGradientParams[i - 1] + remainDiff / 2) : (depthGradientParams[i - 1] - remainDiff / 2)
           remainDiff = remainDiff / 2
         }
       }
-      depthGradientParams[maxDepth] = highlight === 'children' ? highParam : lowParam
+      depthGradientParams[maxDepth] = highlight === 'parents' ? highParam : lowParam
       return depthGradientParams
     }
 
