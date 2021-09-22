@@ -108,7 +108,8 @@ const Graph = (props: GraphProps) => {
           type: 'dagre',
           rankdir: 'LR',
           nodesepFunc: (node: any) => {
-            return 15 * node.columns?.length || 30
+            console.log(15 * node.columns?.length || 30, '15 * node.columns?.length || 30')
+            return 15 * node.columns?.length || 10
           },
           ranksep: 70,
         },
