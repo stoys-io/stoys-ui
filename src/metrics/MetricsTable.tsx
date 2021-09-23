@@ -3,9 +3,9 @@ import React, { useCallback, useMemo } from 'react'
 import 'antd/lib/table/style/css'
 
 import usePagination from '../hooks/usePagination'
-import { getMetricsColumns } from './columns'
-import { getMetricsTableData } from './helpers'
-import { MetricsTableProps } from './model'
+import { getMetricsColumns, getMetricsColumnsFromRawData } from './columns'
+import { getMetricsDataFromRawData, getMetricsTableData } from './helpers'
+import { MetricsTableProps, MetricsData, RawMetricsData } from './model'
 import { StyledMetricTable } from './styles'
 
 const TABLE_HEIGHT = 600
@@ -26,13 +26,28 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
     onChange,
   } = props
   const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
-  const _columns = useMemo(
-    () =>
-      columns ||
-      getMetricsColumns(data, !!previousReleaseDataIsShown, saveMetricThreshold, disabledColumns),
-    [data, columns, previousReleaseDataIsShown, saveMetricThreshold]
-  )
-  const _data = useMemo(() => getMetricsTableData(data), [data])
+  const _columns = useMemo(() => {
+    if (columns) {
+      return columns
+    }
+    if (data.isRawData) {
+      return getMetricsColumnsFromRawData(data as RawMetricsData)
+    }
+    return getMetricsColumns(
+      data as MetricsData,
+      !!previousReleaseDataIsShown,
+      saveMetricThreshold,
+      disabledColumns
+    )
+  }, [data, columns, previousReleaseDataIsShown, saveMetricThreshold])
+
+  const _data = useMemo(() => {
+    if (data.isRawData) {
+      return getMetricsDataFromRawData(data as RawMetricsData)
+    }
+    return getMetricsTableData(data as MetricsData)
+  }, [data])
+
   const _onChange = useCallback(
     (p, filters, sorter, extra) => {
       onChange?.(p, filters, sorter, extra)

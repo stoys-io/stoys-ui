@@ -12,6 +12,7 @@ import {
   TableCellNode,
   ChildrenColumnType,
   MetricsData,
+  RawMetricsData,
   SaveMetricThreshold,
   ColumnType,
 } from './model'
@@ -35,17 +36,15 @@ export const getMetricsColumns = (
     return []
   }
 
-  const keyColumns = metricsData.columns.map((column: ColumnNode) => {
-    return {
-      ...column,
-      id: column.columnName,
-      dataIndex: column.columnName,
-      key: column.columnName,
-      fixed: 'left' as 'left',
-      sorter: defaultSort(column.columnName),
-      width: getColumnWidth(column.title),
-    }
-  })
+  const keyColumns = metricsData.columns.map((column: ColumnNode) => ({
+    ...column,
+    id: column.columnName,
+    dataIndex: column.columnName,
+    key: column.columnName,
+    fixed: 'left' as 'left',
+    sorter: defaultSort(column.columnName),
+    width: getColumnWidth(column.title),
+  }))
 
   let columns: Array<ColumnType> = []
 
@@ -171,4 +170,53 @@ export const getMetricsColumns = (
   }
 
   return columns
+}
+
+export const getMetricsColumnsFromRawData = (
+  metricsData: RawMetricsData,
+  disabledColumns?: Array<string>
+) => {
+  function filterColumns(column: ChildrenColumnType): boolean {
+    return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
+  }
+  const keyColumns = metricsData?.key_columns?.map((column: string) => ({
+    id: column,
+    dataIndex: column,
+    title: getGroupTitle(column),
+    key: column,
+    fixed: 'left' as 'left',
+    sorter: defaultSort(column),
+    width: getColumnWidth(column),
+  }))
+
+  const columnNames = Object.keys(metricsData.data[0])
+  return columnNames?.reduce((columnsData: Array<ColumnType>, colName) => {
+    const isKeyColumn = metricsData?.key_columns && !!metricsData?.key_columns.includes(colName)
+    if (!isKeyColumn) {
+      let childrenColumns: Array<ChildrenColumnType> = [
+        {
+          id: `${colName}_current`,
+          key: `${colName}_current`,
+          dataIndex: `${colName}_current`,
+          title: 'Current',
+          sorter: defaultSort(`${colName}_current`),
+          render: renderNumericColumnValue,
+        },
+      ]
+      if (disabledColumns) {
+        childrenColumns = childrenColumns.filter(filterColumns)
+      }
+      return [
+        ...columnsData,
+        {
+          id: colName,
+          key: colName,
+          dataIndex: colName,
+          title: getGroupTitle(colName),
+          children: childrenColumns,
+        },
+      ]
+    }
+    return columnsData
+  }, keyColumns)
 }

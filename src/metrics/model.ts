@@ -51,9 +51,17 @@ export interface KeyValueInput {
   value: string
 }
 
+export interface RawMetricsData {
+  isRawData: boolean
+  table_name: string
+  key_columns: Array<string>
+  data: Array<{ [key: string]: Maybe<string | number> }>
+}
+
 export interface MetricsData {
   columns?: Array<ColumnNode>
   values: Array<Array<TableCellNode>>
+  isRawData?: boolean
 }
 
 export type SaveMetricThreshold = (
@@ -73,7 +81,7 @@ export interface ConfigProps {
   smallSize?: boolean
 }
 export interface MetricsTableProps extends TableProps<any> {
-  data: MetricsData
+  data: MetricsData | RawMetricsData
   config?: ConfigProps
 }
 

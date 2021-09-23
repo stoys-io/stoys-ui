@@ -1,0 +1,1847 @@
+{
+  "isRawData": true,
+  "table_name": "covid_data_metrics",
+  "key_columns": ["location"],
+  "data": [
+    {
+      "location": null,
+      "cases": 232567564.0,
+      "deaths": 5445301.0,
+      "excess_deaths": 21359361.4,
+      "average_deaths": 18817755.829999954,
+      "vaccinations": null
+    },
+    {
+      "location": "Afghanistan",
+      "cases": 63055.0,
+      "deaths": 2439.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 842439.0
+    },
+    {
+      "location": "Africa",
+      "cases": 2515167.0,
+      "deaths": 71488.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 49684195.0
+    },
+    {
+      "location": "Albania",
+      "cases": 69481.0,
+      "deaths": 1223.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 933648.0
+    },
+    {
+      "location": "Algeria",
+      "cases": 24348.0,
+      "deaths": 637.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2437370.0
+    },
+    {
+      "location": "Andorra",
+      "cases": 4333.0,
+      "deaths": 31.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 65781.0
+    },
+    {
+      "location": "Angola",
+      "cases": 17806.0,
+      "deaths": 383.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1449570.0
+    },
+    {
+      "location": "Anguilla",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 15961.0
+    },
+    {
+      "location": "Antigua and Barbuda",
+      "cases": 820.0,
+      "deaths": 33.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 66305.0
+    },
+    {
+      "location": "Argentina",
+      "cases": 2879861.0,
+      "deaths": 51436.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 19764568.0
+    },
+    {
+      "location": "Armenia",
+      "cases": 32736.0,
+      "deaths": 1001.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 60157.0
+    },
+    {
+      "location": "Aruba",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 103848.0
+    },
+    {
+      "location": "Asia",
+      "cases": 36607342.0,
+      "deaths": 476580.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1814118341.0
+    },
+    {
+      "location": "Australia",
+      "cases": 1743.0,
+      "deaths": 1.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 7320086.0
+    },
+    {
+      "location": "Austria",
+      "cases": 299869.0,
+      "deaths": 4857.0,
+      "excess_deaths": 4135.0,
+      "average_deaths": 3470.4,
+      "vaccinations": 7419151.0
+    },
+    {
+      "location": "Azerbaijan",
+      "cases": 109096.0,
+      "deaths": 1976.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3336842.0
+    },
+    {
+      "location": "Bahamas",
+      "cases": 3809.0,
+      "deaths": 60.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 86454.0
+    },
+    {
+      "location": "Bahrain",
+      "cases": 175193.0,
+      "deaths": 1002.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2036961.0
+    },
+    {
+      "location": "Bangladesh",
+      "cases": 380857.0,
+      "deaths": 6462.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 10101249.0
+    },
+    {
+      "location": "Barbados",
+      "cases": 2018.0,
+      "deaths": 24.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 166205.0
+    },
+    {
+      "location": "Belarus",
+      "cases": 218916.0,
+      "deaths": 1593.0,
+      "excess_deaths": null,
+      "average_deaths": 10165.8,
+      "vaccinations": 1008153.0
+    },
+    {
+      "location": "Belgium",
+      "cases": 445673.0,
+      "deaths": 5970.0,
+      "excess_deaths": 2443.0,
+      "average_deaths": 2240.4,
+      "vaccinations": 10513293.0
+    },
+    {
+      "location": "Belize",
+      "cases": 790.0,
+      "deaths": 14.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 102335.0
+    },
+    {
+      "location": "Benin",
+      "cases": 175.0,
+      "deaths": 3.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 33256.0
+    },
+    {
+      "location": "Bermuda",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 80012.0
+    },
+    {
+      "location": "Bhutan",
+      "cases": 1182.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 745962.0
+    },
+    {
+      "location": "Bolivia",
+      "cases": 231550.0,
+      "deaths": 6600.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2427351.0
+    },
+    {
+      "location": "Bonaire Sint Eustatius and Saba",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Bosnia and Herzegovina",
+      "cases": 80249.0,
+      "deaths": 4802.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 422100.0
+    },
+    {
+      "location": "Botswana",
+      "cases": 28249.0,
+      "deaths": 584.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 205370.0
+    },
+    {
+      "location": "Brazil",
+      "cases": 10163649.0,
+      "deaths": 309820.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 96685401.0
+    },
+    {
+      "location": "British Virgin Islands",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 6440.0
+    },
+    {
+      "location": "Brunei",
+      "cases": 46.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 76971.0
+    },
+    {
+      "location": "Bulgaria",
+      "cases": 223776.0,
+      "deaths": 10810.0,
+      "excess_deaths": 2959.0,
+      "average_deaths": 2356.6,
+      "vaccinations": 1735720.0
+    },
+    {
+      "location": "Burkina Faso",
+      "cases": 44.0,
+      "deaths": 1.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 26790.0
+    },
+    {
+      "location": "Cambodia",
+      "cases": 49909.0,
+      "deaths": 602.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 6853738.0
+    },
+    {
+      "location": "Cameroon",
+      "cases": 18756.0,
+      "deaths": 401.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 106199.0
+    },
+    {
+      "location": "Canada",
+      "cases": 958387.0,
+      "deaths": 12736.0,
+      "excess_deaths": 19335.0,
+      "average_deaths": 16990.0,
+      "vaccinations": 35699782.0
+    },
+    {
+      "location": "Cape Verde",
+      "cases": 16149.0,
+      "deaths": 128.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 77145.0
+    },
+    {
+      "location": "Cayman Islands",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 92970.0
+    },
+    {
+      "location": "Central African Republic",
+      "cases": 467.0,
+      "deaths": 5.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 80591.0
+    },
+    {
+      "location": "Chad",
+      "cases": 9.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 4807.0
+    },
+    {
+      "location": "Chile",
+      "cases": 960223.0,
+      "deaths": 16226.0,
+      "excess_deaths": 4526.0,
+      "average_deaths": 3623.0,
+      "vaccinations": 22287380.0
+    },
+    {
+      "location": "China",
+      "cases": 5042.0,
+      "deaths": 2.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1183717931.0
+    },
+    {
+      "location": "Colombia",
+      "cases": 2010476.0,
+      "deaths": 47985.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 17010892.0
+    },
+    {
+      "location": "Comoros",
+      "cases": 70.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 75071.0
+    },
+    {
+      "location": "Congo",
+      "cases": 2512.0,
+      "deaths": 28.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 98596.0
+    },
+    {
+      "location": "Cook Islands",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 15742.0
+    },
+    {
+      "location": "Costa Rica",
+      "cases": 202362.0,
+      "deaths": 2583.0,
+      "excess_deaths": 2897.0,
+      "average_deaths": 2147.0,
+      "vaccinations": 2386374.0
+    },
+    {
+      "location": "Cote d'Ivoire",
+      "cases": 15551.0,
+      "deaths": 121.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 746470.0
+    },
+    {
+      "location": "Croatia",
+      "cases": 153140.0,
+      "deaths": 4410.0,
+      "excess_deaths": 1517.0,
+      "average_deaths": 1105.4,
+      "vaccinations": 2504578.0
+    },
+    {
+      "location": "Cuba",
+      "cases": 58126.0,
+      "deaths": 436.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3969279.0
+    },
+    {
+      "location": "Curacao",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 149762.0
+    },
+    {
+      "location": "Cyprus",
+      "cases": 48966.0,
+      "deaths": 240.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 758808.0
+    },
+    {
+      "location": "Czechia",
+      "cases": 999718.0,
+      "deaths": 19353.0,
+      "excess_deaths": 6741.0,
+      "average_deaths": 4496.0,
+      "vaccinations": 7957744.0
+    },
+    {
+      "location": "Democratic Republic of Congo",
+      "cases": 11545.0,
+      "deaths": 171.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 54879.0
+    },
+    {
+      "location": "Denmark",
+      "cases": 173832.0,
+      "deaths": 1560.0,
+      "excess_deaths": 3743.0,
+      "average_deaths": 3184.4,
+      "vaccinations": 3058198.0
+    },
+    {
+      "location": "Djibouti",
+      "cases": 1212.0,
+      "deaths": 45.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 16563.0
+    },
+    {
+      "location": "Dominica",
+      "cases": 71.0,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 39500.0
+    },
+    {
+      "location": "Dominican Republic",
+      "cases": 94596.0,
+      "deaths": 871.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 7572978.0
+    },
+    {
+      "location": "Ecuador",
+      "cases": 223174.0,
+      "deaths": 7108.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3983941.0
+    },
+    {
+      "location": "Egypt",
+      "cases": 119627.0,
+      "deaths": 7223.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 4194891.0
+    },
+    {
+      "location": "El Salvador",
+      "cases": 19284.0,
+      "deaths": 598.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2563234.0
+    },
+    {
+      "location": "England",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 64384840.0
+    },
+    {
+      "location": "Equatorial Guinea",
+      "cases": 2161.0,
+      "deaths": 23.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 256067.0
+    },
+    {
+      "location": "Estonia",
+      "cases": 106001.0,
+      "deaths": 1065.0,
+      "excess_deaths": 731.0,
+      "average_deaths": 628.8,
+      "vaccinations": 929010.0
+    },
+    {
+      "location": "Eswatini",
+      "cases": 1692.0,
+      "deaths": 11.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 55234.0
+    },
+    {
+      "location": "Ethiopia",
+      "cases": 54391.0,
+      "deaths": 1256.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1652390.0
+    },
+    {
+      "location": "Europe",
+      "cases": 31064091.0,
+      "deaths": 703978.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 492071776.0
+    },
+    {
+      "location": "European Union",
+      "cases": 19595534.0,
+      "deaths": 420390.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 352740638.0
+    },
+    {
+      "location": "Faeroe Islands",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 42794.0
+    },
+    {
+      "location": "Falkland Islands",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 4933.0
+    },
+    {
+      "location": "Fiji",
+      "cases": 4078.0,
+      "deaths": 19.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 304899.0
+    },
+    {
+      "location": "Finland",
+      "cases": 59884.0,
+      "deaths": 413.0,
+      "excess_deaths": 1176.0,
+      "average_deaths": 1162.4,
+      "vaccinations": 4200662.0
+    },
+    {
+      "location": "France",
+      "cases": 3573469.0,
+      "deaths": 48480.0,
+      "excess_deaths": 28166.0,
+      "average_deaths": 25237.2,
+      "vaccinations": 51528534.0
+    },
+    {
+      "location": "French Polynesia",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 128313.0
+    },
+    {
+      "location": "Gabon",
+      "cases": 7273.0,
+      "deaths": 53.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 53681.0
+    },
+    {
+      "location": "Gambia",
+      "cases": 1287.0,
+      "deaths": 28.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 43007.0
+    },
+    {
+      "location": "Georgia",
+      "cases": 91357.0,
+      "deaths": 1673.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 348254.0
+    },
+    {
+      "location": "Germany",
+      "cases": 2089159.0,
+      "deaths": 60937.0,
+      "excess_deaths": 50877.0,
+      "average_deaths": 37277.0,
+      "vaccinations": 71904646.0
+    },
+    {
+      "location": "Ghana",
+      "cases": 10890.0,
+      "deaths": 186.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1318861.0
+    },
+    {
+      "location": "Gibraltar",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 80641.0
+    },
+    {
+      "location": "Greece",
+      "cases": 287000.0,
+      "deaths": 8081.0,
+      "excess_deaths": 2678.0,
+      "average_deaths": 2615.5,
+      "vaccinations": 8111131.0
+    },
+    {
+      "location": "Greenland",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 33842.0
+    },
+    {
+      "location": "Grenada",
+      "cases": 13.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 30578.0
+    },
+    {
+      "location": "Guatemala",
+      "cases": 119910.0,
+      "deaths": 2820.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 917853.0
+    },
+    {
+      "location": "Guernsey",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 75045.0
+    },
+    {
+      "location": "Guinea",
+      "cases": 4228.0,
+      "deaths": 45.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 480779.0
+    },
+    {
+      "location": "Guinea-Bissau",
+      "cases": 105.0,
+      "deaths": 2.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 17803.0
+    },
+    {
+      "location": "Guyana",
+      "cases": 11867.0,
+      "deaths": 286.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 336407.0
+    },
+    {
+      "location": "High income",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 962308146.0
+    },
+    {
+      "location": "Honduras",
+      "cases": 87064.0,
+      "deaths": 2738.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 591888.0
+    },
+    {
+      "location": "Hong Kong",
+      "cases": 1055.0,
+      "deaths": 14.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3564261.0
+    },
+    {
+      "location": "Hungary",
+      "cases": 491950.0,
+      "deaths": 20936.0,
+      "excess_deaths": 3437.0,
+      "average_deaths": 2678.6,
+      "vaccinations": 9739300.0
+    },
+    {
+      "location": "Iceland",
+      "cases": 819.0,
+      "deaths": 0.0,
+      "excess_deaths": 46.0,
+      "average_deaths": 42.0,
+      "vaccinations": 385181.0
+    },
+    {
+      "location": "India",
+      "cases": 19883951.0,
+      "deaths": 247541.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 317272691.0
+    },
+    {
+      "location": "Indonesia",
+      "cases": 1341554.0,
+      "deaths": 34148.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 40160688.0
+    },
+    {
+      "location": "Iran",
+      "cases": 1726374.0,
+      "deaths": 25658.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 5442938.0
+    },
+    {
+      "location": "Iraq",
+      "cases": 591976.0,
+      "deaths": 3479.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 757465.0
+    },
+    {
+      "location": "Ireland",
+      "cases": 178880.0,
+      "deaths": 2753.0,
+      "excess_deaths": 2760.0,
+      "average_deaths": 2865.0,
+      "vaccinations": 3482051.0
+    },
+    {
+      "location": "Isle of Man",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 99954.0
+    },
+    {
+      "location": "Israel",
+      "cases": 471625.0,
+      "deaths": 3372.0,
+      "excess_deaths": 3156.0,
+      "average_deaths": 2882.0,
+      "vaccinations": 10782311.0
+    },
+    {
+      "location": "Italy",
+      "cases": 2221150.0,
+      "deaths": 55946.0,
+      "excess_deaths": 31876.0,
+      "average_deaths": 27931.6,
+      "vaccinations": 49995818.0
+    },
+    {
+      "location": "Jamaica",
+      "cases": 23005.0,
+      "deaths": 597.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 245299.0
+    },
+    {
+      "location": "Japan",
+      "cases": 381870.0,
+      "deaths": 7591.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 42185917.0
+    },
+    {
+      "location": "Jersey",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 76983.0
+    },
+    {
+      "location": "Jordan",
+      "cases": 442734.0,
+      "deaths": 5707.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3558609.0
+    },
+    {
+      "location": "Kazakhstan",
+      "cases": 248117.0,
+      "deaths": 485.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 5020940.0
+    },
+    {
+      "location": "Kenya",
+      "cases": 77360.0,
+      "deaths": 1768.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1293843.0
+    },
+    {
+      "location": "Kosovo",
+      "cases": 23586.0,
+      "deaths": 451.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 165828.0
+    },
+    {
+      "location": "Kuwait",
+      "cases": 189379.0,
+      "deaths": 939.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2991152.0
+    },
+    {
+      "location": "Kyrgyzstan",
+      "cases": 29338.0,
+      "deaths": 458.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 165761.0
+    },
+    {
+      "location": "Laos",
+      "cases": 2062.0,
+      "deaths": 3.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1332960.0
+    },
+    {
+      "location": "Latvia",
+      "cases": 110957.0,
+      "deaths": 2156.0,
+      "excess_deaths": 2293.0,
+      "average_deaths": 1757.4,
+      "vaccinations": 1114701.0
+    },
+    {
+      "location": "Lebanon",
+      "cases": 210773.0,
+      "deaths": 3936.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1269438.0
+    },
+    {
+      "location": "Lesotho",
+      "cases": 283.0,
+      "deaths": 12.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 37329.0
+    },
+    {
+      "location": "Liberia",
+      "cases": 1680.0,
+      "deaths": 38.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 46731.0
+    },
+    {
+      "location": "Libya",
+      "cases": 22107.0,
+      "deaths": 309.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 387775.0
+    },
+    {
+      "location": "Liechtenstein",
+      "cases": 1248.0,
+      "deaths": 32.0,
+      "excess_deaths": 51.0,
+      "average_deaths": 21.8,
+      "vaccinations": 30820.0
+    },
+    {
+      "location": "Lithuania",
+      "cases": 148855.0,
+      "deaths": 2812.0,
+      "excess_deaths": 2738.0,
+      "average_deaths": 1644.8,
+      "vaccinations": 2231468.0
+    },
+    {
+      "location": "Low income",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 8405573.0
+    },
+    {
+      "location": "Lower middle income",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 427740124.0
+    },
+    {
+      "location": "Luxembourg",
+      "cases": 24699.0,
+      "deaths": 329.0,
+      "excess_deaths": 97.0,
+      "average_deaths": 84.2,
+      "vaccinations": 522416.0
+    },
+    {
+      "location": "Macao",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 326998.0
+    },
+    {
+      "location": "Madagascar",
+      "cases": 2843.0,
+      "deaths": 177.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 196768.0
+    },
+    {
+      "location": "Malawi",
+      "cases": 2815.0,
+      "deaths": 99.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 435416.0
+    },
+    {
+      "location": "Malaysia",
+      "cases": 463750.0,
+      "deaths": 4094.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 7437027.0
+    },
+    {
+      "location": "Maldives",
+      "cases": 57604.0,
+      "deaths": 158.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 506845.0
+    },
+    {
+      "location": "Mali",
+      "cases": 4475.0,
+      "deaths": 141.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 177726.0
+    },
+    {
+      "location": "Malta",
+      "cases": 15171.0,
+      "deaths": 182.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 644868.0
+    },
+    {
+      "location": "Mauritania",
+      "cases": 3096.0,
+      "deaths": 42.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 153750.0
+    },
+    {
+      "location": "Mauritius",
+      "cases": 1223.0,
+      "deaths": 8.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 632433.0
+    },
+    {
+      "location": "Mexico",
+      "cases": 1163085.0,
+      "deaths": 112492.0,
+      "excess_deaths": 61638.0,
+      "average_deaths": 29934.4,
+      "vaccinations": 43642279.0
+    },
+    {
+      "location": "Moldova",
+      "cases": 65537.0,
+      "deaths": 2145.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 690493.0
+    },
+    {
+      "location": "Monaco",
+      "cases": 1735.0,
+      "deaths": 30.0,
+      "excess_deaths": 51.0,
+      "average_deaths": 43.4,
+      "vaccinations": 36441.0
+    },
+    {
+      "location": "Mongolia",
+      "cases": 108812.0,
+      "deaths": 531.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3673298.0
+    },
+    {
+      "location": "Montenegro",
+      "cases": 29140.0,
+      "deaths": 681.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 286225.0
+    },
+    {
+      "location": "Montserrat",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2741.0
+    },
+    {
+      "location": "Morocco",
+      "cases": 62978.0,
+      "deaths": 1089.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 18909011.0
+    },
+    {
+      "location": "Mozambique",
+      "cases": 11521.0,
+      "deaths": 177.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 452304.0
+    },
+    {
+      "location": "Myanmar",
+      "cases": 6296.0,
+      "deaths": 154.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3384231.0
+    },
+    {
+      "location": "Namibia",
+      "cases": 42152.0,
+      "deaths": 868.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 132132.0
+    },
+    {
+      "location": "Nauru",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 8959.0
+    },
+    {
+      "location": "Nepal",
+      "cases": 369016.0,
+      "deaths": 7101.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3390484.0
+    },
+    {
+      "location": "Netherlands",
+      "cases": 834304.0,
+      "deaths": 5622.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 15161422.0
+    },
+    {
+      "location": "New Caledonia",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 107883.0
+    },
+    {
+      "location": "New Zealand",
+      "cases": 395.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1100903.0
+    },
+    {
+      "location": "Nicaragua",
+      "cases": 748.0,
+      "deaths": 12.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 171480.0
+    },
+    {
+      "location": "Niger",
+      "cases": 503.0,
+      "deaths": 8.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 234980.0
+    },
+    {
+      "location": "Nigeria",
+      "cases": 10572.0,
+      "deaths": 180.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3190285.0
+    },
+    {
+      "location": "North America",
+      "cases": 20685667.0,
+      "deaths": 453608.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 426468204.0
+    },
+    {
+      "location": "North Macedonia",
+      "cases": 58581.0,
+      "deaths": 2486.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 514888.0
+    },
+    {
+      "location": "Northern Cyprus",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 130505.0
+    },
+    {
+      "location": "Northern Ireland",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": 1359.0,
+      "average_deaths": 1104.8,
+      "vaccinations": 2005370.0
+    },
+    {
+      "location": "Norway",
+      "cases": 94446.0,
+      "deaths": 458.0,
+      "excess_deaths": 4113.0,
+      "average_deaths": 4236.8,
+      "vaccinations": 3987546.0
+    },
+    {
+      "location": "Oceania",
+      "cases": 22859.0,
+      "deaths": 186.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 9070249.0
+    },
+    {
+      "location": "Oman",
+      "cases": 135830.0,
+      "deaths": 1518.0,
+      "excess_deaths": 863.0,
+      "average_deaths": 759.6,
+      "vaccinations": 990469.0
+    },
+    {
+      "location": "Pakistan",
+      "cases": 404217.0,
+      "deaths": 10362.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 12846956.0
+    },
+    {
+      "location": "Palestine",
+      "cases": 75603.0,
+      "deaths": 962.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 739739.0
+    },
+    {
+      "location": "Panama",
+      "cases": 101047.0,
+      "deaths": 1672.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1497060.0
+    },
+    {
+      "location": "Papua New Guinea",
+      "cases": 11730.0,
+      "deaths": 124.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 46558.0
+    },
+    {
+      "location": "Paraguay",
+      "cases": 272551.0,
+      "deaths": 9850.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 641962.0
+    },
+    {
+      "location": "Peru",
+      "cases": 861417.0,
+      "deaths": 83382.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 7114779.0
+    },
+    {
+      "location": "Philippines",
+      "cases": 838312.0,
+      "deaths": 12373.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 9940897.0
+    },
+    {
+      "location": "Pitcairn",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 0.0
+    },
+    {
+      "location": "Poland",
+      "cases": 1622012.0,
+      "deaths": 47887.0,
+      "excess_deaths": 11775.0,
+      "average_deaths": 8280.6,
+      "vaccinations": 28227332.0
+    },
+    {
+      "location": "Portugal",
+      "cases": 486561.0,
+      "deaths": 10540.0,
+      "excess_deaths": 5957.0,
+      "average_deaths": 5091.6,
+      "vaccinations": 8271630.0
+    },
+    {
+      "location": "Qatar",
+      "cases": 79912.0,
+      "deaths": 347.0,
+      "excess_deaths": 221.0,
+      "average_deaths": 209.8,
+      "vaccinations": 3050512.0
+    },
+    {
+      "location": "Romania",
+      "cases": 466980.0,
+      "deaths": 18497.0,
+      "excess_deaths": 14472.0,
+      "average_deaths": 11034.4,
+      "vaccinations": 8872881.0
+    },
+    {
+      "location": "Russia",
+      "cases": 2792993.0,
+      "deaths": 86127.0,
+      "excess_deaths": 243235.0,
+      "average_deaths": 153821.8,
+      "vaccinations": 38444637.0
+    },
+    {
+      "location": "Rwanda",
+      "cases": 9902.0,
+      "deaths": 121.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 572615.0
+    },
+    {
+      "location": "Saint Helena",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 7718.0
+    },
+    {
+      "location": "Saint Kitts and Nevis",
+      "cases": 402.0,
+      "deaths": 3.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 40441.0
+    },
+    {
+      "location": "Saint Lucia",
+      "cases": 2777.0,
+      "deaths": 61.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 52711.0
+    },
+    {
+      "location": "Saint Vincent and the Grenadines",
+      "cases": 538.0,
+      "deaths": 3.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 16048.0
+    },
+    {
+      "location": "Samoa",
+      "cases": 0.0,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 45637.0
+    },
+    {
+      "location": "San Marino",
+      "cases": 1420.0,
+      "deaths": 17.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 44896.0
+    },
+    {
+      "location": "Sao Tome and Principe",
+      "cases": 287.0,
+      "deaths": 5.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 27664.0
+    },
+    {
+      "location": "Saudi Arabia",
+      "cases": 122847.0,
+      "deaths": 1539.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 17295100.0
+    },
+    {
+      "location": "Scotland",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": 4964.0,
+      "average_deaths": 4629.0,
+      "vaccinations": 6433280.0
+    },
+    {
+      "location": "Senegal",
+      "cases": 10002.0,
+      "deaths": 356.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 665595.0
+    },
+    {
+      "location": "Serbia",
+      "cases": 361846.0,
+      "deaths": 3522.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 5069758.0
+    },
+    {
+      "location": "Seychelles",
+      "cases": 14169.0,
+      "deaths": 58.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 139385.0
+    },
+    {
+      "location": "Sierra Leone",
+      "cases": 879.0,
+      "deaths": 3.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 97453.0
+    },
+    {
+      "location": "Singapore",
+      "cases": 3646.0,
+      "deaths": 7.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 5230097.0
+    },
+    {
+      "location": "Sint Maarten (Dutch part)",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 13397.0
+    },
+    {
+      "location": "Slovakia",
+      "cases": 204146.0,
+      "deaths": 10193.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3516204.0
+    },
+    {
+      "location": "Slovenia",
+      "cases": 143151.0,
+      "deaths": 1887.0,
+      "excess_deaths": 1343.0,
+      "average_deaths": 820.8,
+      "vaccinations": 1466003.0
+    },
+    {
+      "location": "Solomon Islands",
+      "cases": 2.0,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 21663.0
+    },
+    {
+      "location": "Somalia",
+      "cases": 2096.0,
+      "deaths": 119.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 82502.0
+    },
+    {
+      "location": "South Africa",
+      "cases": 481063.0,
+      "deaths": 12553.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2775505.0
+    },
+    {
+      "location": "South America",
+      "cases": 20217203.0,
+      "deaths": 597221.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 175519601.0
+    },
+    {
+      "location": "South Korea",
+      "cases": 69207.0,
+      "deaths": 440.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 18937248.0
+    },
+    {
+      "location": "South Sudan",
+      "cases": 557.0,
+      "deaths": 3.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 37137.0
+    },
+    {
+      "location": "Spain",
+      "cases": 1871468.0,
+      "deaths": 29992.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 39717702.0
+    },
+    {
+      "location": "Sri Lanka",
+      "cases": 198395.0,
+      "deaths": 2787.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3542860.0
+    },
+    {
+      "location": "Sudan",
+      "cases": 5934.0,
+      "deaths": 839.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 666167.0
+    },
+    {
+      "location": "Suriname",
+      "cases": 12864.0,
+      "deaths": 354.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 192122.0
+    },
+    {
+      "location": "Sweden",
+      "cases": 693942.0,
+      "deaths": 6350.0,
+      "excess_deaths": 4689.0,
+      "average_deaths": 3661.6,
+      "vaccinations": 7517411.0
+    },
+    {
+      "location": "Switzerland",
+      "cases": 193228.0,
+      "deaths": 1832.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 6920305.0
+    },
+    {
+      "location": "Syria",
+      "cases": 9570.0,
+      "deaths": 821.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 101138.0
+    },
+    {
+      "location": "Taiwan",
+      "cases": 13799.0,
+      "deaths": 638.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1947044.0
+    },
+    {
+      "location": "Tajikistan",
+      "cases": 0.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 49755.0
+    },
+    {
+      "location": "Thailand",
+      "cases": 228706.0,
+      "deaths": 1887.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 9051334.0
+    },
+    {
+      "location": "Timor",
+      "cases": 8044.0,
+      "deaths": 20.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 213620.0
+    },
+    {
+      "location": "Togo",
+      "cases": 5978.0,
+      "deaths": 34.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 332003.0
+    },
+    {
+      "location": "Tonga",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 27877.0
+    },
+    {
+      "location": "Trinidad and Tobago",
+      "cases": 25151.0,
+      "deaths": 709.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 275307.0
+    },
+    {
+      "location": "Tunisia",
+      "cases": 174205.0,
+      "deaths": 6530.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1741279.0
+    },
+    {
+      "location": "Turkey",
+      "cases": 3079367.0,
+      "deaths": 26580.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 48660972.0
+    },
+    {
+      "location": "Turkmenistan",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Turks and Caicos Islands",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 38789.0
+    },
+    {
+      "location": "Tuvalu",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1860.0
+    },
+    {
+      "location": "Uganda",
+      "cases": 38610.0,
+      "deaths": 622.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 850509.0
+    },
+    {
+      "location": "Ukraine",
+      "cases": 940188.0,
+      "deaths": 27841.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2433747.0
+    },
+    {
+      "location": "United Arab Emirates",
+      "cases": 418175.0,
+      "deaths": 1129.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 14330278.0
+    },
+    {
+      "location": "United Kingdom",
+      "cases": 2955676.0,
+      "deaths": 64267.0,
+      "excess_deaths": 53215.0,
+      "average_deaths": 43938.6,
+      "vaccinations": 76819922.0
+    },
+    {
+      "location": "United States",
+      "cases": 15897332.0,
+      "deaths": 283502.0,
+      "excess_deaths": 254048.0,
+      "average_deaths": 171205.4,
+      "vaccinations": 323193460.0
+    },
+    {
+      "location": "Upper middle income",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1568879939.0
+    },
+    {
+      "location": "Uruguay",
+      "cases": 312808.0,
+      "deaths": 4992.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3835551.0
+    },
+    {
+      "location": "Uzbekistan",
+      "cases": 27508.0,
+      "deaths": 105.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3377568.0
+    },
+    {
+      "location": "Vanuatu",
+      "cases": 0.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 6692.0
+    },
+    {
+      "location": "Venezuela",
+      "cases": 133025.0,
+      "deaths": 1746.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1396827.0
+    },
+    {
+      "location": "Vietnam",
+      "cases": 14551.0,
+      "deaths": 46.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3367360.0
+    },
+    {
+      "location": "Wales",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 3867272.0
+    },
+    {
+      "location": "Wallis and Futuna",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 8425.0
+    },
+    {
+      "location": "World",
+      "cases": 117704504.0,
+      "deaths": 2409125.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 2968403915.0
+    },
+    {
+      "location": "Yemen",
+      "cases": 446.0,
+      "deaths": 90.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 255582.0
+    },
+    {
+      "location": "Zambia",
+      "cases": 61838.0,
+      "deaths": 909.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 151442.0
+    },
+    {
+      "location": "Zimbabwe",
+      "cases": 14441.0,
+      "deaths": 371.0,
+      "excess_deaths": null,
+      "average_deaths": null,
+      "vaccinations": 1270857.0
+    }
+  ]
+}

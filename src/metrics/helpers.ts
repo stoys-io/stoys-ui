@@ -3,7 +3,15 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { renderNumericValue } from '../helpers'
 
-import { ColumnNode, MetricsData, MetricsTableData, SorterValue, TableCellNode } from './model'
+import {
+  ColumnNode,
+  MetricsData,
+  MetricsTableData,
+  RawMetricsData,
+  SorterValue,
+  TableCellNode,
+} from './model'
+import { Maybe } from '../model'
 
 export const defaultSort = (field: string) => (a: SorterValue, b: SorterValue) => {
   return get(a, field) > get(b, field) ? 1 : -1
@@ -55,5 +63,27 @@ export const getMetricsTableData = (metricsData: MetricsData) => {
       return acc
     }, {})
   )
+  return items?.map(addUniqueKey)
+}
+
+export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
+  if (!metricsData?.key_columns) {
+    return []
+  }
+  const keyColumns = metricsData.key_columns
+  const items = metricsData.data?.map(rawDataItem => {
+    return Object.keys(rawDataItem).reduce(
+      (dataItem: { [key: string]: Maybe<string | number> }, columnName) => {
+        const isKeyColumn = keyColumns.includes(columnName)
+        if (isKeyColumn) {
+          dataItem[columnName] = rawDataItem[columnName]
+        } else {
+          dataItem[`${columnName}_current`] = rawDataItem[columnName]
+        }
+        return dataItem
+      },
+      {}
+    )
+  })
   return items?.map(addUniqueKey)
 }
