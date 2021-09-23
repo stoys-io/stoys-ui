@@ -1,7 +1,6 @@
-import React, { SetStateAction, Dispatch } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import Radio, { RadioChangeEvent } from 'antd/lib/radio'
 import Space from 'antd/lib/space'
-import { Badge, Highlight } from './model'
 import {
   SidebarWrapper,
   UnderMiniMapBackground,
@@ -10,18 +9,7 @@ import {
   NodeSearch,
   SelectVersion,
 } from './styles'
-
-type SidebarProps = {
-  drawerHeight: number
-  badge: Badge
-  changeBadge: Dispatch<SetStateAction<Badge>>
-  searchInputValue: string
-  setSearchInputValue: Dispatch<SetStateAction<string>>
-  onSearchNode: () => void
-  searchHasError: boolean
-  highlight: Highlight
-  setHighlight: Dispatch<SetStateAction<Highlight>>
-}
+import { SidebarProps } from './model'
 
 const Sidebar = ({
   drawerHeight,
@@ -33,13 +21,26 @@ const Sidebar = ({
   searchHasError,
   highlight,
   setHighlight,
+  releases,
+  onReleaseChange,
 }: SidebarProps) => {
-  const onChangeBadge = (e: RadioChangeEvent) => {
-    changeBadge(e.target.value)
-  }
-  const onSetHighlight = (e: RadioChangeEvent) => {
-    setHighlight(e.target.value)
-  }
+  const onChangeBadge = useCallback(
+    (e: RadioChangeEvent) => {
+      changeBadge(e.target.value)
+    },
+    [changeBadge]
+  )
+  const onSetHighlight = useCallback(
+    (e: RadioChangeEvent) => {
+      setHighlight(e.target.value)
+    },
+    [setHighlight]
+  )
+  const _releases = useMemo(
+    () => releases?.map(release => ({ label: release, value: release })),
+    [releases]
+  )
+
   return (
     <SidebarWrapper drawerHeight={drawerHeight}>
       <UnderMiniMapBackground />
@@ -53,16 +54,15 @@ const Sidebar = ({
           onSearch={onSearchNode}
         />
         <MenuTitle>Select previous run:</MenuTitle>
-        <SelectVersion
-          placeholder="Previous Version"
-          options={[
-            { label: '20210422_150647_120', value: '20210422_150647_120' },
-            { label: '20210522_150647_470', value: '20210522_150647_470' },
-            { label: '20210621_150647_385', value: '20210621_150647_385' },
-            { label: '20210721_150647_861', value: '20210721_150647_861' },
-            { label: '20210820_150647_975', value: '20210820_150647_975' },
-          ]}
-        />
+
+        {_releases && _releases.length ? (
+          <SelectVersion
+            placeholder="Previous Version"
+            options={_releases}
+            onChange={onReleaseChange}
+          />
+        ) : null}
+
         <MenuTitle>Badges:</MenuTitle>
         <Radio.Group onChange={onChangeBadge} value={badge}>
           <Space direction="vertical">

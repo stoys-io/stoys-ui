@@ -1,16 +1,24 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react'
+import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react'
 import G6 from '@antv/g6'
 import { createNodeFromReact } from '@antv/g6-react-node'
-import { getGraphData } from './helpers'
+import { getGraphData, notEmpty } from './helpers'
 import { appendAutoShapeListener } from './events'
 import GraphDrawer from './GraphDrawer'
 import CustomNode from './CustomNode'
 import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
 import { Badge, Combos, Edges, GraphProps, Highlight, Nodes } from './model'
+import { SelectValue } from 'antd/lib/select'
 
 const Graph = (props: GraphProps) => {
-  const { data: { tables } = {} } = props
+  const releases = Array.isArray(props.data)
+    ? props.data.map(dataItem => dataItem.version)
+    : [props.data?.version]
+  const currentRelease = props.config?.current || releases[0] // TODO: by default take first
+  const baseReleases = releases.filter(release => release !== currentRelease).filter(notEmpty)
+  const tables = Array.isArray(props.data)
+    ? props.data?.find(dataItem => dataItem.version === currentRelease)?.tables
+    : props.data?.tables
   const nodes: Nodes =
     props.nodes ||
     tables!.map(table => ({
@@ -49,6 +57,8 @@ const Graph = (props: GraphProps) => {
   const [searchInputValue, setSearchInputValue] = useState<string>('')
   const [searchedNodeId, setSearchedNodeId] = useState('')
   const [searchHasError, setSearchHasError] = useState<boolean>(false)
+
+  const [baseRelease, setBaseRelease] = useState<string | number>('')
 
   const graphRef = useRef(null)
   let graph: any = null
@@ -173,6 +183,13 @@ const Graph = (props: GraphProps) => {
     [tables, drawerNodeId]
   )
 
+  const onReleaseChange = useCallback(
+    value => {
+      setBaseRelease(value)
+    },
+    [setBaseRelease]
+  )
+
   return (
     <Container>
       <Sidebar
@@ -185,6 +202,8 @@ const Graph = (props: GraphProps) => {
         searchHasError={searchHasError}
         highlight={highlight}
         setHighlight={setHighlight}
+        releases={baseReleases}
+        onReleaseChange={onReleaseChange}
       />
       <GraphContainer>
         <div ref={graphRef} />

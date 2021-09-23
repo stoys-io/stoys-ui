@@ -1,3 +1,6 @@
+import { SetStateAction, Dispatch } from 'react'
+import { SelectValue } from 'antd/lib/select'
+
 import { JoinRatesData } from '../joinRates/model'
 import { Dataset as ProfilerData } from '../profiler/model'
 import { QualityData } from '../quality/model'
@@ -33,10 +36,13 @@ export type Badge = 'violations' | 'partitions'
 export type Highlight = 'nearest' | 'parents' | 'children'
 
 export interface GraphProps {
-  data?: Graph
+  data?: Graph | Array<Graph>
   nodes?: Nodes
   edges?: Edges
   combos?: Combos
+  config?: {
+    current?: string
+  }
 }
 
 export interface Column {
@@ -67,4 +73,18 @@ export interface Graph {
   name: string
   version: string
   tables: Array<Table>
+}
+
+export interface SidebarProps {
+  drawerHeight: number
+  badge: Badge
+  changeBadge: Dispatch<SetStateAction<Badge>>
+  searchInputValue: string
+  setSearchInputValue: Dispatch<SetStateAction<string>>
+  onSearchNode: () => void
+  searchHasError: boolean
+  highlight: Highlight
+  setHighlight: Dispatch<SetStateAction<Highlight>>
+  releases?: Array<string>
+  onReleaseChange: (value: SelectValue) => void
 }

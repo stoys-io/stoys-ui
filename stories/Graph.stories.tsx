@@ -14,19 +14,21 @@ const Template: Story<GraphProps> = args => <GraphComponent {...args} />
 export const Graph = Template.bind({})
 Graph.storyName = 'Small data'
 Graph.args = {
-  data: dataMock as any // TODO: profiler props not match 
+  data: dataMock as any, // TODO: profiler props not match
 }
 
 export const BigGraph = Template.bind({})
 BigGraph.storyName = 'Big data'
 BigGraph.args = {
-  nodes, edges, combos
+  nodes,
+  edges,
+  combos,
 }
 
 export const DifGraph = Template.bind({})
 DifGraph.storyName = 'Diffing'
 DifGraph.args = {
-  data: difDataMock1 as any
+  data: [difDataMock1, difDataMock2] as any,
 }
 
 export default {
@@ -34,5 +36,5 @@ export default {
   component: [Graph, BigGraph, DifGraph],
   parameters: {
     layout: 'fullscreen',
-  }
+  },
 }
