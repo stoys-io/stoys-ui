@@ -36,18 +36,18 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
-    "@antv/g6": "^4.3.4",
-    "@antv/g6-react-node": "^1.4.2",
     "@emotion/core": "^10.0.10",
     "@emotion/css": "^10.0.9",
     "@emotion/styled": "^10.0.10",
     "antd": "^4.6.4",
+    "dagre": "^0.8.5",
     "echarts": "https://github.com/AE-Nuna/echarts.git#build",
     "echarts-for-react": "^3.0.1",
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
     "numbro": "^2.3.2",
     "rc-resize-observer": "^1.0.0",
+    "react-flow-renderer": "^9.6.7",
     "react-window": "^1.8.6"
   },
   "devDependencies": {
