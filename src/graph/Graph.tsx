@@ -20,7 +20,7 @@ import {
   changeBadge,
 } from './graph-ops'
 
-const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
+const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
   /* const nodes: Nodes =
                                                                                        *   props.nodes ||
                                                                                        *   tables!.map(table => ({
@@ -117,7 +117,7 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
 
   const onPaneClick = () => setGraph(resetHighlight)
   const onElementExpand = (_: any, element: Node | Edge) =>
-    isNode(element) && setGraph(expandNode(element.id))
+    enableGrouping && isNode(element) && setGraph(expandNode(element.id))
 
   const onSearchNode = () => {
     if (!searchValue) {

@@ -5,6 +5,9 @@ import Select from 'antd/lib/select'
 import Input from 'antd/lib/input'
 const { Search } = Input
 
+import Card from 'antd/lib/card'
+import { NODE_HEIGHT, NODE_HEIGHT2, NODE_WIDTH, NODE_WIDTH2 } from './constants'
+
 export const Container = styled.div`
   display: flex;
   height: 100vh;
@@ -84,5 +87,21 @@ export const NodeSearch = styled(Search)<{ error: string }>`
   .ant-input-affix-wrapper,
   .ant-input-affix-wrapper:hover {
     border-color: ${props => (props.error ? 'red' : '')};
+  }
+`
+
+export const ScrollCard = styled(Card)<{ expand: boolean; highlight: boolean }>`
+  width: ${props => (props.expand ? NODE_WIDTH2 : NODE_WIDTH)}px;
+  height: ${props => (props.expand ? NODE_HEIGHT2 : NODE_HEIGHT)}px;
+  border: 2px solid ${props => (props.highlight ? 'blue' : 'grey')};
+  border-radius: 3px;
+
+  // enables scroll
+  display: flex;
+  flex-direction: column;
+
+  .ant-card-body {
+    flex: 1;
+    overflow-y: scroll;
   }
 `
