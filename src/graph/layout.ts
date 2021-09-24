@@ -33,7 +33,6 @@ export const getLayoutedElements = (elements: Array<Node | Edge>) => {
 
   return elements.map(el => {
     if (isNode(el)) {
-      console.log(el)
       const nodeWithPosition = dagreGraph.node(el.id)
       el.targetPosition = (isHorizontal ? 'left' : 'top') as Position
       el.sourcePosition = (isHorizontal ? 'right' : 'bottom') as Position

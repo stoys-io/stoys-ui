@@ -74,7 +74,7 @@ interface Props {
 
   searchError: boolean
   searchValue: string
-  onSearchValueChange: (e: any) => void
+  onSearchValueChange: (v: string) => void
   onSearch: () => void
 
   highlight: Highlight

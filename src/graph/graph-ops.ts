@@ -4,7 +4,7 @@ export const highlightNode = (id: string) => (graph: Graph) => ({
   ...graph,
   nodes: graph.nodes.map((node: Node) => {
     if (node.id !== id) {
-      node
+      return node
     }
 
     const nodeData = node.data ?? defaultData
@@ -19,7 +19,7 @@ export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
   ...graph,
   nodes: graph.nodes.map((node: Node) => {
     if (!ids.includes(node.id)) {
-      node
+      return node
     }
 
     const nodeData = node.data ?? defaultData

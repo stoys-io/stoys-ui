@@ -16,32 +16,33 @@ import {
   findParentNodes,
   findNeighborNodes,
   expandNode,
+  highlightNode,
 } from './graph-ops'
 
 const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
   /* const nodes: Nodes =
-                                                                       *   props.nodes ||
-                                                                       *   tables!.map(table => ({
-                                                                       *     id: table.id,
-                                                                       *     label: table.name,
-                                                                       *     columns: table.columns,
-                                                                       *     violations: table.measures.violations,
-                                                                       *     partitions: table.measures.rows,
-                                                                       *     // TODO: add comboId
-                                                                       *   }))
+                                                                                       *   props.nodes ||
+                                                                                       *   tables!.map(table => ({
+                                                                                       *     id: table.id,
+                                                                                       *     label: table.name,
+                                                                                       *     columns: table.columns,
+                                                                                       *     violations: table.measures.violations,
+                                                                                       *     partitions: table.measures.rows,
+                                                                                       *     // TODO: add comboId
+                                                                                       *   }))
 
-                                                                       * const edgesObj: any = tables?.reduce((acc: any, table) => {
-                                                                       *   table.dependencies?.forEach((dependency: any) => (acc[dependency] = table.id))
+                                                                                       * const edgesObj: any = tables?.reduce((acc: any, table) => {
+                                                                                       *   table.dependencies?.forEach((dependency: any) => (acc[dependency] = table.id))
 
-                                                                       *   return acc
-                                                                       * }, {})
-                                                                       * const edges: Edges =
-                                                                       *   props.edges ||
-                                                                       *   Object.keys(edgesObj).map(source => ({
-                                                                       *     id: `${source}-${edgesObj[source]}`,
-                                                                       *     source,
-                                                                       *     target: edgesObj[source],
-                                                                       *   })) */
+                                                                                       *   return acc
+                                                                                       * }, {})
+                                                                                       * const edges: Edges =
+                                                                                       *   props.edges ||
+                                                                                       *   Object.keys(edgesObj).map(source => ({
+                                                                                       *     id: `${source}-${edgesObj[source]}`,
+                                                                                       *     source,
+                                                                                       *     target: edgesObj[source],
+                                                                                       *   })) */
 
   /* const combos: Combos = props.combos || [] */
 
@@ -116,6 +117,7 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
     if (!searchValue) {
       return
     }
+
     const node = graph.nodes.find((node: Node) => node.data?.label.indexOf(searchValue) !== -1)
     if (!node) {
       return setSearchError(true)
@@ -124,6 +126,8 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
     if (searchError) {
       return setSearchError(false)
     }
+
+    setGraph(prevGraph => highlightNode(node.id)(resetHighlight(prevGraph)))
   }
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges])
