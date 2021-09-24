@@ -8,7 +8,6 @@ import CustomNode from './CustomNode'
 import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
 import { Badge, Combos, Edges, GraphProps, Highlight, Nodes } from './model'
-import { SelectValue } from 'antd/lib/select'
 
 const Graph = (props: GraphProps) => {
   const releases = Array.isArray(props.data)
@@ -182,6 +181,15 @@ const Graph = (props: GraphProps) => {
     () => tables?.find(table => table.id === drawerNodeId),
     [tables, drawerNodeId]
   )
+  const baseDrawerData = useMemo(() => {
+    if (!baseRelease || !Array.isArray(props?.data)) {
+      return undefined
+    }
+
+    return props?.data
+      ?.find(dataItem => dataItem.version === baseRelease)
+      ?.tables?.find(table => table.name === drawerData?.name)
+  }, [baseRelease, drawerData, props])
 
   const onReleaseChange = useCallback(
     value => {
@@ -209,6 +217,7 @@ const Graph = (props: GraphProps) => {
         <div ref={graphRef} />
         <GraphDrawer
           data={drawerData}
+          baseData={baseDrawerData}
           drawerHeight={drawerHeight}
           setDrawerHeight={setDrawerHeight}
           table={drawerTable}

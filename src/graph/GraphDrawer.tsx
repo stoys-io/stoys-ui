@@ -11,6 +11,7 @@ const { TabPane } = Tabs
 
 type GraphDrawerProps = {
   data?: Table
+  baseData?: Table
   drawerHeight: number
   setDrawerHeight: Dispatch<SetStateAction<number>>
   visible: boolean
@@ -21,6 +22,7 @@ type GraphDrawerProps = {
 
 const GraphDrawer = ({
   data,
+  baseData,
   drawerHeight,
   setDrawerHeight,
   visible,
@@ -28,6 +30,12 @@ const GraphDrawer = ({
   table,
   setDrawerTable,
 }: GraphDrawerProps) => {
+  const profilerData = data?.dp_result ? [data.dp_result] : null
+
+  if (baseData?.dp_result && profilerData) {
+    profilerData.push(baseData.dp_result)
+  }
+
   return (
     <ResizableAntdDrawer
       drawerHeight={drawerHeight}
@@ -59,9 +67,9 @@ const GraphDrawer = ({
           )}
         </TabPane>
         <TabPane tab="Profiler" key="profiler">
-          {data?.dp_result ? (
+          {profilerData ? (
             <Profiler
-              datasets={[data.dp_result]}
+              datasets={profilerData}
               pagination={{ disabled: false }}
               rowToolbarOptions={{
                 logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
