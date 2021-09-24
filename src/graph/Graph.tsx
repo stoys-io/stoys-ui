@@ -1,65 +1,71 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState } from 'react'
 /* import { getGraphData } from './helpers' */
-/* import { appendAutoShapeListener } from './events' */
 import GraphDrawer from './GraphDrawer'
-/* import CustomNode from './CustomNode' */
 import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
-import { Badge, Combos, Edges, GraphProps, Highlight, Nodes } from './model'
-
 // ---
 
 import ReactFlow, { Background, isNode } from 'react-flow-renderer'
-import { Edge, Node, Graph } from './model2'
+import { Edge, Node, Graph, Highlight, Badge } from './model2'
 import { DagNode } from './DagNode'
 import { getLayoutedElements } from './layout'
+import {
+  resetHighlight,
+  highlightNodesBatch,
+  findChildNodes,
+  findParentNodes,
+  findNeighborNodes,
+  expandNode,
+} from './graph-ops'
 
-const Graph2 = (props: Props) => {
-  const {
-    data,
-    /* data: { tables } = {}, */
-    /* , chromaticScale */
-  } = props
+const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
   /* const nodes: Nodes =
-*   props.nodes ||
-*   tables!.map(table => ({
-*     id: table.id,
-*     label: table.name,
-*     columns: table.columns,
-*     violations: table.measures.violations,
-*     partitions: table.measures.rows,
-*     // TODO: add comboId
-*   }))
+                                                                       *   props.nodes ||
+                                                                       *   tables!.map(table => ({
+                                                                       *     id: table.id,
+                                                                       *     label: table.name,
+                                                                       *     columns: table.columns,
+                                                                       *     violations: table.measures.violations,
+                                                                       *     partitions: table.measures.rows,
+                                                                       *     // TODO: add comboId
+                                                                       *   }))
 
-* const edgesObj: any = tables?.reduce((acc: any, table) => {
-*   table.dependencies?.forEach((dependency: any) => (acc[dependency] = table.id))
+                                                                       * const edgesObj: any = tables?.reduce((acc: any, table) => {
+                                                                       *   table.dependencies?.forEach((dependency: any) => (acc[dependency] = table.id))
 
-*   return acc
-* }, {})
-* const edges: Edges =
-*   props.edges ||
-*   Object.keys(edgesObj).map(source => ({
-*     id: `${source}-${edgesObj[source]}`,
-*     source,
-*     target: edgesObj[source],
-*   })) */
+                                                                       *   return acc
+                                                                       * }, {})
+                                                                       * const edges: Edges =
+                                                                       *   props.edges ||
+                                                                       *   Object.keys(edgesObj).map(source => ({
+                                                                       *     id: `${source}-${edgesObj[source]}`,
+                                                                       *     source,
+                                                                       *     target: edgesObj[source],
+                                                                       *   })) */
 
   /* const combos: Combos = props.combos || [] */
 
   /* const data = { nodes, edges, combos } */
+
+  /* const [selectedNodeId, setSelectedNodeId] = useState<string>('') */
+
+  /* const [searchedNodeId, setSearchedNodeId] = useState('') */
+
+  // -----
+
+  const [graph, setGraph] = useState<Graph>({
+    nodes: mapInitialNodes(data),
+    edges: mapInitialEdges(data),
+  })
+  const [highlight, setHighlight] = useState<Highlight>('nearest')
+  const [badge, setBadge] = useState<Badge>('violations')
+  const [searchValue, setSearchValue] = useState<string>('')
+  const [searchError, setSearchError] = useState<boolean>(false)
+
   const [drawerIsVisible, setDrawerVisibility] = useState(false)
   const [drawerNodeId, setDrawerNodeId] = useState('')
   const [drawerTable, setDrawerTable] = useState('')
   const [drawerHeight, setDrawerHeight] = useState(500)
-
-  const [badge, setBadge] = useState<Badge>('violations')
-
-  /* const [selectedNodeId, setSelectedNodeId] = useState<string>('') */
-  const [highlight, setHighlight] = useState<Highlight>('nearest')
-
-  const [searchInputValue, setSearchInputValue] = useState<string>('')
-  /* const [searchedNodeId, setSearchedNodeId] = useState('') */
-  const [searchHasError, setSearchHasError] = useState<boolean>(false)
 
   /* const onNodeClick = (node: any) => {
    *   setSelectedNodeId(node.id)
@@ -74,41 +80,51 @@ const Graph2 = (props: Props) => {
    *   setDrawerTable(table)
    * } */
 
-  /* const onSearchNode = () => {
-   *   if (searchInputValue) {
-   *     const node = nodes.find((node: any) => node.label.indexOf(searchInputValue) !== -1)
-   *     if (searchHasError) {
-   *       setSearchHasError(false)
-   *     }
-   *     if (!node) {
-   *       return setSearchHasError(true)
-   *     }
-   *   }
-   * } */
-
   /* const drawerData = useMemo(
    *   () => tables?.find((table: any) => table.id === drawerNodeId),
    *   [tables, drawerNodeId]
    * ) */
 
-  // -----
+  const onHighlightChange = (value: Highlight) => {
+    setGraph(resetHighlight)
+    setHighlight(value)
+  }
 
-  /* const initialNodes: Edge[] = edgesMock.map(edge => ({ ...edge, id: `el-${edge.id}` }))
-   * const initialEdges: Node[] = nodesMock.map(node => ({
-   *   id: node.id,
-   *   data: {
-   *     label: node.label,
-   *     highlight: false,
-   *     controls: { onClick: () => {} },
-   *   },
-   *   position: { x: 0, y: 0 },
-   *   type: 'dagNode',
-   * })) */
+  const onElementClick = (_: any, element: Node | Edge) => {
+    if (!isNode(element)) {
+      return
+    }
 
-  const [graph, setGraph] = useState<Graph>({
-    nodes: mapInitialNodes(data),
-    edges: mapInitialEdges(data),
-  })
+    setGraph(resetHighlight)
+
+    const nodesToHighlight =
+      highlight === 'parents'
+        ? findParentNodes(graph, element.id)
+        : highlight === 'children'
+        ? findChildNodes(graph, element.id)
+        : findNeighborNodes(graph, element.id)
+
+    const nodesToHighlight2 = nodesToHighlight.concat([element.id])
+    setGraph(highlightNodesBatch(nodesToHighlight2))
+  }
+
+  const onPaneClick = () => setGraph(resetHighlight)
+  const onElementExpand = (_: any, element: Node | Edge) =>
+    isNode(element) && setGraph(expandNode(element.id))
+
+  const onSearchNode = () => {
+    if (!searchValue) {
+      return
+    }
+    const node = graph.nodes.find((node: Node) => node.data?.label.indexOf(searchValue) !== -1)
+    if (!node) {
+      return setSearchError(true)
+    }
+
+    if (searchError) {
+      return setSearchError(false)
+    }
+  }
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges])
   return (
@@ -116,20 +132,20 @@ const Graph2 = (props: Props) => {
       <Sidebar
         drawerHeight={drawerIsVisible ? drawerHeight : 0}
         badge={badge}
-        changeBadge={setBadge}
-        searchInputValue={searchInputValue}
-        setSearchInputValue={setSearchInputValue}
-        onSearchNode={/* onSearchNode */ () => {}}
-        searchHasError={searchHasError}
+        onBadgeChange={setBadge}
+        searchValue={searchValue}
+        onSearchValueChange={setSearchValue}
+        onSearch={onSearchNode}
+        searchError={searchError}
         highlight={highlight}
-        setHighlight={setHighlight}
+        onHighlightChange={onHighlightChange}
       />
       <div style={{ height: '100vh', width: '100%' }}>
         <ReactFlow
           nodesDraggable={true}
-          onElementClick={/* onElementClick */ () => {}}
-          onNodeDoubleClick={/* onElementExpand */ () => {}}
-          onPaneClick={/* onPaneClick */ () => {}}
+          onElementClick={onElementClick}
+          onNodeDoubleClick={onElementExpand}
+          onPaneClick={onPaneClick}
           nodeTypes={nodeTypes}
           elements={elements}
         >
@@ -140,7 +156,6 @@ const Graph2 = (props: Props) => {
         <GraphDrawer
           data={
             /* drawerData */
-
             {
               id: '1',
               name: 'a',

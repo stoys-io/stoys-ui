@@ -1,86 +1,82 @@
-import React, { SetStateAction, Dispatch } from 'react'
-import Radio, { RadioChangeEvent } from 'antd/lib/radio'
+import React from 'react'
+import Radio from 'antd/lib/radio'
 import Space from 'antd/lib/space'
-import { Badge, Highlight } from './model'
+
+import { Highlight, Badge } from './model2'
+
 import {
   SidebarWrapper,
-  UnderMiniMapBackground,
   SidebarContentWrapper,
   MenuTitle,
   NodeSearch,
   SelectVersion,
 } from './styles'
 
-type SidebarProps = {
-  drawerHeight: number
-  badge: Badge
-  changeBadge: Dispatch<SetStateAction<Badge>>
-  searchInputValue: string
-  setSearchInputValue: Dispatch<SetStateAction<string>>
-  onSearchNode: () => void
-  searchHasError: boolean
-  highlight: Highlight
-  setHighlight: Dispatch<SetStateAction<Highlight>>
-}
-
 const Sidebar = ({
   drawerHeight,
   badge,
-  changeBadge,
-  searchInputValue,
-  setSearchInputValue,
-  onSearchNode,
-  searchHasError,
+  onBadgeChange,
+
+  searchError,
+  searchValue,
+  onSearchValueChange,
+  onSearch,
+
   highlight,
-  setHighlight,
-}: SidebarProps) => {
-  const onChangeBadge = (e: RadioChangeEvent) => {
-    changeBadge(e.target.value)
-  }
-  const onSetHighlight = (e: RadioChangeEvent) => {
-    setHighlight(e.target.value)
-  }
-  return (
-    <SidebarWrapper drawerHeight={drawerHeight}>
-      <UnderMiniMapBackground />
-      <SidebarContentWrapper>
-        <NodeSearch
-          error={searchHasError ? 'true' : ''}
-          placeholder="Search node"
-          allowClear
-          value={searchInputValue}
-          onChange={e => setSearchInputValue(e.target.value)}
-          onSearch={onSearchNode}
-        />
-        <MenuTitle>Select previous run:</MenuTitle>
-        <SelectVersion
-          placeholder="Previous Version"
-          options={[
-            { label: '20210422_150647_120', value: '20210422_150647_120' },
-            { label: '20210522_150647_470', value: '20210522_150647_470' },
-            { label: '20210621_150647_385', value: '20210621_150647_385' },
-            { label: '20210721_150647_861', value: '20210721_150647_861' },
-            { label: '20210820_150647_975', value: '20210820_150647_975' },
-          ]}
-        />
-        <MenuTitle>Badges:</MenuTitle>
-        <Radio.Group onChange={onChangeBadge} value={badge}>
-          <Space direction="vertical">
-            <Radio value={'violations'}>Errors</Radio>
-            <Radio value={'partitions'}>Partitions</Radio>
-          </Space>
-        </Radio.Group>
-        <MenuTitle>Highlight:</MenuTitle>
-        <Radio.Group onChange={onSetHighlight} value={highlight}>
-          <Space direction="vertical">
-            <Radio value={'nearest'}>Nearest</Radio>
-            <Radio value={'parents'}>Upstream (parents)</Radio>
-            <Radio value={'children'}>Downstream (children)</Radio>
-          </Space>
-        </Radio.Group>
-      </SidebarContentWrapper>
-    </SidebarWrapper>
-  )
-}
+  onHighlightChange,
+}: Props) => (
+  <SidebarWrapper drawerHeight={drawerHeight}>
+    <SidebarContentWrapper>
+      <NodeSearch
+        error={searchError ? 'true' : ''}
+        placeholder="Search node"
+        allowClear
+        value={searchValue}
+        onChange={e => onSearchValueChange(e.target.value)}
+        onSearch={onSearch}
+      />
+      <MenuTitle>Select previous run:</MenuTitle>
+      <SelectVersion
+        placeholder="Previous Version"
+        options={[
+          { label: '20210422_150647_120', value: '20210422_150647_120' },
+          { label: '20210522_150647_470', value: '20210522_150647_470' },
+          { label: '20210621_150647_385', value: '20210621_150647_385' },
+          { label: '20210721_150647_861', value: '20210721_150647_861' },
+          { label: '20210820_150647_975', value: '20210820_150647_975' },
+        ]}
+      />
+      <MenuTitle>Badges:</MenuTitle>
+      <Radio.Group onChange={e => onBadgeChange(e.target.value)} value={badge}>
+        <Space direction="vertical">
+          <Radio value={'violations'}>Errors</Radio>
+          <Radio value={'partitions'}>Partitions</Radio>
+        </Space>
+      </Radio.Group>
+      <MenuTitle>Highlight:</MenuTitle>
+      <Radio.Group onChange={e => onHighlightChange(e.target.value)} value={highlight}>
+        <Space direction="vertical">
+          <Radio value={'nearest'}>Nearest</Radio>
+          <Radio value={'parents'}>Upstream (parents)</Radio>
+          <Radio value={'children'}>Downstream (children)</Radio>
+        </Space>
+      </Radio.Group>
+    </SidebarContentWrapper>
+  </SidebarWrapper>
+)
 
 export default Sidebar
+
+interface Props {
+  drawerHeight: number
+  badge: Badge
+  onBadgeChange: (v: Badge) => void
+
+  searchError: boolean
+  searchValue: string
+  onSearchValueChange: (e: any) => void
+  onSearch: () => void
+
+  highlight: Highlight
+  onHighlightChange: (v: Highlight) => void
+}

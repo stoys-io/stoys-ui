@@ -26,30 +26,9 @@ export const SidebarContentWrapper = styled.div`
   z-index: 3;
 `
 
-export const UnderMiniMapBackground = styled.div`
-  width: 100%;
-  height: 200px;
-  background-color: transparent;
-`
-
 export const GraphContainer = styled.div`
-  width: calc(100% - 250px);
-  .minimap {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #f4f2f4;
-  }
-  .g6-tooltip {
-    border: 1px solid #e2e2e2;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #545454;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 4px;
-    box-shadow: rgb(174, 174, 174) 0 0 10px;
-  }
-  .ant-drawer-top.ant-drawer-open, .ant-drawer-bottom.ant-drawer-open {
+  .ant-drawer-top.ant-drawer-open,
+  .ant-drawer-bottom.ant-drawer-open {
     height: unset;
   }
 `
@@ -101,7 +80,9 @@ export const SelectVersion = styled(Select)`
 `
 
 export const NodeSearch = styled(Search)<{ error: string }>`
-  .ant-input-search-button, .ant-input-affix-wrapper, .ant-input-affix-wrapper:hover {
-    border-color: ${props => props.error ? 'red' : ''};
+  .ant-input-search-button,
+  .ant-input-affix-wrapper,
+  .ant-input-affix-wrapper:hover {
+    border-color: ${props => (props.error ? 'red' : '')};
   }
 `

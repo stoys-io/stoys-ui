@@ -1,7 +1,13 @@
 import React from 'react'
-
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
-/* import { NodeBody, NodeToolbar } from './styles' */
+
+import Card from 'antd/lib/card'
+import 'antd/lib/card/style/css'
+
+import List from 'antd/lib/list'
+import 'antd/lib/list/style/css'
+
+import { NODE_HEIGHT, NODE_WIDTH, NODE_HEIGHT2, NODE_WIDTH2 } from './constants'
 
 export const DagNode = ({
   data: {
@@ -12,6 +18,13 @@ export const DagNode = ({
   },
   isConnectable,
 }: NodeProps): JSX.Element => {
+  const cardStyle = {
+    width: expand ? NODE_WIDTH2 : NODE_WIDTH,
+    height: expand ? NODE_HEIGHT2 : NODE_HEIGHT,
+    border: `2px solid ${highlight ? 'green' : 'magenta'}`,
+    borderRadius: '5px',
+  }
+  const data = [1, 2, 3]
   return (
     <>
       <Handle
@@ -20,15 +33,9 @@ export const DagNode = ({
         style={{ top: -3, background: '#555' }}
         isConnectable={isConnectable}
       />
-      {/* <NodeBody highlight={highlight} expand={expand}> */}
-      <div>{label}</div>
-      {/* <NodeToolbar>
-          <button onClick={onClick}>JR</button>
-          <button onClick={onClick}>M</button>
-          <button onClick={onClick}>P</button>
-          <button onClick={onClick}>Q</button>
-        </NodeToolbar> */}
-      {/* </NodeBody> */}
+      <Card title={label} size="small" type="inner" style={cardStyle}>
+        <List size="small" dataSource={data} renderItem={item => <List.Item>{item}</List.Item>} />
+      </Card>
       <Handle
         type="source"
         position={Position['Bottom']}

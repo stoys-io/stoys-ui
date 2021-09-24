@@ -39,7 +39,7 @@ export const getLayoutedElements = (elements: Array<Node | Edge>) => {
       el.sourcePosition = (isHorizontal ? 'right' : 'bottom') as Position
 
       el.position = {
-        x: nodeWithPosition.x - nodeWidth / 2 - 1000,
+        x: nodeWithPosition.x - nodeWidth / 2 + 100,
         y: nodeWithPosition.y - nodeHeight / 2,
       }
     }
