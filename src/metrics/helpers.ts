@@ -82,7 +82,9 @@ export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
           dataItem[`${columnName}_current`] = currentValue
           if (metricsData.previous?.data) {
             const matchedPreviousDataItem = metricsData.previous?.data.find(item => {
-              keyColumns.every(keyColName => item[keyColName] === currentDataItem[keyColName])
+              return keyColumns.every(
+                keyColName => item[keyColName] === currentDataItem[keyColName]
+              )
             })
             const previousValue = matchedPreviousDataItem
               ? matchedPreviousDataItem[columnName]
