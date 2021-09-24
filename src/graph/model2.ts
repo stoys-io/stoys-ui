@@ -2,6 +2,9 @@ import { Node as Node0, Edge } from 'react-flow-renderer'
 
 export interface DataPayload {
   label: string
+  badge: Badge
+  partitions: number
+  violations: number
   highlight: boolean
   controls?: any
   expand?: boolean

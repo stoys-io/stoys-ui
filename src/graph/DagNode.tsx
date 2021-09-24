@@ -8,10 +8,14 @@ import List from 'antd/lib/list'
 import 'antd/lib/list/style/css'
 
 import { NODE_HEIGHT, NODE_WIDTH, NODE_HEIGHT2, NODE_WIDTH2 } from './constants'
+import { renderNumericValue } from '../helpers'
 
 export const DagNode = ({
   data: {
     label,
+    badge,
+    violations,
+    partitions,
     controls: { onClick },
     highlight,
     expand,
@@ -25,6 +29,9 @@ export const DagNode = ({
     borderRadius: '5px',
   }
   const data = [1, 2, 3]
+  const actualBadge = badge === 'violations' ? violations : partitions
+  const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
+
   return (
     <>
       <Handle
@@ -33,7 +40,7 @@ export const DagNode = ({
         style={{ top: -3, background: '#555' }}
         isConnectable={isConnectable}
       />
-      <Card title={label} size="small" type="inner" style={cardStyle}>
+      <Card title={label} size="small" type="inner" style={cardStyle} extra={actualBadgeFormatted}>
         <List size="small" dataSource={data} renderItem={item => <List.Item>{item}</List.Item>} />
       </Card>
       <Handle

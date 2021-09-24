@@ -1,4 +1,4 @@
-import { Graph, Edge, Node } from './model2'
+import { Graph, Edge, Node, DataPayload, Badge } from './model2'
 
 export const highlightNode = (id: string) => (graph: Graph) => ({
   ...graph,
@@ -41,6 +41,22 @@ export const resetHighlight = (graph: Graph): Graph => ({
     }
   }),
 })
+
+export const changeBadge =
+  (badge: Badge) =>
+  (graph: Graph): Graph => ({
+    ...graph,
+    nodes: graph.nodes.map((node: Node) => {
+      const nodeData = node.data ?? defaultData
+      return {
+        ...node,
+        data: {
+          ...nodeData,
+          badge,
+        },
+      }
+    }),
+  })
 
 export const expandNode =
   (id: string) =>
@@ -123,4 +139,11 @@ export const findParentNodes = (graph: Graph, id: string) => {
   return children
 }
 
-const defaultData = { label: '', highlight: false, expand: false }
+const defaultData: DataPayload = {
+  label: '',
+  highlight: false,
+  expand: false,
+  badge: 'violations',
+  partitions: 0,
+  violations: 0,
+}

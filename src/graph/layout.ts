@@ -39,7 +39,7 @@ export const getLayoutedElements = (elements: Array<Node | Edge>) => {
 
       el.position = {
         x: nodeWithPosition.x - nodeWidth / 2 + 100,
-        y: nodeWithPosition.y - nodeHeight / 2,
+        y: nodeWithPosition.y - nodeHeight / 2 + 30,
       }
     }
 

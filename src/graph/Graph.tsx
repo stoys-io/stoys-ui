@@ -17,6 +17,7 @@ import {
   findNeighborNodes,
   expandNode,
   highlightNode,
+  changeBadge,
 } from './graph-ops'
 
 const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
@@ -86,6 +87,11 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
    *   [tables, drawerNodeId]
    * ) */
 
+  const onBadgeChange = (value: Badge) => {
+    setBadge(value)
+    setGraph(changeBadge(value))
+  }
+
   const onHighlightChange = (value: Highlight) => {
     setGraph(resetHighlight)
     setHighlight(value)
@@ -136,7 +142,7 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
       <Sidebar
         drawerHeight={drawerIsVisible ? drawerHeight : 0}
         badge={badge}
-        onBadgeChange={setBadge}
+        onBadgeChange={onBadgeChange}
         searchValue={searchValue}
         onSearchValueChange={setSearchValue}
         onSearch={onSearchNode}
@@ -146,7 +152,7 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
       />
       <div style={{ height: '100vh', width: '100%' }}>
         <ReactFlow
-          nodesDraggable={true}
+          nodesDraggable={false}
           onElementClick={onElementClick}
           onNodeDoubleClick={onElementExpand}
           onPaneClick={onPaneClick}
@@ -193,6 +199,10 @@ interface Props {
 interface Table {
   id: string
   name: string
+  measures: {
+    rows: number
+    violations?: number
+  }
   dependencies?: string[]
   comboId?: string
 }
@@ -214,6 +224,9 @@ const mapInitialNodes = (data: Props['data']): Node[] =>
       label: table.name,
       controls: nodeControls,
       highlight: false,
+      badge: 'violations',
+      partitions: table.measures.rows,
+      violations: table.measures.violations ?? 0,
     },
     position: initialPosition,
     type: 'dagNode',
