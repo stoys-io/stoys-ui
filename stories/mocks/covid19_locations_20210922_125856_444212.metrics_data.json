@@ -1,5 +1,4 @@
 {
-  "isRawData": true,
   "table_name": "covid_data_metrics",
   "key_columns": ["location"],
   "data": [

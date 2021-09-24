@@ -30,7 +30,8 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
     if (columns) {
       return columns
     }
-    if (data.isRawData) {
+    // @ts-ignore
+    if (data.current) {
       return getMetricsColumnsFromRawData(data as RawMetricsData)
     }
     return getMetricsColumns(
@@ -42,7 +43,8 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
   }, [data, columns, previousReleaseDataIsShown, saveMetricThreshold])
 
   const _data = useMemo(() => {
-    if (data.isRawData) {
+    // @ts-ignore
+    if (data.current) {
       return getMetricsDataFromRawData(data as RawMetricsData)
     }
     return getMetricsTableData(data as MetricsData)

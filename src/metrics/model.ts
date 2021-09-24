@@ -44,6 +44,7 @@ export interface ColumnType {
 
 export interface ChildrenColumnType extends Omit<ColumnType, 'children'> {
   disabled?: boolean
+  width?: number
 }
 
 export interface KeyValueInput {
@@ -51,17 +52,20 @@ export interface KeyValueInput {
   value: string
 }
 
-export interface RawMetricsData {
-  isRawData: boolean
+export interface RawMetricsDataItem {
   table_name: string
   key_columns: Array<string>
   data: Array<{ [key: string]: Maybe<string | number> }>
 }
 
+export interface RawMetricsData {
+  current: RawMetricsDataItem
+  previous?: RawMetricsDataItem
+}
+
 export interface MetricsData {
   columns?: Array<ColumnNode>
   values: Array<Array<TableCellNode>>
-  isRawData?: boolean
 }
 
 export type SaveMetricThreshold = (

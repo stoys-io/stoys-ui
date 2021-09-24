@@ -179,7 +179,7 @@ export const getMetricsColumnsFromRawData = (
   function filterColumns(column: ChildrenColumnType): boolean {
     return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
   }
-  const keyColumns = metricsData?.key_columns?.map((column: string) => ({
+  const keyColumns = metricsData?.current.key_columns?.map((column: string) => ({
     id: column,
     dataIndex: column,
     title: getGroupTitle(column),
@@ -189,9 +189,10 @@ export const getMetricsColumnsFromRawData = (
     width: getColumnWidth(column),
   }))
 
-  const columnNames = Object.keys(metricsData.data[0])
-  return columnNames?.reduce((columnsData: Array<ColumnType>, colName) => {
-    const isKeyColumn = metricsData?.key_columns && !!metricsData?.key_columns.includes(colName)
+  const currentColumnNames = Object.keys(metricsData.current.data[0])
+  return currentColumnNames?.reduce((columnsData: Array<ColumnType>, colName) => {
+    const isKeyColumn =
+      metricsData?.current.key_columns && !!metricsData?.current.key_columns.includes(colName)
     if (!isKeyColumn) {
       let childrenColumns: Array<ChildrenColumnType> = [
         {
@@ -201,8 +202,47 @@ export const getMetricsColumnsFromRawData = (
           title: 'Current',
           sorter: defaultSort(`${colName}_current`),
           render: renderNumericColumnValue,
+          width: getColumnWidth('Current'),
         },
       ]
+
+      if (metricsData.previous) {
+        childrenColumns = [
+          ...childrenColumns,
+          {
+            id: `${colName}_previous`,
+            key: `${colName}_previous`,
+            dataIndex: `${colName}_previous`,
+            title: 'Previous',
+            sorter: defaultSort(`${colName}_previous`),
+            render: renderNumericColumnValue,
+            width: getColumnWidth('Previous'),
+          },
+          // {
+          //   id: `${colName}_change`,
+          //   key: `${colName}_change`,
+          //   dataIndex: `${colName}_change`,
+          //   title: <Tooltip title="Current - Previous">Change</Tooltip>,
+          //   titleString: 'Change',
+          //   sorter: defaultSort(`${colName}_change`),
+          //   render: renderNumericColumnValue,
+          //   width: getColumnWidth('Change'),
+          //   disabled: true,
+          // },
+          // {
+          //   id: `${colName}_change_percent`,
+          //   key: `${colName}_change_percent`,
+          //   dataIndex: `${colName}_change_percent`,
+          //   title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
+          //   titleString: '% Change',
+          //   sorter: defaultSort(`${colName}_change_percent`),
+          //   render: renderPercentColumnValue,
+          //   width: getColumnWidth('% Change'),
+          //   disabled: true,
+          // },
+        ]
+      }
+
       if (disabledColumns) {
         childrenColumns = childrenColumns.filter(filterColumns)
       }
