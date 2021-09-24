@@ -44,8 +44,7 @@ const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Elemen
     }
 
     if (visible) {
-      // tslint:disable-next-line: no-floating-promises
-      initJsonViewer()
+      initJsonViewer().catch(err => console.error(err))
     }
 
     return () => {
@@ -68,7 +67,6 @@ const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Elemen
         <Search placeholder="Search" allowClear onSearch={onSearch} onChange={_onSearchChange} />
       </SearchWrapper>
       <div ref={jsonViewerRef} />
-      {/* <pre>{JSON.stringify(datasets, null, 2)}</pre> */}
     </Drawer>
   )
 }
