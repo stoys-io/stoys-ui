@@ -70,6 +70,7 @@
     "@testing-library/react": "^11.1.2",
     "@types/antd": "^1.0.0",
     "@types/d3-scale-chromatic": "^3.0.0",
+    "@types/dagre": "^0.7.46",
     "@types/jest": "^26.0.20",
     "@types/lodash.debounce": "^4.0.6",
     "@types/lodash.get": "^4.4.6",
