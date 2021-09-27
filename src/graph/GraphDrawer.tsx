@@ -4,7 +4,6 @@ import ResizableAntdDrawer from './ResizableAntdDrawer'
 import { DrawerNodeLabel } from './styles'
 import { JoinRates, Metrics, Profiler, Quality } from '..'
 import { Orient } from '../profiler/model'
-/* import { Table } from './model' */
 import { NoData } from '../profiler/styles'
 import { Table } from './model'
 
