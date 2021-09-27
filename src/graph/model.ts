@@ -13,7 +13,12 @@ export interface DataPayload {
   onTitleClick: (id: string) => void
 }
 
-export type Node = Node0<DataPayload>
+// Same as React-flow Node, but the data is required
+export interface DataNode<T> extends Node0<T> {
+  data: T
+}
+
+export type Node = DataNode<DataPayload>
 export { Edge }
 
 export interface Graph {
@@ -41,12 +46,9 @@ export interface Table {
   metadata?: {
     [key: string]: string | number
   }
-
-  comboId?: string // TODO: Grouping is work in progress
 }
 
 export interface Column {
-  // id: string
   name: string
 }
 

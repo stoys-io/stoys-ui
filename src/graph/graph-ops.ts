@@ -1,4 +1,4 @@
-import { Graph, Edge, Node, DataPayload, Badge } from './model'
+import { Graph, Edge, Node, Badge } from './model'
 
 export const highlightNode = (id: string) => (graph: Graph) => ({
   ...graph,
@@ -7,10 +7,9 @@ export const highlightNode = (id: string) => (graph: Graph) => ({
       return node
     }
 
-    const nodeData = node.data ?? defaultData
     return {
       ...node,
-      data: { ...nodeData, highlight: !nodeData.highlight },
+      data: { ...node.data, highlight: !node.data.highlight },
     }
   }),
 })
@@ -22,40 +21,32 @@ export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
       return node
     }
 
-    const nodeData = node.data ?? defaultData
     return {
       ...node,
-      data: { ...nodeData, highlight: !nodeData.highlight },
+      data: { ...node.data, highlight: !node.data.highlight },
     }
   }),
 })
 
 export const resetHighlight = (graph: Graph): Graph => ({
   ...graph,
-  nodes: graph.nodes.map((node: Node) => {
-    const nodeData = node.data ?? defaultData
-
-    return {
-      ...node,
-      data: { ...nodeData, highlight: false },
-    }
-  }),
+  nodes: graph.nodes.map((node: Node) => ({
+    ...node,
+    data: { ...node.data, highlight: false },
+  })),
 })
 
 export const changeBadge =
   (badge: Badge) =>
   (graph: Graph): Graph => ({
     ...graph,
-    nodes: graph.nodes.map((node: Node) => {
-      const nodeData = node.data ?? defaultData
-      return {
-        ...node,
-        data: {
-          ...nodeData,
-          badge,
-        },
-      }
-    }),
+    nodes: graph.nodes.map((node: Node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        badge,
+      },
+    })),
   })
 
 export const findNeighborNodes = (graph: Graph, id: string) => [
@@ -117,14 +108,4 @@ export const findParentNodes = (graph: Graph, id: string) => {
   const children = parentNodesHelper(graph.edges, id, startEdges)
 
   return children
-}
-
-const defaultData: DataPayload = {
-  label: '',
-  highlight: false,
-  badge: 'violations',
-  partitions: 0,
-  violations: 0,
-  columns: [],
-  onTitleClick: () => {},
 }
