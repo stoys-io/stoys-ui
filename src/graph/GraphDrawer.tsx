@@ -3,9 +3,9 @@ import { Tabs } from 'antd'
 import ResizableAntdDrawer from './ResizableAntdDrawer'
 import { DrawerNodeLabel } from './styles'
 import { JoinRates, Metrics, Profiler, Quality } from '..'
-import { Orient } from '../profiler/model'
 import { Table } from './model'
 import { NoData } from '../profiler/styles'
+import { RawMetricsData } from '../metrics/model'
 
 const { TabPane } = Tabs
 
@@ -31,9 +31,23 @@ const GraphDrawer = ({
   setDrawerTable,
 }: GraphDrawerProps) => {
   const profilerData = data?.dp_result ? [data.dp_result] : null
+  const metrics: RawMetricsData | null = data?.metrics
+    ? {
+        current: { data: data.metrics[0], table_name: data.name, key_columns: ['location'] },
+        previous: undefined,
+      }
+    : null
 
   if (baseData?.dp_result && profilerData) {
     profilerData.push(baseData.dp_result)
+  }
+
+  if (baseData?.metrics && metrics) {
+    metrics.previous = {
+      data: baseData.metrics[0],
+      table_name: baseData.name,
+      key_columns: ['location'],
+    }
   }
 
   return (
@@ -53,12 +67,12 @@ const GraphDrawer = ({
           )}
         </TabPane>
         <TabPane tab="Metrics" key="metrics">
-          {data?.metrics ? (
+          {metrics ? (
             <Metrics
-              data={data.metrics}
+              data={metrics}
               config={{
                 previousReleaseDataIsShown: true,
-                pagination: { disabled: true },
+                pagination: false,
                 smallSize: true,
               }}
             />
