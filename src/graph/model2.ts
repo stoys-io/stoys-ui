@@ -6,6 +6,7 @@ export interface DataPayload {
   partitions: number
   violations: number
   highlight: boolean
+  columns: string[]
   controls?: any
   expand?: boolean
 }

@@ -3,22 +3,22 @@ import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import List from 'antd/lib/list'
 
 import { renderNumericValue } from '../helpers'
+import { DataPayload } from './model2'
 import { ScrollCard } from './styles'
 
 export const DagNode = ({
   data: {
     label,
     badge,
+    columns,
     violations,
     partitions,
-    controls: { onClick },
+    /* controls: { onClick }, */
     highlight,
     expand,
   },
   isConnectable,
-}: NodeProps): JSX.Element => {
-  const cardStyle = {}
-  const data = [1, 2, 3]
+}: NodeProps<DataPayload>): JSX.Element => {
   const actualBadge = badge === 'violations' ? violations : partitions
   const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
 
@@ -35,12 +35,15 @@ export const DagNode = ({
         title={label}
         size="small"
         type="inner"
-        style={cardStyle}
         extra={actualBadgeFormatted}
         expand={expand}
         highlight={highlight}
       >
-        <List size="small" dataSource={data} renderItem={item => <List.Item>{item}</List.Item>} />
+        <List
+          size="small"
+          dataSource={columns}
+          renderItem={column => <List.Item>{column}</List.Item>}
+        />
       </ScrollCard>
       <Handle
         type="source"

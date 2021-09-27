@@ -203,8 +203,13 @@ interface Table {
     rows: number
     violations?: number
   }
+  columns: Column[]
   dependencies?: string[]
   comboId?: string
+}
+
+interface Column {
+  name: string
 }
 
 const nodeTypes = {
@@ -227,6 +232,7 @@ const mapInitialNodes = (data: Props['data']): Node[] =>
       badge: 'violations',
       partitions: table.measures.rows,
       violations: table.measures.violations ?? 0,
+      columns: table.columns.map(col => col.name),
     },
     position: initialPosition,
     type: 'dagNode',

@@ -146,4 +146,5 @@ const defaultData: DataPayload = {
   badge: 'violations',
   partitions: 0,
   violations: 0,
+  columns: [],
 }
