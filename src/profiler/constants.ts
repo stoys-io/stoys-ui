@@ -46,4 +46,6 @@ export const COLUMNS_TITLES: { [key: string]: string } = {
 
 export const LEFT_ALIGN_COLUMNS = ['mean', 'min', 'max']
 
-export const COLUMNS_WITH_DATES = ['mean', 'min', 'max']
+export const ITEM_VALUE_COLUMN_NAMES = ['mean', 'min', 'max']
+
+export const NORMALIZABLE_COLUMN_PREFIX = 'count_'

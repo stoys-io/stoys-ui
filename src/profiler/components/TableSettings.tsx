@@ -7,6 +7,8 @@ import { TableSettingsWrapper } from '../styles'
 import ModeSwitcher from './ModeSwitcher'
 import { TableSettingsProps } from '../model'
 
+import NormalizeSwitcher from './NormalizeSwitcher'
+
 const { Search } = Input
 
 const TableSettings = ({
@@ -18,6 +20,9 @@ const TableSettings = ({
   isJsonSwitcherShown,
   isJsonSwitcherChecked,
   onJsonChange,
+  isNormalizeSwitcherShown,
+  isNormalizeSwitcherChecked,
+  onNormalizeChange,
 }: TableSettingsProps): JSX.Element => {
   const _onSearchChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +45,9 @@ const TableSettings = ({
             data-testid="table-search"
           />
         </div>
+      ) : null}
+      {isNormalizeSwitcherShown ? (
+        <NormalizeSwitcher checked={isNormalizeSwitcherChecked} onChange={onNormalizeChange} />
       ) : null}
       {isModeSwitcherShown ? (
         <ModeSwitcher checked={isModeSwitcherChecked} onChange={onModeChange} />

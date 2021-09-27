@@ -2,16 +2,16 @@ import { Nodes, Edges, Combos, Badge, Highlight } from './model'
 
 type GetGraphDataArgsType = {
   data: {
-    nodes: Nodes,
-    edges: Edges,
+    nodes: Nodes
+    edges: Edges
     combos?: Combos
-  },
-  selectedNodeId: string,
+  }
+  selectedNodeId: string
   badge: Badge
   highlight: Highlight
 }
 
-export const getGraphData = ({ data, selectedNodeId, badge, highlight } : GetGraphDataArgsType) => {
+export const getGraphData = ({ data, selectedNodeId, badge, highlight }: GetGraphDataArgsType) => {
   const { nodes, edges, combos } = data
   let highLightedNodesIds = selectedNodeId ? [selectedNodeId] : []
   let highLightedEdgesIds: string[] = []
@@ -25,7 +25,7 @@ export const getGraphData = ({ data, selectedNodeId, badge, highlight } : GetGra
         if (edge.target === selectedNodeId && !highLightedNodesIds.includes(edge.source)) {
           highLightedNodesIds = [...highLightedNodesIds, edge.source]
         }
-        return (edge.source === selectedNodeId) || (edge.target === selectedNodeId)
+        return edge.source === selectedNodeId || edge.target === selectedNodeId
       })
       .map(edge => edge.id)
   }
@@ -65,7 +65,7 @@ export const getGraphData = ({ data, selectedNodeId, badge, highlight } : GetGra
   }
 
   return {
-    nodes: nodes.map((node) => ({
+    nodes: nodes.map(node => ({
       ...node,
       highlighted: highLightedNodesIds.includes(node.id),
       selected: node.id === selectedNodeId,
@@ -89,8 +89,6 @@ export const trimText = (label: string) => {
   return label
 }
 
-
-
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined;
+  return value !== null && value !== undefined
 }

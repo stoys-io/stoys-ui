@@ -2,31 +2,43 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import '../../../__mocks__/matchMedia.mock'
 
-import Chart from '../Chart'
-import { CheckedRowsContext } from '../../checkedRowsContext'
+import Chart from '../ChartAndTable'
+import { CheckedRowsContext, ConfigContext } from '../../context'
 
 beforeAll(() => {
-  HTMLCanvasElement.prototype.getContext = jest.fn(
-    () => ({ measureText: jest.fn(() => ({ width: 100 })) } as any)
-  )
+  HTMLCanvasElement.prototype.getContext = jest.fn(() => {
+    const ctxMock = { measureText: jest.fn(() => ({ width: 100 })) }
+
+    // this mocks canvas api
+    return new Proxy(ctxMock, {
+      get: function (target, key, _) {
+        if (key in ctxMock) {
+          return Reflect.get(target, key)
+        }
+        return () => {}
+      },
+    }) as any
+  })
 })
 
 describe('Chart', () => {
   it('should be empty whren data is null', () => {
     const { container } = render(
-      <CheckedRowsContext.Provider
-        value={{
-          checkedTableRows: ['1', '2', '3'],
-          checkedLogRows: [],
-          checkedAxesRows: [],
-          dataLength: 10,
-          setCheckedAxesRows: jest.fn(),
-          setCheckedLogRows: jest.fn(),
-          setCheckedTableRows: jest.fn(),
-        }}
-      >
-        <Chart data={null} />
-      </CheckedRowsContext.Provider>
+      <ConfigContext.Provider value={{ smallSize: true }}>
+        <CheckedRowsContext.Provider
+          value={{
+            checkedTableRows: ['1', '2', '3'],
+            checkedLogRows: [],
+            checkedAxesRows: [],
+            dataLength: 10,
+            setCheckedAxesRows: jest.fn(),
+            setCheckedLogRows: jest.fn(),
+            setCheckedTableRows: jest.fn(),
+          }}
+        >
+          <Chart data={null} />
+        </CheckedRowsContext.Provider>
+      </ConfigContext.Provider>
     )
 
     expect(container.firstChild).toBeNull()
@@ -45,7 +57,9 @@ describe('Chart', () => {
           setCheckedTableRows: jest.fn(),
         }}
       >
-        <Chart data={[{ parent: '1', color: '#fff', name: 'id', type: 'string' }]} />
+        <Chart
+          data={[{ parent: '1', color: '#fff', name: 'id', type: 'string', itemsTotalCount: 0 }]}
+        />
       </CheckedRowsContext.Provider>
     )
 
@@ -73,6 +87,7 @@ describe('Chart', () => {
               name: 'id',
               type: 'string',
               items: [],
+              itemsTotalCount: 0,
             },
           ]}
         />
@@ -107,6 +122,7 @@ describe('Chart', () => {
                 { count: 2, item: '1' },
                 { count: 1.5, item: '2' },
               ],
+              itemsTotalCount: 5,
             },
           ]}
         />
@@ -137,6 +153,7 @@ describe('Chart', () => {
               name: 'id',
               type: 'number',
               pmf: [],
+              itemsTotalCount: 0,
             },
           ]}
         />
@@ -171,6 +188,7 @@ describe('Chart', () => {
                 { count: 2, low: 1, high: 2 },
                 { count: 1.5, low: 2, high: 3 },
               ],
+              itemsTotalCount: 5,
             },
           ]}
         />

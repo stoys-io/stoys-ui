@@ -7,7 +7,7 @@ import PushpinOutlined from '@ant-design/icons/lib/icons/PushpinOutlined'
 import VirtualTable from './VirtualTable'
 import { TableTitleWrapper, TableTitle, SampleTableWrapper, IconButton } from '../styles'
 import { SampleTableProps } from '../model'
-import { TABLE_HEIGHT } from '../constants'
+import { MIN_TABLE_CELL_HEIGHT, TABLE_HEIGHT } from '../constants'
 
 const SampleTable = ({
   sampleData,
@@ -18,7 +18,6 @@ const SampleTable = ({
   setPageSize,
   withoutPagination,
   pagination,
-  heightenedCell,
   smallSize,
   showReferencedColumns,
   setShowReferencedColumns,
@@ -45,13 +44,13 @@ const SampleTable = ({
     dataSource: sampleData,
     scroll: {
       x: true as true,
-      y: TABLE_HEIGHT,
+      y: sampleData.length > 10 ? TABLE_HEIGHT : sampleData.length * MIN_TABLE_CELL_HEIGHT,
     },
     onChange: handleChangePagination,
   }
 
   return (
-    <SampleTableWrapper heightenedCell={heightenedCell} smallSize={smallSize}>
+    <SampleTableWrapper smallSize={smallSize}>
       <TableTitleWrapper>
         <TableTitle>Data Sample</TableTitle>
         <IconButton role="button" onClick={setShowReferencedColumns}>

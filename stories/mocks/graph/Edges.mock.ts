@@ -99,7 +99,11 @@ export const edges = [
     source: 'pcpm_boe_crosswalk',
     target: 'accepted_acknowledged_non_excluded_matches_w_treatment',
   },
-  { id: 'recent_provider_extract-other_pcps', source: 'recent_provider_extract', target: 'other_pcps' },
+  {
+    id: 'recent_provider_extract-other_pcps',
+    source: 'recent_provider_extract',
+    target: 'other_pcps',
+  },
   { id: 'AVRA_attribution-other_pcps', source: 'AVRA_attribution', target: 'other_pcps' },
   {
     id: 'accepted_acknowledged_non_excluded_matches_w_treatment-count_matches_by_csid_and_affiliation',
@@ -206,7 +210,11 @@ export const edges = [
     source: 'lowest_match_value_per_transaction',
     target: 'unconstrained_PCPs_tmp',
   },
-  { id: 'unconstrained_PCPs_tmp-unconstrained_PCPs', source: 'unconstrained_PCPs_tmp', target: 'unconstrained_PCPs' },
+  {
+    id: 'unconstrained_PCPs_tmp-unconstrained_PCPs',
+    source: 'unconstrained_PCPs_tmp',
+    target: 'unconstrained_PCPs',
+  },
   {
     id: 'accepted_acknowledged_non_excluded_matches_w_treatment-accepted_matches_w_unconstrained_pcp',
     source: 'accepted_acknowledged_non_excluded_matches_w_treatment',
@@ -242,7 +250,11 @@ export const edges = [
     source: 'accepted_matches_w_nuna_match_cost_and_quality',
     target: 'matches_with_cs_default_pcp',
   },
-  { id: 'match_requests-matches_with_cs_default_pcp', source: 'match_requests', target: 'matches_with_cs_default_pcp' },
+  {
+    id: 'match_requests-matches_with_cs_default_pcp',
+    source: 'match_requests',
+    target: 'matches_with_cs_default_pcp',
+  },
   {
     id: 'pdb_provider_address-matches_with_cs_default_pcp',
     source: 'pdb_provider_address',
@@ -343,7 +355,11 @@ export const edges = [
     source: 'savings_rate_with_power_sim_output',
     target: 'total_annualized_savings',
   },
-  { id: 'power_sim_output-total_annualized_savings', source: 'power_sim_output', target: 'total_annualized_savings' },
+  {
+    id: 'power_sim_output-total_annualized_savings',
+    source: 'power_sim_output',
+    target: 'total_annualized_savings',
+  },
   {
     id: 'accepted_matches_w_nuna_match_and_cs_match_cost_and_quality-comp_cost_to_cs_matches_by_dem',
     source: 'accepted_matches_w_nuna_match_and_cs_match_cost_and_quality',
@@ -394,7 +410,11 @@ export const edges = [
     source: 'accepted_acknowledged_non_excluded_matches_w_treatment',
     target: 'nuna_match_provider_info',
   },
-  { id: 'match_results-nuna_match_provider_info', source: 'match_results', target: 'nuna_match_provider_info' },
+  {
+    id: 'match_results-nuna_match_provider_info',
+    source: 'match_results',
+    target: 'nuna_match_provider_info',
+  },
   {
     id: 'provider_info_primary_address_only-nuna_match_provider_info',
     source: 'provider_info_primary_address_only',
@@ -470,7 +490,11 @@ export const edges = [
     source: 'accepted_acknowledged_non_excluded_matches_w_control',
     target: 'control_provider_info',
   },
-  { id: 'match_requests-control_provider_info', source: 'match_requests', target: 'control_provider_info' },
+  {
+    id: 'match_requests-control_provider_info',
+    source: 'match_requests',
+    target: 'control_provider_info',
+  },
   {
     id: 'provider_info_primary_address_only-control_provider_info',
     source: 'provider_info_primary_address_only',
@@ -481,10 +505,26 @@ export const edges = [
     source: 'control_provider_info',
     target: 'control_match_metrics',
   },
-  { id: 'nuna_match_provider_info-overlap_providers', source: 'nuna_match_provider_info', target: 'overlap_providers' },
-  { id: 'control_provider_info-overlap_providers', source: 'control_provider_info', target: 'overlap_providers' },
-  { id: 'nuna_match_provider_info-overlap_practices', source: 'nuna_match_provider_info', target: 'overlap_practices' },
-  { id: 'control_provider_info-overlap_practices', source: 'control_provider_info', target: 'overlap_practices' },
+  {
+    id: 'nuna_match_provider_info-overlap_providers',
+    source: 'nuna_match_provider_info',
+    target: 'overlap_providers',
+  },
+  {
+    id: 'control_provider_info-overlap_providers',
+    source: 'control_provider_info',
+    target: 'overlap_providers',
+  },
+  {
+    id: 'nuna_match_provider_info-overlap_practices',
+    source: 'nuna_match_provider_info',
+    target: 'overlap_practices',
+  },
+  {
+    id: 'control_provider_info-overlap_practices',
+    source: 'control_provider_info',
+    target: 'overlap_practices',
+  },
   {
     id: 'control_provider_info-all_control_matches_w_overlap_flags',
     source: 'control_provider_info',
@@ -500,8 +540,16 @@ export const edges = [
     source: 'overlap_practices',
     target: 'all_control_matches_w_overlap_flags',
   },
-  { id: 'overlap_providers-overlap_metric_1', source: 'overlap_providers', target: 'overlap_metric_1' },
-  { id: 'overlap_practices-overlap_metric_2', source: 'overlap_practices', target: 'overlap_metric_2' },
+  {
+    id: 'overlap_providers-overlap_metric_1',
+    source: 'overlap_providers',
+    target: 'overlap_metric_1',
+  },
+  {
+    id: 'overlap_practices-overlap_metric_2',
+    source: 'overlap_practices',
+    target: 'overlap_metric_2',
+  },
   {
     id: 'all_control_matches_w_overlap_flags-overlap_metric_3',
     source: 'all_control_matches_w_overlap_flags',
@@ -560,7 +608,11 @@ export const edges = [
     source: 'matches_without_nuna_pcp_available_plus_exclusion_info',
     target: 'sink @ 14:2',
   },
-  { id: 'accepted_matches_excluded-sink @ 15:3', source: 'accepted_matches_excluded', target: 'sink @ 15:3' },
+  {
+    id: 'accepted_matches_excluded-sink @ 15:3',
+    source: 'accepted_matches_excluded',
+    target: 'sink @ 15:3',
+  },
   { id: 'match_requests-sink @ 16:0', source: 'match_requests', target: 'sink @ 16:0' },
   { id: 'match_history-sink @ 17:0', source: 'match_history', target: 'sink @ 17:0' },
   {
@@ -696,7 +748,11 @@ export const edges = [
     source: 'accepted_matches_w_unconstrained_pcp',
     target: 'sink @ 43:0',
   },
-  { id: 'matches_with_cs_default_pcp-sink @ 45:1', source: 'matches_with_cs_default_pcp', target: 'sink @ 45:1' },
+  {
+    id: 'matches_with_cs_default_pcp-sink @ 45:1',
+    source: 'matches_with_cs_default_pcp',
+    target: 'sink @ 45:1',
+  },
   {
     id: 'matches_with_cs_default_pcp_without_match_values-sink @ 46:1',
     source: 'matches_with_cs_default_pcp_without_match_values',
@@ -757,10 +813,26 @@ export const edges = [
     source: 'accepted_matches_w_nuna_match_and_cs_match_cost_and_quality',
     target: 'sink @ 58:0',
   },
-  { id: 'total_annualized_savings-sink @ 59:1', source: 'total_annualized_savings', target: 'sink @ 59:1' },
-  { id: 'total_annualized_savings-sink @ 60:1', source: 'total_annualized_savings', target: 'sink @ 60:1' },
-  { id: 'comp_cost_to_cs_matches_by_dem-sink @ 62:1', source: 'comp_cost_to_cs_matches_by_dem', target: 'sink @ 62:1' },
-  { id: 'comp_cost_to_cs_matches_by_boe-sink @ 64:1', source: 'comp_cost_to_cs_matches_by_boe', target: 'sink @ 64:1' },
+  {
+    id: 'total_annualized_savings-sink @ 59:1',
+    source: 'total_annualized_savings',
+    target: 'sink @ 59:1',
+  },
+  {
+    id: 'total_annualized_savings-sink @ 60:1',
+    source: 'total_annualized_savings',
+    target: 'sink @ 60:1',
+  },
+  {
+    id: 'comp_cost_to_cs_matches_by_dem-sink @ 62:1',
+    source: 'comp_cost_to_cs_matches_by_dem',
+    target: 'sink @ 62:1',
+  },
+  {
+    id: 'comp_cost_to_cs_matches_by_boe-sink @ 64:1',
+    source: 'comp_cost_to_cs_matches_by_boe',
+    target: 'sink @ 64:1',
+  },
   {
     id: 'quality_improvement_performance-sink @ 68:1',
     source: 'quality_improvement_performance',
@@ -832,7 +904,11 @@ export const edges = [
     source: 'accepted_acknowledged_non_excluded_matches_w_treatment',
     target: 'sink @ 85:0',
   },
-  { id: 'total_annualized_savings-sink @ 85:0', source: 'total_annualized_savings', target: 'sink @ 85:0' },
+  {
+    id: 'total_annualized_savings-sink @ 85:0',
+    source: 'total_annualized_savings',
+    target: 'sink @ 85:0',
+  },
   {
     id: 'quality_improvement_performance-sink @ 85:0',
     source: 'quality_improvement_performance',
@@ -843,19 +919,55 @@ export const edges = [
     source: 'num_matches_with_nuna_pcp_equal_caresource_pcp',
     target: 'sink @ 85:0',
   },
-  { id: 'recent_provider_extract-sink @ 87:0', source: 'recent_provider_extract', target: 'sink @ 87:0' },
-  { id: 'nuna_match_provider_info-sink @ 88:2', source: 'nuna_match_provider_info', target: 'sink @ 88:2' },
-  { id: 'control_provider_info-sink @ 90:2', source: 'control_provider_info', target: 'sink @ 90:2' },
-  { id: 'control_match_metrics-sink @ 91:1', source: 'control_match_metrics', target: 'sink @ 91:1' },
-  { id: 'control_provider_info-sink @ 94:0', source: 'control_provider_info', target: 'sink @ 94:0' },
+  {
+    id: 'recent_provider_extract-sink @ 87:0',
+    source: 'recent_provider_extract',
+    target: 'sink @ 87:0',
+  },
+  {
+    id: 'nuna_match_provider_info-sink @ 88:2',
+    source: 'nuna_match_provider_info',
+    target: 'sink @ 88:2',
+  },
+  {
+    id: 'control_provider_info-sink @ 90:2',
+    source: 'control_provider_info',
+    target: 'sink @ 90:2',
+  },
+  {
+    id: 'control_match_metrics-sink @ 91:1',
+    source: 'control_match_metrics',
+    target: 'sink @ 91:1',
+  },
+  {
+    id: 'control_provider_info-sink @ 94:0',
+    source: 'control_provider_info',
+    target: 'sink @ 94:0',
+  },
   {
     id: 'all_control_matches_w_overlap_flags-sink @ 95:0',
     source: 'all_control_matches_w_overlap_flags',
     target: 'sink @ 95:0',
   },
-  { id: 'top_10_practices_cs_matches-sink @ 96:5', source: 'top_10_practices_cs_matches', target: 'sink @ 96:5' },
-  { id: 'nuna_matches_by_group-sink @ 96:5', source: 'nuna_matches_by_group', target: 'sink @ 96:5' },
+  {
+    id: 'top_10_practices_cs_matches-sink @ 96:5',
+    source: 'top_10_practices_cs_matches',
+    target: 'sink @ 96:5',
+  },
+  {
+    id: 'nuna_matches_by_group-sink @ 96:5',
+    source: 'nuna_matches_by_group',
+    target: 'sink @ 96:5',
+  },
   { id: 'groups_w_overlap_npi-sink @ 96:5', source: 'groups_w_overlap_npi', target: 'sink @ 96:5' },
-  { id: 'nuna_match_provider_info-sink @ 97:0', source: 'nuna_match_provider_info', target: 'sink @ 97:0' },
-  { id: 'control_provider_info-sink @ 97:0', source: 'control_provider_info', target: 'sink @ 97:0' },
+  {
+    id: 'nuna_match_provider_info-sink @ 97:0',
+    source: 'nuna_match_provider_info',
+    target: 'sink @ 97:0',
+  },
+  {
+    id: 'control_provider_info-sink @ 97:0',
+    source: 'control_provider_info',
+    target: 'sink @ 97:0',
+  },
 ]

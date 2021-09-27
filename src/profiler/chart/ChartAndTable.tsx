@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Empty from 'antd/lib/empty'
 
 import PmfPlot from '../../pmfPlot'
-import { CheckedRowsContext } from '../checkedRowsContext'
+import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'
 import BarChart from './BarChart'
-import { ChartWithTooltipProps, HygratePmfPlotDataItem, RenderChartProps } from '../model'
+import { ChartAndTableProps } from '../model'
 import { Maybe } from '../../model'
 import {
   MIN_CHART_CELL_HEIGHT,
@@ -16,10 +16,14 @@ import {
 import { StyledEmpty } from '../styles'
 import { ChartWrapper } from '../../pmfPlot/styles'
 
-function renderChart(
-  data: Maybe<Array<HygratePmfPlotDataItem>>,
-  { checkedLogRows, checkedAxesRows, checkedTableRows, isHorizontal, smallSize }: RenderChartProps
-) {
+const ChartAndTable = ({
+  data,
+  isHorizontal,
+  displayNormalized = false,
+}: ChartAndTableProps): Maybe<JSX.Element> => {
+  const { smallSize } = useContext(ConfigContext)
+  const { checkedLogRows, checkedAxesRows, checkedTableRows } = useContext(CheckedRowsContext)
+
   if (!data) {
     return null
   }
@@ -34,7 +38,7 @@ function renderChart(
   const height: number = cellHeight < minChartHeight || isHorizontal ? minChartHeight : cellHeight
 
   if (enableTableView) {
-    return <Table data={data} height={height} />
+    return <Table data={data} height={height} displayNormalized={displayNormalized} />
   }
 
   if (data[0].type === 'string') {
@@ -94,33 +98,15 @@ function renderChart(
   return (
     <PmfPlot
       data={pmfPlotDataData}
-      height={height}
-      dataType={data[0].type}
-      showAxes={enabledAxes}
-      showLogScale={enabledLogScale}
-      color={color}
+      config={{
+        height,
+        dataType: data[0].type,
+        showAxes: enabledAxes,
+        showLogScale: enabledLogScale,
+        color,
+      }}
     />
   )
 }
 
-const ChartWithTooltip = ({
-  data,
-  isHorizontal,
-  smallSize,
-}: ChartWithTooltipProps): Maybe<JSX.Element> => {
-  return (
-    <CheckedRowsContext.Consumer>
-      {({ checkedLogRows, checkedAxesRows, checkedTableRows }) =>
-        renderChart(data, {
-          checkedLogRows,
-          checkedAxesRows,
-          checkedTableRows,
-          isHorizontal: !!isHorizontal,
-          smallSize: !!smallSize,
-        })
-      }
-    </CheckedRowsContext.Consumer>
-  )
-}
-
-export default ChartWithTooltip
+export default ChartAndTable

@@ -3,7 +3,15 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { renderNumericValue } from '../helpers'
 
-import { ColumnNode, MetricsData, MetricsTableData, SorterValue, TableCellNode } from './model'
+import {
+  ColumnNode,
+  MetricsData,
+  MetricsTableData,
+  RawMetricsData,
+  SorterValue,
+  TableCellNode,
+} from './model'
+import { Maybe } from '../model'
 
 export const defaultSort = (field: string) => (a: SorterValue, b: SorterValue) => {
   return get(a, field) > get(b, field) ? 1 : -1
@@ -55,5 +63,44 @@ export const getMetricsTableData = (metricsData: MetricsData) => {
       return acc
     }, {})
   )
+  return items?.map(addUniqueKey)
+}
+
+export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
+  if (!metricsData?.current.key_columns) {
+    return []
+  }
+  const keyColumns = metricsData.current.key_columns
+  const items = metricsData.current.data?.map(currentDataItem => {
+    return Object.keys(currentDataItem).reduce(
+      (dataItem: { [key: string]: Maybe<string | number> }, columnName) => {
+        const isKeyColumn = keyColumns.includes(columnName)
+        const currentValue = currentDataItem[columnName]
+        if (isKeyColumn) {
+          dataItem[columnName] = currentValue
+        } else {
+          dataItem[`${columnName}_current`] = currentValue
+          if (metricsData.previous?.data) {
+            const matchedPreviousDataItem = metricsData.previous?.data.find(item => {
+              return keyColumns.every(
+                keyColName => item[keyColName] === currentDataItem[keyColName]
+              )
+            })
+            const previousValue = matchedPreviousDataItem
+              ? matchedPreviousDataItem[columnName]
+              : null
+            dataItem[`${columnName}_previous`] = previousValue
+            const changeValue =
+              currentValue && previousValue ? Number(currentValue) - Number(previousValue) : null
+            const changePercent = changeValue ? (changeValue * 100) / Number(previousValue) : null
+            dataItem[`${columnName}_change`] = changeValue
+            dataItem[`${columnName}_change_percent`] = changePercent
+          }
+        }
+        return dataItem
+      },
+      {}
+    )
+  })
   return items?.map(addUniqueKey)
 }

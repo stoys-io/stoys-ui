@@ -36,7 +36,9 @@ describe('MetricsTable', () => {
     })
 
     it("shouldn't render pagination", () => {
-      const { container } = render(<MetricsTable data={metricsData} pagination={false} />)
+      const { container } = render(
+        <MetricsTable data={metricsData} config={{ pagination: false }} />
+      )
       const currentPageNode = container.querySelector('.ant-pagination-item-active')
 
       expect(currentPageNode).toBeNull()

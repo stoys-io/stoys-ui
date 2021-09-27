@@ -4,15 +4,18 @@ import { ColumnsType } from 'antd/lib/table'
 
 import {
   COLUMNS_TITLES,
-  COLUMNS_WITH_DATES,
   COLUMN_CHART_WIDTH,
+  ITEM_VALUE_COLUMN_NAMES,
   LEFT_ALIGN_COLUMNS,
   VISISBLE_COLUMNS,
+  NORMALIZABLE_COLUMN_PREFIX,
 } from './constants'
-import ChartHeaderCellTitle from './components/ChartHeaderCellTitle'
+import ChartAndTableHeaderCellTitle from './components/ChartAndTableHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
-import { ChartWithTooltip, hygratePmfPlotData } from './chart'
-import { renderNumericValue } from '../helpers'
+import { ChartAndTable, hygratePmfPlotData } from './chart'
+import { formatPercentage } from '../helpers'
+import { renderNumericCell } from '../common'
+
 import { transformSecondsToDate } from '../pmfPlot/helpers'
 import {
   AxesOptions,
@@ -21,14 +24,13 @@ import {
   LogarithmicScale,
   Render,
   RenderedCellConfig,
-  TableOptions,
 } from './model'
 import { Maybe } from '../model'
 
-import { CellWrapper, ColorBlock } from './styles'
+import { ColorBlock } from './styles'
 
-const renderChartCell =
-  (data: Array<DataItem>, smallSize: boolean) =>
+const renderChartAndTableCell =
+  (data: Array<DataItem>, displayNormalized: boolean) =>
   (value: string, row: DataItem | ChildDataItem, index: number) => {
     const parent = data.find(dataItem => {
       if ('parent' in row) {
@@ -39,7 +41,7 @@ const renderChartCell =
     })
     const pmfPlotData = hygratePmfPlotData(parent?.children)
     const renderedCellConfig: RenderedCellConfig = {
-      children: <ChartWithTooltip data={pmfPlotData} smallSize={smallSize} />,
+      children: <ChartAndTable data={pmfPlotData} displayNormalized={displayNormalized} />,
       props: {},
     }
     const rowSpan = parent?.children.length || 1
@@ -53,15 +55,7 @@ const renderChartCell =
     return renderedCellConfig
   }
 
-export const renderNumericCell = (value: number | string) => {
-  return (
-    <Tooltip title={value} placement="topLeft">
-      <CellWrapper>{renderNumericValue(2, true)(value)}</CellWrapper>
-    </Tooltip>
-  )
-}
-
-const renderRow: Render = (render, logarithmicScale, axesOptions, tableOptions) => (value, row) => {
+const renderRow: Render = render => (value, row) => {
   const renderedCellConfig: RenderedCellConfig = {
     children: null,
     props: {},
@@ -77,16 +71,7 @@ const renderRow: Render = (render, logarithmicScale, axesOptions, tableOptions) 
   }
 
   if ('columnName' in row) {
-    renderedCellConfig.children = (
-      <TableSubheaderRow
-        row={row}
-        rowOptions={{
-          isLogCheckboxShown: logarithmicScale.isCheckboxShown,
-          isAxesCheckboxShown: axesOptions.isCheckboxShown,
-        }}
-        tableOptions={tableOptions}
-      />
-    )
+    renderedCellConfig.children = <TableSubheaderRow row={row} />
     renderedCellConfig.props.colSpan = 8
   }
 
@@ -105,6 +90,19 @@ const renderValue = (value?: Maybe<boolean | string | number>): Maybe<JSX.Elemen
   return (
     <Tooltip title={value.toString()} placement="topLeft">
       {value.toString()}
+    </Tooltip>
+  )
+}
+
+export const renderNormalized = (value?: number) => {
+  // TODO: Why the value can be undefined
+  if (value === undefined) {
+    return null
+  }
+
+  return (
+    <Tooltip title={formatPercentage(value)} placement="topLeft">
+      {formatPercentage(value)}
     </Tooltip>
   )
 }
@@ -145,39 +143,30 @@ const renderMeanMinMaxValue = (
   return renderValue(value)
 }
 
-const renderChartCellTitle = (
-  logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions,
-  tableOptions: TableOptions
-) => (
-  <ChartHeaderCellTitle
-    logarithmicScale={logarithmicScale}
-    axesOptions={axesOptions}
-    tableOptions={tableOptions}
-  />
-)
-
 export const getColumns = (
   data: Array<DataItem>,
-  logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions,
-  tableOptions: TableOptions,
-  smallSize: boolean = false,
+  displayNormalized: boolean,
   visibleColumns?: Array<string>
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
 
-  const columns = _visibleColumns.map((column, index) => {
+  const columns = _visibleColumns.map((columnName, index) => {
+    const isNormalized = displayNormalized && columnName.startsWith(NORMALIZABLE_COLUMN_PREFIX)
+
     const _column: any = {
-      title: COLUMNS_TITLES[column] || column,
-      dataIndex: column,
-      key: column,
-      align: LEFT_ALIGN_COLUMNS.includes(column) ? ('left' as 'left') : ('right' as 'right'),
-      render: COLUMNS_WITH_DATES.includes(column) ? renderMeanMinMaxValue : renderValue,
+      title: COLUMNS_TITLES[columnName] || columnName,
+      dataIndex: columnName,
+      key: columnName,
+      align: LEFT_ALIGN_COLUMNS.includes(columnName) ? ('left' as 'left') : ('right' as 'right'),
+      render: ITEM_VALUE_COLUMN_NAMES.includes(columnName)
+        ? renderMeanMinMaxValue
+        : isNormalized
+        ? renderNormalized
+        : renderValue,
     }
 
     if (index === 0) {
-      _column.render = renderRow(_column.render, logarithmicScale, axesOptions, tableOptions)
+      _column.render = renderRow(_column.render)
     }
 
     return _column
@@ -186,11 +175,11 @@ export const getColumns = (
   return [
     ...columns,
     {
-      title: renderChartCellTitle(logarithmicScale, axesOptions, tableOptions),
+      title: <ChartAndTableHeaderCellTitle />,
       key: 'chart',
       className: 'chart-cell',
       width: COLUMN_CHART_WIDTH,
-      render: renderChartCell(data, smallSize),
+      render: renderChartAndTableCell(data, displayNormalized),
       align: 'left' as 'left',
     },
   ]

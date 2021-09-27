@@ -12,6 +12,7 @@ import {
   TableCellNode,
   ChildrenColumnType,
   MetricsData,
+  RawMetricsData,
   SaveMetricThreshold,
   ColumnType,
 } from './model'
@@ -35,17 +36,15 @@ export const getMetricsColumns = (
     return []
   }
 
-  const keyColumns = metricsData.columns.map((column: ColumnNode) => {
-    return {
-      ...column,
-      id: column.columnName,
-      dataIndex: column.columnName,
-      key: column.columnName,
-      fixed: 'left' as 'left',
-      sorter: defaultSort(column.columnName),
-      width: getColumnWidth(column.title),
-    }
-  })
+  const keyColumns = metricsData.columns.map((column: ColumnNode) => ({
+    ...column,
+    id: column.columnName,
+    dataIndex: column.columnName,
+    key: column.columnName,
+    fixed: 'left' as 'left',
+    sorter: defaultSort(column.columnName),
+    width: getColumnWidth(column.title),
+  }))
 
   let columns: Array<ColumnType> = []
 
@@ -171,4 +170,94 @@ export const getMetricsColumns = (
   }
 
   return columns
+}
+
+export const getMetricsColumnsFromRawData = (
+  metricsData: RawMetricsData,
+  disabledColumns?: Array<string>
+) => {
+  function filterColumns(column: ChildrenColumnType): boolean {
+    return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
+  }
+  const keyColumns = metricsData?.current.key_columns?.map((column: string) => ({
+    id: column,
+    dataIndex: column,
+    title: getGroupTitle(column),
+    key: column,
+    fixed: 'left' as 'left',
+    sorter: defaultSort(column),
+    width: getColumnWidth(column),
+  }))
+
+  const currentColumnNames = Object.keys(metricsData.current.data[0])
+  return currentColumnNames?.reduce((columnsData: Array<ColumnType>, colName) => {
+    const isKeyColumn =
+      metricsData?.current.key_columns && !!metricsData?.current.key_columns.includes(colName)
+    if (!isKeyColumn) {
+      let childrenColumns: Array<ChildrenColumnType> = [
+        {
+          id: `${colName}_current`,
+          key: `${colName}_current`,
+          dataIndex: `${colName}_current`,
+          title: 'Current',
+          sorter: defaultSort(`${colName}_current`),
+          render: renderNumericColumnValue,
+          width: getColumnWidth('Current'),
+        },
+      ]
+
+      if (metricsData.previous) {
+        childrenColumns = [
+          ...childrenColumns,
+          {
+            id: `${colName}_previous`,
+            key: `${colName}_previous`,
+            dataIndex: `${colName}_previous`,
+            title: 'Previous',
+            sorter: defaultSort(`${colName}_previous`),
+            render: renderNumericColumnValue,
+            width: getColumnWidth('Previous'),
+          },
+          // TODO: waiting for BE
+          // {
+          //   id: `${colName}_change`,
+          //   key: `${colName}_change`,
+          //   dataIndex: `${colName}_change`,
+          //   title: <Tooltip title="Current - Previous">Change</Tooltip>,
+          //   titleString: 'Change',
+          //   sorter: defaultSort(`${colName}_change`),
+          //   render: renderNumericColumnValue,
+          //   width: getColumnWidth('Change'),
+          //   disabled: true,
+          // },
+          // {
+          //   id: `${colName}_change_percent`,
+          //   key: `${colName}_change_percent`,
+          //   dataIndex: `${colName}_change_percent`,
+          //   title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
+          //   titleString: '% Change',
+          //   sorter: defaultSort(`${colName}_change_percent`),
+          //   render: renderPercentColumnValue,
+          //   width: getColumnWidth('% Change'),
+          //   disabled: true,
+          // },
+        ]
+      }
+
+      if (disabledColumns) {
+        childrenColumns = childrenColumns.filter(filterColumns)
+      }
+      return [
+        ...columnsData,
+        {
+          id: colName,
+          key: colName,
+          dataIndex: colName,
+          title: getGroupTitle(colName),
+          children: childrenColumns,
+        },
+      ]
+    }
+    return columnsData
+  }, keyColumns)
 }

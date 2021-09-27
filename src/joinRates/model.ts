@@ -32,8 +32,7 @@ export interface JoinRatesData {
   dq_result: QualityData
 }
 
-export interface JoinRatesProps {
-  data: JoinRatesData | Array<JoinRatesData>
+export interface ConfigProps {
   joinRateId?: string
   onRowClickHandler?: (id: string) => void
   selectedRules?: Array<string>
@@ -47,6 +46,11 @@ export interface JoinRatesProps {
     rulesTableProps?: TableProps<RuleData>
     sampleTableProps?: TableProps<any>
   }
+}
+
+export interface JoinRatesProps {
+  data: JoinRatesData | Array<JoinRatesData>
+  config?: ConfigProps
 }
 
 export interface JoinStatisticsData {

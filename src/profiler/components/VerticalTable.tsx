@@ -2,18 +2,13 @@ import React, { useCallback } from 'react'
 import Table from 'antd/lib/table'
 
 import ChartCellTitle from './ChartCellTitle'
-import { ChartWithTooltip, hygratePmfPlotData } from '../chart'
+import { ChartAndTable, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
-import { renderNumericCell } from '../columns'
-import {
-  DiscreteItem,
-  PmfPlotItem,
-  VerticalColumn,
-  VerticalData,
-  VerticalTableProps,
-} from '../model'
-import { TABLE_HEIGHT } from '../constants'
+import { renderNumericCell } from '../../common'
+import { VerticalColumn, VerticalData, VerticalTableProps } from '../model'
+import { TABLE_HEIGHT, NORMALIZABLE_COLUMN_PREFIX } from '../constants'
 import { ColorBlock } from '../styles'
+import { formatPercentage } from '../../helpers'
 
 const VerticalTable = (props: VerticalTableProps) => {
   const {
@@ -25,8 +20,7 @@ const VerticalTable = (props: VerticalTableProps) => {
     setPageSize,
     withoutPagination,
     pagination,
-    rowOptions,
-    tableOptions,
+    displayNormalized,
     onChange,
   } = props
   const flattenData = data.map(item => item.children).flat()
@@ -47,17 +41,19 @@ const VerticalTable = (props: VerticalTableProps) => {
             props: { colSpan },
             children: (
               <>
-                {parent ? (
-                  <ChartCellTitle
-                    row={parent}
-                    rowOptions={rowOptions}
-                    tableOptions={tableOptions}
-                  />
-                ) : null}
-                <ChartWithTooltip data={chartData} isHorizontal />
+                {parent ? <ChartCellTitle row={parent} /> : null}
+                <ChartAndTable
+                  data={chartData}
+                  isHorizontal
+                  displayNormalized={displayNormalized}
+                />
               </>
             ),
           }
+        }
+
+        if (displayNormalized && (row.key as string).includes(NORMALIZABLE_COLUMN_PREFIX)) {
+          return formatPercentage(record.value)
         }
 
         if (row.key === 'nulls' && childrenLength > 1) {

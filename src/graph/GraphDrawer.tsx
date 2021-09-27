@@ -56,11 +56,11 @@ const GraphDrawer = ({
           {data?.metrics ? (
             <Metrics
               data={data.metrics}
-              previousReleaseDataIsShown
-              disabledColumns={[]}
-              pagination={{ disabled: true }}
-              saveMetricThreshold={() => {}}
-              smallSize
+              config={{
+                previousReleaseDataIsShown: true,
+                pagination: { disabled: true },
+                smallSize: true,
+              }}
             />
           ) : (
             <NoData>No data</NoData>
@@ -70,23 +70,18 @@ const GraphDrawer = ({
           {profilerData ? (
             <Profiler
               datasets={profilerData}
-              pagination={{ disabled: false }}
-              rowToolbarOptions={{
-                logarithmicScaleOptions: { isCheckboxShown: false, isUsedByDefault: false },
-                axesOptions: { isCheckboxShown: false, isUsedByDefault: false },
-                chartTableOptions: { isCheckboxShown: false, isUsedByDefault: false },
+              config={{
+                showProfilerToolbar: true,
+                showLogarithmicSwitcher: false,
+                logarithmicChecked: false,
+                showAxesSwitcher: false,
+                axesChecked: false,
+                showChartTableSwitcher: false,
+                chartTableChecked: false,
+                showOrientSwitcher: false,
+                showSearch: true,
+                smallSize: true,
               }}
-              profilerToolbarOptions={{
-                orientOptions: {
-                  isCheckboxShown: true,
-                  onOrientChange: (orient: Orient) => console.log('orient => ', orient),
-                },
-                searchOptions: {
-                  disabled: false,
-                  onChange: (value: string) => console.log('search => ', value),
-                },
-              }}
-              smallSize
             />
           ) : (
             <NoData>No data</NoData>
@@ -94,7 +89,13 @@ const GraphDrawer = ({
         </TabPane>
         <TabPane tab="Quality" key="quality">
           {data?.dq_result ? (
-            <Quality data={data.dq_result} pagination={{ disabled: true }} smallSize />
+            <Quality
+              data={data.dq_result}
+              config={{
+                pagination: false,
+                smallSize: true,
+              }}
+            />
           ) : (
             <NoData>No data</NoData>
           )}

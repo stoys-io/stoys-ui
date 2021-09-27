@@ -1,0 +1,265 @@
+{
+  "table_name": "covid_data_metrics",
+  "key_columns": ["location"],
+  "data": [
+    {
+      "location": null,
+      "cases": 151811196.0,
+      "deaths": 3366107.0,
+      "excess_deaths": 8433112.0,
+      "vaccinations": null
+    },
+    {
+      "location": "Argentina",
+      "cases": 11650.0,
+      "deaths": 150.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Austria",
+      "cases": 2550.0,
+      "deaths": 90.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Bahrain",
+      "cases": 1791.0,
+      "deaths": 2.0,
+      "excess_deaths": null,
+      "vaccinations": 2621.714
+    },
+    {
+      "location": "Bulgaria",
+      "cases": 3167.0,
+      "deaths": 264.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Canada",
+      "cases": 112823.0,
+      "deaths": 2047.0,
+      "excess_deaths": null,
+      "vaccinations": 51308.143
+    },
+    {
+      "location": "Chile",
+      "cases": 9191.0,
+      "deaths": 215.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "China",
+      "cases": 1449.0,
+      "deaths": 27.0,
+      "excess_deaths": null,
+      "vaccinations": 1875000.0
+    },
+    {
+      "location": "Costa Rica",
+      "cases": 1048.0,
+      "deaths": 21.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Croatia",
+      "cases": 1850.0,
+      "deaths": 65.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Denmark",
+      "cases": 10098.0,
+      "deaths": 103.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "England",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "vaccinations": 34719.857
+    },
+    {
+      "location": "Estonia",
+      "cases": 1864.0,
+      "deaths": 22.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Finland",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "France",
+      "cases": 26514.0,
+      "deaths": 304.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Germany",
+      "cases": 94913.0,
+      "deaths": 3284.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Greece",
+      "cases": 942.0,
+      "deaths": 58.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Hungary",
+      "cases": 3483.0,
+      "deaths": 382.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Iceland",
+      "cases": 18.0,
+      "deaths": 0.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Israel",
+      "cases": 43698.0,
+      "deaths": 233.0,
+      "excess_deaths": null,
+      "vaccinations": 294000.0000000001
+    },
+    {
+      "location": "Italy",
+      "cases": 27412.0,
+      "deaths": 1234.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Kuwait",
+      "cases": 204.0,
+      "deaths": 1.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Latvia",
+      "cases": 838.0,
+      "deaths": 25.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Lithuania",
+      "cases": 1771.0,
+      "deaths": 15.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Luxembourg",
+      "cases": 327.0,
+      "deaths": 6.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Mexico",
+      "cases": 63856.0,
+      "deaths": 4586.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Northern Ireland",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "vaccinations": 15653.143
+    },
+    {
+      "location": "Oman",
+      "cases": 156.0,
+      "deaths": 2.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Poland",
+      "cases": 23615.0,
+      "deaths": 901.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Portugal",
+      "cases": 5429.0,
+      "deaths": 132.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Romania",
+      "cases": 12132.0,
+      "deaths": 366.0,
+      "excess_deaths": null,
+      "vaccinations": null
+    },
+    {
+      "location": "Russia",
+      "cases": 221781.0,
+      "deaths": 4428.0,
+      "excess_deaths": null,
+      "vaccinations": 3357.143
+    },
+    {
+      "location": "Scotland",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": 1276.0,
+      "vaccinations": 41746.284
+    },
+    {
+      "location": "United Kingdom",
+      "cases": 285151.0,
+      "deaths": 3683.0,
+      "excess_deaths": null,
+      "vaccinations": 43346.143
+    },
+    {
+      "location": "United States",
+      "cases": 2271627.0,
+      "deaths": 28702.0,
+      "excess_deaths": null,
+      "vaccinations": 1157374.7859999998
+    },
+    {
+      "location": "Wales",
+      "cases": null,
+      "deaths": null,
+      "excess_deaths": null,
+      "vaccinations": 15538.288
+    },
+    {
+      "location": "World",
+      "cases": 10362298.0,
+      "deaths": 192515.0,
+      "excess_deaths": null,
+      "vaccinations": 4184318.4269999997
+    }
+  ]
+}

@@ -1,9 +1,9 @@
-import { Graph, IG6GraphEvent, INode, IShape } from '@antv/g6';
+import { Graph, IG6GraphEvent, INode, IShape } from '@antv/g6'
 export type ShapeEventListner = (
   event: IG6GraphEvent,
   node: INode | null,
   shape: IShape,
-  graph: Graph,
+  graph: Graph
 ) => void
 
 const propsToEventMap = {

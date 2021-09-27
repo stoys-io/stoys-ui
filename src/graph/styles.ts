@@ -49,7 +49,8 @@ export const GraphContainer = styled.div`
     padding: 4px;
     box-shadow: rgb(174, 174, 174) 0 0 10px;
   }
-  .ant-drawer-top.ant-drawer-open, .ant-drawer-bottom.ant-drawer-open {
+  .ant-drawer-top.ant-drawer-open,
+  .ant-drawer-bottom.ant-drawer-open {
     height: unset;
   }
 `
@@ -101,7 +102,9 @@ export const SelectVersion = styled(Select)`
 `
 
 export const NodeSearch = styled(Search)<{ error: string }>`
-  .ant-input-search-button, .ant-input-affix-wrapper, .ant-input-affix-wrapper:hover {
-    border-color: ${props => props.error ? 'red' : ''};
+  .ant-input-search-button,
+  .ant-input-affix-wrapper,
+  .ant-input-affix-wrapper:hover {
+    border-color: ${props => (props.error ? 'red' : '')};
   }
 `
