@@ -6,7 +6,7 @@ import { Container, GraphContainer } from './styles'
 // ---
 
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
-import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale } from './model2'
+import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale } from './model'
 import { DagNode } from './DagNode'
 import { getLayoutedElements } from './layout'
 import {

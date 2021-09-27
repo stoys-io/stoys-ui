@@ -1,53 +1,94 @@
 import { JoinRatesData } from '../joinRates/model'
 import { Dataset as ProfilerData } from '../profiler/model'
 import { QualityData } from '../quality'
+import { Node as Node0, Edge } from 'react-flow-renderer'
 
-export interface Node {
-  id: string
+export interface DataPayload {
   label: string
-  columns?: Array<Column>
-  comboId?: string
-  violations?: number
-  partitions?: number
+  badge: Badge
+  partitions: number
+  violations: number
+  highlight: boolean
+  columns: string[]
+  onTitleClick: (id: string) => void
+  expand?: boolean
 }
 
-export type Nodes = Array<Node>
+export type Node = Node0<DataPayload>
+export { Edge }
 
-export interface Edge {
-  id: string
-  source: string
-  target: string
+export interface Graph {
+  nodes: Node[]
+  edges: Edge[]
 }
-
-export type Edges = Array<Edge>
-
-export interface Combo {
-  id: string
-  label: string
-}
-
-export type Combos = Array<Combo>
 
 export type Highlight = 'nearest' | 'parents' | 'children'
 
-// export interface GraphProps {
-//   data?: Graph
-//   nodes?: Nodes
-//   edges?: Edges
-//   combos?: Combos
-//   // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
-//   // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
-//   chromaticScale?: ChromaticScale
-// }
+export type Badge = 'violations' | 'partitions'
+
+export interface Table {
+  id: string
+  name: string
+  columns: Column[]
+  measures: {
+    rows: number
+    violations?: number
+  }
+  dependencies?: string[]
+  dp_result?: ProfilerData
+  dq_result?: QualityData
+  dq_join_results?: JoinRatesData[]
+  metrics?: any // TODO: use proper type
+  metadata?: {
+    [key: string]: string | number
+  }
+
+  comboId?: string // TODO: Grouping is work in progress
+}
 
 export interface Column {
-  id: string
+  // id: string
   name: string
 }
 
-// export interface Graph {
-//   id: string
-//   name: string
-//   version: string
-//   tables: Array<Table>
-// }
+type D3Scale =
+  | 'interpolateBrBG'
+  | 'interpolatePRGn'
+  | 'interpolatePiYG'
+  | 'interpolatePuOr'
+  | 'interpolateRdBu'
+  | 'interpolateRdGy'
+  | 'interpolateRdYlBu'
+  | 'interpolateRdYlGn'
+  | 'interpolateSpectral'
+  | 'interpolateBlues'
+  | 'interpolateGreens'
+  | 'interpolateGreys'
+  | 'interpolateOranges'
+  | 'interpolatePurples'
+  | 'interpolateReds'
+  | 'interpolateTurbo'
+  | 'interpolateViridis'
+  | 'interpolateInferno'
+  | 'interpolateMagma'
+  | 'interpolatePlasma'
+  | 'interpolateCividis'
+  | 'interpolateWarm'
+  | 'interpolateCool'
+  | 'interpolateRainbow'
+  | 'interpolateSinebow'
+  | 'interpolateCubehelixDefault'
+  | 'interpolateBuGn'
+  | 'interpolateBuPu'
+  | 'interpolateGnBu'
+  | 'interpolateOrRd'
+  | 'interpolatePuBuGn'
+  | 'interpolatePuBu'
+  | 'interpolatePuRd'
+  | 'interpolateRdPu'
+  | 'interpolateYlGnBu'
+  | 'interpolateYlGn'
+  | 'interpolateYlOrBr'
+  | 'interpolateYlOrRd'
+
+export type ChromaticScale = D3Scale

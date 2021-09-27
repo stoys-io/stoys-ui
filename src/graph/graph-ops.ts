@@ -1,4 +1,4 @@
-import { Graph, Edge, Node, DataPayload, Badge } from './model2'
+import { Graph, Edge, Node, DataPayload, Badge } from './model'
 
 export const highlightNode = (id: string) => (graph: Graph) => ({
   ...graph,

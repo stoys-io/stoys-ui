@@ -3,7 +3,7 @@ import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import List from 'antd/lib/list'
 
 import { renderNumericValue } from '../helpers'
-import { DataPayload } from './model2'
+import { DataPayload } from './model'
 import { ScrollCard } from './styles'
 
 export const DagNode = ({

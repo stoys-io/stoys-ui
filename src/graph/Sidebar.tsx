@@ -2,7 +2,7 @@ import React from 'react'
 import Radio from 'antd/lib/radio'
 import Space from 'antd/lib/space'
 
-import { Highlight, Badge } from './model2'
+import { Highlight, Badge } from './model'
 
 import {
   SidebarWrapper,
