@@ -218,6 +218,7 @@ export const getMetricsColumnsFromRawData = (
             render: renderNumericColumnValue,
             width: getColumnWidth('Previous'),
           },
+          // TODO: waiting for BE
           // {
           //   id: `${colName}_change`,
           //   key: `${colName}_change`,
