@@ -29,11 +29,16 @@ export const SidebarContentWrapper = styled.div`
   z-index: 3;
 `
 
-export const GraphContainer = styled.div`
+export const DrawerContainer = styled.div`
   .ant-drawer-top.ant-drawer-open,
   .ant-drawer-bottom.ant-drawer-open {
     height: unset;
   }
+`
+
+export const GraphContainer = styled.div`
+  height: 100vh;
+  width: 100%;
 `
 
 export const StyledDrawer = styled(Drawer)`

@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-/* import { getGraphData } from './helpers' */
 import GraphDrawer from './GraphDrawer'
 import Sidebar from './Sidebar'
-import { Container, GraphContainer } from './styles'
-// ---
+import { Container, DrawerContainer, GraphContainer } from './styles'
 
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale } from './model'
@@ -19,7 +17,7 @@ import {
   changeBadge,
 } from './graph-ops'
 
-const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
+const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
   /* TODO: We might not need that many states for drawer */
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerHeight, setDrawerHeight] = useState(500) // TODO: Could possibly be moved into drawers local state?
@@ -106,7 +104,7 @@ const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
         highlight={highlight}
         onHighlightChange={onHighlightChange}
       />
-      <div style={{ height: '100vh', width: '100%' }}>
+      <GraphContainer>
         <ReactFlow
           nodesDraggable={false}
           onElementClick={onElementClick}
@@ -116,9 +114,9 @@ const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
         >
           <Background />
         </ReactFlow>
-      </div>
+      </GraphContainer>
       {drawerData && (
-        <GraphContainer>
+        <DrawerContainer>
           <GraphDrawer
             data={drawerData}
             drawerHeight={drawerHeight}
@@ -128,7 +126,7 @@ const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
             visible={drawerIsVisible}
             setDrawerVisibility={setDrawerVisibility}
           />
-        </GraphContainer>
+        </DrawerContainer>
       )}
     </Container>
   )
@@ -140,7 +138,6 @@ interface Props {
   data: {
     tables: Table[]
   }
-  enableGrouping: boolean
 
   // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
   // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
