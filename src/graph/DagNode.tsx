@@ -8,7 +8,7 @@ import { ScrollCard } from './styles'
 
 export const DagNode = ({
   id,
-  data: { label, badge, columns, violations, partitions, highlight, expand, onTitleClick },
+  data: { label, badge, columns, violations, partitions, highlight, onTitleClick },
   isConnectable,
 }: NodeProps<DataPayload>): JSX.Element => {
   const actualBadge = badge === 'violations' ? violations : partitions
@@ -28,7 +28,6 @@ export const DagNode = ({
         size="small"
         type="inner"
         extra={actualBadgeFormatted}
-        expand={expand}
         highlight={highlight}
       >
         <List

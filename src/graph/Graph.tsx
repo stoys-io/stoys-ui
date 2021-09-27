@@ -15,7 +15,6 @@ import {
   findChildNodes,
   findParentNodes,
   findNeighborNodes,
-  expandNode,
   highlightNode,
   changeBadge,
 } from './graph-ops'
@@ -75,8 +74,6 @@ const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
   }
 
   const onPaneClick = () => setGraph(resetHighlight)
-  const onElementExpand = (_: any, element: Node | Edge) =>
-    enableGrouping && isNode(element) && setGraph(expandNode(element.id))
 
   const onSearchNode = () => {
     if (!searchValue) {
@@ -113,7 +110,6 @@ const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
         <ReactFlow
           nodesDraggable={false}
           onElementClick={onElementClick}
-          onNodeDoubleClick={onElementExpand}
           onPaneClick={onPaneClick}
           nodeTypes={nodeTypes}
           elements={elements}

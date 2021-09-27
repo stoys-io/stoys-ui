@@ -11,7 +11,6 @@ export interface DataPayload {
   highlight: boolean
   columns: string[]
   onTitleClick: (id: string) => void
-  expand?: boolean
 }
 
 export type Node = Node0<DataPayload>

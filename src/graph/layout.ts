@@ -1,6 +1,6 @@
 import { Edge, isNode, Node, Position } from 'react-flow-renderer'
 import dagre from 'dagre'
-import { NODE_HEIGHT, NODE_WIDTH, NODE_HEIGHT2, NODE_WIDTH2 } from './constants'
+import { NODE_HEIGHT, NODE_WIDTH } from './constants'
 
 const dagreGraph = new dagre.graphlib.Graph()
 
@@ -22,10 +22,7 @@ export const getLayoutedElements = (elements: Array<Node | Edge>) => {
 
   elements.forEach(el => {
     if (isNode(el)) {
-      const [width, height] = !el.data.expand
-        ? [NODE_WIDTH, NODE_HEIGHT]
-        : [NODE_WIDTH2, NODE_HEIGHT2]
-      dagreGraph.setNode(el.id, { width, height })
+      dagreGraph.setNode(el.id, { width: NODE_WIDTH, height: NODE_HEIGHT })
     } else {
       dagreGraph.setEdge(el.source, el.target)
     }

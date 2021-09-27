@@ -58,26 +58,6 @@ export const changeBadge =
     }),
   })
 
-export const expandNode =
-  (id: string) =>
-  (graph: Graph): Graph => ({
-    ...graph,
-    nodes: graph.nodes.map((node: Node) => {
-      if (node.id !== id) {
-        return node
-      }
-
-      const nodeData = node.data ?? defaultData
-      return {
-        ...node,
-        data: {
-          ...nodeData,
-          expand: !nodeData.expand,
-        },
-      }
-    }),
-  })
-
 export const findNeighborNodes = (graph: Graph, id: string) => [
   ...graph.edges.filter(edge => edge.source === id).map(edge => edge.target),
   ...graph.edges.filter(edge => edge.target === id).map(edge => edge.source),
@@ -142,7 +122,6 @@ export const findParentNodes = (graph: Graph, id: string) => {
 const defaultData: DataPayload = {
   label: '',
   highlight: false,
-  expand: false,
   badge: 'violations',
   partitions: 0,
   violations: 0,
