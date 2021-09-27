@@ -97,11 +97,15 @@ export const ScrollCard = styled(Card)<{ expand?: boolean; highlight: boolean }>
   height: ${props => (props.expand ? NODE_HEIGHT2 : NODE_HEIGHT)}px;
   border: 2px solid ${props => (props.highlight ? 'blue' : 'grey')};
   border-radius: 3px;
-  cursor: default;
+  cursor: pointer;
 
   // enables scroll
   display: flex;
   flex-direction: column;
+
+  .ant-card-head:hover {
+    color: blue;
+  }
 
   .ant-card-body {
     flex: 1;

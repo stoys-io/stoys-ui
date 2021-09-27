@@ -147,4 +147,5 @@ const defaultData: DataPayload = {
   partitions: 0,
   violations: 0,
   columns: [],
+  onTitleClick: () => {},
 }

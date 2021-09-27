@@ -7,16 +7,8 @@ import { DataPayload } from './model2'
 import { ScrollCard } from './styles'
 
 export const DagNode = ({
-  data: {
-    label,
-    badge,
-    columns,
-    violations,
-    partitions,
-    /* controls: { onClick }, */
-    highlight,
-    expand,
-  },
+  id,
+  data: { label, badge, columns, violations, partitions, highlight, expand, onTitleClick },
   isConnectable,
 }: NodeProps<DataPayload>): JSX.Element => {
   const actualBadge = badge === 'violations' ? violations : partitions
@@ -32,7 +24,7 @@ export const DagNode = ({
         isConnectable={isConnectable}
       />
       <ScrollCard
-        title={label}
+        title={<div onClick={() => onTitleClick(id)}>{label}</div>}
         size="small"
         type="inner"
         extra={actualBadgeFormatted}

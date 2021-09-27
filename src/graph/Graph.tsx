@@ -5,8 +5,8 @@ import Sidebar from './Sidebar'
 import { Container, GraphContainer } from './styles'
 // ---
 
-import ReactFlow, { Background, isNode } from 'react-flow-renderer'
-import { Edge, Node, Graph, Highlight, Badge } from './model2'
+import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
+import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale } from './model2'
 import { DagNode } from './DagNode'
 import { getLayoutedElements } from './layout'
 import {
@@ -21,71 +21,30 @@ import {
 } from './graph-ops'
 
 const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
-  /* const nodes: Nodes =
-                                                                                       *   props.nodes ||
-                                                                                       *   tables!.map(table => ({
-                                                                                       *     id: table.id,
-                                                                                       *     label: table.name,
-                                                                                       *     columns: table.columns,
-                                                                                       *     violations: table.measures.violations,
-                                                                                       *     partitions: table.measures.rows,
-                                                                                       *     // TODO: add comboId
-                                                                                       *   }))
+  /* TODO: We might not need that many states for drawer */
+  const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
+  const [drawerHeight, setDrawerHeight] = useState(500) // TODO: Could possibly be moved into drawers local state?
+  const [drawerNodeId, setDrawerNodeId] = useState<string>('')
+  const [drawerTable, setDrawerTable] = useState<string>('')
 
-                                                                                       * const edgesObj: any = tables?.reduce((acc: any, table) => {
-                                                                                       *   table.dependencies?.forEach((dependency: any) => (acc[dependency] = table.id))
+  const openDrawer = (id: string) => {
+    setDrawerNodeId(id)
+    setDrawerVisibility(true)
 
-                                                                                       *   return acc
-                                                                                       * }, {})
-                                                                                       * const edges: Edges =
-                                                                                       *   props.edges ||
-                                                                                       *   Object.keys(edgesObj).map(source => ({
-                                                                                       *     id: `${source}-${edgesObj[source]}`,
-                                                                                       *     source,
-                                                                                       *     target: edgesObj[source],
-                                                                                       *   })) */
-
-  /* const combos: Combos = props.combos || [] */
-
-  /* const data = { nodes, edges, combos } */
-
-  /* const [selectedNodeId, setSelectedNodeId] = useState<string>('') */
-
-  /* const [searchedNodeId, setSearchedNodeId] = useState('') */
-
-  // -----
+    const table = data.tables.find(table => table.id === id)
+    table && setDrawerTable(table.name)
+  }
+  const drawerData = data.tables.find(table => table.id === drawerNodeId)
 
   const [graph, setGraph] = useState<Graph>({
-    nodes: mapInitialNodes(data),
+    nodes: mapInitialNodes(data, openDrawer),
     edges: mapInitialEdges(data),
   })
+
   const [highlight, setHighlight] = useState<Highlight>('nearest')
   const [badge, setBadge] = useState<Badge>('violations')
   const [searchValue, setSearchValue] = useState<string>('')
   const [searchError, setSearchError] = useState<boolean>(false)
-
-  const [drawerIsVisible, setDrawerVisibility] = useState(false)
-  const [drawerNodeId, setDrawerNodeId] = useState('')
-  const [drawerTable, setDrawerTable] = useState('')
-  const [drawerHeight, setDrawerHeight] = useState(500)
-
-  /* const onNodeClick = (node: any) => {
-   *   setSelectedNodeId(node.id)
-   *   setDrawerNodeId(node.id)
-   *   graph.changeData(getData({ selectedNodeId: node.id }))
-   * } */
-
-  /* const openDrawer = (node: any, table: string) => {
-   *   const model = node.getModel()
-   *   setDrawerNodeId(model.id)
-   *   setDrawerVisibility(true)
-   *   setDrawerTable(table)
-   * } */
-
-  /* const drawerData = useMemo(
-   *   () => tables?.find((table: any) => table.id === drawerNodeId),
-   *   [tables, drawerNodeId]
-   * ) */
 
   const onBadgeChange = (value: Badge) => {
     setBadge(value)
@@ -97,7 +56,7 @@ const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
     setHighlight(value)
   }
 
-  const onElementClick = (_: any, element: Node | Edge) => {
+  const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (!isNode(element)) {
       return
     }
@@ -162,27 +121,19 @@ const Graph2 = ({ data, enableGrouping /* , chromaticScale */ }: Props) => {
           <Background />
         </ReactFlow>
       </div>
-      <GraphContainer>
-        <GraphDrawer
-          data={
-            /* drawerData */
-            {
-              id: '1',
-              name: 'a',
-              columns: [],
-              measures: {
-                rows: 1,
-              },
-            }
-          }
-          drawerHeight={drawerHeight}
-          setDrawerHeight={setDrawerHeight}
-          table={drawerTable}
-          setDrawerTable={setDrawerTable}
-          visible={drawerIsVisible}
-          setDrawerVisibility={setDrawerVisibility}
-        />
-      </GraphContainer>
+      {drawerData && (
+        <GraphContainer>
+          <GraphDrawer
+            data={drawerData}
+            drawerHeight={drawerHeight}
+            setDrawerHeight={setDrawerHeight}
+            table={drawerTable}
+            setDrawerTable={setDrawerTable}
+            visible={drawerIsVisible}
+            setDrawerVisibility={setDrawerVisibility}
+          />
+        </GraphContainer>
+      )}
     </Container>
   )
 }
@@ -194,22 +145,10 @@ interface Props {
     tables: Table[]
   }
   enableGrouping: boolean
-}
 
-interface Table {
-  id: string
-  name: string
-  measures: {
-    rows: number
-    violations?: number
-  }
-  columns: Column[]
-  dependencies?: string[]
-  comboId?: string
-}
-
-interface Column {
-  name: string
+  // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
+  // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
+  chromaticScale?: ChromaticScale
 }
 
 const nodeTypes = {
@@ -217,22 +156,17 @@ const nodeTypes = {
 }
 
 const initialPosition = { x: 0, y: 0 }
-
-const nodeControls = {
-  onClick: () => console.log('Open drawer'),
-}
-
-const mapInitialNodes = (data: Props['data']): Node[] =>
+const mapInitialNodes = (data: Props['data'], openDrawer: (_: string) => void): Node[] =>
   data.tables.map((table: Table) => ({
     id: table.id,
     data: {
       label: table.name,
-      controls: nodeControls,
       highlight: false,
       badge: 'violations',
       partitions: table.measures.rows,
       violations: table.measures.violations ?? 0,
       columns: table.columns.map(col => col.name),
+      onTitleClick: openDrawer,
     },
     position: initialPosition,
     type: 'dagNode',
