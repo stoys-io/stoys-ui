@@ -3,6 +3,22 @@ import { render } from '@testing-library/react'
 
 import Bar from '../BarChart'
 
+beforeAll(() => {
+  HTMLCanvasElement.prototype.getContext = jest.fn(() => {
+    const ctxMock = {}
+
+    // this mocks canvas api
+    return new Proxy(ctxMock, {
+      get: function (target, key, _) {
+        if (key in ctxMock) {
+          return Reflect.get(target, key)
+        }
+        return () => {}
+      },
+    }) as any
+  })
+})
+
 describe('BarChart', () => {
   it('should render', () => {
     const { container } = render(
@@ -15,6 +31,6 @@ describe('BarChart', () => {
       />
     )
 
-    expect(container.querySelector('svg')).toBeTruthy()
+    expect(container.querySelector('canvas')).toBeTruthy()
   })
 })

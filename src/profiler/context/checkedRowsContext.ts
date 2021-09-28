@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-import { CheckedRowsContextProps } from './model'
+import { CheckedRowsContextProps } from '../model'
 
 function initFunc() {
   console.log('Initilization...')

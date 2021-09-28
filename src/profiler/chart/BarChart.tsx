@@ -8,7 +8,7 @@ const BarChart = ({ series, xData, height, isLogScale, haveAxes }: BarChartProps
 
   return (
     <ReactEcharts
-      opts={{ renderer: 'svg' }}
+      opts={{ renderer: 'canvas' }}
       style={{ width: '100%', height }}
       option={{
         animation: false,

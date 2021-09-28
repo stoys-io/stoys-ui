@@ -41,7 +41,9 @@ describe('Join Rates', () => {
     const { container } = render(
       <JoinRates
         data={[joinRatesMockData1, joinRatesMockData2]}
-        onRowClickHandler={onRowClickHandlerMock}
+        config={{
+          onRowClickHandler: onRowClickHandlerMock,
+        }}
       />
     )
 

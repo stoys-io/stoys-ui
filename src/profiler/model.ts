@@ -30,6 +30,7 @@ export type ColumnType =
   | 'double'
   | 'boolean'
 
+export type CountColumnKey = `count_${string}`
 export interface Column {
   name: string
   data_type: ColumnType
@@ -38,10 +39,8 @@ export interface Column {
   enum_values?: Array<string>
   format?: Maybe<string>
   count: number
-  count_empty: Maybe<number>
-  count_nulls: Maybe<number>
-  count_zeros: Maybe<number>
-  count_unique: Maybe<number>
+  [key: CountColumnKey]: Maybe<number>
+
   max_length: Maybe<number>
   mean: Maybe<number>
   min: Maybe<string>
@@ -58,46 +57,50 @@ export interface Dataset {
 
 export type Datasets = Array<Dataset>
 
-export interface RowToolbarOptions {
-  logarithmicScaleOptions?: {
-    isCheckboxShown?: boolean
-    isUsedByDefault?: boolean
-  }
-  axesOptions?: {
-    isCheckboxShown?: boolean
-    isUsedByDefault?: boolean
-  }
-  chartTableOptions?: {
-    isCheckboxShown?: boolean
-    isUsedByDefault?: boolean
-  }
-}
+export interface ConfigProps {
+  colors?: Array<string>
+  smallSize?: boolean
+  visibleColumns?: Array<string>
+  pagination?: PaginationProps | false
 
-export interface ProfilerToolbarOptions {
-  orientOptions?: {
-    type?: Orient
-    isCheckboxShown?: boolean
-    onOrientChange?: (orient: Orient) => void
-  }
-  jsonOptions?: {
+  showProfilerToolbar?: boolean
+  showRowToolbar?: boolean
+
+  showOrientSwitcher?: boolean
+  orientType?: Orient
+  onOrientChange?: (orient: Orient) => void
+
+  showJsonSwitcher?: boolean
+  jsonChecked?: boolean
+  onJsonChange?: (shown: boolean) => void
+
+  /*TODO: make it in one way? 
+
+    showSwitcher?: boolean
     checked?: boolean
-    isCheckboxShown?: boolean
-    onChange?: (shown: boolean) => void
-  }
-  searchOptions?: {
-    disabled?: boolean
-    onChange?: (value: string) => void
-  }
+    onChange: Function
+
+    for search => searchValue?: string
+  */
+  showNormalizeSwitcher?: boolean
+  normalizeChecked?: boolean
+
+  showSearch?: boolean
+  onSearchChange?: (value: string) => void
+
+  showLogarithmicSwitcher?: boolean
+  logarithmicChecked?: boolean
+
+  showAxesSwitcher?: boolean
+  axesChecked?: boolean
+
+  showChartTableSwitcher?: boolean
+  chartTableChecked?: boolean
 }
 
 export interface DataProfilerProps extends AntdTableProps<any> {
   datasets: Datasets
-  profilerToolbarOptions?: null | false | ProfilerToolbarOptions
-  colors?: Array<string>
-  rowToolbarOptions?: null | false | RowToolbarOptions
-  pagination?: PaginationProps | false
-  smallSize?: boolean
-  visibleColumns?: Array<string>
+  config?: ConfigProps
 }
 
 export interface HydratedColumn extends Column {
@@ -115,10 +118,7 @@ export interface RenderedCellConfig {
 }
 
 export type Render = (
-  render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>,
-  logarithmicScale: LogarithmicScale,
-  axesOptions: AxesOptions,
-  tableOptions: TableOptions
+  render: (value: Maybe<string | number>) => Maybe<JSX.Element | string>
 ) => (value: number | string, row: DataItem | ChildDataItem, index: number) => RenderedCellConfig
 
 export interface LogarithmicScale {
@@ -129,12 +129,6 @@ export interface LogarithmicScale {
 export interface AxesOptions {
   setChecked: (isChecked: boolean) => void
   isCheckboxShown: boolean
-}
-
-export interface TableOptions {
-  setChecked?: (isChecked: boolean) => void
-  isCheckboxShown: boolean
-  isUsedByDefault?: boolean
 }
 
 export interface ChildDataItem extends Omit<HydratedColumn, 'name'> {
@@ -159,13 +153,14 @@ export interface TableProps extends AntdTableProps<any> {
 }
 
 export interface VerticalTableProps extends TableProps {
-  rowOptions: RowOptions
-  tableOptions: TableOptions
+  // TODO: Remove. We already create a render function in getColumns for Horizontal Table
+  displayNormalized: boolean
 }
 
 export interface HygratePmfPlotDataItem {
   pmf?: Array<PmfPlotItem>
   items?: Array<DiscreteItem>
+  itemsTotalCount: number
   color: string
   name: string
   parent: string
@@ -180,32 +175,20 @@ export interface BarChartProps {
   haveAxes: boolean
 }
 
-export interface ChartWithTooltipProps {
+export interface ChartAndTableProps {
   data: Maybe<Array<HygratePmfPlotDataItem>>
-  smallSize?: boolean
   isHorizontal?: boolean
+  displayNormalized?: boolean
 }
 
-export interface RowOptions {
-  isLogCheckboxShown: boolean
-  isAxesCheckboxShown: boolean
-}
 export interface TableSubheaderRowProps {
   row: DataItem
-  rowOptions: RowOptions
-  tableOptions: TableOptions
 }
 
 export interface ChartTableHeaderProps {
   logarithmicScale: LogarithmicScale
   children: JSX.Element
   axesOptions: AxesOptions
-}
-
-export interface ChartHeaderCellTitleProps {
-  logarithmicScale: LogarithmicScale
-  axesOptions: AxesOptions
-  tableOptions: TableOptions
 }
 
 export interface CheckedRowsContextProps {
@@ -223,6 +206,7 @@ export interface TableChartData {
   item: string
   count: number
   color: string
+  index: number
 }
 
 export interface HeaderCheckboxProps {
@@ -263,14 +247,7 @@ export interface VerticalData {
 export interface ChartTableProps {
   data: Array<HygratePmfPlotDataItem>
   height: number
-}
-
-export interface RenderChartProps {
-  checkedLogRows: Array<string>
-  checkedAxesRows: Array<string>
-  checkedTableRows: Array<string>
-  isHorizontal: boolean
-  smallSize: boolean
+  displayNormalized?: boolean
 }
 
 export type CheckboxWithTitleProps = Omit<LogarithmicScale, 'isCheckboxShown'> & {
@@ -300,9 +277,14 @@ export interface TableSettingsProps {
   onModeChange: () => void
   isSearchShown: boolean
   onSearchChangeHandler: (value: string) => void
+
   isJsonSwitcherShown?: boolean
   isJsonSwitcherChecked: boolean
   onJsonChange: () => void
+
+  isNormalizeSwitcherShown?: boolean
+  isNormalizeSwitcherChecked: boolean
+  onNormalizeChange: () => void
 }
 
 export interface JsonDrqwerProps {

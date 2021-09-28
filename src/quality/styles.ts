@@ -88,7 +88,7 @@ function getPaddingForSampleTableCell({ smallSize }: { smallSize: boolean }): st
   return smallSize ? '2px' : '8px'
 }
 
-export const SampleTableWrapper = styled.div<{ heightenedCell?: boolean; smallSize: boolean }>`
+export const SampleTableWrapper = styled.div<{ smallSize: boolean }>`
   flex-grow: 3;
   min-width: 1px;
   width: 100%;
@@ -100,7 +100,7 @@ export const SampleTableWrapper = styled.div<{ heightenedCell?: boolean; smallSi
     > div {
       display: flex;
       align-items: center;
-      height: ${props => (props.heightenedCell ? '66px' : 'unset')};
+      height: ${props => (props.smallSize ? 'unset' : '66px')};
     }
 
     span.ant-badge {
