@@ -5,11 +5,13 @@ import { DrawerNodeLabel } from './styles'
 import { JoinRates, Metrics, Profiler, Quality } from '..'
 import { NoData } from '../profiler/styles'
 import { Table } from './model'
+import { RawMetricsData } from '../metrics/model'
 
 const { TabPane } = Tabs
 
 type GraphDrawerProps = {
   data: Table
+  baseData?: Table
   drawerHeight: number
   setDrawerHeight: Dispatch<SetStateAction<number>>
   visible: boolean
@@ -20,6 +22,7 @@ type GraphDrawerProps = {
 
 const GraphDrawer = ({
   data,
+  baseData,
   drawerHeight,
   setDrawerHeight,
   visible,
@@ -27,6 +30,26 @@ const GraphDrawer = ({
   table,
   setDrawerTable,
 }: GraphDrawerProps) => {
+  const profilerData = data?.dp_result ? [data.dp_result] : null
+  const metrics: RawMetricsData | null = data?.metrics
+    ? {
+        current: { data: data.metrics[0], table_name: data.name, key_columns: ['location'] },
+        previous: undefined,
+      }
+    : null
+
+  if (baseData?.dp_result && profilerData) {
+    profilerData.push(baseData.dp_result)
+  }
+
+  if (baseData?.metrics && metrics) {
+    metrics.previous = {
+      data: baseData.metrics[0],
+      table_name: baseData.name,
+      key_columns: ['location'],
+    }
+  }
+
   return (
     <ResizableAntdDrawer
       drawerHeight={drawerHeight}
@@ -44,9 +67,9 @@ const GraphDrawer = ({
           )}
         </TabPane>
         <TabPane tab="Metrics" key="metrics">
-          {data?.metrics ? (
+          {metrics ? (
             <Metrics
-              data={data.metrics}
+              data={metrics}
               config={{
                 previousReleaseDataIsShown: true,
                 disabledColumns: [],
@@ -60,9 +83,9 @@ const GraphDrawer = ({
           )}
         </TabPane>
         <TabPane tab="Profiler" key="profiler">
-          {data?.dp_result ? (
+          {profilerData ? (
             <Profiler
-              datasets={[data.dp_result]}
+              datasets={profilerData}
               pagination={{ disabled: false }}
               config={{
                 showLogarithmicSwitcher: false,

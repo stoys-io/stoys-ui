@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import GraphDrawer from './GraphDrawer'
 import Sidebar from './Sidebar'
 import { Container, DrawerContainer, GraphContainer } from './styles'
@@ -106,6 +106,16 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
     [setBaseRelease]
   )
 
+  const baseDrawerData = useMemo(() => {
+    if (!baseRelease || !Array.isArray(data)) {
+      return undefined
+    }
+
+    return data
+      ?.find(dataItem => dataItem.version === baseRelease)
+      ?.tables?.find(table => table.name === drawerData?.name)
+  }, [baseRelease, drawerData, data])
+
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges])
   return (
     <Container>
@@ -137,6 +147,7 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
         <DrawerContainer>
           <GraphDrawer
             data={drawerData}
+            baseData={baseDrawerData}
             drawerHeight={drawerHeight}
             setDrawerHeight={setDrawerHeight}
             table={drawerTable}
