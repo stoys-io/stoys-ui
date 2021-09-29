@@ -12,6 +12,12 @@ export interface DataPayload {
   columns: Column[]
   onTitleClick: (id: string) => void
   onListItemClick: (columnId: string, tableId: string) => void
+  highlightedColumns?: {
+    selectedTableId: string
+    selectedColumnId: string
+    reletedColumnsIds: Array<string>
+    reletedTablesIds: Array<string>
+  }
 }
 
 // Same as React-flow Node, but the data is required

@@ -40,7 +40,41 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
   }
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 
-  const setColumnHighlight = (columnId: string, tableId: string) => console.log(columnId, tableId)
+  const setColumnHighlight = (columnId: string, tableId: string) => {
+    const selectedTableSourceIds = graph.edges
+      .filter(edge => edge.target === tableId)
+      ?.map(edge => edge.source)
+    const selectedTableTargetsIds = graph.edges
+      .filter(edge => edge.source === tableId)
+      ?.map(edge => edge.target)
+    const sourceTableColumnIds = tables
+      ?.filter(table => selectedTableSourceIds.includes(table.id))
+      .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
+    const selectedColumnDependcies = tables
+      ?.find(table => table.id === tableId)
+      ?.columns.find(column => column.id === columnId)?.dependencies
+    const columnDependcies = [
+      ...(sourceTableColumnIds ? sourceTableColumnIds : []),
+      ...(selectedColumnDependcies ? selectedColumnDependcies : []),
+    ].filter(notEmpty)
+    const tableIds = [...selectedTableSourceIds, ...selectedTableTargetsIds].filter(notEmpty)
+
+    setGraph({
+      ...graph,
+      nodes: graph.nodes.map(node => ({
+        ...node,
+        data: {
+          ...node.data,
+          highlightedColumns: {
+            selectedTableId: tableId,
+            selectedColumnId: columnId,
+            reletedColumnsIds: columnDependcies,
+            reletedTablesIds: tableIds,
+          },
+        },
+      })),
+    })
+  }
 
   const [graph, setGraph] = useState<Graph>({
     nodes: mapInitialNodes(tables!, openDrawer, setColumnHighlight),

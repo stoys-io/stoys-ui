@@ -4,15 +4,43 @@ import List from 'antd/lib/list'
 
 import { renderNumericValue } from '../helpers'
 import { DataPayload } from './model'
-import { ScrollCard } from './styles'
+import { DagListItem, ScrollCard } from './styles'
 
 export const DagNode = ({
   id,
-  data: { label, badge, columns, violations, partitions, highlight, onTitleClick, onListItemClick },
+  data: {
+    label,
+    badge,
+    columns,
+    violations,
+    partitions,
+    highlight,
+    onTitleClick,
+    onListItemClick,
+    highlightedColumns,
+  },
   isConnectable,
 }: NodeProps<DataPayload>): JSX.Element => {
   const actualBadge = badge === 'violations' ? violations : partitions
   const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
+  const _columns = highlightedColumns?.reletedTablesIds.includes(id)
+    ? columns.filter(column => highlightedColumns?.reletedColumnsIds.includes(column.id))
+    : columns
+
+  const getHighlightedColor = (columnId: string): string => {
+    if (
+      id === highlightedColumns?.selectedTableId &&
+      columnId === highlightedColumns?.selectedColumnId
+    ) {
+      return 'rgb(0, 0, 0)'
+    }
+
+    if (id === highlightedColumns?.selectedTableId) {
+      return 'rgba(0, 0, 0, 0.4)'
+    }
+
+    return 'inherit'
+  }
 
   return (
     <div className="nowheel">
@@ -32,15 +60,16 @@ export const DagNode = ({
       >
         <List
           size="small"
-          dataSource={columns}
+          dataSource={_columns}
           renderItem={column => (
-            <List.Item
+            <DagListItem
+              higtlightedColor={getHighlightedColor(column.id)}
               onClick={() => {
                 onListItemClick(column.id, id)
               }}
             >
               {column.name}
-            </List.Item>
+            </DagListItem>
           )}
         />
       </ScrollCard>
