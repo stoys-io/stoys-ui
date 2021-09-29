@@ -40,8 +40,10 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
   }
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 
+  const setColumnHighlight = (columnId: string, tableId: string) => console.log(columnId, tableId)
+
   const [graph, setGraph] = useState<Graph>({
-    nodes: mapInitialNodes(tables!, openDrawer),
+    nodes: mapInitialNodes(tables!, openDrawer, setColumnHighlight),
     edges: mapInitialEdges(tables!),
   })
 
@@ -190,7 +192,11 @@ const nodeTypes = {
 }
 
 const initialPosition = { x: 0, y: 0 }
-const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void): Node[] =>
+const mapInitialNodes = (
+  tables: Array<Table>,
+  openDrawer: (_: string) => void,
+  setColumnHighlight: (columnId: string, tableId: string) => void
+): Node[] =>
   tables.map((table: Table) => ({
     id: table.id,
     data: {
@@ -201,6 +207,7 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
       violations: table.measures.violations ?? 0,
       columns: table.columns,
       onTitleClick: openDrawer,
+      onListItemClick: setColumnHighlight,
     },
     position: initialPosition,
     type: 'dagNode',

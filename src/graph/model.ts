@@ -11,6 +11,7 @@ export interface DataPayload {
   highlight: boolean
   columns: Column[]
   onTitleClick: (id: string) => void
+  onListItemClick: (columnId: string, tableId: string) => void
 }
 
 // Same as React-flow Node, but the data is required
