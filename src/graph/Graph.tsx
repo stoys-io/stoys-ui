@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import GraphDrawer from './GraphDrawer'
 import Sidebar from './Sidebar'
 import { Container, DrawerContainer, GraphContainer } from './styles'
@@ -17,7 +17,14 @@ import {
   changeBadge,
 } from './graph-ops'
 
-const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
+const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
+  const releases = Array.isArray(data) ? data.map(dataItem => dataItem.version) : [data.version]
+  const currentRelease = config?.current || releases[0] // by default take first
+  const baseReleases = releases.filter(release => release !== currentRelease).filter(notEmpty)
+  const tables = Array.isArray(data)
+    ? data?.find(dataItem => dataItem.version === currentRelease)?.tables
+    : data?.tables
+
   /* TODO: We might not need that many states for drawer */
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerHeight, setDrawerHeight] = useState(500) // TODO: Could possibly be moved into drawers local state?
@@ -28,20 +35,22 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
     setDrawerNodeId(id)
     setDrawerVisibility(true)
 
-    const table = data.tables.find(table => table.id === id)
+    const table = tables?.find(table => table.id === id)
     table && setDrawerTable(table.name)
   }
-  const drawerData = data.tables.find(table => table.id === drawerNodeId)
+  const drawerData = tables?.find(table => table.id === drawerNodeId)
 
   const [graph, setGraph] = useState<Graph>({
-    nodes: mapInitialNodes(data, openDrawer),
-    edges: mapInitialEdges(data),
+    nodes: mapInitialNodes(tables!, openDrawer),
+    edges: mapInitialEdges(tables!),
   })
 
   const [highlight, setHighlight] = useState<Highlight>('nearest')
   const [badge, setBadge] = useState<Badge>('violations')
   const [searchValue, setSearchValue] = useState<string>('')
   const [searchError, setSearchError] = useState<boolean>(false)
+
+  const [baseRelease, setBaseRelease] = useState<string | number>('')
 
   const onBadgeChange = (value: Badge) => {
     setBadge(value)
@@ -90,6 +99,23 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
     setGraph(prevGraph => highlightNode(node.id)(resetHighlight(prevGraph)))
   }
 
+  const onReleaseChange = useCallback(
+    value => {
+      setBaseRelease(value)
+    },
+    [setBaseRelease]
+  )
+
+  const baseDrawerData = useMemo(() => {
+    if (!baseRelease || !Array.isArray(data)) {
+      return undefined
+    }
+
+    return data
+      ?.find(dataItem => dataItem.version === baseRelease)
+      ?.tables?.find(table => table.name === drawerData?.name)
+  }, [baseRelease, drawerData, data])
+
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges])
   return (
     <Container>
@@ -103,6 +129,8 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
         searchError={searchError}
         highlight={highlight}
         onHighlightChange={onHighlightChange}
+        releases={baseReleases}
+        onReleaseChange={onReleaseChange}
       />
       <GraphContainer>
         <ReactFlow
@@ -119,6 +147,7 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
         <DrawerContainer>
           <GraphDrawer
             data={drawerData}
+            baseData={baseDrawerData}
             drawerHeight={drawerHeight}
             setDrawerHeight={setDrawerHeight}
             table={drawerTable}
@@ -134,9 +163,18 @@ const Graph2 = ({ data /* , chromaticScale */ }: Props) => {
 
 export default Graph2
 
+// TODO: move to model.ts
+interface DataGraph {
+  id: string
+  name: string
+  version: string
+  tables: Table[]
+}
+
 interface Props {
-  data: {
-    tables: Table[]
+  data: DataGraph | Array<DataGraph>
+  config?: {
+    current?: string
   }
 
   // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
@@ -149,8 +187,8 @@ const nodeTypes = {
 }
 
 const initialPosition = { x: 0, y: 0 }
-const mapInitialNodes = (data: Props['data'], openDrawer: (_: string) => void): Node[] =>
-  data.tables.map((table: Table) => ({
+const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void): Node[] =>
+  tables.map((table: Table) => ({
     id: table.id,
     data: {
       label: table.name,
@@ -165,8 +203,8 @@ const mapInitialNodes = (data: Props['data'], openDrawer: (_: string) => void): 
     type: 'dagNode',
   }))
 
-const mapInitialEdges = (data: Props['data']): Edge[] =>
-  data.tables
+const mapInitialEdges = (tables: Array<Table>): Edge[] =>
+  tables
     .filter((t: Table) => t.dependencies !== undefined)
     .reduce((acc: Edge[], table: Table) => {
       const items = table.dependencies!.map(dep => ({
@@ -177,3 +215,7 @@ const mapInitialEdges = (data: Props['data']): Edge[] =>
 
       return [...acc, ...items]
     }, [])
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined
+}
