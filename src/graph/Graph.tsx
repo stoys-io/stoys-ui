@@ -199,7 +199,7 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
       badge: 'violations',
       partitions: table.measures.rows,
       violations: table.measures.violations ?? 0,
-      columns: table.columns.map(col => col.name),
+      columns: table.columns,
       onTitleClick: openDrawer,
     },
     position: initialPosition,

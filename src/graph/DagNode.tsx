@@ -33,7 +33,7 @@ export const DagNode = ({
         <List
           size="small"
           dataSource={columns}
-          renderItem={column => <List.Item>{column}</List.Item>}
+          renderItem={column => <List.Item>{column.name}</List.Item>}
         />
       </ScrollCard>
       <Handle
