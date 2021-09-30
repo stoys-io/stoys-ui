@@ -6,7 +6,7 @@ import Input from 'antd/lib/input'
 const { Search } = Input
 
 import Card from 'antd/lib/card'
-import { NODE_HEIGHT, NODE_WIDTH } from './constants'
+import { HIGHLIGHT_COLOR, NODE_HEIGHT, NODE_WIDTH } from './constants'
 
 export const Container = styled.div`
   display: flex;
@@ -110,7 +110,7 @@ export const ScrollCard = styled(Card, {
   flex-direction: column;
 
   .ant-card-head:hover {
-    color: blue;
+    color: ${HIGHLIGHT_COLOR};
   }
 
   .ant-card-body {
