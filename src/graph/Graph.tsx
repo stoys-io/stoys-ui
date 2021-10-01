@@ -9,12 +9,12 @@ import { DagNode } from './DagNode'
 import { getLayoutedElements } from './layout'
 import {
   resetHighlight,
-  highlightNodesBatch,
-  findChildNodes,
-  findParentNodes,
-  findNeighborNodes,
+  findNeighborEdges,
   highlightNode,
   changeBadge,
+  highlightGraph,
+  findUpstreamEdges,
+  findDownstreamEdges,
 } from './graph-ops'
 
 const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
@@ -69,15 +69,18 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
 
     setGraph(resetHighlight)
 
-    const nodesToHighlight =
+    const highlightEdges =
       highlight === 'parents'
-        ? findParentNodes(graph, element.id)
+        ? findUpstreamEdges(graph, element.id)
         : highlight === 'children'
-        ? findChildNodes(graph, element.id)
-        : findNeighborNodes(graph, element.id)
+        ? findDownstreamEdges(graph, element.id)
+        : findNeighborEdges(graph, element.id)
 
-    const nodesToHighlight2 = nodesToHighlight.concat([element.id])
-    setGraph(highlightNodesBatch(nodesToHighlight2))
+    if (!highlightEdges.length) {
+      setGraph(highlightNode(element.id))
+    }
+
+    setGraph(highlightGraph(highlightEdges))
   }
 
   const onPaneClick = () => setGraph(resetHighlight)
@@ -211,6 +214,7 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
         id: `el-${dep}`,
         source: table.id,
         target: dep,
+        style: undefined, // Edge color will be set by style field
       }))
 
       return [...acc, ...items]
