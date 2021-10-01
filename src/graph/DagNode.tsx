@@ -20,7 +20,7 @@ export const DagNode = memo(
     return (
       <div className="nowheel">
         {/* nowheel enables scrolling */}
-        {targetPosition === 'top' ? (
+        {sourcePosition === 'top' ? (
           <Handle
             type="target"
             position={Position['Top']}
@@ -48,7 +48,7 @@ export const DagNode = memo(
             renderItem={column => <List.Item>{column}</List.Item>}
           />
         </ScrollCard>
-        {sourcePosition === 'bottom' ? (
+        {targetPosition === 'bottom' ? (
           <Handle
             type="source"
             position={Position['Bottom']}

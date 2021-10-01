@@ -16,6 +16,7 @@ Graph.storyName = 'Small data'
 Graph.args = {
   data: dataMock,
   chromaticScale: 'interpolatePuOr',
+  layoutDirection: 'TB',
 }
 
 export const DiffGraph = Template.bind({})
