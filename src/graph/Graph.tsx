@@ -17,7 +17,7 @@ import {
   findDownstreamEdges,
 } from './graph-ops'
 
-const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
+const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticScale */ }: Props) => {
   const releases = Array.isArray(data) ? data.map(dataItem => dataItem.version) : [data.version]
   const currentRelease = config?.current || releases[0] // by default take first
   const baseReleases = releases.filter(release => release !== currentRelease).filter(notEmpty)
@@ -40,6 +40,7 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
   }
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 
+  console.log('total nodes:', mapInitialNodes(tables!, openDrawer).length)
   const [graph, setGraph] = useState<Graph>({
     nodes: mapInitialNodes(tables!, openDrawer),
     edges: mapInitialEdges(tables!),
@@ -119,7 +120,7 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
       ?.tables?.find(table => table.name === drawerData?.name)
   }, [baseRelease, drawerData, data])
 
-  const elements = getLayoutedElements([...graph.nodes, ...graph.edges])
+  const elements = getLayoutedElements([...graph.nodes, ...graph.edges], layoutDirection)
   return (
     <Container>
       <Sidebar
@@ -142,6 +143,9 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
           onPaneClick={onPaneClick}
           nodeTypes={nodeTypes}
           elements={elements}
+          onlyRenderVisibleElements={true}
+          nodesConnectable={false}
+          minZoom={0.2}
         >
           <Background />
         </ReactFlow>
@@ -164,7 +168,7 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
   )
 }
 
-export default Graph2
+export default GraphComponent
 
 // TODO: move to model.ts
 interface DataGraph {
@@ -180,6 +184,7 @@ interface Props {
     current?: string
   }
 
+  layoutDirection?: 'TB' | 'LR'
   // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
   // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
   chromaticScale?: ChromaticScale
@@ -197,8 +202,8 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
       label: table.name,
       highlight: false,
       badge: 'violations',
-      partitions: table.measures.rows,
-      violations: table.measures.violations ?? 0,
+      partitions: table.measures?.rows ?? 0,
+      violations: table.measures?.violations ?? 0,
       columns: table.columns.map(col => col.name),
       onTitleClick: openDrawer,
     },
