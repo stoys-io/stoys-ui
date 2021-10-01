@@ -40,11 +40,11 @@ export const changeBadge =
   })
 
 export const highlightGraph = (edgesToHighlight: Edge[]) => (graph: Graph) => {
-  const vs = edgesToHighlight.reduce(
+  const allTargetsAndSources = edgesToHighlight.reduce(
     (acc: string[], edge: Edge) => [...acc, edge.source, edge.target],
     []
   )
-  const nodeIds = [...new Set(vs)]
+  const nodeIds = [...new Set(allTargetsAndSources)]
 
   return {
     edges: graph.edges.map((edge: Edge) => {
