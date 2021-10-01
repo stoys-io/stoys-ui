@@ -69,63 +69,50 @@ export const highlightGraph = (edgesToHighlight: Edge[]) => (graph: Graph) => {
     }),
   }
 }
-export const findNeighborEdges = (graph: Graph, id: string): Edge[] => {
-  const visitedEdges = [
-    ...graph.edges.filter(edge => edge.source === id),
-    ...graph.edges.filter(edge => edge.target === id),
-  ]
+export const findNeighborEdges = (graph: Graph, id: string): Edge[] => [
+  ...graph.edges.filter(edge => edge.source === id),
+  ...graph.edges.filter(edge => edge.target === id),
+]
 
-  return visitedEdges
-}
-
-const parentEdgeHelper = (edges: Edge[], head: Edge, queue: Edge[], visited: Edge[]): Edge[] => {
+const findEdgeHelper = (
+  edges: Edge[],
+  head: Edge,
+  queue: Edge[],
+  visited: Edge[],
+  isUpstream: boolean = false
+): Edge[] => {
   if (!queue.length) {
     return visited
   }
 
-  const neighbors = edges.filter(
-    edge => edge.target === head.source && !visited.find(v => v.id === edge.id)
-  )
+  const cmp = (edge: Edge, head: Edge) =>
+    isUpstream ? edge.target === head.source : edge.source === head.target
+
+  const neighbors = edges.filter(edge => cmp(edge, head) && !visited.find(v => v.id === edge.id))
   const newQueue = [...queue].slice(1).concat(neighbors)
   const newHead = newQueue[0]
   const newVisited =
     newHead && !visited.find(v => v.id === newHead.id) ? [...visited, newHead] : visited
 
-  return parentEdgeHelper(edges, newHead, newQueue, newVisited)
+  return findEdgeHelper(edges, newHead, newQueue, newVisited, isUpstream)
 }
 
-export const findParentEdges = (graph: Graph, id: string): Edge[] => {
+export const findUpstreamEdges = (graph: Graph, id: string): Edge[] => {
   const startEdges = graph.edges.filter(edge => edge.target === id)
   if (!startEdges.length) {
     return []
   }
 
-  const visitedEdges = parentEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]])
+  const visitedEdges = findEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]], true)
   return visitedEdges
 }
 
-const childEdgeHelper = (edges: Edge[], head: Edge, queue: Edge[], visited: Edge[]): Edge[] => {
-  if (!queue.length) {
-    return visited
-  }
-
-  const neighbors = edges.filter(
-    edge => edge.source === head.target && !visited.find(v => v.id === edge.id)
-  )
-  const newQueue = [...queue].slice(1).concat(neighbors)
-  const newHead = newQueue[0]
-  const newVisited =
-    newHead && !visited.find(v => v.id === newHead.id) ? [...visited, newHead] : visited
-
-  return childEdgeHelper(edges, newHead, newQueue, newVisited)
-}
-
-export const findChildEdges = (graph: Graph, id: string) => {
+export const findDownstreamEdges = (graph: Graph, id: string) => {
   const startEdges = graph.edges.filter(edge => edge.source === id)
   if (!startEdges.length) {
     return []
   }
 
-  const visitedEdges = childEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]])
+  const visitedEdges = findEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]])
   return visitedEdges
 }

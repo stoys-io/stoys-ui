@@ -101,7 +101,7 @@ export const ScrollCard = styled(Card, {
 })<{ highlight: boolean }>`
   width: ${NODE_WIDTH}px;
   height: ${NODE_HEIGHT}px;
-  border: 2px solid ${props => (props.highlight ? 'blue' : 'grey')};
+  border: 2px solid ${props => (props.highlight ? HIGHLIGHT_COLOR : 'grey')};
   border-radius: 3px;
   cursor: pointer;
 
