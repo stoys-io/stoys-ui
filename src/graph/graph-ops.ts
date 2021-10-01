@@ -85,10 +85,12 @@ const findEdgeHelper = (
     return visited
   }
 
-  const cmp = (edge: Edge, head: Edge) =>
+  const matchEdges = (edge: Edge, head: Edge) =>
     isUpstream ? edge.target === head.source : edge.source === head.target
 
-  const neighbors = edges.filter(edge => cmp(edge, head) && !visited.find(v => v.id === edge.id))
+  const neighbors = edges.filter(
+    edge => matchEdges(edge, head) && !visited.find(v => v.id === edge.id)
+  )
   const newQueue = [...queue].slice(1).concat(neighbors)
   const newHead = newQueue[0]
   const newVisited =
