@@ -55,7 +55,6 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
   })
 
   const setHighlightedColumns = (columnId: string, tableId: string) => {
-    console.log('in func => ', highlight)
     if (columnId === _highlightedColumns.selectedColumnId) {
       return _setHighlightedColumns({
         selectedTableId: '',
@@ -69,11 +68,81 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
     let columnDependcies: Array<string> = []
 
     if (highlight === 'parents') {
-      // TODO:
+      const collectColumnAndTableIds = (tId: string, cId: string): any => {
+        let tableQueue = [tId]
+        let columnsResult = [cId]
+        let tableResult: Array<string | undefined> = []
+
+        while (tableQueue.length) {
+          const currentTableId = tableQueue.shift()
+
+          tableResult.push(currentTableId)
+
+          const currentTableColumnsDependencies = tables
+            ?.find(table => table.id === currentTableId)
+            ?.columns.filter(column => columnsResult.some(cr => column.dependencies?.includes(cr)))
+            .map(column => column.id)
+            .filter(notEmpty)
+          columnsResult.push(
+            ...(currentTableColumnsDependencies ? currentTableColumnsDependencies : [])
+          )
+
+          graph.edges
+            .filter(edge => edge.target === currentTableId)
+            .forEach(edge => tableQueue.push(edge.source))
+        }
+
+        return {
+          tableIds: tableResult.filter(id => id !== tId),
+          columnIds: columnsResult.filter(id => id !== cId),
+        }
+      }
+
+      const tableAndColumnsIds = collectColumnAndTableIds(tableId, columnId)
+
+      tableIds = tableAndColumnsIds.tableIds
+      columnDependcies = tableAndColumnsIds.columnIds
     } else if (highlight === 'children') {
-      // TODO:
+      const collectColumnAndTableIds = (tId: string, cId: string): any => {
+        let tableQueue = [tId]
+        let columnsResult = [cId]
+        let tableResult: Array<string | undefined> = []
+
+        while (tableQueue.length) {
+          const currentTableId = tableQueue.shift()
+
+          tableResult.push(currentTableId)
+
+          const currentTableColumnsDependencies = tables
+            ?.find(table => table.id === currentTableId)
+            ?.columns.filter(column => columnsResult.includes(column.id))
+            .map(column => column.dependencies)
+            .flat()
+            .filter(notEmpty)
+          columnsResult.push(
+            ...(currentTableColumnsDependencies ? currentTableColumnsDependencies : [])
+          )
+
+          graph.edges
+            .filter(edge => edge.source === currentTableId)
+            .forEach(edge => tableQueue.push(edge.target))
+        }
+
+        return {
+          tableIds: tableResult.filter(id => id !== tId),
+          columnIds: columnsResult.filter(id => id !== cId),
+        }
+      }
+
+      const tableAndColumnsIds = collectColumnAndTableIds(tableId, columnId)
+
+      tableIds = tableAndColumnsIds.tableIds
+      columnDependcies = tableAndColumnsIds.columnIds
     } else {
-      tableIds = findNeighborNodes(graph, tableId)
+      tableIds = [
+        ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
+        ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
+      ]
       const tableColumnIds = tables
         ?.filter(table => tableIds.includes(table.id))
         .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
