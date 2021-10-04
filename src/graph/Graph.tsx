@@ -80,7 +80,10 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
     setGraph(highlightGraph(highlightEdges))
   }
 
-  const onPaneClick = () => setGraph(resetHighlight)
+  const onPaneClick = () => {
+    setGraph(resetHighlight)
+    setDrawerVisibility(false)
+  }
 
   const onSearchNode = ({ val, err, onError }: SearchArgs) => {
     if (!val) {
