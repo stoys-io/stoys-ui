@@ -215,8 +215,8 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
   tables
     .filter((t: Table) => t.dependencies !== undefined)
     .reduce((acc: Edge[], table: Table) => {
-      const items = table.dependencies!.map(dep => ({
-        id: `el-${dep}`,
+      const items = table.dependencies!.map((dep, index) => ({
+        id: `el-${dep}-${table.name}`,
         source: table.id,
         target: dep,
         style: undefined, // Edge color will be set by style field

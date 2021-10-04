@@ -69,6 +69,7 @@ export const highlightGraph = (edgesToHighlight: Edge[]) => (graph: Graph) => {
     }),
   }
 }
+
 export const findNeighborEdges = (graph: Graph, id: string): Edge[] => [
   ...graph.edges.filter(edge => edge.source === id),
   ...graph.edges.filter(edge => edge.target === id),
