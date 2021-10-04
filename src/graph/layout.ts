@@ -2,21 +2,23 @@ import { Edge, isNode, Node, Position } from 'react-flow-renderer'
 import dagre from 'dagre'
 import { NODE_HEIGHT, NODE_WIDTH } from './constants'
 
-const dagreGraph = new dagre.graphlib.Graph()
-
-dagreGraph.setDefaultEdgeLabel(() => ({}))
 const nodeWidth = NODE_WIDTH
 const nodeHeight = NODE_HEIGHT
-const startX = 100
-const startY = 30
+const ranksep = 60
+const nodesep = 16
+const startX = 48
+const startY = 32
 
 export const getLayoutedElements = (elements: Array<Node | Edge>, direction: 'LR' | 'TB') => {
+  const dagreGraph = new dagre.graphlib.Graph()
+  dagreGraph.setDefaultEdgeLabel(() => ({}))
+
   const isHorizontal = direction === 'LR'
   dagreGraph.setGraph({
     rankdir: direction,
     align: 'DL',
-    ranksep: 60,
-    nodesep: 15,
+    ranksep,
+    nodesep,
   })
 
   elements.forEach(el => {
