@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import GraphDrawer from './GraphDrawer'
 import Sidebar from './Sidebar'
+import { SearchArgs } from './SidebarSearch'
 import { Container, DrawerContainer, GraphContainer } from './styles'
 
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
@@ -48,9 +49,6 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
 
   const [highlight, setHighlight] = useState<Highlight>('nearest')
   const [badge, setBadge] = useState<Badge>('violations')
-  const [searchValue, setSearchValue] = useState<string>('')
-  const [searchError, setSearchError] = useState<boolean>(false)
-
   const [baseRelease, setBaseRelease] = useState<string | number>('')
 
   const onBadgeChange = (value: Badge) => {
@@ -86,18 +84,18 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
 
   const onPaneClick = () => setGraph(resetHighlight)
 
-  const onSearchNode = () => {
-    if (!searchValue) {
+  const onSearchNode = ({ val, err, onError }: SearchArgs) => {
+    if (!val) {
       return
     }
 
-    const node = graph.nodes.find((node: Node) => node.data?.label.indexOf(searchValue) !== -1)
+    const node = graph.nodes.find((node: Node) => node.data?.label.indexOf(val) !== -1)
     if (!node) {
-      return setSearchError(true)
+      return onError(true)
     }
 
-    if (searchError) {
-      return setSearchError(false)
+    if (err) {
+      return onError(false)
     }
 
     setGraph(prevGraph => highlightNode(node.id)(resetHighlight(prevGraph)))
@@ -127,10 +125,7 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
         drawerHeight={drawerIsVisible ? drawerHeight : 0}
         badge={badge}
         onBadgeChange={onBadgeChange}
-        searchValue={searchValue}
-        onSearchValueChange={setSearchValue}
         onSearch={onSearchNode}
-        searchError={searchError}
         highlight={highlight}
         onHighlightChange={onHighlightChange}
         releases={baseReleases}

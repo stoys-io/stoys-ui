@@ -1,26 +1,18 @@
-import React, { useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import Radio from 'antd/lib/radio'
 import Space from 'antd/lib/space'
 
 import { SelectValue } from 'antd/lib/select'
 import { Highlight, Badge } from './model'
 
-import {
-  SidebarWrapper,
-  SidebarContentWrapper,
-  MenuTitle,
-  NodeSearch,
-  SelectVersion,
-} from './styles'
+import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from './styles'
+import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 const Sidebar = ({
   drawerHeight,
   badge,
   onBadgeChange,
 
-  searchError,
-  searchValue,
-  onSearchValueChange,
   onSearch,
 
   highlight,
@@ -37,14 +29,7 @@ const Sidebar = ({
   return (
     <SidebarWrapper drawerHeight={drawerHeight}>
       <SidebarContentWrapper>
-        <NodeSearch
-          error={searchError ? 'true' : ''}
-          placeholder="Search node"
-          allowClear
-          value={searchValue}
-          onChange={e => onSearchValueChange(e.target.value)}
-          onSearch={onSearch}
-        />
+        <SidebarSearch onSearch={onSearch} />
 
         {_releases && _releases.length ? (
           <>
@@ -82,16 +67,13 @@ export default Sidebar
 interface Props {
   drawerHeight: number
   badge: Badge
-  onBadgeChange: (v: Badge) => void
+  onBadgeChange: (val: Badge) => void
 
-  searchError: boolean
-  searchValue: string
-  onSearchValueChange: (v: string) => void
-  onSearch: () => void
+  onSearch: OnSearch
 
   highlight: Highlight
-  onHighlightChange: (v: Highlight) => void
+  onHighlightChange: (val: Highlight) => void
 
   releases?: Array<string>
-  onReleaseChange: (value: SelectValue) => void
+  onReleaseChange: (val: SelectValue) => void
 }
