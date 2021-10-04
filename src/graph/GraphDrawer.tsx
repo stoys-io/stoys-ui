@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Tabs } from 'antd'
 import ResizableAntdDrawer from './ResizableAntdDrawer'
 import { DrawerNodeLabel } from './styles'
@@ -9,27 +9,18 @@ import { RawMetricsData } from '../metrics/model'
 
 const { TabPane } = Tabs
 
-type GraphDrawerProps = {
+interface Props {
   data: Table
   baseData?: Table
-  drawerHeight: number
-  setDrawerHeight: Dispatch<SetStateAction<number>>
+  drawerMaxHeight: number
   visible: boolean
   setDrawerVisibility: Dispatch<SetStateAction<boolean>>
-  table: string
-  setDrawerTable: Dispatch<SetStateAction<string>>
 }
 
-const GraphDrawer = ({
-  data,
-  baseData,
-  drawerHeight,
-  setDrawerHeight,
-  visible,
-  setDrawerVisibility,
-  table,
-  setDrawerTable,
-}: GraphDrawerProps) => {
+const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibility }: Props) => {
+  const [drawerHeight, setDrawerHeight] = useState<number>(drawerMaxHeight)
+  const [table, setTable] = useState<string>('')
+
   const profilerData = data?.dp_result ? [data.dp_result] : null
   const metrics: RawMetricsData | null = data?.metrics
     ? {
@@ -57,7 +48,7 @@ const GraphDrawer = ({
       setDrawerVisibility={setDrawerVisibility}
       visible={visible}
     >
-      <Tabs activeKey={table} onChange={setDrawerTable}>
+      <Tabs activeKey={table} onChange={setTable}>
         <DrawerNodeLabel>{data?.name}</DrawerNodeLabel>
         <TabPane tab="Join Rates" key="join_rates">
           {data?.dq_join_results ? (

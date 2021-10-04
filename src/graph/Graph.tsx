@@ -28,20 +28,18 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
 
   /* TODO: We might not need that many states for drawer */
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
-  const [drawerHeight, setDrawerHeight] = useState(500) // TODO: Could possibly be moved into drawers local state?
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
-  const [drawerTable, setDrawerTable] = useState<string>('')
 
-  const openDrawer = (id: string) => {
-    setDrawerNodeId(id)
-    setDrawerVisibility(true)
+  const openDrawer = useCallback(
+    (id: string) => {
+      setDrawerNodeId(id)
+      setDrawerVisibility(true)
+    },
+    [drawerNodeId]
+  )
 
-    const table = tables?.find(table => table.id === id)
-    table && setDrawerTable(table.name)
-  }
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 
-  console.log('total nodes:', mapInitialNodes(tables!, openDrawer).length)
   const [graph, setGraph] = useState<Graph>({
     nodes: mapInitialNodes(tables!, openDrawer),
     edges: mapInitialEdges(tables!),
@@ -122,7 +120,6 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
   return (
     <Container>
       <Sidebar
-        drawerHeight={drawerIsVisible ? drawerHeight : 0}
         badge={badge}
         onBadgeChange={onBadgeChange}
         onSearch={onSearchNode}
@@ -150,10 +147,7 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
           <GraphDrawer
             data={drawerData}
             baseData={baseDrawerData}
-            drawerHeight={drawerHeight}
-            setDrawerHeight={setDrawerHeight}
-            table={drawerTable}
-            setDrawerTable={setDrawerTable}
+            drawerMaxHeight={500}
             visible={drawerIsVisible}
             setDrawerVisibility={setDrawerVisibility}
           />

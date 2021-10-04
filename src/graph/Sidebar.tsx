@@ -9,7 +9,6 @@ import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from 
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 const Sidebar = ({
-  drawerHeight,
   badge,
   onBadgeChange,
 
@@ -27,7 +26,7 @@ const Sidebar = ({
   )
 
   return (
-    <SidebarWrapper drawerHeight={drawerHeight}>
+    <SidebarWrapper>
       <SidebarContentWrapper>
         <SidebarSearch onSearch={onSearch} />
 
@@ -65,7 +64,6 @@ const Sidebar = ({
 export default Sidebar
 
 interface Props {
-  drawerHeight: number
   badge: Badge
   onBadgeChange: (val: Badge) => void
 
