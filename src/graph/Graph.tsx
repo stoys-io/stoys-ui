@@ -26,17 +26,12 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
     ? data?.find(dataItem => dataItem.version === currentRelease)?.tables
     : data?.tables
 
-  /* TODO: We might not need that many states for drawer */
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
-
-  const openDrawer = useCallback(
-    (id: string) => {
-      setDrawerNodeId(id)
-      setDrawerVisibility(true)
-    },
-    [drawerNodeId]
-  )
+  const openDrawer = (id: string) => {
+    setDrawerNodeId(id)
+    setDrawerVisibility(true)
+  }
 
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 

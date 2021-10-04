@@ -19,7 +19,6 @@ interface Props {
 
 const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibility }: Props) => {
   const [drawerHeight, setDrawerHeight] = useState<number>(drawerMaxHeight)
-  const [table, setTable] = useState<string>('')
 
   const profilerData = data?.dp_result ? [data.dp_result] : null
   const metrics: RawMetricsData | null = data?.metrics
@@ -40,7 +39,19 @@ const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibi
       key_columns: ['location'],
     }
   }
+  const firstNonEmptyTable = data?.dq_join_results
+    ? JOIN_RATES_KEY
+    : metrics
+    ? METADATA_KEY
+    : profilerData
+    ? PROFILER_KEY
+    : data?.dq_result
+    ? QUALITY_KEY
+    : data?.metadata
+    ? METADATA_KEY
+    : JOIN_RATES_KEY
 
+  const [table, setTable] = useState<string>(firstNonEmptyTable)
   return (
     <ResizableAntdDrawer
       drawerHeight={drawerHeight}
@@ -50,14 +61,14 @@ const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibi
     >
       <Tabs activeKey={table} onChange={setTable}>
         <DrawerNodeLabel>{data?.name}</DrawerNodeLabel>
-        <TabPane tab="Join Rates" key="join_rates">
+        <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
           {data?.dq_join_results ? (
             <JoinRates data={data.dq_join_results} />
           ) : (
             <NoData>No data</NoData>
           )}
         </TabPane>
-        <TabPane tab="Metrics" key="metrics">
+        <TabPane tab="Metrics" key={METRICS_KEY}>
           {metrics ? (
             <Metrics
               data={metrics}
@@ -73,7 +84,7 @@ const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibi
             <NoData>No data</NoData>
           )}
         </TabPane>
-        <TabPane tab="Profiler" key="profiler">
+        <TabPane tab="Profiler" key={PROFILER_KEY}>
           {profilerData ? (
             <Profiler
               datasets={profilerData}
@@ -96,7 +107,7 @@ const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibi
             <NoData>No data</NoData>
           )}
         </TabPane>
-        <TabPane tab="Quality" key="quality">
+        <TabPane tab="Quality" key={QUALITY_KEY}>
           {data?.dq_result ? (
             <Quality data={data.dq_result} config={{ pagination: false, smallSize: true }} />
           ) : (
@@ -104,7 +115,7 @@ const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibi
           )}
         </TabPane>
         {data?.metadata ? (
-          <TabPane tab="Metadata" key="metadata">
+          <TabPane tab="Metadata" key={METADATA_KEY}>
             <pre>{JSON.stringify(data.metadata, null, 2)}</pre>
           </TabPane>
         ) : null}
@@ -114,3 +125,9 @@ const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibi
 }
 
 export default GraphDrawer
+
+const JOIN_RATES_KEY = 'join_rates'
+const METRICS_KEY = 'metrics'
+const PROFILER_KEY = 'profiler'
+const QUALITY_KEY = 'quality'
+const METADATA_KEY = 'metadata'
