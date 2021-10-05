@@ -18,7 +18,8 @@ import {
   findDownstreamEdges,
 } from './graph-ops'
 
-const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticScale */ }: Props) => {
+const GraphComponent = ({ data, config: cfg }: Props) => {
+  const config: Required<Config> = { ...defaultConfig, ...cfg }
   const releases = Array.isArray(data) ? data.map(dataItem => dataItem.version) : [data.version]
   const currentRelease = config?.current || releases[0] // by default take first
   const baseReleases = releases.filter(release => release !== currentRelease).filter(notEmpty)
@@ -114,7 +115,7 @@ const GraphComponent = ({ data, config, layoutDirection = 'LR' /* , chromaticSca
       ?.tables?.find(table => table.name === drawerData?.name)
   }, [baseRelease, drawerData, data])
 
-  const elements = getLayoutedElements([...graph.nodes, ...graph.edges], layoutDirection)
+  const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.layoutDirection)
   return (
     <Container>
       <Sidebar
@@ -167,14 +168,22 @@ interface DataGraph {
 
 interface Props {
   data: DataGraph | Array<DataGraph>
-  config?: {
-    current?: string
-  }
+  config?: Config
+}
 
+interface Config {
+  current?: string
   layoutDirection?: 'TB' | 'LR'
+
   // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
   // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
   chromaticScale?: ChromaticScale
+}
+
+const defaultConfig: Required<Config> = {
+  layoutDirection: 'LR',
+  chromaticScale: 'interpolatePuOr',
+  current: '',
 }
 
 const nodeTypes = {
