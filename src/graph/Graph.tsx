@@ -16,6 +16,7 @@ import {
   highlightGraph,
   findUpstreamEdges,
   findDownstreamEdges,
+  highlightNodesBatch,
 } from './graph-ops'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
@@ -86,8 +87,11 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return
     }
 
-    const node = graph.nodes.find((node: Node) => node.data?.label.indexOf(val) !== -1)
-    if (!node) {
+    const nodeIds = graph.nodes
+      .filter((node: Node) => node.data?.label.indexOf(val.toLowerCase()) !== -1)
+      .map(node => node.id)
+
+    if (!nodeIds?.length) {
       return onError(true)
     }
 
@@ -95,7 +99,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return onError(false)
     }
 
-    setGraph(prevGraph => highlightNode(node.id)(resetHighlight(prevGraph)))
+    setGraph(highlightNodesBatch(nodeIds))
   }
 
   const onReleaseChange = useCallback(

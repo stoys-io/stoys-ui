@@ -39,6 +39,23 @@ export const changeBadge =
     })),
   })
 
+export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
+  ...graph,
+  nodes: graph.nodes.map((node: Node) => {
+    if (!ids.includes(node.id)) {
+      return {
+        ...node,
+        data: { ...node.data, highlight: false },
+      }
+    }
+
+    return {
+      ...node,
+      data: { ...node.data, highlight: !node.data.highlight },
+    }
+  }),
+})
+
 export const highlightGraph = (edgesToHighlight: Edge[]) => (graph: Graph) => {
   const allTargetsAndSources = edgesToHighlight.reduce(
     (acc: string[], edge: Edge) => [...acc, edge.source, edge.target],
