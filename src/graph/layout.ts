@@ -21,6 +21,7 @@ export const getLayoutedElements = (elements: Array<Node | Edge>, orientation: O
     align: 'DL',
     ranksep,
     nodesep,
+    ranker: 'longest-path',
   })
 
   elements.forEach(el => {
