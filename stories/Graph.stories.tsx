@@ -16,7 +16,7 @@ Graph.args = {
   data: dataMock,
   config: {
     chromaticScale: 'interpolatePuOr',
-    layoutDirection: 'TB',
+    orientation: 'vertical',
   },
 }
 

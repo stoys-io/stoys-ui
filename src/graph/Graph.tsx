@@ -5,7 +5,7 @@ import { SearchArgs } from './SidebarSearch'
 import { Container, DrawerContainer, GraphContainer } from './styles'
 
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
-import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale } from './model'
+import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
 import { DagNode } from './DagNode'
 import { getLayoutedElements } from './layout'
 import {
@@ -119,7 +119,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       ?.tables?.find(table => table.name === drawerData?.name)
   }, [baseRelease, drawerData, data])
 
-  const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.layoutDirection)
+  const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.orientation)
   return (
     <Container>
       <Sidebar
@@ -177,7 +177,7 @@ interface Props {
 
 interface Config {
   current?: string
-  layoutDirection?: 'TB' | 'LR'
+  orientation?: Orientation
 
   // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
   // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
@@ -185,7 +185,7 @@ interface Config {
 }
 
 const defaultConfig: Required<Config> = {
-  layoutDirection: 'LR',
+  orientation: 'horizontal',
   chromaticScale: 'interpolatePuOr',
   current: '',
 }
