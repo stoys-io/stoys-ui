@@ -15,8 +15,8 @@ export const Container = styled.div`
   position: relative;
 `
 
-export const SidebarWrapper = styled.div<{ drawerHeight: number }>`
-  height: ${props => `calc(100vh - ${props.drawerHeight}px)`};
+export const SidebarWrapper = styled.div`
+  height: 100vh;
   width: 250px;
   background-color: #f4f2f4;
   overflow-y: auto;

@@ -34,7 +34,7 @@ export interface Table {
   id: string
   name: string
   columns: Column[]
-  measures: {
+  measures?: {
     rows: number
     violations?: number
   }

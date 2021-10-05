@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import GraphDrawer from './GraphDrawer'
 import Sidebar from './Sidebar'
+import { SearchArgs } from './SidebarSearch'
 import { Container, DrawerContainer, GraphContainer } from './styles'
 
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
@@ -15,9 +16,11 @@ import {
   highlightGraph,
   findUpstreamEdges,
   findDownstreamEdges,
+  highlightNodesBatch,
 } from './graph-ops'
 
-const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
+const GraphComponent = ({ data, config: cfg }: Props) => {
+  const config: Required<Config> = { ...defaultConfig, ...cfg }
   const releases = Array.isArray(data) ? data.map(dataItem => dataItem.version) : [data.version]
   const currentRelease = config?.current || releases[0] // by default take first
   const baseReleases = releases.filter(release => release !== currentRelease).filter(notEmpty)
@@ -25,19 +28,13 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
     ? data?.find(dataItem => dataItem.version === currentRelease)?.tables
     : data?.tables
 
-  /* TODO: We might not need that many states for drawer */
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
-  const [drawerHeight, setDrawerHeight] = useState(500) // TODO: Could possibly be moved into drawers local state?
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
-  const [drawerTable, setDrawerTable] = useState<string>('')
-
   const openDrawer = (id: string) => {
     setDrawerNodeId(id)
     setDrawerVisibility(true)
-
-    const table = tables?.find(table => table.id === id)
-    table && setDrawerTable(table.name)
   }
+
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 
   const [graph, setGraph] = useState<Graph>({
@@ -47,9 +44,6 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
 
   const [highlight, setHighlight] = useState<Highlight>('nearest')
   const [badge, setBadge] = useState<Badge>('violations')
-  const [searchValue, setSearchValue] = useState<string>('')
-  const [searchError, setSearchError] = useState<boolean>(false)
-
   const [baseRelease, setBaseRelease] = useState<string | number>('')
 
   const onBadgeChange = (value: Badge) => {
@@ -83,23 +77,29 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
     setGraph(highlightGraph(highlightEdges))
   }
 
-  const onPaneClick = () => setGraph(resetHighlight)
+  const onPaneClick = () => {
+    setGraph(resetHighlight)
+    setDrawerVisibility(false)
+  }
 
-  const onSearchNode = () => {
-    if (!searchValue) {
+  const onSearchNode = ({ val, err, onError }: SearchArgs) => {
+    if (!val) {
       return
     }
 
-    const node = graph.nodes.find((node: Node) => node.data?.label.indexOf(searchValue) !== -1)
-    if (!node) {
-      return setSearchError(true)
+    const nodeIds = graph.nodes
+      .filter((node: Node) => node.data?.label.indexOf(val.toLowerCase()) !== -1)
+      .map(node => node.id)
+
+    if (!nodeIds?.length) {
+      return onError(true)
     }
 
-    if (searchError) {
-      return setSearchError(false)
+    if (err) {
+      return onError(false)
     }
 
-    setGraph(prevGraph => highlightNode(node.id)(resetHighlight(prevGraph)))
+    setGraph(highlightNodesBatch(nodeIds))
   }
 
   const onReleaseChange = useCallback(
@@ -119,17 +119,13 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
       ?.tables?.find(table => table.name === drawerData?.name)
   }, [baseRelease, drawerData, data])
 
-  const elements = getLayoutedElements([...graph.nodes, ...graph.edges])
+  const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.layoutDirection)
   return (
     <Container>
       <Sidebar
-        drawerHeight={drawerIsVisible ? drawerHeight : 0}
         badge={badge}
         onBadgeChange={onBadgeChange}
-        searchValue={searchValue}
-        onSearchValueChange={setSearchValue}
         onSearch={onSearchNode}
-        searchError={searchError}
         highlight={highlight}
         onHighlightChange={onHighlightChange}
         releases={baseReleases}
@@ -142,6 +138,9 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
           onPaneClick={onPaneClick}
           nodeTypes={nodeTypes}
           elements={elements}
+          onlyRenderVisibleElements={true}
+          nodesConnectable={false}
+          minZoom={0.2}
         >
           <Background />
         </ReactFlow>
@@ -151,10 +150,7 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
           <GraphDrawer
             data={drawerData}
             baseData={baseDrawerData}
-            drawerHeight={drawerHeight}
-            setDrawerHeight={setDrawerHeight}
-            table={drawerTable}
-            setDrawerTable={setDrawerTable}
+            drawerMaxHeight={500}
             visible={drawerIsVisible}
             setDrawerVisibility={setDrawerVisibility}
           />
@@ -164,7 +160,7 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
   )
 }
 
-export default Graph2
+export default GraphComponent
 
 // TODO: move to model.ts
 interface DataGraph {
@@ -176,13 +172,22 @@ interface DataGraph {
 
 interface Props {
   data: DataGraph | Array<DataGraph>
-  config?: {
-    current?: string
-  }
+  config?: Config
+}
+
+interface Config {
+  current?: string
+  layoutDirection?: 'TB' | 'LR'
 
   // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
   // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
   chromaticScale?: ChromaticScale
+}
+
+const defaultConfig: Required<Config> = {
+  layoutDirection: 'LR',
+  chromaticScale: 'interpolatePuOr',
+  current: '',
 }
 
 const nodeTypes = {
@@ -197,8 +202,8 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
       label: table.name,
       highlight: false,
       badge: 'violations',
-      partitions: table.measures.rows,
-      violations: table.measures.violations ?? 0,
+      partitions: table.measures?.rows ?? 0,
+      violations: table.measures?.violations ?? 0,
       columns: table.columns.map(col => col.name),
       onTitleClick: openDrawer,
     },
@@ -211,7 +216,7 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
     .filter((t: Table) => t.dependencies !== undefined)
     .reduce((acc: Edge[], table: Table) => {
       const items = table.dependencies!.map(dep => ({
-        id: `el-${dep}`,
+        id: `el-${dep}-${table.name}`,
         source: table.id,
         target: dep,
         style: undefined, // Edge color will be set by style field
