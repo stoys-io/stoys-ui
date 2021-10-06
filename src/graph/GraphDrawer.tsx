@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Tabs } from 'antd'
 import ResizableAntdDrawer from './ResizableAntdDrawer'
 import { DrawerNodeLabel } from './styles'
@@ -9,27 +9,17 @@ import { RawMetricsData } from '../metrics/model'
 
 const { TabPane } = Tabs
 
-type GraphDrawerProps = {
+interface Props {
   data: Table
   baseData?: Table
-  drawerHeight: number
-  setDrawerHeight: Dispatch<SetStateAction<number>>
+  drawerMaxHeight: number
   visible: boolean
   setDrawerVisibility: Dispatch<SetStateAction<boolean>>
-  table: string
-  setDrawerTable: Dispatch<SetStateAction<string>>
 }
 
-const GraphDrawer = ({
-  data,
-  baseData,
-  drawerHeight,
-  setDrawerHeight,
-  visible,
-  setDrawerVisibility,
-  table,
-  setDrawerTable,
-}: GraphDrawerProps) => {
+const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibility }: Props) => {
+  const [drawerHeight, setDrawerHeight] = useState<number>(drawerMaxHeight)
+
   const profilerData = data?.dp_result ? [data.dp_result] : null
   const metrics: RawMetricsData | null = data?.metrics
     ? {
@@ -49,7 +39,19 @@ const GraphDrawer = ({
       key_columns: ['location'],
     }
   }
+  const firstNonEmptyTable = data?.dq_join_results
+    ? JOIN_RATES_KEY
+    : metrics
+    ? METADATA_KEY
+    : profilerData
+    ? PROFILER_KEY
+    : data?.dq_result
+    ? QUALITY_KEY
+    : data?.metadata
+    ? METADATA_KEY
+    : JOIN_RATES_KEY
 
+  const [table, setTable] = useState<string>(firstNonEmptyTable)
   return (
     <ResizableAntdDrawer
       drawerHeight={drawerHeight}
@@ -57,16 +59,16 @@ const GraphDrawer = ({
       setDrawerVisibility={setDrawerVisibility}
       visible={visible}
     >
-      <Tabs activeKey={table} onChange={setDrawerTable}>
+      <Tabs activeKey={table} onChange={setTable}>
         <DrawerNodeLabel>{data?.name}</DrawerNodeLabel>
-        <TabPane tab="Join Rates" key="join_rates">
+        <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
           {data?.dq_join_results ? (
             <JoinRates data={data.dq_join_results} />
           ) : (
             <NoData>No data</NoData>
           )}
         </TabPane>
-        <TabPane tab="Metrics" key="metrics">
+        <TabPane tab="Metrics" key={METRICS_KEY}>
           {metrics ? (
             <Metrics
               data={metrics}
@@ -82,7 +84,7 @@ const GraphDrawer = ({
             <NoData>No data</NoData>
           )}
         </TabPane>
-        <TabPane tab="Profiler" key="profiler">
+        <TabPane tab="Profiler" key={PROFILER_KEY}>
           {profilerData ? (
             <Profiler
               datasets={profilerData}
@@ -105,7 +107,7 @@ const GraphDrawer = ({
             <NoData>No data</NoData>
           )}
         </TabPane>
-        <TabPane tab="Quality" key="quality">
+        <TabPane tab="Quality" key={QUALITY_KEY}>
           {data?.dq_result ? (
             <Quality data={data.dq_result} config={{ pagination: false, smallSize: true }} />
           ) : (
@@ -113,7 +115,7 @@ const GraphDrawer = ({
           )}
         </TabPane>
         {data?.metadata ? (
-          <TabPane tab="Metadata" key="metadata">
+          <TabPane tab="Metadata" key={METADATA_KEY}>
             <pre>{JSON.stringify(data.metadata, null, 2)}</pre>
           </TabPane>
         ) : null}
@@ -123,3 +125,9 @@ const GraphDrawer = ({
 }
 
 export default GraphDrawer
+
+const JOIN_RATES_KEY = 'join_rates'
+const METRICS_KEY = 'metrics'
+const PROFILER_KEY = 'profiler'
+const QUALITY_KEY = 'quality'
+const METADATA_KEY = 'metadata'
