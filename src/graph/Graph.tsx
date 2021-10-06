@@ -17,6 +17,9 @@ import {
   highlightGraph,
   findUpstreamEdges,
   findDownstreamEdges,
+  collectParentColumnAndTableIds,
+  collectChildColumnAndTableIds,
+  notEmpty,
 } from './graph-ops'
 
 const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
@@ -68,73 +71,22 @@ const Graph2 = ({ data, config /* , chromaticScale */ }: Props) => {
     let columnDependcies: Array<string> = []
 
     if (highlight === 'parents') {
-      const collectColumnAndTableIds = (tId: string, cId: string): any => {
-        let tableQueue = [tId]
-        let columnsResult = [cId]
-        let tableResult: Array<string | undefined> = []
-
-        while (tableQueue.length) {
-          const currentTableId = tableQueue.shift()
-
-          tableResult.push(currentTableId)
-
-          const currentTableColumnsDependencies = tables
-            ?.find(table => table.id === currentTableId)
-            ?.columns.filter(column => columnsResult.some(cr => column.dependencies?.includes(cr)))
-            .map(column => column.id)
-            .filter(notEmpty)
-          columnsResult.push(
-            ...(currentTableColumnsDependencies ? currentTableColumnsDependencies : [])
-          )
-
-          graph.edges
-            .filter(edge => edge.target === currentTableId)
-            .forEach(edge => tableQueue.push(edge.source))
-        }
-
-        return {
-          tableIds: tableResult.filter(id => id !== tId),
-          columnIds: columnsResult.filter(id => id !== cId),
-        }
-      }
-
-      const tableAndColumnsIds = collectColumnAndTableIds(tableId, columnId)
+      const tableAndColumnsIds = collectParentColumnAndTableIds(
+        tableId,
+        columnId,
+        graph.edges,
+        tables
+      )
 
       tableIds = tableAndColumnsIds.tableIds
       columnDependcies = tableAndColumnsIds.columnIds
     } else if (highlight === 'children') {
-      const collectColumnAndTableIds = (tId: string, cId: string): any => {
-        let tableQueue = [tId]
-        let columnsResult = [cId]
-        let tableResult: Array<string | undefined> = []
-
-        while (tableQueue.length) {
-          const currentTableId = tableQueue.shift()
-
-          tableResult.push(currentTableId)
-
-          const currentTableColumnsDependencies = tables
-            ?.find(table => table.id === currentTableId)
-            ?.columns.filter(column => columnsResult.includes(column.id))
-            .map(column => column.dependencies)
-            .flat()
-            .filter(notEmpty)
-          columnsResult.push(
-            ...(currentTableColumnsDependencies ? currentTableColumnsDependencies : [])
-          )
-
-          graph.edges
-            .filter(edge => edge.source === currentTableId)
-            .forEach(edge => tableQueue.push(edge.target))
-        }
-
-        return {
-          tableIds: tableResult.filter(id => id !== tId),
-          columnIds: columnsResult.filter(id => id !== cId),
-        }
-      }
-
-      const tableAndColumnsIds = collectColumnAndTableIds(tableId, columnId)
+      const tableAndColumnsIds = collectChildColumnAndTableIds(
+        tableId,
+        columnId,
+        graph.edges,
+        tables
+      )
 
       tableIds = tableAndColumnsIds.tableIds
       columnDependcies = tableAndColumnsIds.columnIds
@@ -344,7 +296,3 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
 
       return [...acc, ...items]
     }, [])
-
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined
-}

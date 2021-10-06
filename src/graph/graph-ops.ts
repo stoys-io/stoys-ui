@@ -1,5 +1,5 @@
 import { HIGHLIGHT_COLOR } from './constants'
-import { Graph, Edge, Node, Badge } from './model'
+import { Graph, Edge, Node, Badge, Table } from './model'
 
 export const highlightNode = (id: string) => (graph: Graph) => ({
   ...graph,
@@ -117,4 +117,80 @@ export const findDownstreamEdges = (graph: Graph, id: string) => {
 
   const visitedEdges = findEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]])
   return visitedEdges
+}
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined
+}
+
+export function collectChildColumnAndTableIds(
+  tId: string,
+  cId: string,
+  edges: Array<Edge>,
+  tables?: Array<Table>
+): ColumnAndTableIds {
+  let tableQueue = [tId]
+  let columnsResult = [cId]
+  let tableResult: Array<string | undefined> = []
+
+  while (tableQueue.length) {
+    const currentTableId = tableQueue.shift()
+
+    tableResult.push(currentTableId)
+
+    const currentTableColumnsDependencies = tables
+      ?.find(table => table.id === currentTableId)
+      ?.columns.filter(column => columnsResult.includes(column.id))
+      .map(column => column.dependencies)
+      .flat()
+      .filter(notEmpty)
+    columnsResult.push(...(currentTableColumnsDependencies ? currentTableColumnsDependencies : []))
+
+    edges
+      .filter(edge => edge.source === currentTableId)
+      .forEach(edge => tableQueue.push(edge.target))
+  }
+
+  return {
+    tableIds: tableResult.filter(id => id !== tId).filter(notEmpty),
+    columnIds: columnsResult.filter(id => id !== cId),
+  }
+}
+
+export function collectParentColumnAndTableIds(
+  tId: string,
+  cId: string,
+  edges: Array<Edge>,
+  tables?: Array<Table>
+): ColumnAndTableIds {
+  let tableQueue = [tId]
+  let columnsResult = [cId]
+  let tableResult: Array<string | undefined> = []
+
+  while (tableQueue.length) {
+    const currentTableId = tableQueue.shift()
+
+    tableResult.push(currentTableId)
+
+    const currentTableColumnsDependencies = tables
+      ?.find(table => table.id === currentTableId)
+      ?.columns.filter(column => columnsResult.some(cr => column.dependencies?.includes(cr)))
+      .map(column => column.id)
+      .filter(notEmpty)
+    columnsResult.push(...(currentTableColumnsDependencies ? currentTableColumnsDependencies : []))
+
+    edges
+      .filter(edge => edge.target === currentTableId)
+      .forEach(edge => tableQueue.push(edge.source))
+  }
+
+  return {
+    tableIds: tableResult.filter(id => id !== tId).filter(notEmpty),
+    columnIds: columnsResult.filter(id => id !== cId),
+  }
+}
+
+export interface ColumnAndTableIds {
+  tableIds: Array<string>
+  columnIds: Array<string>
 }
