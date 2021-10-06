@@ -4,6 +4,8 @@ import Sidebar from './Sidebar'
 import { SearchArgs } from './SidebarSearch'
 import { Container, DrawerContainer, GraphContainer } from './styles'
 
+import HighlightedColumnsContext from './columnsHighlightContext'
+
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
 import { DagNode } from './DagNode'
@@ -16,6 +18,9 @@ import {
   highlightGraph,
   findUpstreamEdges,
   findDownstreamEdges,
+  collectParentColumnAndTableIds,
+  collectChildColumnAndTableIds,
+  notEmpty,
   highlightNodesBatch,
 } from './graph-ops'
 
@@ -36,6 +41,76 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   const drawerData = tables?.find(table => table.id === drawerNodeId)
+
+  const [_highlightedColumns, _setHighlightedColumns] = useState<{
+    selectedTableId: string
+    selectedColumnId: string
+    reletedColumnsIds: Array<string>
+    reletedTablesIds: Array<string>
+  }>({
+    selectedTableId: '',
+    selectedColumnId: '',
+    reletedColumnsIds: [],
+    reletedTablesIds: [],
+  })
+
+  const setHighlightedColumns = (columnId: string, tableId: string) => {
+    if (columnId === _highlightedColumns.selectedColumnId) {
+      return _setHighlightedColumns({
+        selectedTableId: '',
+        selectedColumnId: '',
+        reletedColumnsIds: [],
+        reletedTablesIds: [],
+      })
+    }
+
+    let tableIds: Array<string> = []
+    let columnDependcies: Array<string> = []
+
+    if (highlight === 'parents') {
+      const tableAndColumnsIds = collectParentColumnAndTableIds(
+        tableId,
+        columnId,
+        graph.edges,
+        tables
+      )
+
+      tableIds = tableAndColumnsIds.tableIds
+      columnDependcies = tableAndColumnsIds.columnIds
+    } else if (highlight === 'children') {
+      const tableAndColumnsIds = collectChildColumnAndTableIds(
+        tableId,
+        columnId,
+        graph.edges,
+        tables
+      )
+
+      tableIds = tableAndColumnsIds.tableIds
+      columnDependcies = tableAndColumnsIds.columnIds
+    } else {
+      tableIds = [
+        ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
+        ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
+      ]
+      const tableColumnIds = tables
+        ?.filter(table => tableIds.includes(table.id))
+        .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
+      const selectedColumnDependcies = tables
+        ?.find(table => table.id === tableId)
+        ?.columns.find(column => column.id === columnId)?.dependencies
+      columnDependcies = [
+        ...(tableColumnIds ? tableColumnIds : []),
+        ...(selectedColumnDependcies ? selectedColumnDependcies : []),
+      ].filter(notEmpty)
+    }
+
+    return _setHighlightedColumns({
+      selectedTableId: tableId,
+      selectedColumnId: columnId,
+      reletedColumnsIds: columnDependcies,
+      reletedTablesIds: tableIds,
+    })
+  }
 
   const [graph, setGraph] = useState<Graph>({
     nodes: mapInitialNodes(tables!, openDrawer),
@@ -80,6 +155,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const onPaneClick = () => {
     setGraph(resetHighlight)
     setDrawerVisibility(false)
+    _setHighlightedColumns({
+      selectedTableId: '',
+      selectedColumnId: '',
+      reletedColumnsIds: [],
+      reletedTablesIds: [],
+    })
   }
 
   const onSearchNode = ({ val, err, onError }: SearchArgs) => {
@@ -121,42 +202,44 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.orientation)
   return (
-    <Container>
-      <Sidebar
-        badge={badge}
-        onBadgeChange={onBadgeChange}
-        onSearch={onSearchNode}
-        highlight={highlight}
-        onHighlightChange={onHighlightChange}
-        releases={baseReleases}
-        onReleaseChange={onReleaseChange}
-      />
-      <GraphContainer>
-        <ReactFlow
-          nodesDraggable={false}
-          onElementClick={onElementClick}
-          onPaneClick={onPaneClick}
-          nodeTypes={nodeTypes}
-          elements={elements}
-          onlyRenderVisibleElements={true}
-          nodesConnectable={false}
-          minZoom={0.2}
-        >
-          <Background />
-        </ReactFlow>
-      </GraphContainer>
-      {drawerData && (
-        <DrawerContainer>
-          <GraphDrawer
-            data={drawerData}
-            baseData={baseDrawerData}
-            drawerMaxHeight={500}
-            visible={drawerIsVisible}
-            setDrawerVisibility={setDrawerVisibility}
-          />
-        </DrawerContainer>
-      )}
-    </Container>
+    <HighlightedColumnsContext.Provider value={{ ..._highlightedColumns, setHighlightedColumns }}>
+      <Container>
+        <Sidebar
+          badge={badge}
+          onBadgeChange={onBadgeChange}
+          onSearch={onSearchNode}
+          highlight={highlight}
+          onHighlightChange={onHighlightChange}
+          releases={baseReleases}
+          onReleaseChange={onReleaseChange}
+        />
+        <GraphContainer>
+          <ReactFlow
+            nodesDraggable={false}
+            onElementClick={onElementClick}
+            onPaneClick={onPaneClick}
+            nodeTypes={nodeTypes}
+            elements={elements}
+            onlyRenderVisibleElements={true}
+            nodesConnectable={false}
+            minZoom={0.2}
+          >
+            <Background />
+          </ReactFlow>
+        </GraphContainer>
+        {drawerData && (
+          <DrawerContainer>
+            <GraphDrawer
+              data={drawerData}
+              baseData={baseDrawerData}
+              drawerMaxHeight={500}
+              visible={drawerIsVisible}
+              setDrawerVisibility={setDrawerVisibility}
+            />
+          </DrawerContainer>
+        )}
+      </Container>
+    </HighlightedColumnsContext.Provider>
   )
 }
 
@@ -204,7 +287,7 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
       badge: 'violations',
       partitions: table.measures?.rows ?? 0,
       violations: table.measures?.violations ?? 0,
-      columns: table.columns.map(col => col.name),
+      columns: table.columns,
       onTitleClick: openDrawer,
     },
     position: initialPosition,
@@ -224,7 +307,3 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
 
       return [...acc, ...items]
     }, [])
-
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined
-}

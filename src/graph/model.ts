@@ -9,7 +9,7 @@ export interface DataPayload {
   partitions: number
   violations: number
   highlight: boolean
-  columns: string[]
+  columns: Column[]
   onTitleClick: (id: string) => void
 }
 
@@ -49,7 +49,9 @@ export interface Table {
 }
 
 export interface Column {
+  id: string
   name: string
+  dependencies?: Array<string>
 }
 
 export type Orientation = 'horizontal' | 'vertical'

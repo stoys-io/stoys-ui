@@ -1,10 +1,12 @@
-import React, { memo } from 'react'
+import React, { useContext, memo } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import List from 'antd/lib/list'
 
+import HighlightedColumnsContext from './columnsHighlightContext'
+
 import { renderNumericValue } from '../helpers'
 import { DataPayload } from './model'
-import { ScrollCard } from './styles'
+import { DagListItem, ScrollCard } from './styles'
 
 export const DagNode = memo(
   ({
@@ -14,8 +16,27 @@ export const DagNode = memo(
     targetPosition,
     sourcePosition,
   }: NodeProps<DataPayload>): JSX.Element => {
+    const { selectedTableId, selectedColumnId, reletedColumnsIds, setHighlightedColumns } =
+      useContext(HighlightedColumnsContext)
+
     const actualBadge = badge === 'violations' ? violations : partitions
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
+    const _columns =
+      selectedTableId && id !== selectedTableId
+        ? columns.filter(column => reletedColumnsIds.includes(column.id))
+        : columns
+
+    const getHighlightedColor = (columnId: string): string => {
+      if (id === selectedTableId && columnId === selectedColumnId) {
+        return 'rgb(0, 0, 0)'
+      }
+
+      if (id === selectedTableId) {
+        return 'rgba(0, 0, 0, 0.4)'
+      }
+
+      return 'inherit'
+    }
 
     return (
       <div className="nowheel">
@@ -44,8 +65,17 @@ export const DagNode = memo(
         >
           <List
             size="small"
-            dataSource={columns}
-            renderItem={column => <List.Item>{column}</List.Item>}
+            dataSource={_columns}
+            renderItem={column => (
+              <DagListItem
+                higtlightedColor={getHighlightedColor(column.id)}
+                onClick={() => {
+                  setHighlightedColumns(column.id, id)
+                }}
+              >
+                {column.name}
+              </DagListItem>
+            )}
           />
         </ScrollCard>
         {targetPosition === 'bottom' ? (

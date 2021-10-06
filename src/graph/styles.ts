@@ -3,6 +3,8 @@ import Drawer from 'antd/lib/drawer'
 import MenuOutlined from '@ant-design/icons/MenuOutlined'
 import Select from 'antd/lib/select'
 import Input from 'antd/lib/input'
+import List from 'antd/lib/list'
+
 const { Search } = Input
 
 import Card from 'antd/lib/card'
@@ -123,4 +125,17 @@ export const ScrollCard = styled(Card, {
   .ant-list-item {
     padding: 0;
   }
+
+  .ant-list-empty-text {
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    .ant-empty-normal {
+      margin: 4px 0px;
+    }
+  }
+`
+
+export const DagListItem = styled(List.Item)<{ higtlightedColor: string }>`
+  color: ${props => props.higtlightedColor};
 `
