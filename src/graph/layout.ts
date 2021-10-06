@@ -1,6 +1,7 @@
 import { Edge, isNode, Node, Position } from 'react-flow-renderer'
 import dagre from 'dagre'
 import { NODE_HEIGHT, NODE_WIDTH } from './constants'
+import { Orientation } from './model'
 
 const nodeWidth = NODE_WIDTH
 const nodeHeight = NODE_HEIGHT
@@ -9,16 +10,18 @@ const nodesep = 16
 const startX = 48
 const startY = 32
 
-export const getLayoutedElements = (elements: Array<Node | Edge>, direction: 'LR' | 'TB') => {
+export const getLayoutedElements = (elements: Array<Node | Edge>, orientation: Orientation) => {
   const dagreGraph = new dagre.graphlib.Graph()
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 
-  const isHorizontal = direction === 'LR'
+  const direction = orientation === 'horizontal' ? 'RL' : 'BT'
+  const isHorizontal = orientation === 'horizontal'
   dagreGraph.setGraph({
     rankdir: direction,
     align: 'DL',
     ranksep,
     nodesep,
+    ranker: 'longest-path',
   })
 
   elements.forEach(el => {

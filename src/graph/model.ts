@@ -52,6 +52,8 @@ export interface Column {
   name: string
 }
 
+export type Orientation = 'horizontal' | 'vertical'
+
 type D3Scale =
   | 'interpolateBrBG'
   | 'interpolatePRGn'

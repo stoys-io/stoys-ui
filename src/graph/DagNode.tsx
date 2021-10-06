@@ -22,14 +22,14 @@ export const DagNode = memo(
         {/* nowheel enables scrolling */}
         {sourcePosition === 'top' ? (
           <Handle
-            type="target"
+            type="source"
             position={Position['Top']}
             style={{ top: -3, background: '#555' }}
             isConnectable={isConnectable}
           />
         ) : (
           <Handle
-            type="target"
+            type="source"
             position={Position['Left']}
             style={{ left: -3, background: '#555', zIndex: 1 }}
             isConnectable={isConnectable}
@@ -50,14 +50,14 @@ export const DagNode = memo(
         </ScrollCard>
         {targetPosition === 'bottom' ? (
           <Handle
-            type="source"
+            type="target"
             position={Position['Bottom']}
             style={{ bottom: -3, background: '#555' }}
             isConnectable={isConnectable}
           />
         ) : (
           <Handle
-            type="source"
+            type="target"
             position={Position['Right']}
             style={{ right: -3, background: '#555' }}
             isConnectable={isConnectable}
