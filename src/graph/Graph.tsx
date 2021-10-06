@@ -155,6 +155,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const onPaneClick = () => {
     setGraph(resetHighlight)
     setDrawerVisibility(false)
+    _setHighlightedColumns({
+      selectedTableId: '',
+      selectedColumnId: '',
+      reletedColumnsIds: [],
+      reletedTablesIds: [],
+    })
   }
 
   const onSearchNode = ({ val, err, onError }: SearchArgs) => {
