@@ -13,19 +13,15 @@ export const DagNode = ({
   data: { label, badge, columns, violations, partitions, highlight, onTitleClick },
   isConnectable,
 }: NodeProps<DataPayload>): JSX.Element => {
-  const {
-    selectedTableId,
-    selectedColumnId,
-    reletedColumnsIds,
-    reletedTablesIds,
-    setHighlightedColumns,
-  } = useContext(HighlightedColumnsContext)
+  const { selectedTableId, selectedColumnId, reletedColumnsIds, setHighlightedColumns } =
+    useContext(HighlightedColumnsContext)
 
   const actualBadge = badge === 'violations' ? violations : partitions
   const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
-  const _columns = reletedTablesIds.includes(id)
-    ? columns.filter(column => reletedColumnsIds.includes(column.id))
-    : columns
+  const _columns =
+    selectedTableId && id !== selectedTableId
+      ? columns.filter(column => reletedColumnsIds.includes(column.id))
+      : columns
 
   const getHighlightedColor = (columnId: string): string => {
     if (id === selectedTableId && columnId === selectedColumnId) {
