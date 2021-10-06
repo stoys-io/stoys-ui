@@ -24,6 +24,7 @@ import {
   notEmpty,
   highlightNodesBatch,
 } from './graph-ops'
+import { HIGHLIGHT_COLOR } from './constants'
 
 const defaultHighlightedColumns = {
   selectedTableId: '',
@@ -155,11 +156,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
         ? findDownstreamEdges(graph, element.id)
         : findNeighborEdges(graph, element.id)
 
-    if (!highlightEdges.length) {
+    if (!highlightEdges.edges.length) {
       setGraph(highlightNode(element.id))
     }
 
-    setGraph(highlightGraph(highlightEdges))
+    const { edges, maxRank } = highlightEdges
+    setGraph(highlightGraph(edges, highlight, maxRank, config.chromaticScale))
   }
 
   const onPaneClick = () => {
@@ -370,6 +372,7 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
     data: {
       label: table.name,
       highlight: false,
+      highlightColor: HIGHLIGHT_COLOR,
       badge: 'violations',
       partitions: table.measures?.rows ?? 0,
       violations: table.measures?.violations ?? 0,
@@ -389,6 +392,7 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
         source: table.id,
         target: dep,
         style: undefined, // Edge color will be set by style field
+        data: { rank: 1 },
       }))
 
       return [...acc, ...items]
