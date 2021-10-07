@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import GraphDrawer from './GraphDrawer'
 import Sidebar from './Sidebar'
 import { SearchArgs } from './SidebarSearch'
@@ -186,8 +186,14 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const onReleaseChange = useCallback(
     value => {
       setBaseRelease(value)
+
+      const mergedGraph = getMergedGraph(value)
+
+      if (mergedGraph) {
+        setGraph(mergedGraph)
+      }
     },
-    [setBaseRelease]
+    [setBaseRelease, setGraph]
   )
 
   const baseDrawerData = useMemo(() => {
@@ -199,6 +205,81 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       ?.find(dataItem => dataItem.version === baseRelease)
       ?.tables?.find(table => table.name === drawerData?.name)
   }, [baseRelease, drawerData, data])
+
+  const getMergedGraph = (_baseRelease: string): Graph | undefined => {
+    if (!Array.isArray(data) || !_baseRelease) {
+      return
+    }
+
+    const nameIds = tables?.reduce((acc: { [key: string]: string }, dataItem) => {
+      acc[dataItem.name] = dataItem.id
+
+      return acc
+    }, {})
+    const _baseTables = data?.find(dataItem => dataItem.version === _baseRelease)?.tables
+    const baseNameIds = _baseTables?.reduce((acc: { [key: string]: string }, dataItem) => {
+      acc[dataItem.id] = dataItem.name
+
+      return acc
+    }, {})
+    const baseTables = _baseTables?.map(table => ({
+      ...table,
+      id: nameIds && nameIds[table.name] ? nameIds[table.name] : table.id,
+      dependencies: table.dependencies?.map(dep =>
+        baseNameIds && nameIds && baseNameIds[dep] && nameIds[baseNameIds[dep]]
+          ? nameIds[baseNameIds[dep]]
+          : dep
+      ),
+    }))
+    const baseGraph = baseTables
+      ? {
+          nodes: mapInitialNodes(baseTables, openDrawer),
+          edges: mapInitialEdges(baseTables),
+        }
+      : null
+
+    if (baseGraph) {
+      const baseEdgeIds = baseGraph.edges.map(mapIds)
+      const edgeIds = graph.edges.map(mapIds)
+      const edges = graph.edges.map(edge => {
+        if (baseEdgeIds.includes(edge.id)) {
+          return edge
+        }
+
+        return {
+          ...edge,
+          style: { color: 'red' },
+        }
+      })
+      const addedEdges = baseGraph.edges
+        .filter(edge => !edgeIds.includes(edge.id))
+        .map(edge => ({ ...edge, style: { color: 'green' } }))
+
+      const mergedEdges = [...edges, ...addedEdges]
+
+      const nodeIds = graph.nodes.map(mapIds)
+      const baseNodeIds = graph.nodes.map(mapIds)
+      const nodes = graph.nodes.map(node => {
+        if (baseNodeIds.includes(node.id)) {
+          return node
+        }
+
+        return {
+          ...node,
+          style: { color: 'red' },
+        }
+      })
+      const addedNodes = baseGraph.nodes
+        .filter(node => !nodeIds.includes(node.id))
+        .map(node => ({ ...node, style: { color: 'green' } }))
+      const mergedNodes = [...nodes, ...addedNodes]
+
+      return {
+        edges: mergedEdges,
+        nodes: mergedNodes,
+      }
+    }
+  }
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.orientation)
   return (
@@ -299,7 +380,7 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
     .filter((t: Table) => t.dependencies !== undefined)
     .reduce((acc: Edge[], table: Table) => {
       const items = table.dependencies!.map(dep => ({
-        id: `el-${dep}-${table.name}`,
+        id: `${table.id}-${dep}-${table.name}`,
         source: table.id,
         target: dep,
         style: undefined, // Edge color will be set by style field
@@ -307,3 +388,7 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
 
       return [...acc, ...items]
     }, [])
+
+function mapIds(element: { id: string }): string {
+  return element.id
+}

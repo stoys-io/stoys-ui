@@ -46,6 +46,7 @@ export interface Table {
   metadata?: {
     [key: string]: string | number
   }
+  style?: any // TODO: avoid any
 }
 
 export interface Column {
