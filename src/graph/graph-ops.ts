@@ -80,13 +80,14 @@ export const highlightGraph =
 
     return {
       edges: graph.edges.map((edge: Edge) => {
-        if (!edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)) {
+        const thisEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
+        if (!thisEdge) {
           return edge
         }
 
         return {
-          ...edge,
-          style: { stroke: getColor(edge.data.rank) },
+          ...thisEdge,
+          style: { stroke: getColor(thisEdge.data.rank) },
         }
       }),
       nodes: graph.nodes.map((node: Node) => {
@@ -130,18 +131,23 @@ const findEdgeHelper = (
   isUpstream: boolean = false
 ): Stuff => {
   if (!queue.length) {
+    // console.log({ edges: visited, maxRank: rank })
     return { edges: visited, maxRank: rank }
   }
 
   const matchEdges = (edge: Edge, head: Edge) =>
     isUpstream ? edge.target === head.source : edge.source === head.target
 
-  const newRank = rank + 1
-  const neighbors = edges
-    .filter(edge => matchEdges(edge, head) && !visited.find(v => v.id === edge.id))
-    .map(edge => ({ ...edge, data: { rank: newRank } }))
+  const neighbors = edges.filter(
+    edge => matchEdges(edge, head) && !visited.find(v => v.id === edge.id)
+  )
 
-  const newQueue = [...queue].slice(1).concat(neighbors)
+  const newRank = rank + 1
+  const rankedNeighbors = !neighbors.length
+    ? neighbors
+    : neighbors.map(edge => ({ ...edge, data: { rank: newRank } }))
+
+  const newQueue = [...queue].slice(1).concat(rankedNeighbors)
   const newHead = newQueue[0]
   const newVisited =
     newHead && !visited.find(v => v.id === newHead.id) ? [...visited, newHead] : visited
@@ -275,7 +281,7 @@ const getDepthGradientParams = (maxRank: number, highlight: Highlight) => {
   let lowParam = 0
   let highParam = 0.25
 
-  if (highlight === 'parents') {
+  if (highlight === 'children') {
     lowParam = 0.75
     highParam = 1
   }
@@ -285,17 +291,17 @@ const getDepthGradientParams = (maxRank: number, highlight: Highlight) => {
   const depthGradientParams: { [key: number]: number } = {}
   for (let i = 1; i < maxRank; i++) {
     if (i === 1) {
-      depthGradientParams[i] = highlight === 'parents' ? lowParam : highParam
+      depthGradientParams[i] = highlight === 'children' ? lowParam : highParam
     } else {
       depthGradientParams[i] =
-        highlight === 'parents'
+        highlight === 'children'
           ? depthGradientParams[i - 1] + remainDiff / 2
           : depthGradientParams[i - 1] - remainDiff / 2
       remainDiff = remainDiff / 2
     }
   }
 
-  depthGradientParams[maxRank] = highlight === 'parents' ? highParam : lowParam
+  depthGradientParams[maxRank] = highlight === 'children' ? highParam : lowParam
 
   return depthGradientParams
 }
