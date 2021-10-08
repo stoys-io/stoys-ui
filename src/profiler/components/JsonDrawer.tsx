@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useCallback, ChangeEvent, useState, MouseEvent } from 'react'
-import Drawer from 'antd/lib/drawer'
+import React, { useEffect, useRef, useCallback, ChangeEvent, useState } from 'react'
 import Input from 'antd/lib/input'
 import Button from 'antd/lib/button'
 import { BigJsonViewerDom } from 'big-json-viewer'
@@ -8,11 +7,13 @@ import debounce from 'lodash.debounce'
 import 'antd/lib/drawer/style/css'
 import 'big-json-viewer/styles/default.css'
 
-import { SearchWrapper } from './styles'
+import { SearchWrapper, StyledDrawer } from './styles'
 
 import { JsonDrqwerProps } from '../model'
 
 const { Search } = Input
+
+const ENTER_KEY = 13
 
 const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Element => {
   const jsonViewerRef = useRef<any>(null)
@@ -37,6 +38,8 @@ const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Elemen
   }, [setClicked])
 
   useEffect(() => {
+    let keyDownListener: (event: KeyboardEvent) => void
+
     const initJsonViewer = async () => {
       try {
         const viewer = await BigJsonViewerDom.fromObject(datasets, {
@@ -48,6 +51,18 @@ const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Elemen
         if (searchValue) {
           const cursor = await viewer.openBySearch(new RegExp(searchValue, 'i'))
           const matchesLength = cursor.matches.length
+
+          keyDownListener = async (event: KeyboardEvent) => {
+            const { keyCode, key } = event
+
+            if (keyCode === ENTER_KEY || key === 'Enter') {
+              const _clicked = clicked + 1 >= matchesLength ? 0 : clicked + 1
+              setClicked(_clicked)
+              await cursor.navigateTo(_clicked)
+            }
+          }
+
+          window.addEventListener('keydown', keyDownListener)
 
           if (clicked < 0) {
             setClicked(matchesLength - 1)
@@ -70,11 +85,12 @@ const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Elemen
 
     return () => {
       jsonViewerRef.current.innerHTML = ''
+      window.removeEventListener('keydown', keyDownListener)
     }
   }, [datasets, visible, searchValue, clicked, setClicked])
 
   return (
-    <Drawer
+    <StyledDrawer
       placement="right"
       closable={false}
       onClose={onClose}
@@ -94,7 +110,7 @@ const JsonDrawer = ({ visible, onClose, datasets }: JsonDrqwerProps): JSX.Elemen
         </Button>
       </SearchWrapper>
       <div ref={jsonViewerRef} />
-    </Drawer>
+    </StyledDrawer>
   )
 }
 
