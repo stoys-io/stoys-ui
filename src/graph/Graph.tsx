@@ -28,7 +28,10 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const config: Required<Config> = { ...defaultConfig, ...cfg }
   const releases = Array.isArray(data) ? data.map(dataItem => dataItem.version) : [data.version]
   const currentRelease = config?.current || releases[0] // by default take first
-  const baseReleases = releases.filter(release => release !== currentRelease).filter(notEmpty)
+  const baseReleases = releases
+    .filter(release => release !== currentRelease)
+    .filter(notEmpty)
+    .map(release => ({ value: release, label: release }))
   const tables = Array.isArray(data)
     ? data?.find(dataItem => dataItem.version === currentRelease)?.tables
     : data?.tables
@@ -186,6 +189,13 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const onReleaseChange = useCallback(
     value => {
       setBaseRelease(value)
+
+      if (!value) {
+        return setGraph({
+          nodes: mapInitialNodes(tables!, openDrawer),
+          edges: mapInitialEdges(tables!),
+        })
+      }
 
       const mergedGraph = getMergedGraph(value)
 

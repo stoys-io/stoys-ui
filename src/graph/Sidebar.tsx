@@ -20,23 +20,19 @@ const Sidebar = ({
   releases,
   onReleaseChange,
 }: Props) => {
-  const _releases = useMemo(
-    () => releases?.map(release => ({ label: release, value: release })),
-    [releases]
-  )
-
   return (
     <SidebarWrapper>
       <SidebarContentWrapper>
         <SidebarSearch onSearch={onSearch} />
 
-        {_releases && _releases.length ? (
+        {releases && releases.length ? (
           <>
             <MenuTitle>Select previous run:</MenuTitle>
             <SelectVersion
               placeholder="Previous Version"
-              options={_releases}
+              options={releases}
               onChange={onReleaseChange}
+              allowClear
             />
           </>
         ) : null}
@@ -72,6 +68,6 @@ interface Props {
   highlight: Highlight
   onHighlightChange: (val: Highlight) => void
 
-  releases?: Array<string>
+  releases?: Array<{ label: string; value: string }>
   onReleaseChange: (val: SelectValue) => void
 }
