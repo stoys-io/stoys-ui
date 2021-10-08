@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
+
 import GraphDrawer from './GraphDrawer'
 import Sidebar from './Sidebar'
 import { SearchArgs } from './SidebarSearch'
@@ -13,9 +14,9 @@ import { getLayoutedElements } from './layout'
 import {
   resetHighlight,
   findNeighborEdges,
-  highlightNode,
+  /* highlightNode, */
   changeBadge,
-  highlightGraph,
+  /* highlightGraph, */
   findUpstreamEdges,
   findDownstreamEdges,
   collectParentColumnAndTableIds,
@@ -23,6 +24,8 @@ import {
   notEmpty,
   highlightNodesBatch,
 } from './graph-ops'
+
+import { useHighlightStore } from './graph-store'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const config: Required<Config> = { ...defaultConfig, ...cfg }
@@ -112,6 +115,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     })
   }
 
+  const setHighlights = useHighlightStore(store => store.setHighlights)
   const [graph, setGraph] = useState<Graph>({
     nodes: mapInitialNodes(tables!, openDrawer),
     edges: mapInitialEdges(tables!),
@@ -136,7 +140,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return
     }
 
-    setGraph(resetHighlight)
+    /* setGraph(resetHighlight) */
 
     const highlightEdges =
       highlight === 'parents'
@@ -145,11 +149,20 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
         ? findDownstreamEdges(graph, element.id)
         : findNeighborEdges(graph, element.id)
 
-    if (!highlightEdges.length) {
-      setGraph(highlightNode(element.id))
-    }
+    const allTargetsAndSources = highlightEdges.reduce(
+      (acc: string[], edge: Edge) => [...acc, edge.source, edge.target],
+      []
+    )
+    const nodeIds = [...new Set(allTargetsAndSources)]
 
-    setGraph(highlightGraph(highlightEdges))
+    console.log(nodeIds)
+    setHighlights(nodeIds)
+
+    /* if (!highlightEdges.length) {
+     *   setGraph(highlightNode(element.id))
+     * } */
+
+    /* setGraph(highlightGraph(highlightEdges)) */
   }
 
   const onPaneClick = () => {
@@ -202,44 +215,42 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.orientation)
   return (
-    <HighlightedColumnsContext.Provider value={{ ..._highlightedColumns, setHighlightedColumns }}>
-      <Container>
-        <Sidebar
-          badge={badge}
-          onBadgeChange={onBadgeChange}
-          onSearch={onSearchNode}
-          highlight={highlight}
-          onHighlightChange={onHighlightChange}
-          releases={baseReleases}
-          onReleaseChange={onReleaseChange}
-        />
-        <GraphContainer>
-          <ReactFlow
-            nodesDraggable={false}
-            onElementClick={onElementClick}
-            onPaneClick={onPaneClick}
-            nodeTypes={nodeTypes}
-            elements={elements}
-            onlyRenderVisibleElements={true}
-            nodesConnectable={false}
-            minZoom={0.2}
-          >
-            <Background />
-          </ReactFlow>
-        </GraphContainer>
-        {drawerData && (
-          <DrawerContainer>
-            <GraphDrawer
-              data={drawerData}
-              baseData={baseDrawerData}
-              drawerMaxHeight={500}
-              visible={drawerIsVisible}
-              setDrawerVisibility={setDrawerVisibility}
-            />
-          </DrawerContainer>
-        )}
-      </Container>
-    </HighlightedColumnsContext.Provider>
+    <Container>
+      <Sidebar
+        badge={badge}
+        onBadgeChange={onBadgeChange}
+        onSearch={onSearchNode}
+        highlight={highlight}
+        onHighlightChange={onHighlightChange}
+        releases={baseReleases}
+        onReleaseChange={onReleaseChange}
+      />
+      <GraphContainer>
+        <ReactFlow
+          nodesDraggable={false}
+          onElementClick={onElementClick}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          elements={elements}
+          onlyRenderVisibleElements={true}
+          nodesConnectable={false}
+          minZoom={0.2}
+        >
+          <Background />
+        </ReactFlow>
+      </GraphContainer>
+      {drawerData && (
+        <DrawerContainer>
+          <GraphDrawer
+            data={drawerData}
+            baseData={baseDrawerData}
+            drawerMaxHeight={500}
+            visible={drawerIsVisible}
+            setDrawerVisibility={setDrawerVisibility}
+          />
+        </DrawerContainer>
+      )}
+    </Container>
   )
 }
 

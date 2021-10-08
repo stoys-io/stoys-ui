@@ -48,7 +48,8 @@
     "numbro": "^2.3.2",
     "rc-resize-observer": "^1.0.0",
     "react-flow-renderer": "^9.6.7",
-    "react-window": "^1.8.6"
+    "react-window": "^1.8.6",
+    "zustand": "^3.5.13"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
