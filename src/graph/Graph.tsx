@@ -157,6 +157,9 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const onPaneClick = () => {
     setGraph(resetHighlight)
+    if (baseRelease) {
+      setGraph(getMergedGraph(baseRelease)!)
+    }
     setDrawerVisibility(false)
     _setHighlightedColumns({
       selectedTableId: '',
@@ -216,9 +219,14 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       ?.tables?.find(table => table.name === drawerData?.name)
   }, [baseRelease, drawerData, data])
 
-  const getMergedGraph = (_baseRelease: string): Graph | undefined => {
+  const getMergedGraph = (_baseRelease?: string | number): Graph | undefined => {
     if (!Array.isArray(data) || !_baseRelease) {
       return
+    }
+
+    const _graph = {
+      nodes: mapInitialNodes(tables!, openDrawer),
+      edges: mapInitialEdges(tables!),
     }
 
     const nameIds = tables?.reduce((acc: { [key: string]: string }, dataItem) => {
@@ -250,8 +258,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
     if (baseGraph) {
       const baseEdgeIds = baseGraph.edges.map(mapIds)
-      const edgeIds = graph.edges.map(mapIds)
-      const edges = graph.edges.map(edge => {
+      const edgeIds = _graph.edges.map(mapIds)
+      const edges = _graph.edges.map(edge => {
         if (baseEdgeIds.includes(edge.id)) {
           return edge
         }
@@ -267,9 +275,9 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
       const mergedEdges = [...edges, ...addedEdges]
 
-      const nodeIds = graph.nodes.map(mapIds)
-      const baseNodeIds = graph.nodes.map(mapIds)
-      const nodes = graph.nodes.map(node => {
+      const nodeIds = _graph.nodes.map(mapIds)
+      const baseNodeIds = _graph.nodes.map(mapIds)
+      const nodes = _graph.nodes.map(node => {
         if (baseNodeIds.includes(node.id)) {
           return node
         }
