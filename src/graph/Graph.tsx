@@ -248,12 +248,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
         return {
           ...edge,
-          style: { color: 'red' },
+          style: { stroke: '#f00' },
         }
       })
       const addedEdges = baseGraph.edges
         .filter(edge => !edgeIds.includes(edge.id))
-        .map(edge => ({ ...edge, style: { color: 'green' } }))
+        .map(edge => ({ ...edge, style: { stroke: '#008000' } }))
 
       const mergedEdges = [...edges, ...addedEdges]
 
@@ -266,12 +266,15 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
         return {
           ...node,
-          style: { color: 'red' },
+          data: {
+            ...node.data,
+            style: { color: '#f00' },
+          },
         }
       })
       const addedNodes = baseGraph.nodes
         .filter(node => !nodeIds.includes(node.id))
-        .map(node => ({ ...node, style: { color: 'green' } }))
+        .map(node => ({ ...node, data: { ...node.data, style: { color: '#008000' } } }))
       const mergedNodes = [...nodes, ...addedNodes]
 
       return {

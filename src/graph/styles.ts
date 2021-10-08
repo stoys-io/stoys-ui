@@ -99,11 +99,11 @@ export const NodeSearch = styled(Search)<{ error: string }>`
 
 export const ScrollCard = styled(Card, {
   // do not pass highlight prop down to the Card
-  shouldForwardProp: prop => prop !== 'highlight',
-})<{ highlight: boolean }>`
+  shouldForwardProp: prop => prop !== 'highlightColor',
+})<{ highlightColor: string }>`
   width: ${NODE_WIDTH}px;
   height: ${NODE_HEIGHT}px;
-  border: 2px solid ${props => (props.highlight ? HIGHLIGHT_COLOR : 'grey')};
+  border: 2px solid ${props => props.highlightColor};
   border-radius: 3px;
   cursor: pointer;
 
