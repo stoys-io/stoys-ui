@@ -8,7 +8,6 @@ export interface DataPayload {
   badge: Badge
   partitions: number
   violations: number
-  highlight: boolean
   columns: Column[]
   onTitleClick: (id: string) => void
   style?: {

@@ -12,7 +12,7 @@ import { HIGHLIGHT_COLOR } from './constants'
 export const DagNode = memo(
   ({
     id,
-    data: { label, badge, columns, violations, partitions, highlight, onTitleClick, style },
+    data: { label, badge, columns, violations, partitions, onTitleClick, style },
     isConnectable,
     targetPosition,
     sourcePosition,
@@ -39,17 +39,9 @@ export const DagNode = memo(
       return 'inherit'
     }
 
-    const cardHighlightedColor = (): string => {
-      if (highlight) {
-        return HIGHLIGHT_COLOR
-      }
+    const cardHighlightedColor = (): string => (style?.color ? style.color : '#808080')
 
-      if (style?.color) {
-        return style.color
-      }
-
-      return '#808080'
-    }
+    // HIGHLIGHT_COLOR
 
     return (
       <div className="nowheel">
