@@ -26,15 +26,13 @@ import {
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const config: Required<Config> = { ...defaultConfig, ...cfg }
-  const releases = Array.isArray(data) ? data.map(dataItem => dataItem.version) : [data.version]
+  const releases = data.map(dataItem => dataItem.version)
   const currentRelease = config?.current || releases[0] // by default take first
   const baseReleases = releases
     .filter(release => release !== currentRelease)
     .filter(notEmpty)
     .map(release => ({ value: release, label: release }))
-  const tables = Array.isArray(data)
-    ? data?.find(dataItem => dataItem.version === currentRelease)?.tables
-    : data?.tables
+  const tables = data?.find(dataItem => dataItem.version === currentRelease)?.tables
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
@@ -218,7 +216,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
 
   const baseDrawerData = useMemo(() => {
-    if (!baseRelease || !Array.isArray(data)) {
+    if (!baseRelease) {
       return undefined
     }
 
@@ -228,7 +226,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }, [baseRelease, drawerData, data])
 
   const getMergedGraph = (_baseRelease?: string | number): Graph | undefined => {
-    if (!Array.isArray(data) || !_baseRelease) {
+    if (!_baseRelease) {
       return
     }
 
@@ -359,7 +357,7 @@ interface DataGraph {
 }
 
 interface Props {
-  data: DataGraph | Array<DataGraph>
+  data: Array<DataGraph>
   config?: Config
 }
 
