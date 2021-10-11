@@ -163,7 +163,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   const onPaneClick = () => {
-    setGraph(resetHighlight)
+    setGraph(mergedGraph)
     setDrawerVisibility(false)
     _setHighlightedColumns(defaultHighlightedColumns)
   }
@@ -233,7 +233,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     return baseGraph
   }, [baseRelease, data])
 
-  useEffect(() => {
+  const mergedGraph = useMemo(() => {
     if (baseGraph) {
       const baseEdgeIds = baseGraph.edges.map(mapIds)
       const edgeIds = currentGraph.edges.map(mapIds)
@@ -273,14 +273,18 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
         .map(node => ({ ...node, data: { ...node.data, style: { color: '#008000' } } }))
       const mergedNodes = [...nodes, ...addedNodes]
 
-      setGraph({
+      return {
         edges: mergedEdges,
         nodes: mergedNodes,
-      })
+      }
     } else {
-      setGraph(currentGraph)
+      return currentGraph
     }
-  }, [baseGraph, currentGraph, setGraph])
+  }, [baseGraph, currentGraph])
+
+  useEffect(() => {
+    setGraph(mergedGraph)
+  }, [mergedGraph, setGraph])
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.orientation)
   return (
