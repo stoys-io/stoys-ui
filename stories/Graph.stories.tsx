@@ -28,6 +28,7 @@ DiffGraph.args = {
   data: [diffDataMock1, diffDataMock2] as any,
   config: {
     orientation: 'horizontal',
+    chromaticScale: 'interpolatePuOr',
   },
 }
 
@@ -35,9 +36,6 @@ export const BigGraph = Template.bind({})
 BigGraph.storyName = 'lots of data - grpc'
 BigGraph.args = {
   data: [grpcData],
-  config: {
-    orientation: 'horizontal',
-  },
 }
 
 export default {
