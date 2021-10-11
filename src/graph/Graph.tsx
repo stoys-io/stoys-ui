@@ -38,10 +38,13 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
-  const openDrawer = (id: string) => {
-    setDrawerNodeId(id)
-    setDrawerVisibility(true)
-  }
+  const openDrawer = useCallback(
+    (id: string) => {
+      setDrawerNodeId(id)
+      setDrawerVisibility(true)
+    },
+    [setDrawerNodeId, setDrawerVisibility]
+  )
 
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 
@@ -115,10 +118,15 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     })
   }
 
-  const [graph, setGraph] = useState<Graph>({
-    nodes: mapInitialNodes(tables!, openDrawer),
-    edges: mapInitialEdges(tables!),
-  })
+  const currentGraph = useMemo(
+    () => ({
+      nodes: mapInitialNodes(tables!, openDrawer),
+      edges: mapInitialEdges(tables!),
+    }),
+    [tables, openDrawer]
+  )
+
+  const [graph, setGraph] = useState<Graph>(currentGraph)
 
   const [highlight, setHighlight] = useState<Highlight>('nearest')
   const [badge, setBadge] = useState<Badge>('violations')
@@ -224,11 +232,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return
     }
 
-    const _graph = {
-      nodes: mapInitialNodes(tables!, openDrawer),
-      edges: mapInitialEdges(tables!),
-    }
-
     const nameIds = tables?.reduce((acc: { [key: string]: string }, dataItem) => {
       acc[dataItem.name] = dataItem.id
 
@@ -258,8 +261,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
     if (baseGraph) {
       const baseEdgeIds = baseGraph.edges.map(mapIds)
-      const edgeIds = _graph.edges.map(mapIds)
-      const edges = _graph.edges.map(edge => {
+      const edgeIds = currentGraph.edges.map(mapIds)
+      const edges = currentGraph.edges.map(edge => {
         if (baseEdgeIds.includes(edge.id)) {
           return edge
         }
@@ -275,9 +278,9 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
       const mergedEdges = [...edges, ...addedEdges]
 
-      const nodeIds = _graph.nodes.map(mapIds)
+      const nodeIds = currentGraph.nodes.map(mapIds)
       const baseNodeIds = baseGraph.nodes.map(mapIds)
-      const nodes = _graph.nodes.map(node => {
+      const nodes = currentGraph.nodes.map(node => {
         if (baseNodeIds.includes(node.id)) {
           return node
         }
