@@ -136,6 +136,10 @@ export const ScrollCard = styled(Card, {
   }
 `
 
+export const ScrollCardTitle = styled.div<{ color: string }>`
+  color: ${props => props.color};
+`
+
 export const DagListItem = styled(List.Item)<{ higtlightedColor: string }>`
   color: ${props => props.higtlightedColor};
 `

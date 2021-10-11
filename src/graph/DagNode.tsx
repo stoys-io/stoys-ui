@@ -6,8 +6,7 @@ import HighlightedColumnsContext from './columnsHighlightContext'
 
 import { renderNumericValue } from '../helpers'
 import { DataPayload } from './model'
-import { DagListItem, ScrollCard } from './styles'
-import { HIGHLIGHT_COLOR } from './constants'
+import { DagListItem, ScrollCard, ScrollCardTitle } from './styles'
 
 export const DagNode = memo(
   ({
@@ -36,12 +35,10 @@ export const DagNode = memo(
         return 'rgba(0, 0, 0, 0.4)'
       }
 
-      return 'inherit'
+      return style?.color ? style.color : 'inherit'
     }
 
     const cardHighlightedColor = (): string => (style?.color ? style.color : '#808080')
-
-    // HIGHLIGHT_COLOR
 
     return (
       <div className="nowheel">
@@ -62,7 +59,14 @@ export const DagNode = memo(
           />
         )}
         <ScrollCard
-          title={<div onClick={() => onTitleClick(id)}>{label}</div>}
+          title={
+            <ScrollCardTitle
+              onClick={() => onTitleClick(id)}
+              color={style?.color ? style.color : 'inherit'}
+            >
+              {label}
+            </ScrollCardTitle>
+          }
           size="small"
           type="inner"
           extra={actualBadgeFormatted}

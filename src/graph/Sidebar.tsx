@@ -44,7 +44,7 @@ const Sidebar = ({
             <Radio value={'partitions'}>Partitions</Radio>
           </Space>
         </Radio.Group>
-        <MenuTitle>Highlight:</MenuTitle>
+        <MenuTitle>Version diff:</MenuTitle>
         <Radio.Group onChange={e => onHighlightChange(e.target.value)} value={highlight}>
           <Space direction="vertical">
             <Radio value={'nearest'}>Nearest</Radio>
