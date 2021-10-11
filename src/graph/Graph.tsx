@@ -2,13 +2,14 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import GraphDrawer from './GraphDrawer'
 import Sidebar from './Sidebar'
 import { SearchArgs } from './SidebarSearch'
+import { DagNode } from './DagNode'
 import { Container, DrawerContainer, GraphContainer } from './styles'
 
 import HighlightedColumnsContext from './columnsHighlightContext'
 
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
+import { SelectValue } from 'antd/lib/select'
 import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
-import { DagNode } from './DagNode'
 import { getLayoutedElements } from './layout'
 import {
   resetHighlight,
@@ -24,6 +25,13 @@ import {
   highlightNodesBatch,
 } from './graph-ops'
 
+const defaultHighlightedColumns = {
+  selectedTableId: '',
+  selectedColumnId: '',
+  reletedColumnsIds: [],
+  reletedTablesIds: [],
+}
+
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const config: Required<Config> = { ...defaultConfig, ...cfg }
   const releases = data.map(dataItem => dataItem.version)
@@ -32,7 +40,10 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     .filter(release => release !== currentRelease)
     .filter(notEmpty)
     .map(release => ({ value: release, label: release }))
-  const tables = data?.find(dataItem => dataItem.version === currentRelease)?.tables
+  const tables = useMemo(
+    () => data?.find(dataItem => dataItem.version === currentRelease)?.tables,
+    [data]
+  )
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
@@ -51,21 +62,11 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     selectedColumnId: string
     reletedColumnsIds: Array<string>
     reletedTablesIds: Array<string>
-  }>({
-    selectedTableId: '',
-    selectedColumnId: '',
-    reletedColumnsIds: [],
-    reletedTablesIds: [],
-  })
+  }>(defaultHighlightedColumns)
 
   const setHighlightedColumns = (columnId: string, tableId: string) => {
     if (columnId === _highlightedColumns.selectedColumnId) {
-      return _setHighlightedColumns({
-        selectedTableId: '',
-        selectedColumnId: '',
-        reletedColumnsIds: [],
-        reletedTablesIds: [],
-      })
+      return _setHighlightedColumns(defaultHighlightedColumns)
     }
 
     let tableIds: Array<string> = []
@@ -128,7 +129,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const [highlight, setHighlight] = useState<Highlight>('nearest')
   const [badge, setBadge] = useState<Badge>('violations')
-  const [baseRelease, setBaseRelease] = useState<string | number>('')
+  const [baseRelease, setBaseRelease] = useState<SelectValue>('')
 
   const onBadgeChange = (value: Badge) => {
     setBadge(value)
@@ -163,16 +164,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const onPaneClick = () => {
     setGraph(resetHighlight)
-    if (baseRelease) {
-      setGraph(getMergedGraph(baseRelease)!)
-    }
     setDrawerVisibility(false)
-    _setHighlightedColumns({
-      selectedTableId: '',
-      selectedColumnId: '',
-      reletedColumnsIds: [],
-      reletedTablesIds: [],
-    })
+    _setHighlightedColumns(defaultHighlightedColumns)
   }
 
   const onSearchNode = ({ val, err, onError }: SearchArgs) => {
@@ -195,26 +188,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     setGraph(highlightNodesBatch(nodeIds))
   }
 
-  const onReleaseChange = useCallback(
-    value => {
-      setBaseRelease(value)
-
-      if (!value) {
-        return setGraph({
-          nodes: mapInitialNodes(tables!, openDrawer),
-          edges: mapInitialEdges(tables!),
-        })
-      }
-
-      const mergedGraph = getMergedGraph(value)
-
-      if (mergedGraph) {
-        setGraph(mergedGraph)
-      }
-    },
-    [setBaseRelease, setGraph]
-  )
-
   const baseDrawerData = useMemo(() => {
     if (!baseRelease) {
       return undefined
@@ -225,8 +198,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       ?.tables?.find(table => table.name === drawerData?.name)
   }, [baseRelease, drawerData, data])
 
-  const getMergedGraph = (_baseRelease?: string | number): Graph | undefined => {
-    if (!_baseRelease) {
+  const baseGraph = useMemo(() => {
+    if (!baseRelease) {
       return
     }
 
@@ -235,7 +208,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
       return acc
     }, {})
-    const _baseTables = data?.find(dataItem => dataItem.version === _baseRelease)?.tables
+    const _baseTables = data?.find(dataItem => dataItem.version === baseRelease)?.tables
     const baseNameIds = _baseTables?.reduce((acc: { [key: string]: string }, dataItem) => {
       acc[dataItem.id] = dataItem.name
 
@@ -255,8 +228,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           nodes: mapInitialNodes(baseTables, openDrawer),
           edges: mapInitialEdges(baseTables),
         }
-      : null
+      : undefined
 
+    return baseGraph
+  }, [baseRelease, data])
+
+  useEffect(() => {
     if (baseGraph) {
       const baseEdgeIds = baseGraph.edges.map(mapIds)
       const edgeIds = currentGraph.edges.map(mapIds)
@@ -296,12 +273,14 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
         .map(node => ({ ...node, data: { ...node.data, style: { color: '#008000' } } }))
       const mergedNodes = [...nodes, ...addedNodes]
 
-      return {
+      setGraph({
         edges: mergedEdges,
         nodes: mergedNodes,
-      }
+      })
+    } else {
+      setGraph(currentGraph)
     }
-  }
+  }, [baseGraph, currentGraph, setGraph])
 
   const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.orientation)
   return (
@@ -314,7 +293,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           highlight={highlight}
           onHighlightChange={onHighlightChange}
           releases={baseReleases}
-          onReleaseChange={onReleaseChange}
+          onReleaseChange={setBaseRelease}
         />
         <GraphContainer>
           <ReactFlow
