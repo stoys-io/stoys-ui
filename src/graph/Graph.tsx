@@ -276,7 +276,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       const mergedEdges = [...edges, ...addedEdges]
 
       const nodeIds = _graph.nodes.map(mapIds)
-      const baseNodeIds = _graph.nodes.map(mapIds)
+      const baseNodeIds = baseGraph.nodes.map(mapIds)
       const nodes = _graph.nodes.map(node => {
         if (baseNodeIds.includes(node.id)) {
           return node

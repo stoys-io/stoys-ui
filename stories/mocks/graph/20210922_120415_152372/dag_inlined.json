@@ -4,6 +4,24 @@
   "version": "20210922_120415_152372",
   "tables": [
     {
+      "id": "test-1",
+      "name": "deleted_csv",
+      "columns": [
+        {
+          "id": "test-column-0",
+          "name": "column_0"
+        },
+        {
+          "id": "test-column-1",
+          "name": "column_1"
+        },
+        {
+          "id": "test-column-2",
+          "name": "column_2"
+        }
+      ]
+    },
+    {
       "id": "49412df4-01ee-44c1-8040-81ad587fbbde",
       "name": "excess_mortality_csv",
       "dp_result": {
@@ -18368,7 +18386,8 @@
       "dependencies": [
         "49412df4-01ee-44c1-8040-81ad587fbbde",
         "4c3323be-ec99-4369-a7b0-20853318d547",
-        "6e0cdd8c-0cee-4990-80c9-7456ff0eb85b"
+        "6e0cdd8c-0cee-4990-80c9-7456ff0eb85b",
+        "test-1"
       ],
       "dq_result": {
         "columns": [
