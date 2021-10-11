@@ -1,7 +1,6 @@
 import { HIGHLIGHT_COLOR } from './constants'
 import { Graph, Edge, Node, Badge, Table, ChromaticScale, Highlight } from './model'
-
-import * as d3ScaleChromatic from 'd3-scale-chromatic'
+import { fromColorPallete } from './color-helpers'
 
 export const highlightNode = (id: string) => (graph: Graph) => ({
   ...graph,
@@ -63,38 +62,37 @@ export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
 
 export const highlightGraph =
   (
+    nodeId: string,
     edgesToHighlight: Edge[],
     highlight: Highlight,
     maxRank: number,
-    chromaticScale?: ChromaticScale
+    chromaticScale?: ChromaticScale // TODO: Should chromaticScale be configurable or always present?
   ) =>
   (graph: Graph) => {
-    // const allTargetsAndSources = edgesToHighlight.reduce(
-    //   (acc: string[], edge: Edge) => [...acc, edge.source, edge.target],
-    //   []
-    // )
-    // const nodeIds = [...new Set(allTargetsAndSources)]
     const getColor = chromaticScale
       ? fromColorPallete(maxRank, highlight, chromaticScale)
       : (_: any) => HIGHLIGHT_COLOR
 
     return {
       edges: graph.edges.map((edge: Edge) => {
-        const thisEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
-        if (!thisEdge) {
-          return edge
+        const highlightEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
+        if (!highlightEdge) {
+          return {
+            ...edge,
+            style: { strokeWidth: 0 }, // Hide other edges
+          }
         }
 
         return {
-          ...thisEdge,
-          style: { stroke: getColor(thisEdge.data.rank) },
+          ...highlightEdge,
+          style: { stroke: getColor(highlightEdge.data.rank), strokeWidth: '2px' },
         }
       }),
       nodes: graph.nodes.map((node: Node) => {
-        const thatEdge = edgesToHighlight.find(
+        const relevantEdge = edgesToHighlight.find(
           edge => edge.source === node.id || edge.target === node.id
         )
-        if (!thatEdge) {
+        if (!relevantEdge) {
           return node
         }
 
@@ -102,24 +100,27 @@ export const highlightGraph =
           ...node,
           data: {
             ...node.data,
-            style: node.style?.color ? undefined : { color: getColor(thatEdge.data.rank) },
+            style: node.style?.color ? undefined : { color: getColor(relevantEdge.data.rank) },
           },
         }
       }),
     }
   }
 
-interface Stuff {
+interface EdgesData {
   edges: Edge[]
   maxRank: number
 }
 
-export const findNeighborEdges = (graph: Graph, id: string): Stuff => ({
+export const findNeighborEdges = (graph: Graph, id: string): EdgesData => ({
   edges: [
-    ...graph.edges.filter(edge => edge.source === id),
-    ...graph.edges.filter(edge => edge.target === id),
+    ...graph.edges.filter(edge => edge.source === id).map(edge => ({ ...edge, data: { rank: 1 } })),
+
+    ...graph.edges
+      .filter(edge => edge.target === id)
+      .map(edge => ({ ...edge, data: { rank: -1 } })),
   ],
-  maxRank: 2,
+  maxRank: 0, // dummy value
 })
 
 const findEdgeHelper = (
@@ -129,7 +130,7 @@ const findEdgeHelper = (
   visited: Edge[],
   rank: number,
   isUpstream: boolean = false
-): Stuff => {
+): EdgesData => {
   if (!queue.length) {
     // console.log({ edges: visited, maxRank: rank })
     return { edges: visited, maxRank: rank }
@@ -155,7 +156,7 @@ const findEdgeHelper = (
   return findEdgeHelper(edges, newHead, newQueue, newVisited, newRank, isUpstream)
 }
 
-export const findUpstreamEdges = (graph: Graph, id: string): Stuff => {
+export const findUpstreamEdges = (graph: Graph, id: string): EdgesData => {
   const startEdges = graph.edges.filter(edge => edge.target === id)
   if (!startEdges.length) {
     return { edges: [], maxRank: 1 }
@@ -173,7 +174,7 @@ export const findUpstreamEdges = (graph: Graph, id: string): Stuff => {
   return visitedEdges
 }
 
-export const findDownstreamEdges = (graph: Graph, id: string): Stuff => {
+export const findDownstreamEdges = (graph: Graph, id: string): EdgesData => {
   const startEdges = graph.edges.filter(edge => edge.source === id)
   if (!startEdges.length) {
     return { edges: [], maxRank: 1 }
@@ -263,45 +264,4 @@ export function collectParentColumnAndTableIds(
 export interface ColumnAndTableIds {
   tableIds: Array<string>
   columnIds: Array<string>
-}
-
-const fromColorPallete =
-  (maxRank: number, highlight: Highlight, chromaticScale: ChromaticScale) => (rank: number) => {
-    const gradient = getDepthGradientParams(maxRank, highlight)
-
-    return getChromaticColor(gradient[rank], chromaticScale)
-  }
-
-const getChromaticColor = (t: number, chromaticScale: ChromaticScale) => {
-  const scale = d3ScaleChromatic[chromaticScale]
-  return scale(t)
-}
-
-const getDepthGradientParams = (maxRank: number, highlight: Highlight) => {
-  let lowParam = 0
-  let highParam = 0.25
-
-  if (highlight === 'children') {
-    lowParam = 0.75
-    highParam = 1
-  }
-
-  let remainDiff = highParam - lowParam
-
-  const depthGradientParams: { [key: number]: number } = {}
-  for (let i = 1; i < maxRank; i++) {
-    if (i === 1) {
-      depthGradientParams[i] = highlight === 'children' ? lowParam : highParam
-    } else {
-      depthGradientParams[i] =
-        highlight === 'children'
-          ? depthGradientParams[i - 1] + remainDiff / 2
-          : depthGradientParams[i - 1] - remainDiff / 2
-      remainDiff = remainDiff / 2
-    }
-  }
-
-  depthGradientParams[maxRank] = highlight === 'children' ? highParam : lowParam
-
-  return depthGradientParams
 }

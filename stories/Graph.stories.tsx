@@ -21,7 +21,7 @@ GraphVertical.storyName = 'sample data - vertical'
 GraphVertical.args = {
   data: [dataMock],
   config: {
-    chromaticScale: 'interpolateViridis',
+    /* chromaticScale: 'interpolateViridis', */
   },
 }
 

@@ -161,7 +161,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     }
 
     const { edges, maxRank } = highlightEdges
-    setGraph(highlightGraph(edges, highlight, maxRank, config.chromaticScale))
+    setGraph(highlightGraph(element.id, edges, highlight, maxRank, config.chromaticScale))
   }
 
   const onPaneClick = () => {
