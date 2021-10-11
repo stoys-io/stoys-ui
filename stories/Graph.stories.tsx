@@ -20,9 +20,6 @@ export const GraphVertical = Template.bind({})
 GraphVertical.storyName = 'sample data - vertical'
 GraphVertical.args = {
   data: [dataMock],
-  config: {
-    /* chromaticScale: 'interpolateViridis', */
-  },
 }
 
 export const DiffGraph = Template.bind({})
