@@ -1,11 +1,13 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Tabs } from 'antd'
 import ResizableAntdDrawer from './ResizableAntdDrawer'
-import { DrawerNodeLabel } from './styles'
-import { JoinRates, Metrics, Profiler, Quality } from '..'
-import { NoData } from '../profiler/styles'
-import { Table } from './model'
-import { RawMetricsData } from '../metrics/model'
+
+import { Table } from '../model'
+import { DrawerNodeLabel } from '../styles'
+
+import { NoData } from '../../profiler/styles'
+import { RawMetricsData } from '../../metrics/model'
+import { JoinRates, Metrics, Profiler, Quality } from '../..'
 
 const { TabPane } = Tabs
 

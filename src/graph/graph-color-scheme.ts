@@ -1,7 +1,7 @@
 import * as d3ScaleChromatic from 'd3-scale-chromatic'
 import { Highlight, ChromaticScale } from './model'
 
-export const fromColorPallete =
+export const colorScheme =
   (maxRank: number, highlight: Highlight, chromaticScale: ChromaticScale) => (rank: number) => {
     const gradient =
       highlight === 'nearest'

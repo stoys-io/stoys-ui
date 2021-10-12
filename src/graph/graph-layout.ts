@@ -10,7 +10,7 @@ const nodesep = 16
 const startX = 48
 const startY = 32
 
-export const getLayoutedElements = (elements: Array<Node | Edge>, orientation: Orientation) => {
+export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientation) => {
   const dagreGraph = new dagre.graphlib.Graph()
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 

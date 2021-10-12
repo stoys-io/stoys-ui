@@ -2,11 +2,11 @@ import React, { useContext, memo } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import List from 'antd/lib/list'
 
-import HighlightedColumnsContext from './columnsHighlightContext'
+import HighlightedColumnsContext from '../columnsHighlightContext'
 
-import { renderNumericValue } from '../helpers'
-import { DataPayload } from './model'
-import { DagListItem, ScrollCard, ScrollCardTitle } from './styles'
+import { renderNumericValue } from '../../helpers'
+import { DataPayload } from '../model'
+import { DagListItem, ScrollCard, ScrollCardTitle } from '../styles'
 
 export const DagNode = memo(
   ({

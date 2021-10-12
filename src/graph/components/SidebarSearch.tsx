@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { NodeSearch } from './styles'
+import { NodeSearch } from '../styles'
 
 const SidebarSearch = ({ onSearch }: Props) => {
   const [searchValue, setSearchValue] = useState<string>('')
