@@ -13,13 +13,13 @@ const Template: Story<any> = args => <GraphComponent {...args} />
 export const Graph = Template.bind({})
 Graph.storyName = 'sample data'
 Graph.args = {
-  data: dataMock,
+  data: [dataMock],
 }
 
 export const GraphVertical = Template.bind({})
 GraphVertical.storyName = 'sample data - vertical'
 GraphVertical.args = {
-  data: dataMock,
+  data: [dataMock],
   config: {
     orientation: 'vertical',
     chromaticScale: 'interpolatePuOr',
@@ -38,7 +38,7 @@ DiffGraph.args = {
 export const BigGraph = Template.bind({})
 BigGraph.storyName = 'lots of data - grpc'
 BigGraph.args = {
-  data: grpcData,
+  data: [grpcData],
   config: {
     orientation: 'horizontal',
   },

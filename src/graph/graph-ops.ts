@@ -10,7 +10,10 @@ export const highlightNode = (id: string) => (graph: Graph) => ({
 
     return {
       ...node,
-      data: { ...node.data, highlight: !node.data.highlight },
+      data: {
+        ...node.data,
+        style: node.style?.color ? undefined : { color: HIGHLIGHT_COLOR },
+      },
     }
   }),
 })
@@ -22,7 +25,7 @@ export const resetHighlight = (graph: Graph): Graph => ({
   })),
   nodes: graph.nodes.map((node: Node) => ({
     ...node,
-    data: { ...node.data, highlight: false },
+    data: { ...node.data, style: undefined },
   })),
 })
 
@@ -45,13 +48,13 @@ export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
     if (!ids.includes(node.id)) {
       return {
         ...node,
-        data: { ...node.data, highlight: false },
+        data: { ...node.data, style: undefined },
       }
     }
 
     return {
       ...node,
-      data: { ...node.data, highlight: !node.data.highlight },
+      data: { ...node.data, style: node.style?.color ? undefined : { color: HIGHLIGHT_COLOR } },
     }
   }),
 })
@@ -81,7 +84,7 @@ export const highlightGraph = (edgesToHighlight: Edge[]) => (graph: Graph) => {
 
       return {
         ...node,
-        data: { ...node.data, highlight: !node.data.highlight },
+        data: { ...node.data, style: node.style?.color ? undefined : { color: HIGHLIGHT_COLOR } },
       }
     }),
   }

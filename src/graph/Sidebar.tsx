@@ -20,23 +20,19 @@ const Sidebar = ({
   releases,
   onReleaseChange,
 }: Props) => {
-  const _releases = useMemo(
-    () => releases?.map(release => ({ label: release, value: release })),
-    [releases]
-  )
-
   return (
     <SidebarWrapper>
       <SidebarContentWrapper>
         <SidebarSearch onSearch={onSearch} />
 
-        {_releases && _releases.length ? (
+        {releases && releases.length ? (
           <>
             <MenuTitle>Select previous run:</MenuTitle>
             <SelectVersion
               placeholder="Previous Version"
-              options={_releases}
+              options={releases}
               onChange={onReleaseChange}
+              allowClear
             />
           </>
         ) : null}
@@ -48,7 +44,7 @@ const Sidebar = ({
             <Radio value={'partitions'}>Partitions</Radio>
           </Space>
         </Radio.Group>
-        <MenuTitle>Highlight:</MenuTitle>
+        <MenuTitle>Version diff:</MenuTitle>
         <Radio.Group onChange={e => onHighlightChange(e.target.value)} value={highlight}>
           <Space direction="vertical">
             <Radio value={'nearest'}>Nearest</Radio>
@@ -72,6 +68,6 @@ interface Props {
   highlight: Highlight
   onHighlightChange: (val: Highlight) => void
 
-  releases?: Array<string>
+  releases?: Array<{ label: string; value: string }>
   onReleaseChange: (val: SelectValue) => void
 }

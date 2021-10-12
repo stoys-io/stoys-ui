@@ -8,9 +8,11 @@ export interface DataPayload {
   badge: Badge
   partitions: number
   violations: number
-  highlight: boolean
   columns: Column[]
   onTitleClick: (id: string) => void
+  style?: {
+    color: string
+  }
 }
 
 // Same as React-flow Node, but the data is required
@@ -46,6 +48,7 @@ export interface Table {
   metadata?: {
     [key: string]: string | number
   }
+  style?: { color: string }
 }
 
 export interface Column {

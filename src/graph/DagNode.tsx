@@ -6,12 +6,12 @@ import HighlightedColumnsContext from './columnsHighlightContext'
 
 import { renderNumericValue } from '../helpers'
 import { DataPayload } from './model'
-import { DagListItem, ScrollCard } from './styles'
+import { DagListItem, ScrollCard, ScrollCardTitle } from './styles'
 
 export const DagNode = memo(
   ({
     id,
-    data: { label, badge, columns, violations, partitions, highlight, onTitleClick },
+    data: { label, badge, columns, violations, partitions, onTitleClick, style },
     isConnectable,
     targetPosition,
     sourcePosition,
@@ -26,7 +26,7 @@ export const DagNode = memo(
         ? columns.filter(column => reletedColumnsIds.includes(column.id))
         : columns
 
-    const getHighlightedColor = (columnId: string): string => {
+    const getListItemHighlightedColor = (columnId: string): string => {
       if (id === selectedTableId && columnId === selectedColumnId) {
         return 'rgb(0, 0, 0)'
       }
@@ -35,8 +35,10 @@ export const DagNode = memo(
         return 'rgba(0, 0, 0, 0.4)'
       }
 
-      return 'inherit'
+      return style?.color ? style.color : 'inherit'
     }
+
+    const cardHighlightedColor = (): string => (style?.color ? style.color : '#808080')
 
     return (
       <div className="nowheel">
@@ -57,18 +59,25 @@ export const DagNode = memo(
           />
         )}
         <ScrollCard
-          title={<div onClick={() => onTitleClick(id)}>{label}</div>}
+          title={
+            <ScrollCardTitle
+              onClick={() => onTitleClick(id)}
+              color={style?.color ? style.color : 'inherit'}
+            >
+              {label}
+            </ScrollCardTitle>
+          }
           size="small"
           type="inner"
           extra={actualBadgeFormatted}
-          highlight={highlight}
+          highlightColor={cardHighlightedColor()}
         >
           <List
             size="small"
             dataSource={_columns}
             renderItem={column => (
               <DagListItem
-                higtlightedColor={getHighlightedColor(column.id)}
+                higtlightedColor={getListItemHighlightedColor(column.id)}
                 onClick={() => {
                   setHighlightedColumns(column.id, id)
                 }}
