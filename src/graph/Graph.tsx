@@ -15,10 +15,10 @@ import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation
 
 import {
   resetHighlight,
-  findNeighborEdges,
   highlightNode,
   changeBadge,
   highlightGraph,
+  findNearestEdges,
   findUpstreamEdges,
   findDownstreamEdges,
   collectParentColumnAndTableIds,
@@ -156,14 +156,13 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
         ? findUpstreamEdges(graph, element.id)
         : highlight === 'children'
         ? findDownstreamEdges(graph, element.id)
-        : findNeighborEdges(graph, element.id)
+        : findNearestEdges(graph, element.id)
 
-    if (!highlightEdges.edges.length) {
+    if (!highlightEdges.length) {
       setGraph(highlightNode(element.id))
     }
 
-    const { edges, maxRank } = highlightEdges
-    setGraph(highlightGraph(element.id, edges, highlight, maxRank, config.chromaticScale))
+    setGraph(highlightGraph(element.id, highlightEdges, highlight, config.chromaticScale))
   }
 
   const onPaneClick = () => {

@@ -16,12 +16,6 @@ Graph.args = {
   data: [dataMock],
 }
 
-export const GraphVertical = Template.bind({})
-GraphVertical.storyName = 'sample data - vertical'
-GraphVertical.args = {
-  data: [dataMock],
-}
-
 export const DiffGraph = Template.bind({})
 DiffGraph.storyName = 'with diffing'
 DiffGraph.args = {

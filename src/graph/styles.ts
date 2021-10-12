@@ -140,6 +140,9 @@ export const ScrollCardTitle = styled.div<{ color: string }>`
   color: ${props => props.color};
 `
 
-export const DagListItem = styled(List.Item)<{ higtlightedColor: string }>`
+export const DagListItem = styled(List.Item, {
+  // do not pass highlight prop down to the Card
+  shouldForwardProp: prop => prop !== 'higtlightedColor',
+})<{ higtlightedColor: string }>`
   color: ${props => props.higtlightedColor};
 `
