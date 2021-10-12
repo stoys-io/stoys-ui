@@ -140,7 +140,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   const onHighlightChange = (value: Highlight) => {
-    setGraph(resetHighlight)
+    setGraph(mergedGraph)
     setHighlight(value)
   }
 
@@ -238,7 +238,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }, [baseRelease, data])
 
   const mergedGraph = useMemo(() => {
-    if (baseGraph) {
+    if (baseGraph && highlight === 'diffing') {
       const baseEdgeIds = baseGraph.edges.map(mapIds)
       const edgeIds = currentGraph.edges.map(mapIds)
       const edges = currentGraph.edges.map(edge => {
@@ -284,7 +284,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     } else {
       return currentGraph
     }
-  }, [baseGraph, currentGraph])
+  }, [baseGraph, currentGraph, highlight])
 
   useEffect(() => {
     setGraph(mergedGraph)

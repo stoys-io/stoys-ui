@@ -28,7 +28,7 @@ export interface Graph {
   edges: Edge[]
 }
 
-export type Highlight = 'nearest' | 'parents' | 'children'
+export type Highlight = 'nearest' | 'parents' | 'children' | 'none' | 'diffing'
 
 export type Badge = 'violations' | 'partitions'
 
