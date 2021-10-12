@@ -1,6 +1,6 @@
 import { HIGHLIGHT_COLOR } from './constants'
 import { Graph, Edge, Node, Badge, Table, ChromaticScale, Highlight } from './model'
-import { fromColorPallete } from './color-helpers'
+import { colorScheme } from './graph-color-scheme'
 
 export const highlightNode = (id: string) => (graph: Graph) => ({
   ...graph,
@@ -70,7 +70,7 @@ export const highlightGraph =
   ) =>
   (graph: Graph) => {
     const getColor = chromaticScale
-      ? fromColorPallete(maxRank, highlight, chromaticScale)
+      ? colorScheme(maxRank, highlight, chromaticScale)
       : (_: any) => HIGHLIGHT_COLOR
 
     return {

@@ -1,5 +1,5 @@
-import React, { ReactNode, useState, useCallback, Dispatch, SetStateAction } from 'react'
-import { ResizeArea, ResizeIcon, StyledDrawer } from './styles'
+import React, { ReactNode, useCallback, Dispatch, SetStateAction } from 'react'
+import { ResizeArea, ResizeIcon, StyledDrawer } from '../styles'
 
 type ResizableAntdDrawerProps = {
   drawerHeight: number

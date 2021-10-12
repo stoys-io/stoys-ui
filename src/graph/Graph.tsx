@@ -1,16 +1,18 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react'
-import GraphDrawer from './GraphDrawer'
-import Sidebar from './Sidebar'
-import { SearchArgs } from './SidebarSearch'
-import { DagNode } from './DagNode'
-import { Container, DrawerContainer, GraphContainer } from './styles'
-
-import HighlightedColumnsContext from './columnsHighlightContext'
-
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 import { SelectValue } from 'antd/lib/select'
+
+import GraphDrawer from './components/GraphDrawer'
+import Sidebar from './components/Sidebar'
+import { SearchArgs } from './components/SidebarSearch'
+import { DagNode } from './components/DagNode'
+
+import HighlightedColumnsContext from './columnsHighlightContext'
+import { graphLayout } from './graph-layout'
+
+import { Container, DrawerContainer, GraphContainer } from './styles'
 import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
-import { getLayoutedElements } from './layout'
+
 import {
   resetHighlight,
   findNeighborEdges,
@@ -288,7 +290,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     setGraph(mergedGraph)
   }, [mergedGraph, setGraph])
 
-  const elements = getLayoutedElements([...graph.nodes, ...graph.edges], config.orientation)
+  const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
   return (
     <HighlightedColumnsContext.Provider value={{ ..._highlightedColumns, setHighlightedColumns }}>
       <Container>

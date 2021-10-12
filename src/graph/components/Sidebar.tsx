@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from 'react'
+import React from 'react'
 import Radio from 'antd/lib/radio'
 import Space from 'antd/lib/space'
-
 import { SelectValue } from 'antd/lib/select'
-import { Highlight, Badge } from './model'
 
-import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from './styles'
 import SidebarSearch, { OnSearch } from './SidebarSearch'
+
+import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
+import { Highlight, Badge } from '../model'
 
 const Sidebar = ({
   badge,
