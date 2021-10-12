@@ -19,17 +19,6 @@ export const highlightNode = (id: string) => (graph: Graph) => ({
   }),
 })
 
-export const resetHighlight = (graph: Graph): Graph => ({
-  edges: graph.edges.map((edge: Edge) => ({
-    ...edge,
-    style: undefined,
-  })),
-  nodes: graph.nodes.map((node: Node) => ({
-    ...node,
-    data: { ...node.data, style: undefined },
-  })),
-})
-
 export const changeBadge =
   (badge: Badge) =>
   (graph: Graph): Graph => ({

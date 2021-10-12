@@ -14,7 +14,6 @@ import { Container, DrawerContainer, GraphContainer } from './styles'
 import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
 
 import {
-  resetHighlight,
   findNeighborEdges,
   highlightNode,
   changeBadge,
@@ -148,22 +147,33 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     setHighlight(value)
   }
 
+  const getHighlightEdges = (id: string) => {
+    if (highlight === 'parents') {
+      return findUpstreamEdges(graph, id)
+    }
+
+    if (highlight === 'children') {
+      return findDownstreamEdges(graph, id)
+    }
+
+    if (highlight === 'nearest') {
+      return findNeighborEdges(graph, id)
+    }
+
+    return { edges: [], maxRank: 0 }
+  }
+
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (!isNode(element)) {
       return
     }
 
-    setGraph(resetHighlight)
+    setGraph(mergedGraph)
 
-    const highlightEdges =
-      highlight === 'parents'
-        ? findUpstreamEdges(graph, element.id)
-        : highlight === 'children'
-        ? findDownstreamEdges(graph, element.id)
-        : findNeighborEdges(graph, element.id)
+    const highlightEdges = getHighlightEdges(element.id)
 
     if (!highlightEdges.edges.length) {
-      setGraph(highlightNode(element.id))
+      return setGraph(highlightNode(element.id))
     }
 
     const { edges, maxRank } = highlightEdges
