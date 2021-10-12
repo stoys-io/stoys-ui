@@ -1,5 +1,6 @@
 import { HIGHLIGHT_COLOR } from './constants'
-import { Graph, Edge, Node, Badge, Table } from './model'
+import { Graph, Edge, Node, Badge, Table, ChromaticScale, Highlight } from './model'
+import { fromColorPallete } from './color-helpers'
 
 export const highlightNode = (id: string) => (graph: Graph) => ({
   ...graph,
@@ -59,51 +60,85 @@ export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
   }),
 })
 
-export const highlightGraph = (edgesToHighlight: Edge[]) => (graph: Graph) => {
-  const allTargetsAndSources = edgesToHighlight.reduce(
-    (acc: string[], edge: Edge) => [...acc, edge.source, edge.target],
-    []
-  )
-  const nodeIds = [...new Set(allTargetsAndSources)]
+export const highlightGraph =
+  (
+    nodeId: string,
+    edgesToHighlight: Edge[],
+    highlight: Highlight,
+    maxRank: number,
+    chromaticScale?: ChromaticScale // TODO: Should chromaticScale be configurable or always present?
+  ) =>
+  (graph: Graph) => {
+    const getColor = chromaticScale
+      ? fromColorPallete(maxRank, highlight, chromaticScale)
+      : (_: any) => HIGHLIGHT_COLOR
 
-  return {
-    edges: graph.edges.map((edge: Edge) => {
-      if (!edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)) {
-        return edge
-      }
+    return {
+      edges: graph.edges.map((edge: Edge) => {
+        const highlightEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
+        if (!highlightEdge) {
+          return {
+            ...edge,
+            style: { strokeWidth: 0 }, // Hide other edges
+          }
+        }
 
-      return {
-        ...edge,
-        style: { stroke: HIGHLIGHT_COLOR },
-      }
-    }),
-    nodes: graph.nodes.map((node: Node) => {
-      if (!nodeIds.includes(node.id)) {
-        return node
-      }
+        return {
+          ...highlightEdge,
+          style: { stroke: getColor(highlightEdge.data.rank), strokeWidth: '2px' },
+        }
+      }),
+      nodes: graph.nodes.map((node: Node) => {
+        const relevantEdges = edgesToHighlight.filter(
+          edge => edge.source === node.id || edge.target === node.id
+        )
 
-      return {
-        ...node,
-        data: { ...node.data, style: node.style?.color ? undefined : { color: HIGHLIGHT_COLOR } },
-      }
-    }),
+        const relevantEdge = relevantEdges.reduce(
+          // Node will have the rank highest of its edges
+          (cur, next) => (cur.data.rank > next.data.rank ? cur : next),
+          relevantEdges[0]
+        )
+
+        if (!relevantEdge) {
+          return node
+        }
+
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            style: node.style?.color
+              ? undefined
+              : { color: node.id === nodeId ? HIGHLIGHT_COLOR : getColor(relevantEdge.data.rank) },
+          },
+        }
+      }),
+    }
   }
+
+interface EdgesData {
+  edges: Edge[]
+  maxRank: number
 }
 
-export const findNeighborEdges = (graph: Graph, id: string): Edge[] => [
-  ...graph.edges.filter(edge => edge.source === id),
-  ...graph.edges.filter(edge => edge.target === id),
-]
+export const findNeighborEdges = (graph: Graph, id: string): EdgesData => ({
+  edges: [
+    ...graph.edges.filter(edge => edge.source === id).map(edge => ({ ...edge, data: { rank: 2 } })), // parents
+    ...graph.edges.filter(edge => edge.target === id).map(edge => ({ ...edge, data: { rank: 1 } })), // children
+  ],
+  maxRank: 0, // dummy value
+})
 
 const findEdgeHelper = (
   edges: Edge[],
   head: Edge,
   queue: Edge[],
   visited: Edge[],
+  rank: number,
   isUpstream: boolean = false
-): Edge[] => {
+): EdgesData => {
   if (!queue.length) {
-    return visited
+    return { edges: visited, maxRank: rank }
   }
 
   const matchEdges = (edge: Edge, head: Edge) =>
@@ -112,31 +147,51 @@ const findEdgeHelper = (
   const neighbors = edges.filter(
     edge => matchEdges(edge, head) && !visited.find(v => v.id === edge.id)
   )
-  const newQueue = [...queue].slice(1).concat(neighbors)
+
+  const newRank = !neighbors.length ? rank : rank + 1
+  const rankedNeighbors = !neighbors.length
+    ? neighbors
+    : neighbors.map(edge => ({ ...edge, data: { rank: newRank } }))
+
+  const newQueue = [...queue].slice(1).concat(rankedNeighbors)
   const newHead = newQueue[0]
   const newVisited =
     newHead && !visited.find(v => v.id === newHead.id) ? [...visited, newHead] : visited
 
-  return findEdgeHelper(edges, newHead, newQueue, newVisited, isUpstream)
+  return findEdgeHelper(edges, newHead, newQueue, newVisited, newRank, isUpstream)
 }
 
-export const findUpstreamEdges = (graph: Graph, id: string): Edge[] => {
+export const findUpstreamEdges = (graph: Graph, id: string): EdgesData => {
   const startEdges = graph.edges.filter(edge => edge.target === id)
   if (!startEdges.length) {
-    return []
+    return { edges: [], maxRank: 1 }
   }
 
-  const visitedEdges = findEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]], true)
+  const initialMaxRank = 1
+  const visitedEdges = findEdgeHelper(
+    graph.edges,
+    startEdges[0],
+    startEdges,
+    [startEdges[0]],
+    initialMaxRank,
+    true
+  )
   return visitedEdges
 }
 
-export const findDownstreamEdges = (graph: Graph, id: string) => {
+export const findDownstreamEdges = (graph: Graph, id: string): EdgesData => {
   const startEdges = graph.edges.filter(edge => edge.source === id)
   if (!startEdges.length) {
-    return []
+    return { edges: [], maxRank: 1 }
   }
-
-  const visitedEdges = findEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]])
+  const initialMaxRank = 1
+  const visitedEdges = findEdgeHelper(
+    graph.edges,
+    startEdges[0],
+    startEdges,
+    [startEdges[0]],
+    initialMaxRank
+  )
   return visitedEdges
 }
 
