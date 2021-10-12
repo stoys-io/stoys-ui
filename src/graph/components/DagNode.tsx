@@ -4,6 +4,7 @@ import List from 'antd/lib/list'
 
 import HighlightedColumnsContext from '../columnsHighlightContext'
 
+import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from '../constants'
 import { renderNumericValue } from '../../helpers'
 import { DataPayload } from '../model'
 import { DagListItem, ScrollCard, ScrollCardTitle } from '../styles'
@@ -23,7 +24,7 @@ export const DagNode = memo(
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
     const _columns =
       selectedTableId && id !== selectedTableId
-        ? columns.filter(column => reletedColumnsIds.includes(column.id))
+        ? columns.filter((column: any) => reletedColumnsIds.includes(column.id))
         : columns
 
     const getListItemHighlightedColor = (columnId: string): string => {
@@ -35,10 +36,28 @@ export const DagNode = memo(
         return 'rgba(0, 0, 0, 0.4)'
       }
 
-      return style?.color ? style.color : 'inherit'
+      if (
+        style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
+        style?.color === DELETED_NODE_HIGHLIHT_COLOR
+      ) {
+        return style.color
+      }
+
+      return 'inherit'
     }
 
     const cardHighlightedColor = (): string => (style?.color ? style.color : '#808080')
+
+    const titleHighlightColor = (): string => {
+      if (
+        style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
+        style?.color === DELETED_NODE_HIGHLIHT_COLOR
+      ) {
+        return style.color
+      }
+
+      return 'inherit'
+    }
 
     return (
       <div className="nowheel">
@@ -60,10 +79,7 @@ export const DagNode = memo(
         )}
         <ScrollCard
           title={
-            <ScrollCardTitle
-              onClick={() => onTitleClick(id)}
-              color={style?.color ? style.color : 'inherit'}
-            >
+            <ScrollCardTitle onClick={() => onTitleClick(id)} color={titleHighlightColor()}>
               {label}
             </ScrollCardTitle>
           }
@@ -75,7 +91,7 @@ export const DagNode = memo(
           <List
             size="small"
             dataSource={_columns}
-            renderItem={column => (
+            renderItem={(column: any) => (
               <DagListItem
                 higtlightedColor={getListItemHighlightedColor(column.id)}
                 onClick={() => {

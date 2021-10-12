@@ -26,7 +26,11 @@ import {
   notEmpty,
   highlightNodesBatch,
 } from './graph-ops'
-import { HIGHLIGHT_COLOR } from './constants'
+import {
+  ADDED_NODE_HIGHLIGHT_COLOR,
+  DELETED_NODE_HIGHLIHT_COLOR,
+  HIGHLIGHT_COLOR,
+} from './constants'
 
 const defaultHighlightedColumns = {
   selectedTableId: '',
@@ -248,12 +252,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
         return {
           ...edge,
-          style: { stroke: '#f00' },
+          style: { stroke: DELETED_NODE_HIGHLIHT_COLOR },
         }
       })
       const addedEdges = baseGraph.edges
         .filter(edge => !edgeIds.includes(edge.id))
-        .map(edge => ({ ...edge, style: { stroke: '#008000' } }))
+        .map(edge => ({ ...edge, style: { stroke: ADDED_NODE_HIGHLIGHT_COLOR } }))
 
       const mergedEdges = [...edges, ...addedEdges]
 
@@ -268,13 +272,16 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           ...node,
           data: {
             ...node.data,
-            style: { color: '#f00' },
+            style: { color: DELETED_NODE_HIGHLIHT_COLOR },
           },
         }
       })
       const addedNodes = baseGraph.nodes
         .filter(node => !nodeIds.includes(node.id))
-        .map(node => ({ ...node, data: { ...node.data, style: { color: '#008000' } } }))
+        .map(node => ({
+          ...node,
+          data: { ...node.data, style: { color: ADDED_NODE_HIGHLIGHT_COLOR } },
+        }))
       const mergedNodes = [...nodes, ...addedNodes]
 
       return {
