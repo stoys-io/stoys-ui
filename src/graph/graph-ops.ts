@@ -107,7 +107,9 @@ export const highlightGraph =
           ...node,
           data: {
             ...node.data,
-            style: node.style?.color ? undefined : { color: getColor(relevantEdge.data.rank) },
+            style: node.style?.color
+              ? undefined
+              : { color: node.id === nodeId ? HIGHLIGHT_COLOR : getColor(relevantEdge.data.rank) },
           },
         }
       }),
