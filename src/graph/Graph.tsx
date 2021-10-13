@@ -6,9 +6,11 @@ import GraphDrawer from './components/GraphDrawer'
 import Sidebar from './components/Sidebar'
 import { SearchArgs } from './components/SidebarSearch'
 import { DagNode } from './components/DagNode'
+import { DagEdge } from './components/DagEdge'
 
 import HighlightedColumnsContext from './columnsHighlightContext'
 import { graphLayout } from './graph-layout'
+import { useGraphStore } from './graph-store'
 
 import { Container, DrawerContainer, GraphContainer } from './styles'
 import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
@@ -51,6 +53,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     () => data?.find(dataItem => dataItem.version === currentRelease)?.tables,
     [data]
   )
+
+  const setHighlights = useGraphStore(state => state.setHighlights)
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
@@ -162,7 +166,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     if (highlight === 'diffing' && baseGraph) {
       setGraph(mergedGraph)
     } else {
-      setGraph(currentGraph)
+      setGraph(graph)
     }
 
     const highlightEdges = getHighlightEdges(element.id, highlight, graph)
@@ -171,7 +175,14 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return setGraph(highlightNode(element.id))
     }
 
-    setGraph(highlightGraph(element.id, highlightEdges, highlight, config.chromaticScale))
+    const tmpHighlightGraph2 = highlightGraph(
+      element.id,
+      highlightEdges,
+      highlight,
+      config.chromaticScale
+    )(resetHighlight(graph)) // TODO: Refactor
+
+    setHighlights(tmpHighlightGraph2)
   }
 
   const onPaneClick = () => {
@@ -179,6 +190,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       setGraph(mergedGraph)
     } else {
       setGraph(currentGraph)
+      setHighlights(resetHighlight(currentGraph))
     }
     setDrawerVisibility(false)
     _setHighlightedColumns(defaultHighlightedColumns)
@@ -337,6 +349,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
             onElementClick={onElementClick}
             onPaneClick={onPaneClick}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             elements={elements}
             onlyRenderVisibleElements={true}
             nodesConnectable={false}
@@ -395,6 +408,10 @@ const nodeTypes = {
   dagNode: DagNode,
 }
 
+const edgeTypes = {
+  dagEdge: DagEdge,
+}
+
 const initialPosition = { x: 0, y: 0 }
 const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void): Node[] =>
   tables.map((table: Table) => ({
@@ -416,13 +433,16 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
   tables
     .filter((t: Table) => t.dependencies !== undefined)
     .reduce((acc: Edge[], table: Table) => {
-      const items = table.dependencies!.map(dep => ({
-        id: `${table.id}-${dep}-${table.name}`,
-        source: table.id,
-        target: dep,
-        style: undefined, // Edge color will be set by style field
-        data: { rank: 1 },
-      }))
+      const items = table.dependencies!.map(
+        (dep: string): Edge => ({
+          id: `${table.id}-${dep}-${table.name}`,
+          source: table.id,
+          target: dep,
+          style: undefined, // Edge color will be set by style field
+          data: { rank: 1 },
+          type: 'dagEdge',
+        })
+      )
 
       return [...acc, ...items]
     }, [])

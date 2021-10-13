@@ -14,15 +14,18 @@ import {
 import { renderNumericValue } from '../../helpers'
 import { Column, DataPayload } from '../model'
 import { DagListItem, ScrollCard, ScrollCardTitle } from '../styles'
+import { useGraphStore } from '../graph-store'
 
 export const DagNode = memo(
   ({
     id,
-    data: { label, badge, columns, violations, partitions, onTitleClick, style },
+    data: { label, badge, columns, violations, partitions, onTitleClick },
     isConnectable,
     targetPosition,
     sourcePosition,
   }: NodeProps<DataPayload>): JSX.Element => {
+    const style = useGraphStore(state => state.highlights.nodes[id])
+
     const {
       selectedTableId,
       selectedColumnId,
