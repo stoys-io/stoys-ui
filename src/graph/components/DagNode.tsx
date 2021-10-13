@@ -4,7 +4,13 @@ import List from 'antd/lib/list'
 
 import HighlightedColumnsContext from '../columnsHighlightContext'
 
-import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from '../constants'
+import {
+  ADDED_NODE_HIGHLIGHT_COLOR,
+  DEFAULT_COLOR,
+  DELETED_NODE_HIGHLIHT_COLOR,
+  NODE_TEXT_COLOR,
+  TRANSPARENT_NODE_TEXT_COLOR,
+} from '../constants'
 import { renderNumericValue } from '../../helpers'
 import { Column, DataPayload } from '../model'
 import { DagListItem, ScrollCard, ScrollCardTitle } from '../styles'
@@ -37,11 +43,11 @@ export const DagNode = memo(
 
     const getListItemHighlightedColor = (column: Column): string => {
       if (id === selectedTableId && column.id === selectedColumnId) {
-        return 'rgb(0, 0, 0)'
+        return NODE_TEXT_COLOR
       }
 
       if (id === selectedTableId) {
-        return 'rgba(0, 0, 0, 0.4)'
+        return TRANSPARENT_NODE_TEXT_COLOR
       }
 
       if (
@@ -55,7 +61,7 @@ export const DagNode = memo(
         return column.style.color
       }
 
-      return 'inherit'
+      return DEFAULT_COLOR
     }
 
     const cardHighlightedColor = (): string => (style?.color ? style.color : '#808080')
@@ -68,7 +74,7 @@ export const DagNode = memo(
         return style.color
       }
 
-      return 'inherit'
+      return DEFAULT_COLOR
     }
 
     return (
