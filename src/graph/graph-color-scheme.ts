@@ -2,32 +2,50 @@ import * as d3ScaleChromatic from 'd3-scale-chromatic'
 import { Highlight, ChromaticScale } from './model'
 
 export const colorScheme =
-  (maxRank: number, highlight: Highlight, chromaticScale: ChromaticScale) => (rank: number) => {
+  (highlight: Highlight, chromaticScale: ChromaticScale) => (rank: number) => {
     const gradient =
       highlight === 'nearest'
-        ? getGradientNearest()
+        ? hyperbolicNearest
         : highlight === 'children'
-        ? getFlatGradient(0.75, 1, maxRank)
-        : getFlatGradient(0, 0.25, maxRank).reverse()
+        ? hyperbolicGradientRight
+        : hyperbolicGradientLeft
 
-    return getChromaticColor(gradient[rank - 1], chromaticScale)
+    return getChromaticColor(gradient(rank), chromaticScale)
   }
 
-const getGradientNearest = (): number[] => {
-  const child = 0.25
-  const parent = 0.75
+const hyperbolicNearest = (n: number): number => {
+  const low = 0.25
+  const high = 0.75
 
-  return [child, parent]
+  const colors: { [key: number]: number } = {
+    [-1]: low,
+    1: high,
+  }
+
+  return colors[n]
 }
 
-const getFlatGradient = (low: number, high: number, steps: number): number[] => {
-  const step = (high - low) / (steps - 1)
-  const gradient = Array.from({ length: steps }, (_, i) => i * step + low)
+// |||-|-|--|----|-----------
+const hyperbolicGradientLeft = (n: number): number => {
+  const low = 0
+  const high = 0.5
+  const diff = high - low
 
-  return gradient
+  return low + diff / (n + 1)
+}
+
+// ------------|----|--|-|-|||
+const hyperbolicGradientRight = (n: number): number => {
+  const low = 0.5
+  const high = 1
+  const diff = high - low
+
+  return low + diff * (1 - 1 / (n + 1))
 }
 
 const getChromaticColor = (t: number, chromaticScale: ChromaticScale) => {
+  // t is [0, 1]
   const scale = d3ScaleChromatic[chromaticScale]
+
   return scale(t)
 }

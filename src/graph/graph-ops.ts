@@ -54,12 +54,11 @@ export const highlightGraph =
     nodeId: string,
     edgesToHighlight: Edge[],
     highlight: Highlight,
-    maxRank: number,
     chromaticScale?: ChromaticScale // TODO: Should chromaticScale be configurable or always present?
   ) =>
   (graph: Graph) => {
     const getColor = chromaticScale
-      ? colorScheme(maxRank, highlight, chromaticScale)
+      ? colorScheme(highlight, chromaticScale)
       : (_: any) => HIGHLIGHT_COLOR
 
     return {
@@ -83,8 +82,8 @@ export const highlightGraph =
         )
 
         const relevantEdge = relevantEdges.reduce(
-          // Node will have the rank highest of its edges
-          (cur, next) => (cur.data.rank > next.data.rank ? cur : next),
+          // Node will have the rank lowest of its edges
+          (cur, next) => (cur.data.rank < next.data.rank ? cur : next),
           relevantEdges[0]
         )
 
@@ -105,29 +104,21 @@ export const highlightGraph =
     }
   }
 
-interface EdgesData {
-  edges: Edge[]
-  maxRank: number
-}
-
-export const findNeighborEdges = (graph: Graph, id: string): EdgesData => ({
-  edges: [
-    ...graph.edges.filter(edge => edge.source === id).map(edge => ({ ...edge, data: { rank: 2 } })), // parents
-    ...graph.edges.filter(edge => edge.target === id).map(edge => ({ ...edge, data: { rank: 1 } })), // children
-  ],
-  maxRank: 0, // dummy value
-})
+export const findNearestEdges = (graph: Graph, id: string): Edge[] => [
+  ...graph.edges.filter(edge => edge.source === id).map(edge => ({ ...edge, data: { rank: 1 } })), // parents
+  ...graph.edges.filter(edge => edge.target === id).map(edge => ({ ...edge, data: { rank: -1 } })), // children
+]
 
 const findEdgeHelper = (
   edges: Edge[],
   head: Edge,
   queue: Edge[],
   visited: Edge[],
-  rank: number,
-  isUpstream: boolean = false
-): EdgesData => {
+  isUpstream: boolean = false,
+  rank: number = 1
+): Edge[] => {
   if (!queue.length) {
-    return { edges: visited, maxRank: rank }
+    return visited
   }
 
   const matchEdges = (edge: Edge, head: Edge) =>
@@ -147,40 +138,33 @@ const findEdgeHelper = (
   const newVisited =
     newHead && !visited.find(v => v.id === newHead.id) ? [...visited, newHead] : visited
 
-  return findEdgeHelper(edges, newHead, newQueue, newVisited, newRank, isUpstream)
+  return findEdgeHelper(edges, newHead, newQueue, newVisited, isUpstream, newRank)
 }
 
-export const findUpstreamEdges = (graph: Graph, id: string): EdgesData => {
+export const findUpstreamEdges = (graph: Graph, id: string): Edge[] => {
   const startEdges = graph.edges.filter(edge => edge.target === id)
   if (!startEdges.length) {
-    return { edges: [], maxRank: 1 }
+    return []
   }
 
-  const initialMaxRank = 1
+  const isUpstream = true
   const visitedEdges = findEdgeHelper(
     graph.edges,
     startEdges[0],
     startEdges,
     [startEdges[0]],
-    initialMaxRank,
-    true
+    isUpstream
   )
   return visitedEdges
 }
 
-export const findDownstreamEdges = (graph: Graph, id: string): EdgesData => {
+export const findDownstreamEdges = (graph: Graph, id: string): Edge[] => {
   const startEdges = graph.edges.filter(edge => edge.source === id)
   if (!startEdges.length) {
-    return { edges: [], maxRank: 1 }
+    return []
   }
-  const initialMaxRank = 1
-  const visitedEdges = findEdgeHelper(
-    graph.edges,
-    startEdges[0],
-    startEdges,
-    [startEdges[0]],
-    initialMaxRank
-  )
+
+  const visitedEdges = findEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]])
   return visitedEdges
 }
 

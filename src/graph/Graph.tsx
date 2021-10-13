@@ -14,10 +14,10 @@ import { Container, DrawerContainer, GraphContainer } from './styles'
 import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
 
 import {
-  findNeighborEdges,
   highlightNode,
   changeBadge,
   highlightGraph,
+  findNearestEdges,
   findUpstreamEdges,
   findDownstreamEdges,
   collectParentColumnAndTableIds,
@@ -160,10 +160,10 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     }
 
     if (highlight === 'nearest') {
-      return findNeighborEdges(graph, id)
+      return findNearestEdges(graph, id)
     }
 
-    return { edges: [], maxRank: 0 }
+    return []
   }
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
@@ -175,12 +175,11 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
     const highlightEdges = getHighlightEdges(element.id)
 
-    if (!highlightEdges.edges.length) {
+    if (!highlightEdges.length) {
       return setGraph(highlightNode(element.id))
     }
 
-    const { edges, maxRank } = highlightEdges
-    setGraph(highlightGraph(element.id, edges, highlight, maxRank, config.chromaticScale))
+    setGraph(highlightGraph(element.id, highlightEdges, highlight, config.chromaticScale))
   }
 
   const onPaneClick = () => {
