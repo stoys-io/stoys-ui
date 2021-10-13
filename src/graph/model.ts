@@ -10,6 +10,7 @@ export interface DataPayload {
   violations: number
   columns: Column[]
   onTitleClick: (id: string) => void
+  highlight?: Highlight
   style?: {
     color: string
   }

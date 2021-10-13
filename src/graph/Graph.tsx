@@ -36,6 +36,7 @@ const defaultHighlightedColumns = {
   selectedColumnId: '',
   reletedColumnsIds: [],
   reletedTablesIds: [],
+  highlightedType: 'nearest' as 'nearest',
 }
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
@@ -64,6 +65,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 
   const [_highlightedColumns, _setHighlightedColumns] = useState<{
+    highlightedType: Highlight
     selectedTableId: string
     selectedColumnId: string
     reletedColumnsIds: Array<string>
@@ -120,6 +122,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       selectedColumnId: columnId,
       reletedColumnsIds: columnDependcies,
       reletedTablesIds: tableIds,
+      highlightedType: highlight,
     })
   }
 
@@ -405,7 +408,6 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
     id: table.id,
     data: {
       label: table.name,
-      highlight: false,
       highlightColor: HIGHLIGHT_COLOR,
       badge: 'violations',
       partitions: table.measures?.rows ?? 0,

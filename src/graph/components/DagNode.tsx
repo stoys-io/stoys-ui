@@ -17,13 +17,21 @@ export const DagNode = memo(
     targetPosition,
     sourcePosition,
   }: NodeProps<DataPayload>): JSX.Element => {
-    const { selectedTableId, selectedColumnId, reletedColumnsIds, setHighlightedColumns } =
-      useContext(HighlightedColumnsContext)
+    const {
+      selectedTableId,
+      selectedColumnId,
+      reletedColumnsIds,
+      setHighlightedColumns,
+      highlightedType,
+    } = useContext(HighlightedColumnsContext)
 
     const actualBadge = badge === 'violations' ? violations : partitions
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
     const _columns =
-      selectedTableId && id !== selectedTableId
+      highlightedType !== 'none' &&
+      highlightedType !== 'diffing' &&
+      selectedTableId &&
+      id !== selectedTableId
         ? columns.filter((column: any) => reletedColumnsIds.includes(column.id))
         : columns
 
@@ -95,7 +103,7 @@ export const DagNode = memo(
           <List
             size="small"
             dataSource={_columns}
-            renderItem={(column: any) => (
+            renderItem={(column: Column) => (
               <DagListItem
                 higtlightedColor={getListItemHighlightedColor(column)}
                 onClick={() => {
