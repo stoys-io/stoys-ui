@@ -213,7 +213,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return onError(false)
     }
 
-    setGraph(highlightNodesBatch(nodeIds))
+    setHighlights(highlightNodesBatch(nodeIds)(graph)) // TODO: Refactor
   }
 
   const baseDrawerData = useMemo(() => {
@@ -327,6 +327,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   useEffect(() => {
     if (highlight === 'diffing' && baseGraph) {
       setGraph(mergedGraph)
+      setHighlights(mergedGraph)
     }
   }, [mergedGraph, setGraph, highlight, baseGraph])
 
