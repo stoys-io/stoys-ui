@@ -177,7 +177,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   const onPaneClick = () => {
-    /* setGraph(mergedGraph) */
     setHighlights(resetHighlight(mergedGraph)) // TODO: Refactor
 
     setDrawerVisibility(false)
@@ -201,7 +200,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return onError(false)
     }
 
-    setGraph(highlightNodesBatch(nodeIds))
+    setHighlights(highlightNodesBatch(nodeIds)(graph)) // TODO: Refactor
   }
 
   const baseDrawerData = useMemo(() => {
@@ -299,7 +298,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }, [baseGraph, currentGraph])
 
   useEffect(() => {
-    setGraph(mergedGraph)
+    setGraph(mergedGraph) // TODO: Refactor
+    setHighlights(mergedGraph)
   }, [mergedGraph, setGraph])
 
   const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
