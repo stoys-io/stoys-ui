@@ -55,6 +55,7 @@ export interface Column {
   id: string
   name: string
   dependencies?: Array<string>
+  style?: { color?: string }
 }
 
 export type Orientation = 'horizontal' | 'vertical'

@@ -6,7 +6,7 @@ import HighlightedColumnsContext from '../columnsHighlightContext'
 
 import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from '../constants'
 import { renderNumericValue } from '../../helpers'
-import { DataPayload } from '../model'
+import { Column, DataPayload } from '../model'
 import { DagListItem, ScrollCard, ScrollCardTitle } from '../styles'
 
 export const DagNode = memo(
@@ -27,8 +27,8 @@ export const DagNode = memo(
         ? columns.filter((column: any) => reletedColumnsIds.includes(column.id))
         : columns
 
-    const getListItemHighlightedColor = (columnId: string): string => {
-      if (id === selectedTableId && columnId === selectedColumnId) {
+    const getListItemHighlightedColor = (column: Column): string => {
+      if (id === selectedTableId && column.id === selectedColumnId) {
         return 'rgb(0, 0, 0)'
       }
 
@@ -41,6 +41,10 @@ export const DagNode = memo(
         style?.color === DELETED_NODE_HIGHLIHT_COLOR
       ) {
         return style.color
+      }
+
+      if (column?.style?.color) {
+        return column.style.color
       }
 
       return 'inherit'
@@ -93,7 +97,7 @@ export const DagNode = memo(
             dataSource={_columns}
             renderItem={(column: any) => (
               <DagListItem
-                higtlightedColor={getListItemHighlightedColor(column.id)}
+                higtlightedColor={getListItemHighlightedColor(column)}
                 onClick={() => {
                   setHighlightedColumns(column.id, id)
                 }}

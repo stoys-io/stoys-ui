@@ -275,7 +275,22 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       const baseNodeIds = baseGraph.nodes.map(mapIds)
       const nodes = currentGraph.nodes.map(node => {
         if (baseNodeIds.includes(node.id)) {
-          return node
+          const currentColumnsNames = node.data.columns.map(column => column.name)
+          const baseColumns = baseGraph.nodes.find(n => node.id === n.id)?.data.columns
+          const baseColumnsNames = baseColumns?.map(column => column.name)
+          const addedColumns = node.data.columns
+            .filter(column => !baseColumnsNames?.includes(column.name))
+            .map(column => ({ ...column, style: { color: ADDED_NODE_HIGHLIGHT_COLOR } }))
+          const addedColumnsNames = addedColumns.map(column => column.name)
+          const deletedColumns = baseColumns
+            ?.filter(column => !currentColumnsNames.includes(column.name))
+            .map(column => ({ ...column, style: { color: DELETED_NODE_HIGHLIHT_COLOR } }))
+          const _columns = node.data.columns.filter(
+            column => !addedColumnsNames?.includes(column.name)
+          )
+          const columns = [...addedColumns, ...(deletedColumns ? deletedColumns : []), ..._columns]
+
+          return { ...node, data: { ...node.data, columns } }
         }
 
         return {
