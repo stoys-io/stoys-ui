@@ -6,7 +6,8 @@ import { SelectValue } from 'antd/lib/select'
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
-import { Highlight, Badge } from '../model'
+import { Badge } from '../model'
+import { useGraphStore } from '../graph-store'
 
 const highlightList = [
   {
@@ -36,18 +37,10 @@ const highlightList = [
   },
 ]
 
-const Sidebar = ({
-  badge,
-  onBadgeChange,
+const Sidebar = ({ badge, onBadgeChange, onSearch, releases, onReleaseChange }: Props) => {
+  const highlightMode = useGraphStore(state => state.highlightMode)
+  const setHighlightMode = useGraphStore(state => state.setHighlightMode)
 
-  onSearch,
-
-  highlight,
-  onHighlightChange,
-
-  releases,
-  onReleaseChange,
-}: Props) => {
   return (
     <SidebarWrapper>
       <SidebarContentWrapper>
@@ -72,8 +65,8 @@ const Sidebar = ({
             <Radio value={'partitions'}>Partitions</Radio>
           </Space>
         </Radio.Group>
-        <MenuTitle>Highlight:</MenuTitle>
-        <Radio.Group onChange={e => onHighlightChange(e.target.value)} value={highlight}>
+        <MenuTitle>Version diff:</MenuTitle>
+        <Radio.Group onChange={e => setHighlightMode(e.target.value)} value={highlightMode}>
           <Space direction="vertical">
             {highlightList.map(listItem => (
               <Radio key={listItem.key} value={listItem.value}>
@@ -94,9 +87,6 @@ interface Props {
   onBadgeChange: (val: Badge) => void
 
   onSearch: OnSearch
-
-  highlight: Highlight
-  onHighlightChange: (val: Highlight) => void
 
   releases?: Array<{ label: string; value: string }>
   onReleaseChange: (val: SelectValue) => void

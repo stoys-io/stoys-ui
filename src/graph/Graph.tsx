@@ -55,6 +55,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
 
   const setHighlights = useGraphStore(state => state.setHighlights)
+  const nodeClick = useGraphStore(state => state.nodeClick)
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
@@ -139,8 +140,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
 
   const [graph, setGraph] = useState<Graph>(currentGraph)
-
-  const [highlight, setHighlight] = useState<Highlight>('nearest')
   const [badge, setBadge] = useState<Badge>('violations')
   const [baseRelease, setBaseRelease] = useState<SelectValue>('')
 
@@ -159,8 +158,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
-    if (!isNode(element)) {
-      return
+    if (isNode(element)) {
+      return nodeClick(graph, element.id, config.chromaticScale)
     }
 
     if (highlight === 'diffing' && baseGraph) {
@@ -333,14 +332,14 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
   return (
-    <HighlightedColumnsContext.Provider value={{ ..._highlightedColumns, setHighlightedColumns }}>
+    <HighlightedColumnsContext.Provider
+      value={{ ..._highlightedColumns, setHighlightedColumns: () => {} }}
+    >
       <Container>
         <Sidebar
           badge={badge}
           onBadgeChange={onBadgeChange}
           onSearch={onSearchNode}
-          highlight={highlight}
-          onHighlightChange={onHighlightChange}
           releases={baseReleases}
           onReleaseChange={setBaseRelease}
         />

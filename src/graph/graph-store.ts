@@ -1,7 +1,13 @@
 import create from 'zustand'
-import { Graph } from './model'
+import { highlightHighlight } from './graph-ops'
+import { ChromaticScale, Graph, Highlight } from './model'
 
 interface GraphStore {
+  highlightMode: Highlight
+  setHighlightMode: (_: Highlight) => void
+  highlightHandler: (graph: Graph, id: string, chromaticScale: ChromaticScale) => void
+  nodeClick: (graph: Graph, id: string, chromaticScale: ChromaticScale) => void
+
   highlights: StoredHighlights
   setHighlights: (_: Graph) => void
 }
@@ -24,7 +30,19 @@ interface StoredEdgeStyle {
     | undefined
 }
 
-export const useGraphStore = create<GraphStore>(set => ({
+export const useGraphStore = create<GraphStore>((set, get) => ({
+  highlightMode: 'nearest',
+  highlightHandler: () => {},
+  setHighlightMode: (highlightMode: Highlight) =>
+    set({
+      highlightMode,
+      highlightHandler: (graph: Graph, id: string, chromaticScale: ChromaticScale) =>
+        get().setHighlights(highlightHighlight(highlightMode)(graph, id, chromaticScale)),
+    }),
+
+  nodeClick: (graph: Graph, id: string, chromaticScale: ChromaticScale) =>
+    get().highlightHandler(graph, id, chromaticScale),
+
   highlights: { nodes: {}, edges: {} },
   setHighlights: (hGraph: Graph) => {
     const nodesTmpRefactoring = hGraph.nodes.reduce(
@@ -43,12 +61,11 @@ export const useGraphStore = create<GraphStore>(set => ({
       {}
     )
 
-    set((state: GraphStore) => ({
-      ...state,
+    set({
       highlights: {
         nodes: nodesTmpRefactoring,
         edges: edgesTmpRefactoring,
       },
-    }))
+    })
   },
 }))

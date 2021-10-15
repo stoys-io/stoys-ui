@@ -243,3 +243,33 @@ export interface ColumnAndTableIds {
   tableIds: Array<string>
   columnIds: Array<string>
 }
+
+const highlightDispatch = (highlightMode: Highlight) =>
+  highlightMode === 'parents'
+    ? findUpstreamEdges
+    : highlightMode === 'children'
+    ? findDownstreamEdges
+    : findNearestEdges
+
+// TODO: To much highlight in the names
+export const highlightHighlight = (highlightMode: Highlight) => {
+  const whichHighlight = highlightDispatch(highlightMode)
+
+  return (graph: Graph, id: string, chromaticScale: ChromaticScale): Graph => {
+    const highlightEdges = whichHighlight(graph, id)
+
+    if (!highlightEdges.length) {
+      const tmpHighlightGraph = highlightNode(id)(resetHighlight(graph)) // TODO: Refactor
+      return tmpHighlightGraph
+    }
+
+    const tmpHighlightGraph2 = highlightGraph(
+      id,
+      highlightEdges,
+      highlightMode,
+      chromaticScale
+    )(resetHighlight(graph)) // TODO: Refactor
+
+    return tmpHighlightGraph2
+  }
+}
