@@ -265,6 +265,10 @@ const highlightDispatch = (highlightMode: Highlight) =>
 
 // TODO: To much highlight in the names
 export const highlightHighlight = (highlightMode: Highlight) => {
+  if (highlightMode === 'none') {
+    return (graph: Graph): Graph => resetHighlight(graph)
+  }
+
   const whichHighlight = highlightDispatch(highlightMode)
 
   return (graph: Graph, id: string, chromaticScale: ChromaticScale): Graph => {

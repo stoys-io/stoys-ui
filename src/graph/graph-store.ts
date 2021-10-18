@@ -8,6 +8,7 @@ interface GraphStore {
 
   highlights: StoredHighlights
   setHighlights: (_: Graph) => void
+  resetHighlights: () => void
 
   highlightMode: Highlight
   setHighlightMode: (_: Highlight) => void
@@ -34,6 +35,7 @@ interface StoredEdgeStyle {
     | undefined
 }
 
+const defaultHighlights = { nodes: {}, edges: {} }
 export const useGraphStore = create<GraphStore>((set, get) => ({
   graph: { nodes: [], edges: [] },
   chromaticScale: 'interpolatePuOr',
@@ -61,6 +63,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     const chromaticScale = get().chromaticScale
     const newHighlights = highlightHighlight(highlightMode)(graph, selectedNodeId, chromaticScale)
     return set({
+      highlightMode,
       highlights: graphToHighlights(newHighlights),
       graph,
       chromaticScale,
@@ -68,8 +71,13 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     })
   },
 
-  highlights: { nodes: {}, edges: {} },
+  highlights: defaultHighlights,
   setHighlights: (graph: Graph) => set({ highlights: graphToHighlights(graph) }),
+  resetHighlights: () =>
+    get().highlightMode !== 'diffing' &&
+    set({
+      highlights: defaultHighlights,
+    }),
 }))
 
 const graphToHighlights = (hGraph: Graph): StoredHighlights => {

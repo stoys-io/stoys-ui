@@ -17,7 +17,6 @@ import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation
 
 import {
   changeBadge,
-  resetHighlight,
   collectParentColumnAndTableIds,
   collectChildColumnAndTableIds,
   notEmpty,
@@ -51,6 +50,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
 
   const setHighlights = useGraphStore(state => state.setHighlights)
+  const resetHighlights = useGraphStore(state => state.resetHighlights)
   const nodeClick = useGraphStore(state => state.nodeClick)
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
@@ -97,14 +97,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   const onPaneClick = () => {
-    /* if (highlight === 'diffing' && baseGraph) {
-     *   setGraph(mergedGraph)
-     * } else { */
-
-    /* setGraph(currentGraph) */
-    setHighlights(resetHighlight(currentGraph))
-
-    /* } */
+    resetHighlights()
     setDrawerVisibility(false)
     _setHighlightedColumns(defaultHighlightedColumns)
   }
