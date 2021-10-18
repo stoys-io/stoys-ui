@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState, useMemo } from 'react'
 import { Tabs } from 'antd'
 import ResizableAntdDrawer from './ResizableAntdDrawer'
 
@@ -8,19 +8,32 @@ import { DrawerNodeLabel } from '../styles'
 import { NoData } from '../../profiler/styles'
 import { RawMetricsData } from '../../metrics/model'
 import { JoinRates, Metrics, Profiler, Quality } from '../..'
+import { DataGraph } from '../Graph'
+import { useGraphStore } from '../graph-store'
 
 const { TabPane } = Tabs
 
 interface Props {
   data: Table
-  baseData?: Table
+  dataData?: DataGraph[] // TODO: Remove one or another data
   drawerMaxHeight: number
   visible: boolean
   setDrawerVisibility: Dispatch<SetStateAction<boolean>>
 }
 
-const GraphDrawer = ({ data, baseData, drawerMaxHeight, visible, setDrawerVisibility }: Props) => {
+const GraphDrawer = ({ data, dataData, drawerMaxHeight, visible, setDrawerVisibility }: Props) => {
+  const baseRelease = useGraphStore(state => state.baseRelease)
   const [drawerHeight, setDrawerHeight] = useState<number>(drawerMaxHeight)
+
+  const baseData = useMemo(() => {
+    if (!baseRelease) {
+      return undefined
+    }
+
+    return dataData
+      ?.find(dataItem => dataItem.version === baseRelease)
+      ?.tables?.find(table => table.name === data?.name)
+  }, [baseRelease, data, dataData])
 
   const profilerData = data?.dp_result ? [data.dp_result] : null
   const metrics: RawMetricsData | null = data?.metrics

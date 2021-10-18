@@ -6,7 +6,6 @@ import { SelectValue } from 'antd/lib/select'
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
-import { Badge } from '../model'
 import { useGraphStore } from '../graph-store'
 
 const highlightList = [
@@ -37,12 +36,14 @@ const highlightList = [
   },
 ]
 
-const Sidebar = ({ onSearch, releases, onReleaseChange }: Props) => {
-  const highlightMode = useGraphStore(state => state.highlightMode)
-  const setHighlightMode = useGraphStore(state => state.setHighlightMode)
+const Sidebar = ({ onSearch, releases }: Props) => {
+  const setBaseRelease = useGraphStore(state => state.setBaseRelease)
 
   const badge = useGraphStore(state => state.badge)
   const setBadge = useGraphStore(state => state.setBadge)
+
+  const highlightMode = useGraphStore(state => state.highlightMode)
+  const setHighlightMode = useGraphStore(state => state.setHighlightMode)
 
   return (
     <SidebarWrapper>
@@ -55,7 +56,7 @@ const Sidebar = ({ onSearch, releases, onReleaseChange }: Props) => {
             <SelectVersion
               placeholder="Previous Version"
               options={releases}
-              onChange={onReleaseChange}
+              onChange={value => typeof value === 'string' && setBaseRelease(value)}
               allowClear
             />
           </>
@@ -87,7 +88,5 @@ export default Sidebar
 
 interface Props {
   onSearch: OnSearch
-
   releases?: Array<{ label: string; value: string }>
-  onReleaseChange: (val: SelectValue) => void
 }
