@@ -32,6 +32,18 @@ export const changeBadge =
     })),
   })
 
+export const resetHighlight = (graph: Graph): Graph => ({
+  edges: graph.edges.map((edge: Edge) => ({
+    ...edge,
+    style: undefined,
+    data: { rank: 1 },
+  })),
+  nodes: graph.nodes.map((node: Node) => ({
+    ...node,
+    data: { ...node.data, style: undefined },
+  })),
+})
+
 export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
   ...graph,
   nodes: graph.nodes.map((node: Node) => {

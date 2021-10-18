@@ -65,7 +65,7 @@ const Sidebar = ({ badge, onBadgeChange, onSearch, releases, onReleaseChange }: 
             <Radio value={'partitions'}>Partitions</Radio>
           </Space>
         </Radio.Group>
-        <MenuTitle>Version diff:</MenuTitle>
+        <MenuTitle>Highlight:</MenuTitle>
         <Radio.Group onChange={e => setHighlightMode(e.target.value)} value={highlightMode}>
           <Space direction="vertical">
             {highlightList.map(listItem => (
