@@ -37,9 +37,12 @@ const highlightList = [
   },
 ]
 
-const Sidebar = ({ badge, onBadgeChange, onSearch, releases, onReleaseChange }: Props) => {
+const Sidebar = ({ onSearch, releases, onReleaseChange }: Props) => {
   const highlightMode = useGraphStore(state => state.highlightMode)
   const setHighlightMode = useGraphStore(state => state.setHighlightMode)
+
+  const badge = useGraphStore(state => state.badge)
+  const setBadge = useGraphStore(state => state.setBadge)
 
   return (
     <SidebarWrapper>
@@ -59,7 +62,7 @@ const Sidebar = ({ badge, onBadgeChange, onSearch, releases, onReleaseChange }: 
         ) : null}
 
         <MenuTitle>Badges:</MenuTitle>
-        <Radio.Group onChange={e => onBadgeChange(e.target.value)} value={badge}>
+        <Radio.Group onChange={e => setBadge(e.target.value)} value={badge}>
           <Space direction="vertical">
             <Radio value={'violations'}>Errors</Radio>
             <Radio value={'partitions'}>Partitions</Radio>
@@ -83,9 +86,6 @@ const Sidebar = ({ badge, onBadgeChange, onSearch, releases, onReleaseChange }: 
 export default Sidebar
 
 interface Props {
-  badge: Badge
-  onBadgeChange: (val: Badge) => void
-
   onSearch: OnSearch
 
   releases?: Array<{ label: string; value: string }>

@@ -13,20 +13,15 @@ import { graphLayout } from './graph-layout'
 import { useGraphStore } from './graph-store'
 
 import { Container, DrawerContainer, GraphContainer } from './styles'
-import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
+import { Edge, Node, Graph, Highlight, Table, ChromaticScale, Orientation } from './model'
 
 import {
-  changeBadge,
   collectParentColumnAndTableIds,
   collectChildColumnAndTableIds,
   notEmpty,
   highlightNodesBatch,
 } from './graph-ops'
-import {
-  ADDED_NODE_HIGHLIGHT_COLOR,
-  DELETED_NODE_HIGHLIHT_COLOR,
-  HIGHLIGHT_COLOR,
-} from './constants'
+import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from './constants'
 
 const defaultHighlightedColumns = {
   selectedTableId: '',
@@ -52,6 +47,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const setHighlights = useGraphStore(state => state.setHighlights)
   const resetHighlights = useGraphStore(state => state.resetHighlights)
   const nodeClick = useGraphStore(state => state.nodeClick)
+  const getHighlightMode = useGraphStore(state => state.getHighlightMode) // TODO: Remove
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
@@ -73,6 +69,68 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     reletedTablesIds: Array<string>
   }>(defaultHighlightedColumns)
 
+  const setHighlightedColumns = (columnId: string, tableId: string) => {
+    if (columnId === _highlightedColumns.selectedColumnId) {
+      return _setHighlightedColumns(defaultHighlightedColumns)
+    }
+    const highlightMode = getHighlightMode()
+
+    let tableIds: Array<string> = []
+    let columnDependcies: Array<string> = []
+
+    if (highlightMode === 'parents') {
+      const tableAndColumnsIds = collectParentColumnAndTableIds(
+        tableId,
+        columnId,
+        graph.edges,
+        tables
+      )
+
+      tableIds = tableAndColumnsIds.tableIds
+      columnDependcies = tableAndColumnsIds.columnIds
+    } else if (highlightMode === 'children') {
+      const tableAndColumnsIds = collectChildColumnAndTableIds(
+        tableId,
+        columnId,
+        graph.edges,
+        tables
+      )
+
+      tableIds = tableAndColumnsIds.tableIds
+      columnDependcies = tableAndColumnsIds.columnIds
+    } else {
+      tableIds = [
+        ...graph.edges
+          .filter((edge: any) => edge.source === tableId)
+          .map((edge: any) => edge.target),
+        ...graph.edges
+          .filter((edge: any) => edge.target === tableId)
+          .map((edge: any) => edge.source),
+      ]
+      const tableColumnIds = tables
+        ?.filter((table: any) => tableIds.includes(table.id))
+        .map(
+          (table: any) =>
+            table.columns.find((column: any) => column.dependencies?.includes(columnId))?.id
+        )
+      const selectedColumnDependcies = tables
+        ?.find((table: any) => table.id === tableId)
+        ?.columns.find((column: any) => column.id === columnId)?.dependencies
+      columnDependcies = [
+        ...(tableColumnIds ? tableColumnIds : []),
+        ...(selectedColumnDependcies ? selectedColumnDependcies : []),
+      ].filter(notEmpty)
+    }
+
+    return _setHighlightedColumns({
+      selectedTableId: tableId,
+      selectedColumnId: columnId,
+      reletedColumnsIds: columnDependcies,
+      reletedTablesIds: tableIds,
+      highlightedType: highlightMode,
+    })
+  }
+
   const currentGraph = useMemo(
     () => ({
       nodes: mapInitialNodes(tables!, openDrawer),
@@ -82,13 +140,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
 
   const [graph, setGraph] = useState<Graph>(currentGraph)
-  const [badge, setBadge] = useState<Badge>('violations')
   const [baseRelease, setBaseRelease] = useState<SelectValue>('')
-
-  const onBadgeChange = (value: Badge) => {
-    setBadge(value)
-    setGraph(changeBadge(value))
-  }
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
@@ -239,17 +291,9 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
   return (
-    <HighlightedColumnsContext.Provider
-      value={{ ..._highlightedColumns, setHighlightedColumns: () => {} }}
-    >
+    <HighlightedColumnsContext.Provider value={{ ..._highlightedColumns, setHighlightedColumns }}>
       <Container>
-        <Sidebar
-          badge={badge}
-          onBadgeChange={onBadgeChange}
-          onSearch={onSearchNode}
-          releases={baseReleases}
-          onReleaseChange={setBaseRelease}
-        />
+        <Sidebar onSearch={onSearchNode} releases={baseReleases} onReleaseChange={setBaseRelease} />
         <GraphContainer>
           <ReactFlow
             nodesDraggable={false}
@@ -321,20 +365,20 @@ const edgeTypes = {
 
 const initialPosition = { x: 0, y: 0 }
 const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void): Node[] =>
-  tables.map((table: Table) => ({
-    id: table.id,
-    data: {
-      label: table.name,
-      highlightColor: HIGHLIGHT_COLOR,
-      badge: 'violations',
-      partitions: table.measures?.rows ?? 0,
-      violations: table.measures?.violations ?? 0,
-      columns: table.columns,
-      onTitleClick: openDrawer,
-    },
-    position: initialPosition,
-    type: 'dagNode',
-  }))
+  tables.map(
+    (table: Table): Node => ({
+      id: table.id,
+      data: {
+        label: table.name,
+        partitions: table.measures?.rows ?? 0,
+        violations: table.measures?.violations ?? 0,
+        columns: table.columns,
+        onTitleClick: openDrawer,
+      },
+      position: initialPosition,
+      type: 'dagNode',
+    })
+  )
 
 const mapInitialEdges = (tables: Array<Table>): Edge[] =>
   tables
@@ -356,65 +400,4 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
 
 function mapIds(element: { id: string }): string {
   return element.id
-}
-
-const setHighlightedColumns = (
-  columnId: string,
-  tableId: string,
-  // FIXME
-  _highlightedColumns: any,
-  _setHighlightedColumns: any,
-  highlight: any,
-  graph: any,
-  tables: any
-) => {
-  if (columnId === _highlightedColumns.selectedColumnId) {
-    return _setHighlightedColumns(defaultHighlightedColumns)
-  }
-
-  let tableIds: Array<string> = []
-  let columnDependcies: Array<string> = []
-
-  if (highlight === 'parents') {
-    const tableAndColumnsIds = collectParentColumnAndTableIds(
-      tableId,
-      columnId,
-      graph.edges,
-      tables
-    )
-
-    tableIds = tableAndColumnsIds.tableIds
-    columnDependcies = tableAndColumnsIds.columnIds
-  } else if (highlight === 'children') {
-    const tableAndColumnsIds = collectChildColumnAndTableIds(tableId, columnId, graph.edges, tables)
-
-    tableIds = tableAndColumnsIds.tableIds
-    columnDependcies = tableAndColumnsIds.columnIds
-  } else {
-    tableIds = [
-      ...graph.edges.filter((edge: any) => edge.source === tableId).map((edge: any) => edge.target),
-      ...graph.edges.filter((edge: any) => edge.target === tableId).map((edge: any) => edge.source),
-    ]
-    const tableColumnIds = tables
-      ?.filter((table: any) => tableIds.includes(table.id))
-      .map(
-        (table: any) =>
-          table.columns.find((column: any) => column.dependencies?.includes(columnId))?.id
-      )
-    const selectedColumnDependcies = tables
-      ?.find((table: any) => table.id === tableId)
-      ?.columns.find((column: any) => column.id === columnId)?.dependencies
-    columnDependcies = [
-      ...(tableColumnIds ? tableColumnIds : []),
-      ...(selectedColumnDependcies ? selectedColumnDependcies : []),
-    ].filter(notEmpty)
-  }
-
-  return _setHighlightedColumns({
-    selectedTableId: tableId,
-    selectedColumnId: columnId,
-    reletedColumnsIds: columnDependcies,
-    reletedTablesIds: tableIds,
-    highlightedType: highlight,
-  })
 }

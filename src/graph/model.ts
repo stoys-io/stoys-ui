@@ -5,12 +5,10 @@ import { Node as Node0, Edge } from 'react-flow-renderer'
 
 export interface DataPayload {
   label: string
-  badge: Badge
   partitions: number
   violations: number
   columns: Column[]
   onTitleClick: (id: string) => void
-  highlight?: Highlight
   style?: {
     color: string
   }

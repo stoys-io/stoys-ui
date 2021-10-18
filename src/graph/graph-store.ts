@@ -1,16 +1,20 @@
 import create from 'zustand'
 import { highlightHighlight } from './graph-ops'
-import { ChromaticScale, Graph, Highlight } from './model'
+import { ChromaticScale, Graph, Badge, Highlight } from './model'
 
 interface GraphStore {
   graph: Graph
   chromaticScale: ChromaticScale
+
+  badge: Badge
+  setBadge: (_: Badge) => void
 
   highlights: StoredHighlights
   setHighlights: (_: Graph) => void
   resetHighlights: () => void
 
   highlightMode: Highlight
+  getHighlightMode: () => Highlight
   setHighlightMode: (_: Highlight) => void
 
   selectedNodeId?: string
@@ -40,6 +44,9 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   graph: { nodes: [], edges: [] },
   chromaticScale: 'interpolatePuOr',
 
+  badge: 'violations',
+  setBadge: (badge: Badge) => set({ badge }),
+
   selectedNodeId: undefined,
   nodeClick: (graph: Graph, id: string, chromaticScale: ChromaticScale) => {
     const highlightMode = get().highlightMode
@@ -53,6 +60,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   },
 
   highlightMode: 'nearest',
+  getHighlightMode: () => get().highlightMode,
   setHighlightMode: (highlightMode: Highlight) => {
     const selectedNodeId = get().selectedNodeId
     if (!selectedNodeId) {
