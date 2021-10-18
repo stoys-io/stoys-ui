@@ -8,6 +8,34 @@ import SidebarSearch, { OnSearch } from './SidebarSearch'
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
 import { Highlight, Badge } from '../model'
 
+const highlightList = [
+  {
+    key: 'none',
+    value: 'none',
+    label: 'None',
+  },
+  {
+    key: 'nearest',
+    value: 'nearest',
+    label: 'Nearest',
+  },
+  {
+    key: 'children',
+    value: 'children',
+    label: 'Upstream (children)',
+  },
+  {
+    key: 'parents',
+    value: 'parents',
+    label: 'Downstream (parents)',
+  },
+  {
+    key: 'diffing',
+    value: 'diffing',
+    label: 'Version diff',
+  },
+]
+
 const Sidebar = ({
   badge,
   onBadgeChange,
@@ -44,12 +72,14 @@ const Sidebar = ({
             <Radio value={'partitions'}>Partitions</Radio>
           </Space>
         </Radio.Group>
-        <MenuTitle>Version diff:</MenuTitle>
+        <MenuTitle>Highlight:</MenuTitle>
         <Radio.Group onChange={e => onHighlightChange(e.target.value)} value={highlight}>
           <Space direction="vertical">
-            <Radio value={'nearest'}>Nearest</Radio>
-            <Radio value={'children'}>Upstream (children)</Radio>
-            <Radio value={'parents'}>Downstream (parents)</Radio>
+            {highlightList.map(listItem => (
+              <Radio key={listItem.key} value={listItem.value}>
+                {listItem.label}
+              </Radio>
+            ))}
           </Space>
         </Radio.Group>
       </SidebarContentWrapper>

@@ -4,8 +4,15 @@ import List from 'antd/lib/list'
 
 import HighlightedColumnsContext from '../columnsHighlightContext'
 
+import {
+  ADDED_NODE_HIGHLIGHT_COLOR,
+  DEFAULT_COLOR,
+  DELETED_NODE_HIGHLIHT_COLOR,
+  NODE_TEXT_COLOR,
+  TRANSPARENT_NODE_TEXT_COLOR,
+} from '../constants'
 import { renderNumericValue } from '../../helpers'
-import { DataPayload } from '../model'
+import { Column, DataPayload } from '../model'
 import { DagListItem, ScrollCard, ScrollCardTitle } from '../styles'
 
 export const DagNode = memo(
@@ -16,29 +23,59 @@ export const DagNode = memo(
     targetPosition,
     sourcePosition,
   }: NodeProps<DataPayload>): JSX.Element => {
-    const { selectedTableId, selectedColumnId, reletedColumnsIds, setHighlightedColumns } =
-      useContext(HighlightedColumnsContext)
+    const {
+      selectedTableId,
+      selectedColumnId,
+      reletedColumnsIds,
+      setHighlightedColumns,
+      highlightedType,
+    } = useContext(HighlightedColumnsContext)
 
     const actualBadge = badge === 'violations' ? violations : partitions
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
     const _columns =
-      selectedTableId && id !== selectedTableId
-        ? columns.filter(column => reletedColumnsIds.includes(column.id))
+      highlightedType !== 'none' &&
+      highlightedType !== 'diffing' &&
+      selectedTableId &&
+      id !== selectedTableId
+        ? columns.filter((column: any) => reletedColumnsIds.includes(column.id))
         : columns
 
-    const getListItemHighlightedColor = (columnId: string): string => {
-      if (id === selectedTableId && columnId === selectedColumnId) {
-        return 'rgb(0, 0, 0)'
+    const getListItemHighlightedColor = (column: Column): string => {
+      if (id === selectedTableId && column.id === selectedColumnId) {
+        return NODE_TEXT_COLOR
       }
 
       if (id === selectedTableId) {
-        return 'rgba(0, 0, 0, 0.4)'
+        return TRANSPARENT_NODE_TEXT_COLOR
       }
 
-      return style?.color ? style.color : 'inherit'
+      if (
+        style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
+        style?.color === DELETED_NODE_HIGHLIHT_COLOR
+      ) {
+        return style.color
+      }
+
+      if (column?.style?.color) {
+        return column.style.color
+      }
+
+      return DEFAULT_COLOR
     }
 
     const cardHighlightedColor = (): string => (style?.color ? style.color : '#808080')
+
+    const titleHighlightColor = (): string => {
+      if (
+        style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
+        style?.color === DELETED_NODE_HIGHLIHT_COLOR
+      ) {
+        return style.color
+      }
+
+      return DEFAULT_COLOR
+    }
 
     return (
       <div className="nowheel">
@@ -60,10 +97,7 @@ export const DagNode = memo(
         )}
         <ScrollCard
           title={
-            <ScrollCardTitle
-              onClick={() => onTitleClick(id)}
-              color={style?.color ? style.color : 'inherit'}
-            >
+            <ScrollCardTitle onClick={() => onTitleClick(id)} color={titleHighlightColor()}>
               {label}
             </ScrollCardTitle>
           }
@@ -75,9 +109,9 @@ export const DagNode = memo(
           <List
             size="small"
             dataSource={_columns}
-            renderItem={column => (
+            renderItem={(column: Column) => (
               <DagListItem
-                higtlightedColor={getListItemHighlightedColor(column.id)}
+                higtlightedColor={getListItemHighlightedColor(column)}
                 onClick={() => {
                   setHighlightedColumns(column.id, id)
                 }}

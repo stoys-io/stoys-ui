@@ -14,7 +14,6 @@ import { Container, DrawerContainer, GraphContainer } from './styles'
 import { Edge, Node, Graph, Highlight, Badge, Table, ChromaticScale, Orientation } from './model'
 
 import {
-  resetHighlight,
   highlightNode,
   changeBadge,
   highlightGraph,
@@ -26,13 +25,18 @@ import {
   notEmpty,
   highlightNodesBatch,
 } from './graph-ops'
-import { HIGHLIGHT_COLOR } from './constants'
+import {
+  ADDED_NODE_HIGHLIGHT_COLOR,
+  DELETED_NODE_HIGHLIHT_COLOR,
+  HIGHLIGHT_COLOR,
+} from './constants'
 
 const defaultHighlightedColumns = {
   selectedTableId: '',
   selectedColumnId: '',
   reletedColumnsIds: [],
   reletedTablesIds: [],
+  highlightedType: 'nearest' as 'nearest',
 }
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
@@ -61,6 +65,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const drawerData = tables?.find(table => table.id === drawerNodeId)
 
   const [_highlightedColumns, _setHighlightedColumns] = useState<{
+    highlightedType: Highlight
     selectedTableId: string
     selectedColumnId: string
     reletedColumnsIds: Array<string>
@@ -117,6 +122,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       selectedColumnId: columnId,
       reletedColumnsIds: columnDependcies,
       reletedTablesIds: tableIds,
+      highlightedType: highlight,
     })
   }
 
@@ -140,7 +146,11 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   const onHighlightChange = (value: Highlight) => {
-    setGraph(resetHighlight)
+    if (value === 'diffing' && baseGraph) {
+      setGraph(mergedGraph)
+    } else {
+      setGraph(currentGraph)
+    }
     setHighlight(value)
   }
 
@@ -149,24 +159,27 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return
     }
 
-    setGraph(resetHighlight)
+    if (highlight === 'diffing' && baseGraph) {
+      setGraph(mergedGraph)
+    } else {
+      setGraph(currentGraph)
+    }
 
-    const highlightEdges =
-      highlight === 'parents'
-        ? findUpstreamEdges(graph, element.id)
-        : highlight === 'children'
-        ? findDownstreamEdges(graph, element.id)
-        : findNearestEdges(graph, element.id)
+    const highlightEdges = getHighlightEdges(element.id, highlight, graph)
 
     if (!highlightEdges.length) {
-      setGraph(highlightNode(element.id))
+      return setGraph(highlightNode(element.id))
     }
 
     setGraph(highlightGraph(element.id, highlightEdges, highlight, config.chromaticScale))
   }
 
   const onPaneClick = () => {
-    setGraph(mergedGraph)
+    if (highlight === 'diffing' && baseGraph) {
+      setGraph(mergedGraph)
+    } else {
+      setGraph(currentGraph)
+    }
     setDrawerVisibility(false)
     _setHighlightedColumns(defaultHighlightedColumns)
   }
@@ -237,57 +250,73 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }, [baseRelease, data])
 
   const mergedGraph = useMemo(() => {
-    if (baseGraph) {
-      const baseEdgeIds = baseGraph.edges.map(mapIds)
-      const edgeIds = currentGraph.edges.map(mapIds)
-      const edges = currentGraph.edges.map(edge => {
-        if (baseEdgeIds.includes(edge.id)) {
-          return edge
-        }
-
-        return {
-          ...edge,
-          style: { stroke: '#f00' },
-        }
-      })
-      const addedEdges = baseGraph.edges
-        .filter(edge => !edgeIds.includes(edge.id))
-        .map(edge => ({ ...edge, style: { stroke: '#008000' } }))
-
-      const mergedEdges = [...edges, ...addedEdges]
-
-      const nodeIds = currentGraph.nodes.map(mapIds)
-      const baseNodeIds = baseGraph.nodes.map(mapIds)
-      const nodes = currentGraph.nodes.map(node => {
-        if (baseNodeIds.includes(node.id)) {
-          return node
-        }
-
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            style: { color: '#f00' },
-          },
-        }
-      })
-      const addedNodes = baseGraph.nodes
-        .filter(node => !nodeIds.includes(node.id))
-        .map(node => ({ ...node, data: { ...node.data, style: { color: '#008000' } } }))
-      const mergedNodes = [...nodes, ...addedNodes]
+    const baseEdgeIds = baseGraph?.edges.map(mapIds)
+    const edgeIds = currentGraph.edges.map(mapIds)
+    const edges = currentGraph.edges.map(edge => {
+      if (baseEdgeIds?.includes(edge.id)) {
+        return edge
+      }
 
       return {
-        edges: mergedEdges,
-        nodes: mergedNodes,
+        ...edge,
+        style: { stroke: DELETED_NODE_HIGHLIHT_COLOR },
       }
-    } else {
-      return currentGraph
+    })
+    const addedEdges = baseGraph?.edges
+      .filter(edge => !edgeIds.includes(edge.id))
+      .map(edge => ({ ...edge, style: { stroke: ADDED_NODE_HIGHLIGHT_COLOR } }))
+
+    const mergedEdges = [...edges, ...(addedEdges ? addedEdges : [])]
+
+    const nodeIds = currentGraph.nodes.map(mapIds)
+    const baseNodeIds = baseGraph?.nodes.map(mapIds)
+    const nodes = currentGraph.nodes.map(node => {
+      if (baseNodeIds?.includes(node.id)) {
+        const currentColumnsNames = node.data.columns.map(column => column.name)
+        const baseColumns = baseGraph?.nodes.find(n => node.id === n.id)?.data.columns
+        const baseColumnsNames = baseColumns?.map(column => column.name)
+        const addedColumns = node.data.columns
+          .filter(column => !baseColumnsNames?.includes(column.name))
+          .map(column => ({ ...column, style: { color: ADDED_NODE_HIGHLIGHT_COLOR } }))
+        const addedColumnsNames = addedColumns.map(column => column.name)
+        const deletedColumns = baseColumns
+          ?.filter(column => !currentColumnsNames.includes(column.name))
+          .map(column => ({ ...column, style: { color: DELETED_NODE_HIGHLIHT_COLOR } }))
+        const _columns = node.data.columns.filter(
+          column => !addedColumnsNames?.includes(column.name)
+        )
+        const columns = [...addedColumns, ...(deletedColumns ? deletedColumns : []), ..._columns]
+
+        return { ...node, data: { ...node.data, columns } }
+      }
+
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          style: { color: DELETED_NODE_HIGHLIHT_COLOR },
+        },
+      }
+    })
+    const addedNodes = baseGraph?.nodes
+      .filter(node => !nodeIds.includes(node.id))
+      .map(node => ({
+        ...node,
+        data: { ...node.data, style: { color: ADDED_NODE_HIGHLIGHT_COLOR } },
+      }))
+    const mergedNodes = [...nodes, ...(addedNodes ? addedNodes : [])]
+
+    return {
+      edges: mergedEdges,
+      nodes: mergedNodes,
     }
   }, [baseGraph, currentGraph])
 
   useEffect(() => {
-    setGraph(mergedGraph)
-  }, [mergedGraph, setGraph])
+    if (highlight === 'diffing' && baseGraph) {
+      setGraph(mergedGraph)
+    }
+  }, [mergedGraph, setGraph, highlight, baseGraph])
 
   const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
   return (
@@ -372,7 +401,6 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
     id: table.id,
     data: {
       label: table.name,
-      highlight: false,
       highlightColor: HIGHLIGHT_COLOR,
       badge: 'violations',
       partitions: table.measures?.rows ?? 0,
@@ -401,4 +429,20 @@ const mapInitialEdges = (tables: Array<Table>): Edge[] =>
 
 function mapIds(element: { id: string }): string {
   return element.id
+}
+
+function getHighlightEdges(id: string, highlight: Highlight, graph: Graph) {
+  if (highlight === 'parents') {
+    return findUpstreamEdges(graph, id)
+  }
+
+  if (highlight === 'children') {
+    return findDownstreamEdges(graph, id)
+  }
+
+  if (highlight === 'nearest') {
+    return findNearestEdges(graph, id)
+  }
+
+  return []
 }

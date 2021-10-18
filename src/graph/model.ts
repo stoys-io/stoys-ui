@@ -10,6 +10,7 @@ export interface DataPayload {
   violations: number
   columns: Column[]
   onTitleClick: (id: string) => void
+  highlight?: Highlight
   style?: {
     color: string
   }
@@ -28,7 +29,7 @@ export interface Graph {
   edges: Edge[]
 }
 
-export type Highlight = 'nearest' | 'parents' | 'children'
+export type Highlight = 'nearest' | 'parents' | 'children' | 'none' | 'diffing'
 
 export type Badge = 'violations' | 'partitions'
 
@@ -55,6 +56,7 @@ export interface Column {
   id: string
   name: string
   dependencies?: Array<string>
+  style?: { color?: string }
 }
 
 export type Orientation = 'horizontal' | 'vertical'
