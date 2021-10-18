@@ -52,7 +52,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const setHighlights = useGraphStore(state => state.setHighlights)
   const nodeClick = useGraphStore(state => state.nodeClick)
-  const setHighlightMode = useGraphStore(state => state.setHighlightMode)
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
