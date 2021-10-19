@@ -28,7 +28,10 @@ const GraphDrawer = ({ drawerMaxHeight }: Props) => {
   const drawerHeight = useGraphStore(state => state.drawerHeight)
   const setDrawerHeight = useGraphStore(state => state.setDrawerHeight)
 
-  useEffect(() => setDrawerHeight(drawerMaxHeight), [])
+  useEffect(() => {
+    setDrawerHeight(drawerMaxHeight)
+    return () => closeDrawer()
+  }, [])
 
   const baseData = useMemo(() => {
     if (!baseRelease) {
