@@ -1,11 +1,11 @@
-import React, { ReactNode, useCallback, Dispatch, SetStateAction } from 'react'
+import React, { ReactNode, useCallback } from 'react'
 import { ResizeArea, ResizeIcon, StyledDrawer } from '../styles'
 
 type ResizableAntdDrawerProps = {
   drawerHeight: number
-  setDrawerHeight: Dispatch<SetStateAction<number>>
+  setDrawerHeight: (_: number) => void
   visible: boolean
-  setDrawerVisibility: Dispatch<SetStateAction<boolean>>
+  closeDrawer: () => void
   children: ReactNode
 }
 
@@ -16,7 +16,7 @@ const ResizableAntdDrawer = ({
   drawerHeight,
   setDrawerHeight,
   visible,
-  setDrawerVisibility,
+  closeDrawer,
 }: ResizableAntdDrawerProps) => {
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const height = document.body.offsetHeight - e.clientY
@@ -50,7 +50,7 @@ const ResizableAntdDrawer = ({
       placement="bottom"
       closable
       visible={visible}
-      onClose={() => setDrawerVisibility(false)}
+      onClose={closeDrawer}
       height={drawerHeight}
     >
       {visible ? <ResizeIcon /> : null}

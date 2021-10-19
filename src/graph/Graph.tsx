@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 
 import GraphDrawer from './components/GraphDrawer'
@@ -10,7 +10,7 @@ import { DagEdge } from './components/DagEdge'
 import { graphLayout } from './graph-layout'
 import { useGraphStore } from './graph-store'
 
-import { Container, DrawerContainer, GraphContainer } from './styles'
+import { Container, GraphContainer } from './styles'
 import { Edge, Node, Graph, Table, ChromaticScale, Orientation } from './model'
 
 import { notEmpty, highlightNodesBatch } from './graph-ops'
@@ -37,26 +37,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const nodeClick = useGraphStore(state => state.nodeClick)
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
   const resetHighlightedColumns = useGraphStore(state => state.resetHighlightedColumns)
+  const closeDrawer = useGraphStore(state => state.closeDrawer)
 
-  const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
-  const [drawerNodeId, setDrawerNodeId] = useState<string>('')
-  const openDrawer = useCallback(
-    (id: string) => {
-      setDrawerNodeId(id)
-      setDrawerVisibility(true)
-    },
-    [setDrawerNodeId, setDrawerVisibility]
-  )
-
-  const drawerData = tables?.find(table => table.id === drawerNodeId)
-
-  const currentGraph = useMemo(
-    () => ({
-      nodes: mapInitialNodes(tables!, openDrawer),
-      edges: mapInitialEdges(tables!),
-    }),
-    [tables, openDrawer]
-  )
+  const currentGraph = {
+    nodes: mapInitialNodes(tables!),
+    edges: mapInitialEdges(tables!),
+  }
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
@@ -66,7 +52,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const onPaneClick = () => {
     resetHighlights()
-    setDrawerVisibility(false)
+    closeDrawer()
     resetHighlightedColumns()
   }
 
@@ -92,9 +78,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       graph: currentGraph,
       data,
       tables,
-      openDrawer,
       chromaticScale: config.chromaticScale,
-    }) // TODO: Leave only currentGraph argument
+    }) // TODO: Leave only currentGraph, chromaticScale arguments
   }, [])
 
   // TODO: Computing currentGraph layout is not fair in case of diffing
@@ -117,18 +102,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           <Background />
         </ReactFlow>
       </GraphContainer>
-      {drawerData && (
-        <DrawerContainer>
-          {/* TODO: Change GraphDrawer interface to more sane */}
-          <GraphDrawer
-            data={drawerData}
-            dataData={data}
-            drawerMaxHeight={500}
-            visible={drawerIsVisible}
-            setDrawerVisibility={setDrawerVisibility}
-          />
-        </DrawerContainer>
-      )}
+      <GraphDrawer drawerMaxHeight={500} />
     </Container>
   )
 }
@@ -172,7 +146,7 @@ const edgeTypes = {
 }
 
 const initialPosition = { x: 0, y: 0 }
-const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void): Node[] =>
+const mapInitialNodes = (tables: Array<Table>): Node[] =>
   tables.map(
     (table: Table): Node => ({
       id: table.id,
@@ -181,7 +155,6 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
         partitions: table.measures?.rows ?? 0,
         violations: table.measures?.violations ?? 0,
         columns: table.columns,
-        onTitleClick: openDrawer,
       },
       position: initialPosition,
       type: 'dagNode',
@@ -213,7 +186,6 @@ function mapIds(element: { id: string }): string {
 // TODO: refactor and move these blobs to graph-ops
 export const getBaseGraph = (
   baseRelease: string,
-  openDrawer: (_: string) => void,
   data?: DataGraph[],
   tables?: Table[]
 ): Graph | undefined => {
@@ -243,7 +215,7 @@ export const getBaseGraph = (
   }))
   const baseGraph = baseTables
     ? {
-        nodes: mapInitialNodes(baseTables, openDrawer),
+        nodes: mapInitialNodes(baseTables),
         edges: mapInitialEdges(baseTables),
       }
     : undefined

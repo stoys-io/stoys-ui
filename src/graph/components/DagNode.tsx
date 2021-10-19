@@ -20,11 +20,12 @@ const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTa
 const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
 const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.reletedColumnsIds
 const selecthighlightedType = (state: GraphStore) => state.highlightedColumns.highlightedType
+const selectOpenDrawer = (state: GraphStore) => state.openDrawer
 
 export const DagNode = memo(
   ({
     id,
-    data: { label, columns, violations, partitions, onTitleClick },
+    data: { label, columns, violations, partitions },
     isConnectable,
     targetPosition,
     sourcePosition,
@@ -37,6 +38,8 @@ export const DagNode = memo(
     const selectedColumnId = useGraphStore(selectColumnId)
     const reletedColumnsIds = useGraphStore(selectRelColumnIds)
     const highlightedType = useGraphStore(selecthighlightedType)
+
+    const openDrawer = useGraphStore(selectOpenDrawer)
 
     const actualBadge = badge === 'violations' ? violations : partitions
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
@@ -104,7 +107,7 @@ export const DagNode = memo(
         )}
         <ScrollCard
           title={
-            <ScrollCardTitle onClick={() => onTitleClick(id)} color={titleHighlightColor()}>
+            <ScrollCardTitle onClick={() => openDrawer(id)} color={titleHighlightColor()}>
               {label}
             </ScrollCardTitle>
           }

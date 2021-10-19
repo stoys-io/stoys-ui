@@ -90,10 +90,16 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
 
   data: [],
   tables: undefined,
-  openDrawer: () => {},
+
+  drawerHeight: 0,
+  setDrawerHeight: (drawerHeight: number) => set({ drawerHeight }),
+  drawerNodeId: undefined,
+  closeDrawer: () => set({ drawerNodeId: undefined }),
+  openDrawer: (drawerNodeId: string) => set({ drawerNodeId }),
+
   chromaticScale: 'interpolatePuOr',
-  setInitialStore: ({ graph, data, tables, openDrawer, chromaticScale }) =>
-    set({ graph, data, tables, openDrawer, chromaticScale }),
+  setInitialStore: ({ graph, data, tables, chromaticScale }) =>
+    set({ graph, data, tables, chromaticScale }),
 
   selectedNodeId: undefined,
   nodeClick: (id: string) => {
@@ -117,12 +123,11 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   baseRelease: '',
   setBaseRelease: (baseRelease: string) => {
     if (baseRelease) {
-      const openDrawer = get().openDrawer
       const data = get().data
       const tables = get().tables
       const graph = get().graph
 
-      const baseGraph = getBaseGraph(baseRelease, openDrawer, data, tables)
+      const baseGraph = getBaseGraph(baseRelease, data, tables)
       const mergedGraph = getMergedGraph(graph, baseGraph)
       const highlights = graphToHighlights(mergedGraph)
 
@@ -144,12 +149,11 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     if (highlightMode === 'diffing') {
       // TODO: This block possibly does not belong here
       const baseRelease = get().baseRelease
-      const openDrawer = get().openDrawer
       const data = get().data
       const tables = get().tables
       const graph = get().graph
 
-      const baseGraph = getBaseGraph(baseRelease, openDrawer, data, tables)
+      const baseGraph = getBaseGraph(baseRelease, data, tables)
       const mergedGraph = getMergedGraph(graph, baseGraph)
       const highlights = graphToHighlights(mergedGraph)
 
@@ -223,10 +227,15 @@ export interface GraphStore {
 
   data: DataGraph[]
   tables?: Table[]
-  openDrawer: any // TODO: Remove
-  setInitialStore: (arg: InitialArgs) => void
+
+  drawerNodeId?: string
+  drawerHeight: number
+  setDrawerHeight: (_: number) => void
+  closeDrawer: () => void
+  openDrawer: (id: string) => void
 
   chromaticScale: ChromaticScale
+  setInitialStore: (arg: InitialArgs) => void
 
   selectedNodeId?: string
   nodeClick: (id: string) => void
@@ -259,7 +268,6 @@ interface InitialArgs {
   graph: Graph
   data: DataGraph[]
   tables?: Table[]
-  openDrawer: any // TODO: Remove
   chromaticScale: ChromaticScale
 }
 
