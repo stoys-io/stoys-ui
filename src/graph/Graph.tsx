@@ -7,28 +7,14 @@ import { SearchArgs } from './components/SidebarSearch'
 import { DagNode } from './components/DagNode'
 import { DagEdge } from './components/DagEdge'
 
-import HighlightedColumnsContext from './columnsHighlightContext'
 import { graphLayout } from './graph-layout'
 import { useGraphStore } from './graph-store'
 
 import { Container, DrawerContainer, GraphContainer } from './styles'
-import { Edge, Node, Graph, Highlight, Table, ChromaticScale, Orientation } from './model'
+import { Edge, Node, Graph, Table, ChromaticScale, Orientation } from './model'
 
-import {
-  collectParentColumnAndTableIds,
-  collectChildColumnAndTableIds,
-  notEmpty,
-  highlightNodesBatch,
-} from './graph-ops'
+import { notEmpty, highlightNodesBatch } from './graph-ops'
 import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from './constants'
-
-const defaultHighlightedColumns = {
-  selectedTableId: '',
-  selectedColumnId: '',
-  reletedColumnsIds: [],
-  reletedTablesIds: [],
-  highlightedType: 'nearest' as 'nearest',
-}
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const config: Required<Config> = { ...defaultConfig, ...cfg }
@@ -50,9 +36,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const resetHighlights = useGraphStore(state => state.resetHighlights)
   const nodeClick = useGraphStore(state => state.nodeClick)
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
-
-  const getHighlightMode = useGraphStore(state => state.getHighlightMode) // TODO: Remove
-  const getCurrentGraph = useGraphStore(state => state.getCurrentGraph) // TODO: Remove
+  const resetHighlightedColumns = useGraphStore(state => state.resetHighlightedColumns)
 
   const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
   const [drawerNodeId, setDrawerNodeId] = useState<string>('')
@@ -65,71 +49,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
 
   const drawerData = tables?.find(table => table.id === drawerNodeId)
-
-  const [_highlightedColumns, _setHighlightedColumns] = useState<{
-    highlightedType: Highlight
-    selectedTableId: string
-    selectedColumnId: string
-    reletedColumnsIds: Array<string>
-    reletedTablesIds: Array<string>
-  }>(defaultHighlightedColumns)
-
-  const setHighlightedColumns = (columnId: string, tableId: string) => {
-    if (columnId === _highlightedColumns.selectedColumnId) {
-      return _setHighlightedColumns(defaultHighlightedColumns)
-    }
-
-    const graph = getCurrentGraph()
-    const highlightMode = getHighlightMode()
-
-    let tableIds: Array<string> = []
-    let columnDependcies: Array<string> = []
-
-    if (highlightMode === 'parents') {
-      const tableAndColumnsIds = collectParentColumnAndTableIds(
-        tableId,
-        columnId,
-        graph.edges,
-        tables
-      )
-
-      tableIds = tableAndColumnsIds.tableIds
-      columnDependcies = tableAndColumnsIds.columnIds
-    } else if (highlightMode === 'children') {
-      const tableAndColumnsIds = collectChildColumnAndTableIds(
-        tableId,
-        columnId,
-        graph.edges,
-        tables
-      )
-
-      tableIds = tableAndColumnsIds.tableIds
-      columnDependcies = tableAndColumnsIds.columnIds
-    } else {
-      tableIds = [
-        ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
-        ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
-      ]
-      const tableColumnIds = tables
-        ?.filter(table => tableIds.includes(table.id))
-        .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
-      const selectedColumnDependcies = tables
-        ?.find(table => table.id === tableId)
-        ?.columns.find(column => column.id === columnId)?.dependencies
-      columnDependcies = [
-        ...(tableColumnIds ? tableColumnIds : []),
-        ...(selectedColumnDependcies ? selectedColumnDependcies : []),
-      ].filter(notEmpty)
-    }
-
-    return _setHighlightedColumns({
-      selectedTableId: tableId,
-      selectedColumnId: columnId,
-      reletedColumnsIds: columnDependcies,
-      reletedTablesIds: tableIds,
-      highlightedType: highlightMode,
-    })
-  }
 
   const currentGraph = useMemo(
     () => ({
@@ -148,7 +67,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const onPaneClick = () => {
     resetHighlights()
     setDrawerVisibility(false)
-    _setHighlightedColumns(defaultHighlightedColumns)
+    resetHighlightedColumns()
   }
 
   const onSearchNode = ({ val, err, onError }: SearchArgs) => {
@@ -181,38 +100,36 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   // TODO: Computing currentGraph layout is not fair in case of diffing
   const elements = graphLayout([...currentGraph.nodes, ...currentGraph.edges], config.orientation)
   return (
-    <HighlightedColumnsContext.Provider value={{ ..._highlightedColumns, setHighlightedColumns }}>
-      <Container>
-        <Sidebar onSearch={onSearchNode} releases={baseReleases} />
-        <GraphContainer>
-          <ReactFlow
-            nodesDraggable={false}
-            onElementClick={onElementClick}
-            onPaneClick={onPaneClick}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            elements={elements}
-            onlyRenderVisibleElements={true}
-            nodesConnectable={false}
-            minZoom={0.2}
-          >
-            <Background />
-          </ReactFlow>
-        </GraphContainer>
-        {drawerData && (
-          <DrawerContainer>
-            {/* TODO: Change GraphDrawer interface to more sane */}
-            <GraphDrawer
-              data={drawerData}
-              dataData={data}
-              drawerMaxHeight={500}
-              visible={drawerIsVisible}
-              setDrawerVisibility={setDrawerVisibility}
-            />
-          </DrawerContainer>
-        )}
-      </Container>
-    </HighlightedColumnsContext.Provider>
+    <Container>
+      <Sidebar onSearch={onSearchNode} releases={baseReleases} />
+      <GraphContainer>
+        <ReactFlow
+          nodesDraggable={false}
+          onElementClick={onElementClick}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          elements={elements}
+          onlyRenderVisibleElements={true}
+          nodesConnectable={false}
+          minZoom={0.2}
+        >
+          <Background />
+        </ReactFlow>
+      </GraphContainer>
+      {drawerData && (
+        <DrawerContainer>
+          {/* TODO: Change GraphDrawer interface to more sane */}
+          <GraphDrawer
+            data={drawerData}
+            dataData={data}
+            drawerMaxHeight={500}
+            visible={drawerIsVisible}
+            setDrawerVisibility={setDrawerVisibility}
+          />
+        </DrawerContainer>
+      )}
+    </Container>
   )
 }
 
