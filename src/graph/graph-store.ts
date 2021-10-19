@@ -15,7 +15,8 @@ interface GraphStore {
   chromaticScale: ChromaticScale
 
   selectedNodeId?: string
-  nodeClick: (graph: Graph, id: string, chromaticScale: ChromaticScale) => void
+  nodeClick: (id: string) => void
+  searchNodeLabels: (value: string) => string[]
 
   baseRelease: string
   setBaseRelease: (_: string) => void
@@ -24,7 +25,7 @@ interface GraphStore {
   setBadge: (_: Badge) => void
 
   highlights: StoredHighlights
-  setHighlights: (_: Graph) => void
+  setHighlights: (fn: (_: Graph) => Graph) => void
   resetHighlights: () => void
 
   highlightMode: Highlight
@@ -37,6 +38,7 @@ interface InitialArgs {
   data: DataGraph[]
   tables?: Table[]
   openDrawer: any // TODO: Remove
+  chromaticScale: ChromaticScale
 }
 
 interface StoredHighlights {
@@ -65,21 +67,27 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   data: [],
   tables: undefined,
   openDrawer: () => {},
-  setInitialStore: ({ graph, data, tables, openDrawer }) =>
-    set({ graph, data, tables, openDrawer }),
-
   chromaticScale: 'interpolatePuOr',
+  setInitialStore: ({ graph, data, tables, openDrawer, chromaticScale }) =>
+    set({ graph, data, tables, openDrawer, chromaticScale }),
 
   selectedNodeId: undefined,
-  nodeClick: (graph: Graph, id: string, chromaticScale: ChromaticScale) => {
+  nodeClick: (id: string) => {
+    const graph = get().graph
+    const chromaticScale = get().chromaticScale
     const highlightMode = get().highlightMode
     const newHighlights = highlightHighlight(highlightMode)(graph, id, chromaticScale)
     return set({
       highlights: graphToHighlights(newHighlights),
-      graph,
-      chromaticScale,
       selectedNodeId: id,
     })
+  },
+
+  searchNodeLabels: (value: string): string[] => {
+    const graph = get().graph
+    return graph.nodes
+      .filter(node => node.data?.label.indexOf(value.toLowerCase()) !== -1)
+      .map(node => node.id)
   },
 
   baseRelease: '',
@@ -146,7 +154,11 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   },
 
   highlights: defaultHighlights,
-  setHighlights: (graph: Graph) => set({ highlights: graphToHighlights(graph) }),
+  setHighlights: (fn: (g: Graph) => Graph) =>
+    set(state => ({
+      highlights: graphToHighlights(fn(state.graph)),
+    })),
+
   resetHighlights: () =>
     get().highlightMode !== 'diffing' &&
     set({

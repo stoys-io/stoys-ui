@@ -49,6 +49,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const setHighlights = useGraphStore(state => state.setHighlights)
   const resetHighlights = useGraphStore(state => state.resetHighlights)
   const nodeClick = useGraphStore(state => state.nodeClick)
+  const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
 
   const getHighlightMode = useGraphStore(state => state.getHighlightMode) // TODO: Remove
   const getCurrentGraph = useGraphStore(state => state.getCurrentGraph) // TODO: Remove
@@ -140,8 +141,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
-      const graph = getCurrentGraph()
-      return nodeClick(graph, element.id, config.chromaticScale)
+      return nodeClick(element.id)
     }
   }
 
@@ -155,11 +155,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     if (!val) {
       return
     }
-    const graph = getCurrentGraph()
-
-    const nodeIds = graph.nodes
-      .filter((node: Node) => node.data?.label.indexOf(val.toLowerCase()) !== -1)
-      .map(node => node.id)
+    const nodeIds = searchNodeLabels(val)
 
     if (!nodeIds?.length) {
       return onError(true)
@@ -169,11 +165,17 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return onError(false)
     }
 
-    setHighlights(highlightNodesBatch(nodeIds)(graph)) // TODO: Refactor
+    setHighlights(highlightNodesBatch(nodeIds))
   }
 
   useEffect(() => {
-    setInitialStore({ graph: currentGraph, data, tables, openDrawer }) // TODO: Leave only currentGraph argument
+    setInitialStore({
+      graph: currentGraph,
+      data,
+      tables,
+      openDrawer,
+      chromaticScale: config.chromaticScale,
+    }) // TODO: Leave only currentGraph argument
   }, [])
 
   // TODO: Computing currentGraph layout is not fair in case of diffing
