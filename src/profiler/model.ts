@@ -62,6 +62,7 @@ export interface ConfigProps {
   smallSize?: boolean
   visibleColumns?: Array<string>
   pagination?: PaginationProps | false
+  height?: string | number
 
   showProfilerToolbar?: boolean
   showRowToolbar?: boolean
@@ -150,6 +151,7 @@ export interface TableProps extends AntdTableProps<any> {
   setPageSize: (pageSize: number) => void
   withoutPagination: boolean
   pagination?: PaginationProps | false
+  height?: string | number
 }
 
 export interface VerticalTableProps extends TableProps {
