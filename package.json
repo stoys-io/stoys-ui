@@ -21,6 +21,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "test": "jest --coverage",
+    "test:changed": "jest --coverage --onlyChanged",
     "test:watch": "jest --watch",
     "checktype": "tsc --noEmit -p tsconfig.checktype.json",
     "lint:check": "prettier --check \"**/*.{js,ts,tsx}\"",
