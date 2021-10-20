@@ -8,7 +8,6 @@ export interface DataPayload {
   partitions: number
   violations: number
   columns: Column[]
-  onTitleClick: (id: string) => void
   style?: {
     color: string
   }

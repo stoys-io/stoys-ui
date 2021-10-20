@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 
 import GraphDrawer from './components/GraphDrawer'
@@ -7,28 +7,14 @@ import { SearchArgs } from './components/SidebarSearch'
 import { DagNode } from './components/DagNode'
 import { DagEdge } from './components/DagEdge'
 
-import HighlightedColumnsContext from './columnsHighlightContext'
 import { graphLayout } from './graph-layout'
 import { useGraphStore } from './graph-store'
 
-import { Container, DrawerContainer, GraphContainer } from './styles'
-import { Edge, Node, Graph, Highlight, Table, ChromaticScale, Orientation } from './model'
+import { Container, GraphContainer } from './styles'
+import { Edge, Node, Graph, Table, ChromaticScale, Orientation } from './model'
 
-import {
-  collectParentColumnAndTableIds,
-  collectChildColumnAndTableIds,
-  notEmpty,
-  highlightNodesBatch,
-} from './graph-ops'
+import { notEmpty, highlightNodesBatch } from './graph-ops'
 import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from './constants'
-
-const defaultHighlightedColumns = {
-  selectedTableId: '',
-  selectedColumnId: '',
-  reletedColumnsIds: [],
-  reletedTablesIds: [],
-  highlightedType: 'nearest' as 'nearest',
-}
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const config: Required<Config> = { ...defaultConfig, ...cfg }
@@ -49,117 +35,32 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const setHighlights = useGraphStore(state => state.setHighlights)
   const resetHighlights = useGraphStore(state => state.resetHighlights)
   const nodeClick = useGraphStore(state => state.nodeClick)
+  const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
+  const resetHighlightedColumns = useGraphStore(state => state.resetHighlightedColumns)
+  const closeDrawer = useGraphStore(state => state.closeDrawer)
 
-  const getHighlightMode = useGraphStore(state => state.getHighlightMode) // TODO: Remove
-  const getCurrentGraph = useGraphStore(state => state.getCurrentGraph) // TODO: Remove
-
-  const [drawerIsVisible, setDrawerVisibility] = useState<boolean>(false)
-  const [drawerNodeId, setDrawerNodeId] = useState<string>('')
-  const openDrawer = useCallback(
-    (id: string) => {
-      setDrawerNodeId(id)
-      setDrawerVisibility(true)
-    },
-    [setDrawerNodeId, setDrawerVisibility]
-  )
-
-  const drawerData = tables?.find(table => table.id === drawerNodeId)
-
-  const [_highlightedColumns, _setHighlightedColumns] = useState<{
-    highlightedType: Highlight
-    selectedTableId: string
-    selectedColumnId: string
-    reletedColumnsIds: Array<string>
-    reletedTablesIds: Array<string>
-  }>(defaultHighlightedColumns)
-
-  const setHighlightedColumns = (columnId: string, tableId: string) => {
-    if (columnId === _highlightedColumns.selectedColumnId) {
-      return _setHighlightedColumns(defaultHighlightedColumns)
-    }
-
-    const graph = getCurrentGraph()
-    const highlightMode = getHighlightMode()
-
-    let tableIds: Array<string> = []
-    let columnDependcies: Array<string> = []
-
-    if (highlightMode === 'parents') {
-      const tableAndColumnsIds = collectParentColumnAndTableIds(
-        tableId,
-        columnId,
-        graph.edges,
-        tables
-      )
-
-      tableIds = tableAndColumnsIds.tableIds
-      columnDependcies = tableAndColumnsIds.columnIds
-    } else if (highlightMode === 'children') {
-      const tableAndColumnsIds = collectChildColumnAndTableIds(
-        tableId,
-        columnId,
-        graph.edges,
-        tables
-      )
-
-      tableIds = tableAndColumnsIds.tableIds
-      columnDependcies = tableAndColumnsIds.columnIds
-    } else {
-      tableIds = [
-        ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
-        ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
-      ]
-      const tableColumnIds = tables
-        ?.filter(table => tableIds.includes(table.id))
-        .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
-      const selectedColumnDependcies = tables
-        ?.find(table => table.id === tableId)
-        ?.columns.find(column => column.id === columnId)?.dependencies
-      columnDependcies = [
-        ...(tableColumnIds ? tableColumnIds : []),
-        ...(selectedColumnDependcies ? selectedColumnDependcies : []),
-      ].filter(notEmpty)
-    }
-
-    return _setHighlightedColumns({
-      selectedTableId: tableId,
-      selectedColumnId: columnId,
-      reletedColumnsIds: columnDependcies,
-      reletedTablesIds: tableIds,
-      highlightedType: highlightMode,
-    })
+  const currentGraph = {
+    nodes: mapInitialNodes(tables!),
+    edges: mapInitialEdges(tables!),
   }
-
-  const currentGraph = useMemo(
-    () => ({
-      nodes: mapInitialNodes(tables!, openDrawer),
-      edges: mapInitialEdges(tables!),
-    }),
-    [tables, openDrawer]
-  )
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
-      const graph = getCurrentGraph()
-      return nodeClick(graph, element.id, config.chromaticScale)
+      return nodeClick(element.id)
     }
   }
 
   const onPaneClick = () => {
     resetHighlights()
-    setDrawerVisibility(false)
-    _setHighlightedColumns(defaultHighlightedColumns)
+    closeDrawer()
+    resetHighlightedColumns()
   }
 
   const onSearchNode = ({ val, err, onError }: SearchArgs) => {
     if (!val) {
       return
     }
-    const graph = getCurrentGraph()
-
-    const nodeIds = graph.nodes
-      .filter((node: Node) => node.data?.label.indexOf(val.toLowerCase()) !== -1)
-      .map(node => node.id)
+    const nodeIds = searchNodeLabels(val)
 
     if (!nodeIds?.length) {
       return onError(true)
@@ -169,48 +70,40 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return onError(false)
     }
 
-    setHighlights(highlightNodesBatch(nodeIds)(graph)) // TODO: Refactor
+    setHighlights(highlightNodesBatch(nodeIds))
   }
 
   useEffect(() => {
-    setInitialStore({ graph: currentGraph, data, tables, openDrawer }) // TODO: Leave only currentGraph argument
+    setInitialStore({
+      graph: currentGraph,
+      data,
+      tables,
+      chromaticScale: config.chromaticScale,
+    }) // TODO: Leave only currentGraph, chromaticScale arguments
   }, [])
 
   // TODO: Computing currentGraph layout is not fair in case of diffing
   const elements = graphLayout([...currentGraph.nodes, ...currentGraph.edges], config.orientation)
   return (
-    <HighlightedColumnsContext.Provider value={{ ..._highlightedColumns, setHighlightedColumns }}>
-      <Container>
-        <Sidebar onSearch={onSearchNode} releases={baseReleases} />
-        <GraphContainer>
-          <ReactFlow
-            nodesDraggable={false}
-            onElementClick={onElementClick}
-            onPaneClick={onPaneClick}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            elements={elements}
-            onlyRenderVisibleElements={true}
-            nodesConnectable={false}
-            minZoom={0.2}
-          >
-            <Background />
-          </ReactFlow>
-        </GraphContainer>
-        {drawerData && (
-          <DrawerContainer>
-            {/* TODO: Change GraphDrawer interface to more sane */}
-            <GraphDrawer
-              data={drawerData}
-              dataData={data}
-              drawerMaxHeight={500}
-              visible={drawerIsVisible}
-              setDrawerVisibility={setDrawerVisibility}
-            />
-          </DrawerContainer>
-        )}
-      </Container>
-    </HighlightedColumnsContext.Provider>
+    <Container>
+      <Sidebar onSearch={onSearchNode} releases={baseReleases} />
+      <GraphContainer>
+        <ReactFlow
+          nodesDraggable={false}
+          onElementClick={onElementClick}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          elements={elements}
+          onlyRenderVisibleElements={true}
+          nodesConnectable={false}
+          minZoom={0.2}
+        >
+          <Background />
+        </ReactFlow>
+      </GraphContainer>
+      <GraphDrawer drawerMaxHeight={500} />
+    </Container>
   )
 }
 
@@ -253,7 +146,7 @@ const edgeTypes = {
 }
 
 const initialPosition = { x: 0, y: 0 }
-const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void): Node[] =>
+const mapInitialNodes = (tables: Array<Table>): Node[] =>
   tables.map(
     (table: Table): Node => ({
       id: table.id,
@@ -262,7 +155,6 @@ const mapInitialNodes = (tables: Array<Table>, openDrawer: (_: string) => void):
         partitions: table.measures?.rows ?? 0,
         violations: table.measures?.violations ?? 0,
         columns: table.columns,
-        onTitleClick: openDrawer,
       },
       position: initialPosition,
       type: 'dagNode',
@@ -294,7 +186,6 @@ function mapIds(element: { id: string }): string {
 // TODO: refactor and move these blobs to graph-ops
 export const getBaseGraph = (
   baseRelease: string,
-  openDrawer: (_: string) => void,
   data?: DataGraph[],
   tables?: Table[]
 ): Graph | undefined => {
@@ -324,7 +215,7 @@ export const getBaseGraph = (
   }))
   const baseGraph = baseTables
     ? {
-        nodes: mapInitialNodes(baseTables, openDrawer),
+        nodes: mapInitialNodes(baseTables),
         edges: mapInitialEdges(baseTables),
       }
     : undefined

@@ -1,8 +1,6 @@
-import React, { useContext, memo } from 'react'
+import React, { memo, useCallback } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import List from 'antd/lib/list'
-
-import HighlightedColumnsContext from '../columnsHighlightContext'
 
 import {
   ADDED_NODE_HIGHLIGHT_COLOR,
@@ -14,26 +12,34 @@ import {
 import { renderNumericValue } from '../../helpers'
 import { Column, DataPayload } from '../model'
 import { DagListItem, ScrollCard, ScrollCardTitle } from '../styles'
-import { useGraphStore } from '../graph-store'
+import { useGraphStore, GraphStore } from '../graph-store'
+
+const selectBadge = (state: GraphStore) => state.badge
+const selectColumns = (state: GraphStore) => state.setHighlightedColumns
+const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
+const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
+const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.reletedColumnsIds
+const selecthighlightedType = (state: GraphStore) => state.highlightedColumns.highlightedType
+const selectOpenDrawer = (state: GraphStore) => state.openDrawer
 
 export const DagNode = memo(
   ({
     id,
-    data: { label, columns, violations, partitions, onTitleClick },
+    data: { label, columns, violations, partitions },
     isConnectable,
     targetPosition,
     sourcePosition,
   }: NodeProps<DataPayload>): JSX.Element => {
-    const badge = useGraphStore(state => state.badge)
-    const style = useGraphStore(state => state.highlights.nodes[id])
+    const badge = useGraphStore(selectBadge)
+    const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
 
-    const {
-      selectedTableId,
-      selectedColumnId,
-      reletedColumnsIds,
-      setHighlightedColumns,
-      highlightedType,
-    } = useContext(HighlightedColumnsContext)
+    const setHighlightedColumns = useGraphStore(selectColumns)
+    const selectedTableId = useGraphStore(selectTableId)
+    const selectedColumnId = useGraphStore(selectColumnId)
+    const reletedColumnsIds = useGraphStore(selectRelColumnIds)
+    const highlightedType = useGraphStore(selecthighlightedType)
+
+    const openDrawer = useGraphStore(selectOpenDrawer)
 
     const actualBadge = badge === 'violations' ? violations : partitions
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
@@ -101,7 +107,7 @@ export const DagNode = memo(
         )}
         <ScrollCard
           title={
-            <ScrollCardTitle onClick={() => onTitleClick(id)} color={titleHighlightColor()}>
+            <ScrollCardTitle onClick={() => openDrawer(id)} color={titleHighlightColor()}>
               {label}
             </ScrollCardTitle>
           }

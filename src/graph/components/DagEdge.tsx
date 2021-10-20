@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { EdgeProps, getBezierPath, getMarkerEnd } from 'react-flow-renderer'
 import { useGraphStore } from '../graph-store'
 
@@ -14,7 +14,7 @@ export const DagEdge = ({
   arrowHeadType,
   markerEndId,
 }: EdgeProps) => {
-  const style = useGraphStore(state => state.highlights.edges[id])
+  const style = useGraphStore(useCallback(state => state.highlights.edges[id], [id]))
 
   const edgePath = getBezierPath({
     sourceX,
