@@ -38,6 +38,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
     showChartTableSwitcher,
     chartTableChecked,
     pagination,
+    height,
   } = config
 
   const [isVertical, setIsVertical] = useState<boolean>(orientType === Orient.Vertical)
@@ -219,6 +220,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
               withoutPagination={pagination === false}
               pagination={pagination}
               displayNormalized={isNormalizeChecked}
+              height={height}
             />
           ) : (
             <HorizontalTable
@@ -231,6 +233,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
               setPageSize={setPageSize}
               withoutPagination={pagination === false}
               pagination={pagination}
+              height={height}
             />
           )}
           <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />

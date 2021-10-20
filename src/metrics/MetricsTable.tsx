@@ -5,10 +5,8 @@ import 'antd/lib/table/style/css'
 import usePagination from '../hooks/usePagination'
 import { getMetricsColumns, getMetricsColumnsFromRawData } from './columns'
 import { getMetricsDataFromRawData, getMetricsTableData } from './helpers'
-import { MetricsTableProps, MetricsData, RawMetricsData } from './model'
+import { MetricsTableProps } from './model'
 import { StyledMetricTable } from './styles'
-
-const TABLE_HEIGHT = 600
 
 export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
   const {
@@ -20,7 +18,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
       saveMetricThreshold,
       pagination,
       disabledColumns,
-      height = TABLE_HEIGHT,
+      height,
       smallSize = true,
     } = {},
     onChange,
@@ -68,7 +66,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
   return (
     <StyledMetricTable
       loading={isLoading}
-      scroll={{ x: true, y: pagination && pagination.disabled ? height : undefined }}
+      scroll={{ x: true, y: pagination || !height ? undefined : height }}
       smallSize={smallSize}
       bordered
       sticky
