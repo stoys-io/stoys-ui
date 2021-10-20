@@ -30,6 +30,13 @@ export type Highlight = 'nearest' | 'parents' | 'children' | 'none' | 'diffing'
 
 export type Badge = 'violations' | 'partitions'
 
+export interface DataGraph {
+  id: string
+  name: string
+  version: string
+  tables: Table[]
+}
+
 export interface Table {
   id: string
   name: string

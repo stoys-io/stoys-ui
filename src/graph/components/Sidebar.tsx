@@ -1,12 +1,12 @@
 import React from 'react'
 import Radio from 'antd/lib/radio'
 import Space from 'antd/lib/space'
-import { SelectValue } from 'antd/lib/select'
 
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
 import { useGraphStore } from '../graph-store'
+import { ChromaticScale } from '../model'
 
 const highlightList = [
   {
@@ -36,7 +36,7 @@ const highlightList = [
   },
 ]
 
-const Sidebar = ({ onSearch, releases }: Props) => {
+const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
   const setBaseRelease = useGraphStore(state => state.setBaseRelease)
 
   const badge = useGraphStore(state => state.badge)
@@ -70,7 +70,10 @@ const Sidebar = ({ onSearch, releases }: Props) => {
           </Space>
         </Radio.Group>
         <MenuTitle>Highlight:</MenuTitle>
-        <Radio.Group onChange={e => setHighlightMode(e.target.value)} value={highlightMode}>
+        <Radio.Group
+          onChange={e => setHighlightMode(e.target.value, chromaticScale)}
+          value={highlightMode}
+        >
           <Space direction="vertical">
             {highlightList.map(listItem => (
               <Radio key={listItem.key} value={listItem.value}>
@@ -88,5 +91,6 @@ export default Sidebar
 
 interface Props {
   onSearch: OnSearch
+  chromaticScale: ChromaticScale
   releases?: Array<{ label: string; value: string }>
 }
