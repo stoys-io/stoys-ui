@@ -3,7 +3,6 @@ import Table from 'antd/lib/table'
 
 import 'antd/lib/table/style/css'
 
-import { TABLE_HEIGHT } from '../constants'
 import { TableProps } from '../model'
 
 const HorizontalTable = (props: TableProps) => {
@@ -17,6 +16,7 @@ const HorizontalTable = (props: TableProps) => {
     withoutPagination,
     pagination,
     onChange,
+    height,
   } = props
   const handleChangePagination = useCallback(
     (pagination, filters, sorter, extra) => {
@@ -39,7 +39,7 @@ const HorizontalTable = (props: TableProps) => {
       expandable={{ expandIcon: () => null, expandedRowKeys: keys }}
       scroll={{
         x: true,
-        y: withoutPagination ? TABLE_HEIGHT : undefined,
+        y: withoutPagination && height ? height : undefined,
       }}
       {...props}
       dataSource={data}

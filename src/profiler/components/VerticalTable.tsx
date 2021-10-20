@@ -6,7 +6,7 @@ import { ChartAndTable, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
 import { VerticalColumn, VerticalData, VerticalTableProps } from '../model'
-import { TABLE_HEIGHT, NORMALIZABLE_COLUMN_PREFIX } from '../constants'
+import { NORMALIZABLE_COLUMN_PREFIX } from '../constants'
 import { ColorBlock } from '../styles'
 import { formatPercentage } from '../../helpers'
 
@@ -22,6 +22,7 @@ const VerticalTable = (props: VerticalTableProps) => {
     pagination,
     displayNormalized,
     onChange,
+    height,
   } = props
   const flattenData = data.map(item => item.children).flat()
   const verticalColumns: Array<VerticalColumn> = flattenData.map((item, index) => {
@@ -119,7 +120,7 @@ const VerticalTable = (props: VerticalTableProps) => {
     <Table
       sticky
       bordered
-      scroll={{ x: true, y: withoutPagination ? TABLE_HEIGHT : undefined }}
+      scroll={{ x: true, y: withoutPagination && height ? height : undefined }}
       {...props}
       columns={verticalColumns}
       dataSource={dataSource}
