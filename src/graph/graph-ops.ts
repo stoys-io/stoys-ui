@@ -53,12 +53,10 @@ export const highlightGraph =
     nodeId: string,
     edgesToHighlight: Edge[],
     highlight: Highlight,
-    chromaticScale?: ChromaticScale // TODO: Should chromaticScale be configurable or always present?
+    chromaticScale: ChromaticScale
   ) =>
   (graph: Graph) => {
-    const getColor = chromaticScale
-      ? colorScheme(highlight, chromaticScale)
-      : (_: any) => HIGHLIGHT_COLOR
+    const getColor = colorScheme(highlight, chromaticScale)
 
     return {
       edges: graph.edges.map((edge: Edge) => {

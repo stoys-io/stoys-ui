@@ -19,7 +19,6 @@ const defaultHighlightedColumns = {
 const defaultHighlights = { nodes: {}, edges: {} }
 export const useGraphStore = create<GraphStore>((set, get) => ({
   graph: { nodes: [], edges: [] },
-  getCurrentGraph: () => get().graph,
 
   highlightedColumns: defaultHighlightedColumns,
   resetHighlightedColumns: () =>
@@ -144,7 +143,6 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   setBadge: (badge: Badge) => set({ badge }),
 
   highlightMode: 'nearest',
-  getHighlightMode: () => get().highlightMode,
   setHighlightMode: (highlightMode: Highlight) => {
     if (highlightMode === 'diffing') {
       // TODO: This block possibly does not belong here
@@ -175,8 +173,6 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     return set({
       highlightMode,
       highlights: graphToHighlights(newHighlights),
-      graph,
-      chromaticScale,
       selectedNodeId,
     })
   },
@@ -219,7 +215,6 @@ const graphToHighlights = (hGraph: Graph): StoredHighlights => {
 
 export interface GraphStore {
   graph: Graph
-  getCurrentGraph: () => Graph
 
   highlightedColumns: HColumns
   resetHighlightedColumns: () => void
@@ -252,7 +247,6 @@ export interface GraphStore {
   resetHighlights: () => void
 
   highlightMode: Highlight
-  getHighlightMode: () => Highlight
   setHighlightMode: (_: Highlight) => void
 }
 
