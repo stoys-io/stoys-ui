@@ -65,6 +65,7 @@ export const getMetricsColumns = (
               title: 'Current',
               sorter: defaultSort(`${cell.columnName}_current`),
               render: renderNumericColumnValue,
+              fixed: 'right',
             },
           ]
 
@@ -78,6 +79,7 @@ export const getMetricsColumns = (
                 title: 'Previous',
                 sorter: defaultSort(`${cell.columnName}_previous`),
                 render: renderNumericColumnValue,
+                fixed: 'right',
               },
               {
                 id: `${cell.columnName}_change`,
@@ -179,6 +181,7 @@ export const getMetricsColumnsFromRawData = (
   function filterColumns(column: ChildrenColumnType): boolean {
     return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
   }
+
   const keyColumns = metricsData?.current.key_columns?.map((column: string) => ({
     id: column,
     dataIndex: column,
@@ -203,6 +206,7 @@ export const getMetricsColumnsFromRawData = (
           sorter: defaultSort(`${colName}_current`),
           render: renderNumericColumnValue,
           width: getColumnWidth('Current'),
+          fixed: 'right',
         },
       ]
 
@@ -217,6 +221,7 @@ export const getMetricsColumnsFromRawData = (
             sorter: defaultSort(`${colName}_previous`),
             render: renderNumericColumnValue,
             width: getColumnWidth('Previous'),
+            fixed: 'right',
           },
           // TODO: waiting for BE
           // {
@@ -247,6 +252,7 @@ export const getMetricsColumnsFromRawData = (
       if (disabledColumns) {
         childrenColumns = childrenColumns.filter(filterColumns)
       }
+
       return [
         ...columnsData,
         {
@@ -258,6 +264,7 @@ export const getMetricsColumnsFromRawData = (
         },
       ]
     }
+
     return columnsData
   }, keyColumns)
 }
