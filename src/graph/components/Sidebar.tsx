@@ -1,7 +1,6 @@
 import React from 'react'
 import Radio from 'antd/lib/radio'
 import Space from 'antd/lib/space'
-import { SelectValue } from 'antd/lib/select'
 
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 
@@ -22,12 +21,14 @@ const highlightList = [
   {
     key: 'children',
     value: 'children',
-    label: 'Upstream (children)',
+    // Note: user's notion of children and parents is the opposite of what we use in data structures
+    label: 'Upstream (parents)',
   },
   {
     key: 'parents',
     value: 'parents',
-    label: 'Downstream (parents)',
+    // Note: user's notion of children and parents is the opposite of what we use in data structures
+    label: 'Downstream (children)',
   },
   {
     key: 'diffing',
