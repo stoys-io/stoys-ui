@@ -22,12 +22,14 @@ const highlightList = [
   {
     key: 'children',
     value: 'children',
-    label: 'Upstream (children)',
+    // Note: user's notion of children and parents is the opposite of what we use in data structures
+    label: 'Upstream (parents)',
   },
   {
     key: 'parents',
     value: 'parents',
-    label: 'Downstream (parents)',
+    // Note: user's notion of children and parents is the opposite of what we use in data structures
+    label: 'Downstream (children)',
   },
   {
     key: 'diffing',
