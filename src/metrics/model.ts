@@ -37,6 +37,7 @@ export interface ColumnType {
   title: string | ReactNode
   titleString?: string
   fixed?: 'left' | 'right'
+  align?: 'left' | 'right'
   sorter?: (a: any, b: any) => number
   render?: (value: any, item: any) => string | ReactNode
   children?: Array<ChildrenColumnType>
