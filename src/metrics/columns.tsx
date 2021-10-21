@@ -19,7 +19,7 @@ import {
 import { Maybe } from '../model'
 
 const renderNumericColumnValue = (value?: Maybe<number | string>): JSX.Element => (
-  <UppercaseValue>{value ? renderNumericValue(2, true)(value) : '—'}</UppercaseValue>
+  <UppercaseValue>{value ? renderNumericValue(2)(value) : '—'}</UppercaseValue>
 )
 
 export const getMetricsColumns = (
