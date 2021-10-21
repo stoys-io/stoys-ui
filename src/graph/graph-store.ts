@@ -1,12 +1,12 @@
 import create from 'zustand'
-import { DataGraph, getBaseGraph, getMergedGraph } from './Graph'
+import { getBaseGraph, getMergedGraph } from './Graph'
 import {
   highlightHighlight,
   collectParentColumnAndTableIds,
   collectChildColumnAndTableIds,
   notEmpty,
 } from './graph-ops'
-import { ChromaticScale, Graph, Badge, Highlight, Table } from './model'
+import { ChromaticScale, Graph, DataGraph, Badge, Highlight, Table } from './model'
 
 const defaultHighlightedColumns = {
   selectedTableId: '',
@@ -19,7 +19,6 @@ const defaultHighlightedColumns = {
 const defaultHighlights = { nodes: {}, edges: {} }
 export const useGraphStore = create<GraphStore>((set, get) => ({
   graph: { nodes: [], edges: [] },
-  getCurrentGraph: () => get().graph,
 
   highlightedColumns: defaultHighlightedColumns,
   resetHighlightedColumns: () =>
@@ -97,14 +96,11 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   closeDrawer: () => set({ drawerNodeId: undefined }),
   openDrawer: (drawerNodeId: string) => set({ drawerNodeId }),
 
-  chromaticScale: 'interpolatePuOr',
-  setInitialStore: ({ graph, data, tables, chromaticScale }) =>
-    set({ graph, data, tables, chromaticScale }),
+  setInitialStore: ({ graph, data, tables }) => set({ graph, data, tables }),
 
   selectedNodeId: undefined,
-  nodeClick: (id: string) => {
+  nodeClick: (id: string, chromaticScale: ChromaticScale) => {
     const graph = get().graph
-    const chromaticScale = get().chromaticScale
     const highlightMode = get().highlightMode
     const newHighlights = highlightHighlight(highlightMode)(graph, id, chromaticScale)
     return set({
@@ -144,8 +140,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   setBadge: (badge: Badge) => set({ badge }),
 
   highlightMode: 'nearest',
-  getHighlightMode: () => get().highlightMode,
-  setHighlightMode: (highlightMode: Highlight) => {
+  setHighlightMode: (highlightMode: Highlight, chromaticScale: ChromaticScale) => {
     if (highlightMode === 'diffing') {
       // TODO: This block possibly does not belong here
       const baseRelease = get().baseRelease
@@ -170,13 +165,10 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     }
 
     const graph = get().graph
-    const chromaticScale = get().chromaticScale
     const newHighlights = highlightHighlight(highlightMode)(graph, selectedNodeId, chromaticScale)
     return set({
       highlightMode,
       highlights: graphToHighlights(newHighlights),
-      graph,
-      chromaticScale,
       selectedNodeId,
     })
   },
@@ -219,7 +211,6 @@ const graphToHighlights = (hGraph: Graph): StoredHighlights => {
 
 export interface GraphStore {
   graph: Graph
-  getCurrentGraph: () => Graph
 
   highlightedColumns: HColumns
   resetHighlightedColumns: () => void
@@ -234,11 +225,10 @@ export interface GraphStore {
   closeDrawer: () => void
   openDrawer: (id: string) => void
 
-  chromaticScale: ChromaticScale
   setInitialStore: (arg: InitialArgs) => void
 
   selectedNodeId?: string
-  nodeClick: (id: string) => void
+  nodeClick: (id: string, chromaticScale: ChromaticScale) => void
   searchNodeLabels: (value: string) => string[]
 
   baseRelease: string
@@ -252,8 +242,7 @@ export interface GraphStore {
   resetHighlights: () => void
 
   highlightMode: Highlight
-  getHighlightMode: () => Highlight
-  setHighlightMode: (_: Highlight) => void
+  setHighlightMode: (value: Highlight, chromaticScale: ChromaticScale) => void
 }
 
 interface HColumns {
@@ -268,7 +257,6 @@ interface InitialArgs {
   graph: Graph
   data: DataGraph[]
   tables?: Table[]
-  chromaticScale: ChromaticScale
 }
 
 interface StoredHighlights {

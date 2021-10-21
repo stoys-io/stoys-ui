@@ -11,7 +11,7 @@ import { graphLayout } from './graph-layout'
 import { useGraphStore } from './graph-store'
 
 import { Container, GraphContainer } from './styles'
-import { Edge, Node, Graph, Table, ChromaticScale, Orientation } from './model'
+import { Edge, Node, Graph, DataGraph, Table, ChromaticScale, Orientation } from './model'
 
 import { notEmpty, highlightNodesBatch } from './graph-ops'
 import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from './constants'
@@ -31,6 +31,11 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     [data]
   )
 
+  const currentGraph = {
+    nodes: mapInitialNodes(tables!),
+    edges: mapInitialEdges(tables!),
+  }
+
   const setInitialStore = useGraphStore(state => state.setInitialStore)
   const setHighlights = useGraphStore(state => state.setHighlights)
   const resetHighlights = useGraphStore(state => state.resetHighlights)
@@ -39,14 +44,9 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const resetHighlightedColumns = useGraphStore(state => state.resetHighlightedColumns)
   const closeDrawer = useGraphStore(state => state.closeDrawer)
 
-  const currentGraph = {
-    nodes: mapInitialNodes(tables!),
-    edges: mapInitialEdges(tables!),
-  }
-
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
-      return nodeClick(element.id)
+      return nodeClick(element.id, config.chromaticScale)
     }
   }
 
@@ -78,15 +78,18 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       graph: currentGraph,
       data,
       tables,
-      chromaticScale: config.chromaticScale,
-    }) // TODO: Leave only currentGraph, chromaticScale arguments
+    }) // TODO: Leave only currentGraph argument ?
   }, [])
 
   // TODO: Computing currentGraph layout is not fair in case of diffing
   const elements = graphLayout([...currentGraph.nodes, ...currentGraph.edges], config.orientation)
   return (
     <Container>
-      <Sidebar onSearch={onSearchNode} releases={baseReleases} />
+      <Sidebar
+        onSearch={onSearchNode}
+        releases={baseReleases}
+        chromaticScale={config.chromaticScale}
+      />
       <GraphContainer>
         <ReactFlow
           nodesDraggable={false}
@@ -109,16 +112,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
 export default GraphComponent
 
-// TODO: move to model.ts
-export interface DataGraph {
-  id: string
-  name: string
-  version: string
-  tables: Table[]
-}
-
 interface Props {
-  data: Array<DataGraph>
+  data: DataGraph[]
   config?: Config
 }
 
