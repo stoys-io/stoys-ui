@@ -105,7 +105,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           <Background />
         </ReactFlow>
       </GraphContainer>
-      <GraphDrawer drawerMaxHeight={500} />
+      <GraphDrawer />
     </Container>
   )
 }

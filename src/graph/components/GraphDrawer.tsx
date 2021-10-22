@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useMemo, useCallback } from 'react'
 import { Tabs } from 'antd'
 import ResizableAntdDrawer from './ResizableAntdDrawer'
 
@@ -11,27 +11,22 @@ import { useGraphStore } from '../graph-store'
 
 const { TabPane } = Tabs
 
-interface Props {
-  drawerMaxHeight: number
-}
-
-const GraphDrawer = ({ drawerMaxHeight }: Props) => {
-  const baseRelease = useGraphStore(state => state.baseRelease)
+const GraphDrawer = () => {
   const drawerNodeId = useGraphStore(state => state.drawerNodeId)
+  const visible = drawerNodeId !== undefined
+
   const curTable = useGraphStore(
     useCallback(state => state.tables?.find(table => table.id === drawerNodeId), [drawerNodeId])
   )
+  const baseRelease = useGraphStore(state => state.baseRelease)
   const graphData = useGraphStore(state => state.data)
 
-  const visible = drawerNodeId !== undefined
-  const closeDrawer = useGraphStore(state => state.closeDrawer)
   const drawerHeight = useGraphStore(state => state.drawerHeight)
   const setDrawerHeight = useGraphStore(state => state.setDrawerHeight)
 
-  useEffect(() => {
-    setDrawerHeight(drawerMaxHeight)
-    return () => closeDrawer()
-  }, [])
+  const setDrawerTab = useGraphStore(state => state.setDrawerTab)
+
+  const closeDrawer = useGraphStore(state => state.closeDrawer)
 
   const baseData = useMemo(() => {
     if (!baseRelease) {
@@ -66,7 +61,8 @@ const GraphDrawer = ({ drawerMaxHeight }: Props) => {
       key_columns: ['location'],
     }
   }
-  const firstNonEmptyTable = curTable?.dq_join_results
+
+  const firstNonEmptyTab = curTable?.dq_join_results
     ? JOIN_RATES_KEY
     : metrics
     ? METADATA_KEY
@@ -78,7 +74,16 @@ const GraphDrawer = ({ drawerMaxHeight }: Props) => {
     ? METADATA_KEY
     : JOIN_RATES_KEY
 
-  const [table, setTable] = useState<string>(firstNonEmptyTable)
+  const drawerTab = useGraphStore(state => state.drawerTab || firstNonEmptyTab)
+
+  useEffect(() => {
+    setDrawerTab(firstNonEmptyTab)
+
+    return () => {
+      closeDrawer()
+    }
+  }, [])
+
   return (
     <DrawerContainer>
       <ResizableAntdDrawer
@@ -87,7 +92,7 @@ const GraphDrawer = ({ drawerMaxHeight }: Props) => {
         closeDrawer={closeDrawer}
         visible={visible}
       >
-        <Tabs activeKey={table} onChange={setTable}>
+        <Tabs activeKey={drawerTab} onChange={setDrawerTab}>
           <DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>
           <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
             {curTable?.dq_join_results ? (

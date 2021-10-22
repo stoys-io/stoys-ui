@@ -92,10 +92,14 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   data: [],
   tables: undefined,
 
-  drawerHeight: 0,
+  drawerHeight: 500,
   setDrawerHeight: (drawerHeight: number) => set({ drawerHeight }),
+
+  drawerTab: undefined,
+  setDrawerTab: (drawerTab?: string) => set({ drawerTab }),
+
   drawerNodeId: undefined,
-  closeDrawer: () => set({ drawerNodeId: undefined }),
+  closeDrawer: () => set({ drawerNodeId: undefined, drawerTab: undefined }),
   openDrawer: (drawerNodeId: string) => set({ drawerNodeId }),
 
   setInitialStore: ({ graph, data, tables }) => set({ graph, data, tables }),
@@ -248,6 +252,8 @@ export interface GraphStore {
   drawerNodeId?: string
   drawerHeight: number
   setDrawerHeight: (_: number) => void
+  drawerTab?: string
+  setDrawerTab: (_?: string) => void
   closeDrawer: () => void
   openDrawer: (id: string) => void
 
@@ -271,18 +277,18 @@ export interface GraphStore {
   setHighlightMode: (value: Highlight, chromaticScale: ChromaticScale) => void
 }
 
+interface InitialArgs {
+  graph: Graph
+  data: DataGraph[]
+  tables?: Table[]
+}
+
 interface HColumns {
   highlightedType: Highlight
   selectedTableId: string
   selectedColumnId: string
   reletedColumnsIds: Array<string>
   reletedTablesIds: Array<string>
-}
-
-interface InitialArgs {
-  graph: Graph
-  data: DataGraph[]
-  tables?: Table[]
 }
 
 interface StoredHighlights {
