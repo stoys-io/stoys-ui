@@ -43,7 +43,7 @@ export const TablesWrapper = styled.div<{ mode: string }>`
 
     .ant-table-column-sorters {
       padding: 0 0 0 4px;
-      margin: 8px 0;
+      margin: 0;
     }
   }
 
