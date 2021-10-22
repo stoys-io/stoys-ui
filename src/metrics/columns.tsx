@@ -6,7 +6,7 @@ import Threshold from './Threshold'
 import Trends from './Trends'
 import { getColumnWidth } from '../quality/columns'
 import { defaultSort, renderPercentColumnValue, getGroupTitle } from './helpers'
-import { UppercaseValue, ChangePercentValue, ThresholdViolatedWrapper } from './styles'
+import { ChangePercentValue, ThresholdViolatedWrapper } from './styles'
 import {
   ColumnNode,
   TableCellNode,
@@ -19,7 +19,7 @@ import {
 import { Maybe } from '../model'
 
 const renderNumericColumnValue = (value?: Maybe<number | string>): JSX.Element => (
-  <UppercaseValue>{value ? renderNumericValue(2)(value) : '—'}</UppercaseValue>
+  <>{value ? renderNumericValue(2, false, false)(value) : '—'}</>
 )
 
 export const getMetricsColumns = (
