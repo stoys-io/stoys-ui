@@ -65,7 +65,7 @@ export const getMetricsColumns = (
               title: 'Current',
               sorter: defaultSort(`${cell.columnName}_current`),
               render: renderNumericColumnValue,
-              align: 'right',
+              className: 'aligned-right',
             },
           ]
 
@@ -79,7 +79,7 @@ export const getMetricsColumns = (
                 title: 'Previous',
                 sorter: defaultSort(`${cell.columnName}_previous`),
                 render: renderNumericColumnValue,
-                align: 'right',
+                className: 'aligned-right',
               },
               {
                 id: `${cell.columnName}_change`,
@@ -206,7 +206,7 @@ export const getMetricsColumnsFromRawData = (
           sorter: defaultSort(`${colName}_current`),
           render: renderNumericColumnValue,
           width: getColumnWidth('Current'),
-          align: 'right',
+          className: 'aligned-right',
         },
       ]
 
@@ -221,7 +221,7 @@ export const getMetricsColumnsFromRawData = (
             sorter: defaultSort(`${colName}_previous`),
             render: renderNumericColumnValue,
             width: getColumnWidth('Previous'),
-            align: 'right',
+            className: 'aligned-right',
           },
           // TODO: waiting for BE
           // {

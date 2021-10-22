@@ -46,6 +46,7 @@ export interface ColumnType {
 export interface ChildrenColumnType extends Omit<ColumnType, 'children'> {
   disabled?: boolean
   width?: number
+  className?: string
 }
 
 export interface KeyValueInput {
