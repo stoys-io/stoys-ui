@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
 import Drawer from 'antd/lib/drawer'
-import MenuOutlined from '@ant-design/icons/MenuOutlined'
 import Select from 'antd/lib/select'
 import Input from 'antd/lib/input'
 import List from 'antd/lib/list'
@@ -8,7 +7,7 @@ import List from 'antd/lib/list'
 const { Search } = Input
 
 import Card from 'antd/lib/card'
-import { HIGHLIGHT_COLOR, NODE_HEIGHT, NODE_WIDTH } from './constants'
+import { HIGHLIGHT_COLOR, NODE_HEIGHT, NODE_WIDTH, RESIZE_AREA_HIGHT } from './constants'
 
 export const Container = styled.div`
   display: flex;
@@ -62,22 +61,13 @@ export const DrawerNodeLabel = styled.div`
   font-weight: bold;
 `
 
-export const ResizeIcon = styled(MenuOutlined)`
-  position: absolute;
-  top: -5px;
-  left: calc(50% - 6px);
-  font-size: 12px;
-  background-color: #ffffff;
-  cursor: pointer;
-  z-index: 5;
-`
-
 export const ResizeArea = styled.div`
-  height: 15px;
+  height: ${RESIZE_AREA_HIGHT}px;
+  background: grey;
   width: 100%;
   position: absolute;
   top: -5px;
-  cursor: row-resize;
+  cursor: ns-resize;
   z-index: 10;
 `
 
@@ -141,7 +131,7 @@ export const ScrollCardTitle = styled.div<{ color: string }>`
 `
 
 export const DagListItem = styled(List.Item, {
-  // do not pass highlight prop down to the Card
+  // do not pass highlightedColor prop down to the Card
   shouldForwardProp: prop => prop !== 'higtlightedColor',
 })<{ higtlightedColor: string }>`
   color: ${props => props.higtlightedColor};

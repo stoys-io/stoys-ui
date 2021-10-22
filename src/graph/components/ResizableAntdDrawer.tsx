@@ -1,5 +1,6 @@
-import React, { ReactNode, useCallback } from 'react'
-import { ResizeArea, ResizeIcon, StyledDrawer } from '../styles'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import { RESIZE_AREA_HIGHT } from '../constants'
+import { ResizeArea, StyledDrawer } from '../styles'
 
 type ResizableAntdDrawerProps = {
   drawerHeight: number
@@ -9,8 +10,7 @@ type ResizableAntdDrawerProps = {
   children: ReactNode
 }
 
-let isResizing: boolean = false
-
+const minHeight = RESIZE_AREA_HIGHT + 150
 const ResizableAntdDrawer = ({
   children,
   drawerHeight,
@@ -18,31 +18,44 @@ const ResizableAntdDrawer = ({
   visible,
   closeDrawer,
 }: ResizableAntdDrawerProps) => {
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    const height = document.body.offsetHeight - e.clientY
-    let minHeight = 100
-    let maxHeight = document.body.offsetHeight * 0.9
-    if (height > minHeight && height < maxHeight) {
-      setDrawerHeight(height)
-    }
-  }, [])
+  const [isResizing, setIsResizing] = useState<boolean>(false)
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isResizing === false) {
+        return
+      }
+
+      const height = document.body.offsetHeight - e.clientY
+      const maxHeight = document.body.offsetHeight * 0.9
+      if (height > RESIZE_AREA_HIGHT && height < maxHeight) {
+        setDrawerHeight(height)
+      }
+    },
+    [isResizing]
+  )
 
   const handleMouseUp = useCallback(() => {
-    if (!isResizing) {
-      return
+    setIsResizing(false)
+    if (drawerHeight < minHeight) {
+      setDrawerHeight(RESIZE_AREA_HIGHT)
     }
-    isResizing = false
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', handleMouseUp)
+  }, [drawerHeight])
+
+  const handleMouseDown = useCallback(() => {
+    setIsResizing(true)
   }, [])
 
-  const handleMousedown = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    e.preventDefault()
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
-    isResizing = true
-  }
+  useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isResizing])
 
   return (
     <StyledDrawer
@@ -53,9 +66,8 @@ const ResizableAntdDrawer = ({
       onClose={closeDrawer}
       height={drawerHeight}
     >
-      {visible ? <ResizeIcon /> : null}
-      <ResizeArea onMouseDown={handleMousedown} />
-      {children}
+      <ResizeArea onMouseDown={handleMouseDown} />
+      {drawerHeight > RESIZE_AREA_HIGHT && children}
     </StyledDrawer>
   )
 }

@@ -6,3 +6,4 @@ export const ADDED_NODE_HIGHLIGHT_COLOR = '#008000'
 export const NODE_TEXT_COLOR = 'rgb(0, 0, 0)'
 export const TRANSPARENT_NODE_TEXT_COLOR = 'rgba(0, 0, 0, 0.4)'
 export const DEFAULT_COLOR = 'inherit'
+export const RESIZE_AREA_HIGHT = 15
