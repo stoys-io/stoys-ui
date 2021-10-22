@@ -1,7 +1,7 @@
 import React from 'react'
 import { Story } from '@storybook/react'
 
-import StringDiffingComponent  from '../src/common/StringDiffing'
+import StringDiffingComponent from '../src/common/StringDiffing'
 
 const Template: Story<any> = args => <StringDiffingComponent {...args} />
 

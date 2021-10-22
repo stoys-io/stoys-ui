@@ -35,6 +35,7 @@ export interface StringDiffingProps {
   base: string
 }
 
+// generate unified diff for two strings line by line
 function compare(base: string, current: string) {
   const baseArr = current.split(/\r|\n|\r\n/)
   const currentArr = base.split(/\r|\n|\r\n/)
