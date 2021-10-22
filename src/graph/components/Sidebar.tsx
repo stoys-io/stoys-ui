@@ -1,12 +1,12 @@
 import React from 'react'
 import Radio from 'antd/lib/radio'
 import Space from 'antd/lib/space'
-import { SelectValue } from 'antd/lib/select'
 
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
-import { Highlight, Badge } from '../model'
+import { useGraphStore } from '../graph-store'
+import { ChromaticScale } from '../model'
 
 const highlightList = [
   {
@@ -22,12 +22,14 @@ const highlightList = [
   {
     key: 'children',
     value: 'children',
-    label: 'Upstream (children)',
+    // Note: user's notion of children and parents is the opposite of what we use in data structures
+    label: 'Upstream (parents)',
   },
   {
     key: 'parents',
     value: 'parents',
-    label: 'Downstream (parents)',
+    // Note: user's notion of children and parents is the opposite of what we use in data structures
+    label: 'Downstream (children)',
   },
   {
     key: 'diffing',
@@ -36,18 +38,15 @@ const highlightList = [
   },
 ]
 
-const Sidebar = ({
-  badge,
-  onBadgeChange,
+const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
+  const setBaseRelease = useGraphStore(state => state.setBaseRelease)
 
-  onSearch,
+  const badge = useGraphStore(state => state.badge)
+  const setBadge = useGraphStore(state => state.setBadge)
 
-  highlight,
-  onHighlightChange,
+  const highlightMode = useGraphStore(state => state.highlightMode)
+  const setHighlightMode = useGraphStore(state => state.setHighlightMode)
 
-  releases,
-  onReleaseChange,
-}: Props) => {
   return (
     <SidebarWrapper>
       <SidebarContentWrapper>
@@ -59,21 +58,24 @@ const Sidebar = ({
             <SelectVersion
               placeholder="Previous Version"
               options={releases}
-              onChange={onReleaseChange}
+              onChange={value => typeof value === 'string' && setBaseRelease(value)}
               allowClear
             />
           </>
         ) : null}
 
         <MenuTitle>Badges:</MenuTitle>
-        <Radio.Group onChange={e => onBadgeChange(e.target.value)} value={badge}>
+        <Radio.Group onChange={e => setBadge(e.target.value)} value={badge}>
           <Space direction="vertical">
             <Radio value={'violations'}>Errors</Radio>
             <Radio value={'partitions'}>Partitions</Radio>
           </Space>
         </Radio.Group>
         <MenuTitle>Highlight:</MenuTitle>
-        <Radio.Group onChange={e => onHighlightChange(e.target.value)} value={highlight}>
+        <Radio.Group
+          onChange={e => setHighlightMode(e.target.value, chromaticScale)}
+          value={highlightMode}
+        >
           <Space direction="vertical">
             {highlightList.map(listItem => (
               <Radio key={listItem.key} value={listItem.value}>
@@ -90,14 +92,7 @@ const Sidebar = ({
 export default Sidebar
 
 interface Props {
-  badge: Badge
-  onBadgeChange: (val: Badge) => void
-
   onSearch: OnSearch
-
-  highlight: Highlight
-  onHighlightChange: (val: Highlight) => void
-
+  chromaticScale: ChromaticScale
   releases?: Array<{ label: string; value: string }>
-  onReleaseChange: (val: SelectValue) => void
 }

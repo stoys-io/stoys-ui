@@ -19,18 +19,17 @@ export const highlightNode = (id: string) => (graph: Graph) => ({
   }),
 })
 
-export const changeBadge =
-  (badge: Badge) =>
-  (graph: Graph): Graph => ({
-    ...graph,
-    nodes: graph.nodes.map((node: Node) => ({
-      ...node,
-      data: {
-        ...node.data,
-        badge,
-      },
-    })),
-  })
+export const resetHighlight = (graph: Graph): Graph => ({
+  edges: graph.edges.map((edge: Edge) => ({
+    ...edge,
+    style: undefined,
+    data: { rank: 1 },
+  })),
+  nodes: graph.nodes.map((node: Node) => ({
+    ...node,
+    data: { ...node.data, style: undefined },
+  })),
+})
 
 export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
   ...graph,
@@ -54,12 +53,10 @@ export const highlightGraph =
     nodeId: string,
     edgesToHighlight: Edge[],
     highlight: Highlight,
-    chromaticScale?: ChromaticScale // TODO: Should chromaticScale be configurable or always present?
+    chromaticScale: ChromaticScale
   ) =>
   (graph: Graph) => {
-    const getColor = chromaticScale
-      ? colorScheme(highlight, chromaticScale)
-      : (_: any) => HIGHLIGHT_COLOR
+    const getColor = colorScheme(highlight, chromaticScale)
 
     return {
       edges: graph.edges.map((edge: Edge) => {
@@ -242,4 +239,34 @@ export function collectParentColumnAndTableIds(
 export interface ColumnAndTableIds {
   tableIds: Array<string>
   columnIds: Array<string>
+}
+
+const highlightDispatch = (highlightMode: Highlight) =>
+  highlightMode === 'parents'
+    ? findUpstreamEdges
+    : highlightMode === 'children'
+    ? findDownstreamEdges
+    : findNearestEdges
+
+// TODO: To much highlight in the names
+export const highlightHighlight = (highlightMode: Highlight) => {
+  const whichHighlight = highlightDispatch(highlightMode)
+
+  return (graph: Graph, id: string, chromaticScale: ChromaticScale): Graph => {
+    const highlightEdges = whichHighlight(graph, id)
+
+    if (!highlightEdges.length) {
+      const tmpHighlightGraph = highlightNode(id)(resetHighlight(graph)) // TODO: Refactor
+      return tmpHighlightGraph
+    }
+
+    const tmpHighlightGraph2 = highlightGraph(
+      id,
+      highlightEdges,
+      highlightMode,
+      chromaticScale
+    )(resetHighlight(graph)) // TODO: Refactor
+
+    return tmpHighlightGraph2
+  }
 }

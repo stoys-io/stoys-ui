@@ -5,12 +5,9 @@ import { Node as Node0, Edge } from 'react-flow-renderer'
 
 export interface DataPayload {
   label: string
-  badge: Badge
   partitions: number
   violations: number
   columns: Column[]
-  onTitleClick: (id: string) => void
-  highlight?: Highlight
   style?: {
     color: string
   }
@@ -32,6 +29,13 @@ export interface Graph {
 export type Highlight = 'nearest' | 'parents' | 'children' | 'none' | 'diffing'
 
 export type Badge = 'violations' | 'partitions'
+
+export interface DataGraph {
+  id: string
+  name: string
+  version: string
+  tables: Table[]
+}
 
 export interface Table {
   id: string

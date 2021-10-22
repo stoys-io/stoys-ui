@@ -21,6 +21,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "test": "jest --coverage",
+    "test:changed": "jest --coverage --onlyChanged",
     "test:watch": "jest --watch",
     "checktype": "tsc --noEmit -p tsconfig.checktype.json",
     "lint:check": "prettier --check \"**/*.{js,ts,tsx}\"",
@@ -43,6 +44,7 @@
     "dagre": "^0.8.5",
     "diff2html": "^3.4.13",
     "difflib": "^0.2.4",
+    "big-json-viewer": "^0.1.7",
     "echarts": "https://github.com/AE-Nuna/echarts.git#build",
     "echarts-for-react": "^3.0.1",
     "lodash.debounce": "^4.0.8",
@@ -50,7 +52,8 @@
     "numbro": "^2.3.2",
     "rc-resize-observer": "^1.0.0",
     "react-flow-renderer": "^9.6.7",
-    "react-window": "^1.8.6"
+    "react-window": "^1.8.6",
+    "zustand": "^3.5.13"
   },
   "devDependencies": {
     "@babel/core": "^7.13.8",
