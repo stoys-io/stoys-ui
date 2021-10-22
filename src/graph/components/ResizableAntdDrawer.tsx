@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { RESIZE_AREA_HIGHT } from '../constants'
-import { ResizeArea, StyledDrawer } from '../styles'
+import { ResizeArea, StyledDrawer, DrawerContent } from '../styles'
 
 const ResizableAntdDrawer = ({
   children,
@@ -58,7 +58,7 @@ const ResizableAntdDrawer = ({
       height={drawerHeight}
     >
       <ResizeArea onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
-      {drawerHeight > RESIZE_AREA_HIGHT && children}
+      {drawerHeight > RESIZE_AREA_HIGHT && <DrawerContent>{children}</DrawerContent>}
     </StyledDrawer>
   )
 }

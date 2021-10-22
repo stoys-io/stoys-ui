@@ -92,8 +92,11 @@ const GraphDrawer = () => {
         closeDrawer={closeDrawer}
         visible={visible}
       >
-        <Tabs activeKey={drawerTab} onChange={setDrawerTab}>
-          <DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>
+        <Tabs
+          activeKey={drawerTab}
+          onChange={setDrawerTab}
+          tabBarExtraContent={<DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>}
+        >
           <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
             {curTable?.dq_join_results ? (
               <JoinRates data={curTable.dq_join_results} />

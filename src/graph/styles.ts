@@ -13,7 +13,6 @@ export const Container = styled.div`
   display: flex;
   height: 100vh;
   overflow: hidden;
-  position: relative;
 `
 
 export const SidebarWrapper = styled.div`
@@ -26,7 +25,6 @@ export const SidebarWrapper = styled.div`
 export const SidebarContentWrapper = styled.div`
   padding: 20px 10px 10px 10px;
   background-color: #f4f2f4;
-  position: relative;
   z-index: 3;
 `
 
@@ -44,21 +42,16 @@ export const GraphContainer = styled.div`
 
 export const StyledDrawer = styled(Drawer)`
   .ant-drawer-body {
-    padding: 0 16px;
-    .ant-tabs-content {
-      position: relative;
-    }
-  }
-  .ant-drawer-content {
-    overflow: unset;
+    padding: 0;
   }
 `
 
 export const DrawerNodeLabel = styled.div`
-  position: absolute;
-  top: -49px;
-  right: 45px;
   font-weight: bold;
+`
+
+export const DrawerContent = styled.div`
+  padding: 0 16px;
 `
 
 export const ResizeArea = styled.div`
