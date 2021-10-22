@@ -65,7 +65,7 @@ export const RulesTableWrapper = styled.div<{ isNarrowMode: boolean; smallSize: 
     padding: 0px;
     & > span {
       display: block;
-      padding: ${({ smallSize }) => (smallSize ? '7px' : '12px 8px')};
+      padding: ${({ smallSize }) => (smallSize ? '0px' : '12px 8px')};
     }
   }
 
