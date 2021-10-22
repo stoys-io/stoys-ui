@@ -44,7 +44,7 @@ export const GraphContainer = styled.div`
 
 export const StyledDrawer = styled(Drawer)`
   .ant-drawer-body {
-    padding: 10px 16px;
+    padding: 0 16px;
     .ant-tabs-content {
       position: relative;
     }
@@ -65,8 +65,6 @@ export const ResizeArea = styled.div`
   height: ${RESIZE_AREA_HIGHT}px;
   background: grey;
   width: 100%;
-  position: absolute;
-  top: -5px;
   cursor: ns-resize;
   z-index: 10;
 `

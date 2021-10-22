@@ -2,22 +2,13 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { RESIZE_AREA_HIGHT } from '../constants'
 import { ResizeArea, StyledDrawer } from '../styles'
 
-type ResizableAntdDrawerProps = {
-  drawerHeight: number
-  setDrawerHeight: (_: number) => void
-  visible: boolean
-  closeDrawer: () => void
-  children: ReactNode
-}
-
-const minHeight = RESIZE_AREA_HIGHT + 150
 const ResizableAntdDrawer = ({
   children,
   drawerHeight,
   setDrawerHeight,
   visible,
   closeDrawer,
-}: ResizableAntdDrawerProps) => {
+}: Props) => {
   const [isResizing, setIsResizing] = useState<boolean>(false)
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -26,6 +17,8 @@ const ResizableAntdDrawer = ({
       }
 
       const height = document.body.offsetHeight - e.clientY
+      console.log(height)
+
       const maxHeight = document.body.offsetHeight * 0.9
       if (height > RESIZE_AREA_HIGHT && height < maxHeight) {
         setDrawerHeight(height)
@@ -48,12 +41,10 @@ const ResizableAntdDrawer = ({
   useEffect(() => {
     if (isResizing) {
       document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
     }
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
     }
   }, [isResizing])
 
@@ -66,10 +57,20 @@ const ResizableAntdDrawer = ({
       onClose={closeDrawer}
       height={drawerHeight}
     >
-      <ResizeArea onMouseDown={handleMouseDown} />
+      <ResizeArea onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
       {drawerHeight > RESIZE_AREA_HIGHT && children}
     </StyledDrawer>
   )
 }
 
 export default ResizableAntdDrawer
+
+interface Props {
+  drawerHeight: number
+  setDrawerHeight: (_: number) => void
+  visible: boolean
+  closeDrawer: () => void
+  children: ReactNode
+}
+
+const minHeight = RESIZE_AREA_HIGHT + 150
