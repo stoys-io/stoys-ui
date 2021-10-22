@@ -5,6 +5,8 @@ import {
   collectParentColumnAndTableIds,
   collectChildColumnAndTableIds,
   notEmpty,
+  resetHighlight,
+  highlightNodesBatch,
 } from './graph-ops'
 import { ChromaticScale, Graph, DataGraph, Badge, Highlight, Table } from './model'
 
@@ -100,8 +102,23 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
 
   selectedNodeId: undefined,
   nodeClick: (id: string, chromaticScale: ChromaticScale) => {
-    const graph = get().graph
     const highlightMode = get().highlightMode
+    // ignode node click when diffing
+    if (highlightMode === 'diffing') {
+      return
+    }
+
+    const graph = get().graph
+    if (highlightMode === 'none') {
+      // Highlight single node
+      const newHighlights = highlightNodesBatch([id])(resetHighlight(graph))
+
+      return set({
+        highlights: graphToHighlights(newHighlights),
+        selectedNodeId: id,
+      })
+    }
+
     const newHighlights = highlightHighlight(highlightMode)(graph, id, chromaticScale)
     return set({
       highlights: graphToHighlights(newHighlights),
@@ -141,12 +158,22 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
 
   highlightMode: 'nearest',
   setHighlightMode: (highlightMode: Highlight, chromaticScale: ChromaticScale) => {
+    const graph = get().graph
+    if (highlightMode === 'none') {
+      const newHighlights = resetHighlight(graph)
+
+      return set({
+        highlightMode,
+        highlights: graphToHighlights(newHighlights),
+        selectedNodeId: undefined,
+      })
+    }
+
     if (highlightMode === 'diffing') {
       // TODO: This block possibly does not belong here
       const baseRelease = get().baseRelease
       const data = get().data
       const tables = get().tables
-      const graph = get().graph
 
       const baseGraph = getBaseGraph(baseRelease, data, tables)
       const mergedGraph = getMergedGraph(graph, baseGraph)
@@ -164,7 +191,6 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
       return set({ highlightMode })
     }
 
-    const graph = get().graph
     const newHighlights = highlightHighlight(highlightMode)(graph, selectedNodeId, chromaticScale)
     return set({
       highlightMode,
