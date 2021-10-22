@@ -21,6 +21,10 @@ export const StyledMetricTable = styled(Table)<{ smallSize: boolean }>`
     position: relative;
     padding: ${getPaddingForTableCell};
   }
+
+  td.aligned-right {
+    text-align: right;
+  }
 `
 
 export const UppercaseValue = styled.span`
