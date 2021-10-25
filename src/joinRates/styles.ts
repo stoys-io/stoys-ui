@@ -26,3 +26,10 @@ export const StyledJoinStatistics = styled(Table)<{ smallSize: boolean }>`
     overflow: hidden;
   }
 `
+
+export const TableHeaderCellText = styled.div`
+  min-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`
