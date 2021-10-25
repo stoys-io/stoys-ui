@@ -10,28 +10,20 @@ const ResizableAntdDrawer = ({
   closeDrawer,
 }: Props) => {
   const [isResizing, setIsResizing] = useState<boolean>(false)
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (isResizing === false) {
-        return
-      }
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const height = document.body.offsetHeight - e.clientY
 
-      const height = document.body.offsetHeight - e.clientY
-      console.log(height)
-
-      const maxHeight = document.body.offsetHeight * 0.9
-      if (height > RESIZE_AREA_HIGHT && height < maxHeight) {
-        setDrawerHeight(height)
-      }
-    },
-    [isResizing]
-  )
+    const maxHeight = document.body.offsetHeight * 0.9
+    if (height < maxHeight) {
+      setDrawerHeight(height)
+    }
+  }, [])
 
   const handleMouseUp = useCallback(() => {
-    setIsResizing(false)
     if (drawerHeight < minHeight) {
       setDrawerHeight(RESIZE_AREA_HIGHT)
     }
+    setIsResizing(false)
   }, [drawerHeight])
 
   const handleMouseDown = useCallback(() => {
@@ -41,12 +33,17 @@ const ResizableAntdDrawer = ({
   useEffect(() => {
     if (isResizing) {
       document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp) // Depends on drawerHeight
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
     }
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isResizing])
+  }, [isResizing, drawerHeight])
 
   return (
     <StyledDrawer
@@ -57,7 +54,7 @@ const ResizableAntdDrawer = ({
       onClose={closeDrawer}
       height={drawerHeight}
     >
-      <ResizeArea onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
+      <ResizeArea onMouseDown={handleMouseDown} />
       {drawerHeight > RESIZE_AREA_HIGHT && <DrawerContent>{children}</DrawerContent>}
     </StyledDrawer>
   )
