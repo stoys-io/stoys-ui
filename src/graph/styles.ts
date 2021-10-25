@@ -7,7 +7,14 @@ import List from 'antd/lib/list'
 const { Search } = Input
 
 import Card from 'antd/lib/card'
-import { HIGHLIGHT_COLOR, NODE_HEIGHT, NODE_WIDTH, RESIZE_AREA_HIGHT } from './constants'
+import {
+  HIGHLIGHT_COLOR,
+  NODE_HEIGHT,
+  NODE_WIDTH,
+  RESIZE_AREA_HIGHT,
+  GREY_LIGHT,
+  GREY_ACCENT,
+} from './constants'
 
 export const Container = styled.div`
   display: flex;
@@ -18,17 +25,22 @@ export const Container = styled.div`
 export const SidebarWrapper = styled.div`
   height: 100vh;
   width: 250px;
-  background-color: #f4f2f4;
+  background-color: ${GREY_LIGHT};
   overflow-y: auto;
 `
 
 export const SidebarContentWrapper = styled.div`
   padding: 20px 10px 10px 10px;
-  background-color: #f4f2f4;
+  background-color: ${GREY_LIGHT};
   z-index: 3;
 `
 
 export const DrawerContainer = styled.div`
+  .ant-drawer-content,
+  .ant-drawer-content-wrapper {
+    border-radius: ${RESIZE_AREA_HIGHT}px ${RESIZE_AREA_HIGHT}px 0 0;
+  }
+
   .ant-drawer-top.ant-drawer-open,
   .ant-drawer-bottom.ant-drawer-open {
     height: unset;
@@ -55,11 +67,24 @@ export const DrawerContent = styled.div`
 `
 
 export const ResizeArea = styled.div`
+  background: ${GREY_LIGHT};
   height: ${RESIZE_AREA_HIGHT}px;
-  background: grey;
   width: 100%;
   cursor: ns-resize;
   z-index: 10;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: ' ';
+    width: 85px;
+    height: 3px;
+    border-radius: 3px;
+    background: ${GREY_ACCENT};
+    z-index: 12;
+  }
 `
 
 export const MenuTitle = styled.h4`

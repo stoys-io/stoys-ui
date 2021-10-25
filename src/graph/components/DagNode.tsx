@@ -4,10 +4,11 @@ import List from 'antd/lib/list'
 
 import {
   ADDED_NODE_HIGHLIGHT_COLOR,
-  DEFAULT_COLOR,
+  RESET_COLOR,
   DELETED_NODE_HIGHLIHT_COLOR,
   NODE_TEXT_COLOR,
   TRANSPARENT_NODE_TEXT_COLOR,
+  GREY_ACCENT,
 } from '../constants'
 import { renderNumericValue } from '../../helpers'
 import { Column, DataPayload } from '../model'
@@ -71,10 +72,10 @@ export const DagNode = memo(
         return column.style.color
       }
 
-      return DEFAULT_COLOR
+      return RESET_COLOR
     }
 
-    const cardHighlightedColor = (): string => (style?.color ? style.color : '#808080')
+    const cardHighlightedColor = (): string => (style?.color ? style.color : GREY_ACCENT)
 
     const titleHighlightColor = (): string => {
       if (
@@ -84,7 +85,7 @@ export const DagNode = memo(
         return style.color
       }
 
-      return DEFAULT_COLOR
+      return RESET_COLOR
     }
 
     return (
