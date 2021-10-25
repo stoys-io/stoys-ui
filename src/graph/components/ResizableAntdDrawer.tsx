@@ -3,7 +3,7 @@ import { RESIZE_AREA_HIGHT } from '../constants'
 import { useGraphStore } from '../graph-store'
 import { ResizeArea, DrawerContent, Drawr } from '../styles'
 
-const ResizableAntdDrawer = ({ children, setDrawerHeight, visible, closeDrawer }: Props) => {
+const ResizableAntdDrawer = ({ children, setDrawerHeight }: Props) => {
   const contentRef = useRef<HTMLDivElement>(null)
   const drawrRef = useRef<HTMLDivElement>(null)
   const getDrawerHeight = useGraphStore(state => state.getDrawerHeight)
@@ -80,10 +80,10 @@ const ResizableAntdDrawer = ({ children, setDrawerHeight, visible, closeDrawer }
 export default ResizableAntdDrawer
 
 interface Props {
-  drawerHeight: number
+  /* drawerHeight: number */
   setDrawerHeight: (_: number) => void
-  visible: boolean
-  closeDrawer: () => void
+  /* visible: boolean */
+  /* closeDrawer: () => void */
   children: ReactNode
 }
 

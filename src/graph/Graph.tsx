@@ -6,11 +6,12 @@ import Sidebar from './components/Sidebar'
 import { SearchArgs } from './components/SidebarSearch'
 import { DagNode } from './components/DagNode'
 import { DagEdge } from './components/DagEdge'
+import { DrawrWrap } from './components/DrawrWrap'
 
 import { graphLayout } from './graph-layout'
 import { useGraphStore } from './graph-store'
 
-import { Container, GraphContainer } from './styles'
+import { Container, GraphContainer, DrawerContainer } from './styles'
 import { Edge, Node, Graph, DataGraph, Table, ChromaticScale, Orientation } from './model'
 
 import { notEmpty, highlightNodesBatch } from './graph-ops'
@@ -105,7 +106,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           <Background />
         </ReactFlow>
       </GraphContainer>
-      <GraphDrawer />
+
+      <DrawerContainer>
+        <DrawrWrap>
+          <GraphDrawer />
+        </DrawrWrap>
+      </DrawerContainer>
     </Container>
   )
 }
