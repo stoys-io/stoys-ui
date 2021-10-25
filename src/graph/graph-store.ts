@@ -93,6 +93,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
   tables: undefined,
 
   drawerHeight: 500,
+  getDrawerHeight: () => get().drawerHeight,
   setDrawerHeight: (drawerHeight: number) => set({ drawerHeight }),
 
   drawerTab: undefined,
@@ -251,6 +252,7 @@ export interface GraphStore {
 
   drawerNodeId?: string
   drawerHeight: number
+  getDrawerHeight: () => number
   setDrawerHeight: (_: number) => void
   drawerTab?: string
   setDrawerTab: (_?: string) => void

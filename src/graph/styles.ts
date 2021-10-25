@@ -35,6 +35,14 @@ export const SidebarContentWrapper = styled.div`
   z-index: 3;
 `
 
+export const Drawr = styled.div`
+  background: #fff;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+`
+
 export const DrawerContainer = styled.div`
   .ant-drawer-content,
   .ant-drawer-content-wrapper {
