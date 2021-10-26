@@ -35,14 +35,6 @@ export const SidebarContentWrapper = styled.div`
   z-index: 3;
 `
 
-export const Drawr = styled.div`
-  background: #fff;
-  position: fixed;
-  left: 0;
-  width: 100%;
-  z-index: 10;
-`
-
 export const DrawerContainer = styled.div`
   .ant-drawer-content,
   .ant-drawer-content-wrapper {
@@ -71,10 +63,11 @@ export const DrawerNodeLabel = styled.div`
 `
 
 export const DrawerContent = styled.div`
-  padding: 0 16px;
+  padding: ${RESIZE_AREA_HIGHT}px 16px 0 16px;
 `
 
 export const ResizeArea = styled.div`
+  position: fixed;
   background: ${GREY_LIGHT};
   height: ${RESIZE_AREA_HIGHT}px;
   width: 100%;
