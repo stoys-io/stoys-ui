@@ -1,12 +1,13 @@
 import React, { useMemo, useEffect } from 'react'
 import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 
-import GraphDrawer from './components/GraphDrawer'
-import Sidebar from './components/Sidebar'
+import { Sidebar } from './components/Sidebar'
 import { SearchArgs } from './components/SidebarSearch'
 import { DagNode } from './components/DagNode'
 import { DagEdge } from './components/DagEdge'
-import { DrawrWrap } from './components/DrawrWrap'
+
+import { ConnectedDrawer } from './components/ConnectedDrawer'
+import { DrawerTabs } from './components/DrawerTabs'
 
 import { graphLayout } from './graph-layout'
 import { useGraphStore } from './graph-store'
@@ -43,7 +44,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const nodeClick = useGraphStore(state => state.nodeClick)
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
   const resetHighlightedColumns = useGraphStore(state => state.resetHighlightedColumns)
-  const closeDrawer = useGraphStore(state => state.closeDrawer)
+  const hideDrawer = useGraphStore(state => state.hideDrawer)
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
@@ -53,7 +54,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const onPaneClick = () => {
     resetHighlights()
-    closeDrawer()
+    hideDrawer()
     resetHighlightedColumns()
   }
 
@@ -106,11 +107,10 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           <Background />
         </ReactFlow>
       </GraphContainer>
-
       <DrawerContainer>
-        <DrawrWrap>
-          <GraphDrawer />
-        </DrawrWrap>
+        <ConnectedDrawer>
+          <DrawerTabs />
+        </ConnectedDrawer>
       </DrawerContainer>
     </Container>
   )

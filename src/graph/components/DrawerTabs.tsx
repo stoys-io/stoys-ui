@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useCallback } from 'react'
 import { Tabs } from 'antd'
 
-import { DrawerNodeLabel, DrawerContainer } from '../styles'
+import { DrawerNodeLabel } from '../styles'
 
 import { NoData } from '../../profiler/styles'
 import { RawMetricsData } from '../../metrics/model'
@@ -10,7 +10,7 @@ import { useGraphStore } from '../graph-store'
 
 const { TabPane } = Tabs
 
-const GraphDrawer = () => {
+export const DrawerTabs = () => {
   const drawerNodeId = useGraphStore(state => state.drawerNodeId)
 
   const curTable = useGraphStore(
@@ -145,8 +145,6 @@ const GraphDrawer = () => {
     </Tabs>
   )
 }
-
-export default GraphDrawer
 
 const JOIN_RATES_KEY = 'join_rates'
 const METRICS_KEY = 'metrics'
