@@ -14,7 +14,7 @@ const ResizableAntdDrawer = ({
     const height = document.body.offsetHeight - e.clientY
 
     const maxHeight = document.body.offsetHeight * 0.9
-    if (height < maxHeight) {
+    if (height > RESIZE_AREA_HIGHT && height < maxHeight) {
       setDrawerHeight(height)
     }
   }, [])
@@ -49,13 +49,13 @@ const ResizableAntdDrawer = ({
     <StyledDrawer
       getContainer={false}
       placement="bottom"
-      closable
+      closable={false}
       visible={visible}
       onClose={closeDrawer}
       height={drawerHeight}
     >
       <ResizeArea onMouseDown={handleMouseDown} />
-      {drawerHeight > RESIZE_AREA_HIGHT && <DrawerContent>{children}</DrawerContent>}
+      <DrawerContent>{children}</DrawerContent>
     </StyledDrawer>
   )
 }

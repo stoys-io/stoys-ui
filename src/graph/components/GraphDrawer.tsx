@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useCallback } from 'react'
 import { Tabs } from 'antd'
-import ResizableAntdDrawer from './ResizableAntdDrawer'
 
 import { DrawerNodeLabel, DrawerContainer } from '../styles'
 
@@ -13,7 +12,6 @@ const { TabPane } = Tabs
 
 const GraphDrawer = () => {
   const drawerNodeId = useGraphStore(state => state.drawerNodeId)
-  const visible = drawerNodeId !== undefined
 
   const curTable = useGraphStore(
     useCallback(state => state.tables?.find(table => table.id === drawerNodeId), [drawerNodeId])
@@ -21,11 +19,7 @@ const GraphDrawer = () => {
   const baseRelease = useGraphStore(state => state.baseRelease)
   const graphData = useGraphStore(state => state.data)
 
-  const drawerHeight = useGraphStore(state => state.drawerHeight)
-  const setDrawerHeight = useGraphStore(state => state.setDrawerHeight)
-
   const setDrawerTab = useGraphStore(state => state.setDrawerTab)
-
   const closeDrawer = useGraphStore(state => state.closeDrawer)
 
   const baseData = useMemo(() => {
@@ -85,79 +79,70 @@ const GraphDrawer = () => {
   }, [])
 
   return (
-    <DrawerContainer>
-      <ResizableAntdDrawer
-        drawerHeight={drawerHeight}
-        setDrawerHeight={setDrawerHeight}
-        closeDrawer={closeDrawer}
-        visible={visible}
-      >
-        <Tabs
-          activeKey={drawerTab}
-          onChange={setDrawerTab}
-          tabBarExtraContent={<DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>}
-        >
-          <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
-            {curTable?.dq_join_results ? (
-              <JoinRates data={curTable.dq_join_results} />
-            ) : (
-              <NoData>No data</NoData>
-            )}
-          </TabPane>
-          <TabPane tab="Metrics" key={METRICS_KEY}>
-            {metrics ? (
-              <Metrics
-                data={metrics}
-                config={{
-                  previousReleaseDataIsShown: true,
-                  disabledColumns: [],
-                  pagination: false,
-                  saveMetricThreshold: () => {},
-                  smallSize: true,
-                }}
-              />
-            ) : (
-              <NoData>No data</NoData>
-            )}
-          </TabPane>
-          <TabPane tab="Profiler" key={PROFILER_KEY}>
-            {profilerData ? (
-              <Profiler
-                datasets={profilerData}
-                pagination={{ disabled: false }}
-                config={{
-                  showLogarithmicSwitcher: false,
-                  logarithmicChecked: false,
+    <Tabs
+      activeKey={drawerTab}
+      onChange={setDrawerTab}
+      tabBarExtraContent={<DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>}
+    >
+      <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
+        {curTable?.dq_join_results ? (
+          <JoinRates data={curTable.dq_join_results} />
+        ) : (
+          <NoData>No data</NoData>
+        )}
+      </TabPane>
+      <TabPane tab="Metrics" key={METRICS_KEY}>
+        {metrics ? (
+          <Metrics
+            data={metrics}
+            config={{
+              previousReleaseDataIsShown: true,
+              disabledColumns: [],
+              pagination: false,
+              saveMetricThreshold: () => {},
+              smallSize: true,
+            }}
+          />
+        ) : (
+          <NoData>No data</NoData>
+        )}
+      </TabPane>
+      <TabPane tab="Profiler" key={PROFILER_KEY}>
+        {profilerData ? (
+          <Profiler
+            datasets={profilerData}
+            pagination={{ disabled: false }}
+            config={{
+              showLogarithmicSwitcher: false,
+              logarithmicChecked: false,
 
-                  showAxesSwitcher: false,
-                  axesChecked: false,
+              showAxesSwitcher: false,
+              axesChecked: false,
 
-                  showChartTableSwitcher: false,
-                  chartTableChecked: false,
+              showChartTableSwitcher: false,
+              chartTableChecked: false,
 
-                  showSearch: false,
-                  smallSize: true,
-                }}
-              />
-            ) : (
-              <NoData>No data</NoData>
-            )}
-          </TabPane>
-          <TabPane tab="Quality" key={QUALITY_KEY}>
-            {curTable?.dq_result ? (
-              <Quality data={curTable.dq_result} config={{ pagination: false, smallSize: true }} />
-            ) : (
-              <NoData>No data</NoData>
-            )}
-          </TabPane>
-          {curTable?.metadata ? (
-            <TabPane tab="Metadata" key={METADATA_KEY}>
-              <pre>{JSON.stringify(curTable.metadata, null, 2)}</pre>
-            </TabPane>
-          ) : null}
-        </Tabs>
-      </ResizableAntdDrawer>
-    </DrawerContainer>
+              showSearch: false,
+              smallSize: true,
+            }}
+          />
+        ) : (
+          <NoData>No data</NoData>
+        )}
+      </TabPane>
+      <TabPane tab="Quality" key={QUALITY_KEY}>
+        {curTable?.dq_result ? (
+          <Quality data={curTable.dq_result} config={{ pagination: false, smallSize: true }} />
+        ) : (
+          <NoData>No data</NoData>
+        )}
+      </TabPane>
+      {curTable?.metadata ? (
+        <TabPane tab="Metadata" key={METADATA_KEY}>
+          <pre>{JSON.stringify(curTable.metadata, null, 2)}</pre>
+        </TabPane>
+      ) : null}
+    </Tabs>
   )
 }
 
