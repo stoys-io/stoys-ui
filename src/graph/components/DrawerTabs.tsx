@@ -86,7 +86,7 @@ export const DrawerTabs = () => {
     >
       <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
         {curTable?.dq_join_results ? (
-          <JoinRates data={curTable.dq_join_results} />
+          <JoinRates config={{ pagination: false }} data={curTable.dq_join_results} />
         ) : (
           <NoData>No data</NoData>
         )}
@@ -111,7 +111,6 @@ export const DrawerTabs = () => {
         {profilerData ? (
           <Profiler
             datasets={profilerData}
-            pagination={{ disabled: false }}
             config={{
               showLogarithmicSwitcher: false,
               logarithmicChecked: false,
@@ -121,6 +120,7 @@ export const DrawerTabs = () => {
 
               showChartTableSwitcher: false,
               chartTableChecked: false,
+              pagination: false,
 
               showSearch: false,
               smallSize: true,
