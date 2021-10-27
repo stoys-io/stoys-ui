@@ -35,6 +35,7 @@ export const Profiler = Template.bind({})
 Profiler.args = {
   datasets: [firstDatasetMock as Dataset, secondDatasetMock as Dataset],
   config: {
+    pagination: false,
     showLogarithmicSwitcher: true,
     showAxesSwitcher: true,
     showChartTableSwitcher: true,
