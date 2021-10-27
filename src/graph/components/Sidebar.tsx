@@ -38,7 +38,7 @@ const highlightList = [
   },
 ]
 
-const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
+export const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
   const setBaseRelease = useGraphStore(state => state.setBaseRelease)
 
   const badge = useGraphStore(state => state.badge)
@@ -88,8 +88,6 @@ const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
     </SidebarWrapper>
   )
 }
-
-export default Sidebar
 
 interface Props {
   onSearch: OnSearch

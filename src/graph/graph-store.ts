@@ -1,4 +1,5 @@
 import create from 'zustand'
+import { RESIZE_AREA_HIGHT } from './constants'
 import { getBaseGraph, getMergedGraph } from './Graph'
 import {
   highlightHighlight,
@@ -19,6 +20,7 @@ const defaultHighlightedColumns = {
 }
 
 const defaultHighlights = { nodes: {}, edges: {} }
+const defaultDrawerHeight = 500
 export const useGraphStore = create<GraphStore>((set, get) => ({
   graph: { nodes: [], edges: [] },
 
@@ -91,14 +93,23 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
 
   data: [],
   tables: undefined,
-
-  drawerHeight: 0,
-  setDrawerHeight: (drawerHeight: number) => set({ drawerHeight }),
-  drawerNodeId: undefined,
-  closeDrawer: () => set({ drawerNodeId: undefined }),
-  openDrawer: (drawerNodeId: string) => set({ drawerNodeId }),
-
   setInitialStore: ({ graph, data, tables }) => set({ graph, data, tables }),
+
+  drawerHeight: defaultDrawerHeight,
+  getDrawerHeight: () => get().drawerHeight,
+  setDrawerHeight: (drawerHeight: number) => set({ drawerHeight }),
+
+  drawerTab: undefined,
+  setDrawerTab: (drawerTab?: string) => set({ drawerTab }),
+
+  drawerNodeId: undefined,
+  closeDrawer: () => set({ drawerNodeId: undefined, drawerTab: undefined }),
+  hideDrawer: () => set({ drawerHeight: RESIZE_AREA_HIGHT }),
+
+  openDrawer: (drawerNodeId: string) =>
+    get().drawerHeight === RESIZE_AREA_HIGHT
+      ? set({ drawerNodeId, drawerHeight: defaultDrawerHeight })
+      : set({ drawerNodeId }),
 
   selectedNodeId: undefined,
   nodeClick: (id: string, chromaticScale: ChromaticScale) => {
@@ -247,8 +258,12 @@ export interface GraphStore {
 
   drawerNodeId?: string
   drawerHeight: number
+  getDrawerHeight: () => number
   setDrawerHeight: (_: number) => void
+  drawerTab?: string
+  setDrawerTab: (_?: string) => void
   closeDrawer: () => void
+  hideDrawer: () => void
   openDrawer: (id: string) => void
 
   setInitialStore: (arg: InitialArgs) => void
@@ -271,18 +286,18 @@ export interface GraphStore {
   setHighlightMode: (value: Highlight, chromaticScale: ChromaticScale) => void
 }
 
+interface InitialArgs {
+  graph: Graph
+  data: DataGraph[]
+  tables?: Table[]
+}
+
 interface HColumns {
   highlightedType: Highlight
   selectedTableId: string
   selectedColumnId: string
   reletedColumnsIds: Array<string>
   reletedTablesIds: Array<string>
-}
-
-interface InitialArgs {
-  graph: Graph
-  data: DataGraph[]
-  tables?: Table[]
 }
 
 interface StoredHighlights {
