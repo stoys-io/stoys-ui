@@ -4,7 +4,7 @@ import Tooltip from 'antd/lib/tooltip'
 
 import PushpinOutlined from '@ant-design/icons/lib/icons/PushpinOutlined'
 
-import VirtualTable from './VirtualTable'
+import VirtualTable from '../../common/VirtualTable'
 import { TableTitleWrapper, TableTitle, SampleTableWrapper, IconButton } from '../styles'
 import { SampleTableProps } from '../model'
 import { MIN_TABLE_CELL_HEIGHT, TABLE_HEIGHT } from '../constants'

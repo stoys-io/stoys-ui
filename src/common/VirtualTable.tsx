@@ -4,7 +4,7 @@ import ResizeObserver from 'rc-resize-observer'
 import classNames from 'classnames'
 import Table from 'antd/lib/table'
 
-import { MIN_TABLE_CELL_HEIGHT } from '../constants'
+import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
 
 function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
   const { columns, scroll } = props
