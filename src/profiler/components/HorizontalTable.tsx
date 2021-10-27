@@ -17,6 +17,7 @@ const HorizontalTable = (props: TableProps) => {
     pagination,
     onChange,
     height,
+    ...otherProps
   } = props
   const handleChangePagination = useCallback(
     (pagination, filters, sorter, extra) => {
@@ -41,7 +42,7 @@ const HorizontalTable = (props: TableProps) => {
         x: true,
         y: withoutPagination && height ? height : undefined,
       }}
-      {...props}
+      {...otherProps}
       dataSource={data}
       columns={columns}
       pagination={

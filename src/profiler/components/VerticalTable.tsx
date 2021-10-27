@@ -23,6 +23,7 @@ const VerticalTable = (props: VerticalTableProps) => {
     displayNormalized,
     onChange,
     height,
+    ...otherProps
   } = props
   const flattenData = data.map(item => item.children).flat()
   const verticalColumns: Array<VerticalColumn> = flattenData.map((item, index) => {
@@ -121,7 +122,7 @@ const VerticalTable = (props: VerticalTableProps) => {
       sticky
       bordered
       scroll={{ x: true, y: withoutPagination && height ? height : undefined }}
-      {...props}
+      {...otherProps}
       columns={verticalColumns}
       dataSource={dataSource}
       pagination={

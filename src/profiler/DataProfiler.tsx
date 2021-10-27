@@ -15,7 +15,7 @@ import JsonDrawer from './components/JsonDrawer'
 import { NoData, TableWrapper } from './styles'
 
 export const DataProfiler = (props: DataProfilerProps) => {
-  const { datasets, config = {} } = props
+  const { datasets, config = {}, ...otherProps } = props
   const {
     smallSize,
     colors,
@@ -210,7 +210,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
         <TableWrapper smallSize={!!smallSize}>
           {isVertical ? (
             <VerticalTable
-              {...props}
+              {...otherProps}
               data={data}
               columns={columns}
               currentPage={current}
@@ -224,7 +224,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
             />
           ) : (
             <HorizontalTable
-              {...props}
+              {...otherProps}
               data={data}
               columns={columns}
               currentPage={current}
