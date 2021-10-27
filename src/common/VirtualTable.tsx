@@ -56,10 +56,9 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
 
     const renderCell = (columnIndex: number, rowIndex: number): string | JSX.Element => {
       const value = (rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]
-      const { metaData } = rawData[rowIndex] as any
       const render = (mergedColumns as any)[columnIndex].render
 
-      return render(value, { metaData })
+      return render(value, rawData[rowIndex])
     }
 
     return (
