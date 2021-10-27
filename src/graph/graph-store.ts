@@ -19,8 +19,8 @@ const defaultHighlightedColumns = {
   highlightedType: 'nearest' as 'nearest',
 }
 
-const defaultHighlights = { nodes: {}, edges: {} }
 const defaultDrawerHeight = 500
+const defaultHighlights = { nodes: {}, edges: {} }
 export const useGraphStore = create<GraphStore>((set, get) => ({
   graph: { nodes: [], edges: [] },
 
@@ -30,15 +30,27 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
       highlightedColumns: defaultHighlightedColumns,
     }),
   setHighlightedColumns: (columnId: string, tableId: string) => {
+    const graph = get().graph
+    const highlightMode = get().highlightMode
+    const newHighlights = resetHighlight(graph)
+
+    if (highlightMode === 'diffing' || highlightMode === 'none') {
+      return set({
+        highlightedColumns: defaultHighlightedColumns,
+        highlights: graphToHighlights(newHighlights),
+      })
+    }
+
     const highlightedColumns = get().highlightedColumns
     const tables = get().tables
 
     if (columnId === highlightedColumns.selectedColumnId) {
-      return set({ highlightedColumns: defaultHighlightedColumns })
-    }
+      return set({
+        highlightedColumns: defaultHighlightedColumns,
 
-    const graph = get().graph
-    const highlightMode = get().highlightMode
+        highlights: graphToHighlights(newHighlights),
+      })
+    }
 
     let tableIds: Array<string> = []
     let columnDependcies: Array<string> = []
@@ -81,6 +93,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     }
 
     return set({
+      highlights: graphToHighlights(newHighlights),
       highlightedColumns: {
         selectedTableId: tableId,
         selectedColumnId: columnId,
@@ -116,7 +129,9 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     const highlightMode = get().highlightMode
     // ignode node click when diffing
     if (highlightMode === 'diffing') {
-      return
+      return set({
+        highlightedColumns: defaultHighlightedColumns,
+      })
     }
 
     const graph = get().graph
@@ -127,6 +142,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
       return set({
         highlights: graphToHighlights(newHighlights),
         selectedNodeId: id,
+        highlightedColumns: defaultHighlightedColumns,
       })
     }
 
@@ -134,6 +150,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     return set({
       highlights: graphToHighlights(newHighlights),
       selectedNodeId: id,
+      highlightedColumns: defaultHighlightedColumns,
     })
   },
 
@@ -177,6 +194,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
         highlightMode,
         highlights: graphToHighlights(newHighlights),
         selectedNodeId: undefined,
+        highlightedColumns: defaultHighlightedColumns,
       })
     }
 
@@ -194,6 +212,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
         highlightMode,
         highlights,
         graph: mergedGraph,
+        highlightedColumns: defaultHighlightedColumns,
       })
     }
 
