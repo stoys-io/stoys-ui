@@ -146,9 +146,10 @@ export const ScrollCardTitle = styled.div<{ color: string }>`
   color: ${props => props.color};
 `
 
-export const ItemText = styled.div<{ color: string }>`
+export const ItemText = styled.div<{ color: string; hoverable: boolean }>`
   color: ${props => props.color};
   &:hover {
-    color: ${HIGHLIGHT_COLOR};
+    color: ${props => (props.hoverable ? HIGHLIGHT_COLOR : props.color)};
   }
+}
 `

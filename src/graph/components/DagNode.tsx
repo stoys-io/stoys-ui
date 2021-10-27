@@ -16,11 +16,13 @@ import { ItemText, ScrollCard, ScrollCardTitle } from '../styles'
 import { useGraphStore, GraphStore } from '../graph-store'
 
 const selectBadge = (state: GraphStore) => state.badge
+const selectHighlightMode = (state: GraphStore) => state.highlightMode
+const selectOpenDrawer = (state: GraphStore) => state.openDrawer
+
 const selectColumns = (state: GraphStore) => state.setHighlightedColumns
 const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
 const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
 const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.reletedColumnsIds
-const selectOpenDrawer = (state: GraphStore) => state.openDrawer
 
 export const DagNode = memo(
   ({
@@ -38,6 +40,7 @@ export const DagNode = memo(
     const selectedColumnId = useGraphStore(selectColumnId)
     const reletedColumnsIds = useGraphStore(selectRelColumnIds)
     const openDrawer = useGraphStore(selectOpenDrawer)
+    const highlightMode = useGraphStore(selectHighlightMode)
 
     const actualBadge = badge === 'violations' ? violations : partitions
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
@@ -75,6 +78,8 @@ export const DagNode = memo(
         ? style.color
         : RESET_COLOR
 
+    const isHoverableColumn = !['none', 'diffing'].includes(highlightMode)
+
     return (
       <div className="nowheel">
         {/* nowheel enables scrolling */}
@@ -110,6 +115,7 @@ export const DagNode = memo(
             renderItem={(column: Column) => (
               <List.Item>
                 <ItemText
+                  hoverable={isHoverableColumn}
                   color={getListItemHighlightedColor(column)}
                   onClick={(evt: React.MouseEvent<HTMLElement>) => {
                     evt.stopPropagation()
