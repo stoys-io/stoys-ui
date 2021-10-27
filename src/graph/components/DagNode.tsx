@@ -22,7 +22,7 @@ const selectOpenDrawer = (state: GraphStore) => state.openDrawer
 const selectColumns = (state: GraphStore) => state.setHighlightedColumns
 const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
 const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
-const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.reletedColumnsIds
+const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
 
 export const DagNode = memo(
   ({
@@ -38,7 +38,7 @@ export const DagNode = memo(
     const setHighlightedColumns = useGraphStore(selectColumns)
     const selectedTableId = useGraphStore(selectTableId)
     const selectedColumnId = useGraphStore(selectColumnId)
-    const reletedColumnsIds = useGraphStore(selectRelColumnIds)
+    const relatedColumnsIds = useGraphStore(selectRelColumnIds)
     const openDrawer = useGraphStore(selectOpenDrawer)
     const highlightMode = useGraphStore(selectHighlightMode)
 
@@ -46,7 +46,7 @@ export const DagNode = memo(
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
     const _columns =
       selectedTableId && id !== selectedTableId
-        ? columns.filter((column: Column) => reletedColumnsIds.includes(column.id))
+        ? columns.filter((column: Column) => relatedColumnsIds.includes(column.id))
         : columns
 
     const getListItemHighlightedColor = (column: Column): string => {

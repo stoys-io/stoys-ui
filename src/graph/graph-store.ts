@@ -14,9 +14,8 @@ import { ChromaticScale, Graph, DataGraph, Badge, Highlight, Table } from './mod
 const defaultHighlightedColumns = {
   selectedTableId: '',
   selectedColumnId: '',
-  reletedColumnsIds: [],
-  reletedTablesIds: [],
-  highlightedType: 'nearest' as 'nearest',
+  relatedColumnsIds: [],
+  relatedTablesIds: [],
 }
 
 const defaultDrawerHeight = 500
@@ -97,9 +96,8 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
       highlightedColumns: {
         selectedTableId: tableId,
         selectedColumnId: columnId,
-        reletedColumnsIds: columnDependcies,
-        reletedTablesIds: tableIds,
-        highlightedType: highlightMode,
+        relatedColumnsIds: columnDependcies,
+        relatedTablesIds: tableIds,
       },
     })
   },
@@ -312,11 +310,10 @@ interface InitialArgs {
 }
 
 interface HColumns {
-  highlightedType: Highlight
   selectedTableId: string
   selectedColumnId: string
-  reletedColumnsIds: Array<string>
-  reletedTablesIds: Array<string>
+  relatedColumnsIds: Array<string>
+  relatedTablesIds: Array<string>
 }
 
 interface StoredHighlights {
