@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import Drawer from 'antd/lib/drawer'
 import Select from 'antd/lib/select'
 import Input from 'antd/lib/input'
-import List from 'antd/lib/list'
 
 const { Search } = Input
 
@@ -147,9 +146,10 @@ export const ScrollCardTitle = styled.div<{ color: string }>`
   color: ${props => props.color};
 `
 
-export const DagListItem = styled(List.Item, {
-  // do not pass highlightedColor prop down to the Card
-  shouldForwardProp: prop => prop !== 'higtlightedColor',
-})<{ higtlightedColor: string }>`
-  color: ${props => props.higtlightedColor};
+export const ItemText = styled.div<{ color: string; hoverable: boolean }>`
+  color: ${props => props.color};
+  &:hover {
+    color: ${props => (props.hoverable ? HIGHLIGHT_COLOR : props.color)};
+  }
+}
 `

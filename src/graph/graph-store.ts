@@ -9,18 +9,17 @@ import {
   resetHighlight,
   highlightNodesBatch,
 } from './graph-ops'
-import { ChromaticScale, Graph, DataGraph, Badge, Highlight, Table } from './model'
+import { ChromaticScale, Column, Node, Graph, DataGraph, Badge, Highlight, Table } from './model'
 
 const defaultHighlightedColumns = {
   selectedTableId: '',
   selectedColumnId: '',
-  reletedColumnsIds: [],
-  reletedTablesIds: [],
-  highlightedType: 'nearest' as 'nearest',
+  relatedColumnsIds: [],
+  relatedTablesIds: [],
 }
 
-const defaultHighlights = { nodes: {}, edges: {} }
 const defaultDrawerHeight = 500
+const defaultHighlights = { nodes: {}, edges: {} }
 export const useGraphStore = create<GraphStore>((set, get) => ({
   graph: { nodes: [], edges: [] },
 
@@ -30,15 +29,31 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
       highlightedColumns: defaultHighlightedColumns,
     }),
   setHighlightedColumns: (columnId: string, tableId: string) => {
+    // TODO: Simplify. Columns and nodes search is basically the same thing.
+    // ( `collectParentColumnAndTableIds`, `findEdgeHelper`)
+    // No need to have a few functions to traverse the same graph
+
+    const graph = get().graph
+    const highlightMode = get().highlightMode
+
+    if (highlightMode === 'diffing' || highlightMode === 'none') {
+      const newHighlights = resetHighlight(graph)
+      return set({
+        highlightedColumns: defaultHighlightedColumns,
+        highlights: graphToHighlights(newHighlights),
+      })
+    }
+
     const highlightedColumns = get().highlightedColumns
     const tables = get().tables
 
     if (columnId === highlightedColumns.selectedColumnId) {
-      return set({ highlightedColumns: defaultHighlightedColumns })
+      const newHighlights = resetHighlight(graph)
+      return set({
+        highlightedColumns: defaultHighlightedColumns,
+        highlights: graphToHighlights(newHighlights),
+      })
     }
-
-    const graph = get().graph
-    const highlightMode = get().highlightMode
 
     let tableIds: Array<string> = []
     let columnDependcies: Array<string> = []
@@ -68,25 +83,49 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
         ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
         ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
       ]
+
       const tableColumnIds = tables
         ?.filter(table => tableIds.includes(table.id))
         .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
+
       const selectedColumnDependcies = tables
         ?.find(table => table.id === tableId)
         ?.columns.find(column => column.id === columnId)?.dependencies
+
       columnDependcies = [
         ...(tableColumnIds ? tableColumnIds : []),
         ...(selectedColumnDependcies ? selectedColumnDependcies : []),
       ].filter(notEmpty)
     }
 
+    const emptyColumns = (node: Node) => {
+      const relatedColumns = node.data.columns.filter((column: Column) =>
+        columnDependcies.includes(column.id)
+      )
+      return relatedColumns.length === 0
+    }
+
+    const emptyNodeIds = graph.nodes
+      .filter(node => tableIds.includes(node.id) && emptyColumns(node))
+      .map(node => node.id)
+
+    // Remove all unrelated to columns nodes and edges
+    const alteredGraph = {
+      nodes: graph.nodes.filter(node => !emptyNodeIds.includes(node.id)),
+      edges: graph.edges.filter(
+        edge => !(emptyNodeIds.includes(edge.source) || emptyNodeIds.includes(edge.target))
+      ),
+    }
+
+    const newHighlights = highlightHighlight(highlightMode)(alteredGraph, tableId)
+
     return set({
+      highlights: graphToHighlights(newHighlights),
       highlightedColumns: {
         selectedTableId: tableId,
         selectedColumnId: columnId,
-        reletedColumnsIds: columnDependcies,
-        reletedTablesIds: tableIds,
-        highlightedType: highlightMode,
+        relatedColumnsIds: columnDependcies,
+        relatedTablesIds: tableIds,
       },
     })
   },
@@ -116,7 +155,9 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     const highlightMode = get().highlightMode
     // ignode node click when diffing
     if (highlightMode === 'diffing') {
-      return
+      return set({
+        highlightedColumns: defaultHighlightedColumns,
+      })
     }
 
     const graph = get().graph
@@ -127,6 +168,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
       return set({
         highlights: graphToHighlights(newHighlights),
         selectedNodeId: id,
+        highlightedColumns: defaultHighlightedColumns,
       })
     }
 
@@ -134,6 +176,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     return set({
       highlights: graphToHighlights(newHighlights),
       selectedNodeId: id,
+      highlightedColumns: defaultHighlightedColumns,
     })
   },
 
@@ -177,6 +220,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
         highlightMode,
         highlights: graphToHighlights(newHighlights),
         selectedNodeId: undefined,
+        highlightedColumns: defaultHighlightedColumns,
       })
     }
 
@@ -194,6 +238,7 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
         highlightMode,
         highlights,
         graph: mergedGraph,
+        highlightedColumns: defaultHighlightedColumns,
       })
     }
 
@@ -293,11 +338,10 @@ interface InitialArgs {
 }
 
 interface HColumns {
-  highlightedType: Highlight
   selectedTableId: string
   selectedColumnId: string
-  reletedColumnsIds: Array<string>
-  reletedTablesIds: Array<string>
+  relatedColumnsIds: Array<string>
+  relatedTablesIds: Array<string>
 }
 
 interface StoredHighlights {

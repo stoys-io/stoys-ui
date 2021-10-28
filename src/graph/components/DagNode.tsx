@@ -12,16 +12,17 @@ import {
 } from '../constants'
 import { renderNumericValue } from '../../helpers'
 import { Column, DataPayload } from '../model'
-import { DagListItem, ScrollCard, ScrollCardTitle } from '../styles'
+import { ItemText, ScrollCard, ScrollCardTitle } from '../styles'
 import { useGraphStore, GraphStore } from '../graph-store'
 
 const selectBadge = (state: GraphStore) => state.badge
+const selectHighlightMode = (state: GraphStore) => state.highlightMode
+const selectOpenDrawer = (state: GraphStore) => state.openDrawer
+
 const selectColumns = (state: GraphStore) => state.setHighlightedColumns
 const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
 const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
-const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.reletedColumnsIds
-const selecthighlightedType = (state: GraphStore) => state.highlightedColumns.highlightedType
-const selectOpenDrawer = (state: GraphStore) => state.openDrawer
+const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
 
 export const DagNode = memo(
   ({
@@ -37,19 +38,15 @@ export const DagNode = memo(
     const setHighlightedColumns = useGraphStore(selectColumns)
     const selectedTableId = useGraphStore(selectTableId)
     const selectedColumnId = useGraphStore(selectColumnId)
-    const reletedColumnsIds = useGraphStore(selectRelColumnIds)
-    const highlightedType = useGraphStore(selecthighlightedType)
-
+    const relatedColumnsIds = useGraphStore(selectRelColumnIds)
     const openDrawer = useGraphStore(selectOpenDrawer)
+    const highlightMode = useGraphStore(selectHighlightMode)
 
     const actualBadge = badge === 'violations' ? violations : partitions
     const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
     const _columns =
-      highlightedType !== 'none' &&
-      highlightedType !== 'diffing' &&
-      selectedTableId &&
-      id !== selectedTableId
-        ? columns.filter((column: any) => reletedColumnsIds.includes(column.id))
+      selectedTableId && id !== selectedTableId
+        ? columns.filter((column: Column) => relatedColumnsIds.includes(column.id))
         : columns
 
     const getListItemHighlightedColor = (column: Column): string => {
@@ -75,18 +72,13 @@ export const DagNode = memo(
       return RESET_COLOR
     }
 
-    const cardHighlightedColor = (): string => (style?.color ? style.color : GREY_ACCENT)
+    const cardHighlightedColor = style?.color ? style.color : GREY_ACCENT
+    const titleHighlightColor =
+      style && [ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR].includes(style.color)
+        ? style.color
+        : RESET_COLOR
 
-    const titleHighlightColor = (): string => {
-      if (
-        style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
-        style?.color === DELETED_NODE_HIGHLIHT_COLOR
-      ) {
-        return style.color
-      }
-
-      return RESET_COLOR
-    }
+    const isHoverableColumn = !['none', 'diffing'].includes(highlightMode)
 
     return (
       <div className="nowheel">
@@ -108,27 +100,31 @@ export const DagNode = memo(
         )}
         <ScrollCard
           title={
-            <ScrollCardTitle onClick={() => openDrawer(id)} color={titleHighlightColor()}>
+            <ScrollCardTitle onClick={() => openDrawer(id)} color={titleHighlightColor}>
               {label}
             </ScrollCardTitle>
           }
           size="small"
           type="inner"
           extra={actualBadgeFormatted}
-          highlightColor={cardHighlightedColor()}
+          highlightColor={cardHighlightedColor}
         >
           <List
             size="small"
             dataSource={_columns}
             renderItem={(column: Column) => (
-              <DagListItem
-                higtlightedColor={getListItemHighlightedColor(column)}
-                onClick={() => {
-                  setHighlightedColumns(column.id, id)
-                }}
-              >
-                {column.name}
-              </DagListItem>
+              <List.Item>
+                <ItemText
+                  hoverable={isHoverableColumn}
+                  color={getListItemHighlightedColor(column)}
+                  onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                    evt.stopPropagation()
+                    setHighlightedColumns(column.id, id)
+                  }}
+                >
+                  {column.name}
+                </ItemText>
+              </List.Item>
             )}
           />
         </ScrollCard>

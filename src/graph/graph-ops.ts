@@ -252,7 +252,7 @@ const highlightDispatch = (highlightMode: Highlight) =>
 export const highlightHighlight = (highlightMode: Highlight) => {
   const whichHighlight = highlightDispatch(highlightMode)
 
-  return (graph: Graph, id: string, chromaticScale: ChromaticScale): Graph => {
+  return (graph: Graph, id: string, chromaticScale: ChromaticScale = 'interpolatePuOr'): Graph => {
     const highlightEdges = whichHighlight(graph, id)
 
     if (!highlightEdges.length) {
