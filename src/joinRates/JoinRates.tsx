@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import Empty from 'antd/lib/empty'
 
-import { Quality } from '../quality/Quality'
+import { Quality } from '../quality'
 import JoinStatistics from './JoinStatistics'
 import { getTableNames, transformJoinRatesData } from './helpers'
 import { JoinRatesProps } from './model'
