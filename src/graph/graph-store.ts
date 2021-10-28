@@ -9,7 +9,7 @@ import {
   resetHighlight,
   highlightNodesBatch,
 } from './graph-ops'
-import { ChromaticScale, Graph, DataGraph, Badge, Highlight, Table } from './model'
+import { ChromaticScale, Column, Node, Graph, DataGraph, Badge, Highlight, Table } from './model'
 
 const defaultHighlightedColumns = {
   selectedTableId: '',
@@ -29,11 +29,15 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
       highlightedColumns: defaultHighlightedColumns,
     }),
   setHighlightedColumns: (columnId: string, tableId: string) => {
+    // TODO: Simplify. Columns and nodes search is basically the same thing.
+    // ( `collectParentColumnAndTableIds`, `findEdgeHelper`)
+    // No need to have a few functions to traverse the same graph
+
     const graph = get().graph
     const highlightMode = get().highlightMode
-    const newHighlights = resetHighlight(graph)
 
     if (highlightMode === 'diffing' || highlightMode === 'none') {
+      const newHighlights = resetHighlight(graph)
       return set({
         highlightedColumns: defaultHighlightedColumns,
         highlights: graphToHighlights(newHighlights),
@@ -44,9 +48,9 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
     const tables = get().tables
 
     if (columnId === highlightedColumns.selectedColumnId) {
+      const newHighlights = resetHighlight(graph)
       return set({
         highlightedColumns: defaultHighlightedColumns,
-
         highlights: graphToHighlights(newHighlights),
       })
     }
@@ -79,17 +83,41 @@ export const useGraphStore = create<GraphStore>((set, get) => ({
         ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
         ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
       ]
+
       const tableColumnIds = tables
         ?.filter(table => tableIds.includes(table.id))
         .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
+
       const selectedColumnDependcies = tables
         ?.find(table => table.id === tableId)
         ?.columns.find(column => column.id === columnId)?.dependencies
+
       columnDependcies = [
         ...(tableColumnIds ? tableColumnIds : []),
         ...(selectedColumnDependcies ? selectedColumnDependcies : []),
       ].filter(notEmpty)
     }
+
+    const emptyColumns = (node: Node) => {
+      const relatedColumns = node.data.columns.filter((column: Column) =>
+        columnDependcies.includes(column.id)
+      )
+      return relatedColumns.length === 0
+    }
+
+    const emptyNodeIds = graph.nodes
+      .filter(node => tableIds.includes(node.id) && emptyColumns(node))
+      .map(node => node.id)
+
+    // Remove all unrelated to columns nodes and edges
+    const alteredGraph = {
+      nodes: graph.nodes.filter(node => !emptyNodeIds.includes(node.id)),
+      edges: graph.edges.filter(
+        edge => !(emptyNodeIds.includes(edge.source) || emptyNodeIds.includes(edge.target))
+      ),
+    }
+
+    const newHighlights = highlightHighlight(highlightMode)(alteredGraph, tableId)
 
     return set({
       highlights: graphToHighlights(newHighlights),
