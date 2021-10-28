@@ -1,4 +1,6 @@
 export default {
+  testEnvironment: 'jsdom',
+
   clearMocks: true,
 
   coverageDirectory: 'coverage',

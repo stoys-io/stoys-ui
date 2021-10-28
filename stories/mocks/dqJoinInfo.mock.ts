@@ -1,5 +1,5 @@
 export const dq_join_info_1 = {
-  left_table_name: 'left',
+  left_table_name: 'left_with_very_long_long_long_name',
   right_table_name: 'right',
   left_key_column_names: ['column name'],
   right_key_column_names: ['column name'],

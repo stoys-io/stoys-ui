@@ -6,7 +6,7 @@ import Threshold from './Threshold'
 import Trends from './Trends'
 import { getColumnWidth } from '../quality/columns'
 import { defaultSort, renderPercentColumnValue, getGroupTitle } from './helpers'
-import { UppercaseValue, ChangePercentValue, ThresholdViolatedWrapper } from './styles'
+import { ChangePercentValue, ThresholdViolatedWrapper } from './styles'
 import {
   ColumnNode,
   TableCellNode,
@@ -19,7 +19,7 @@ import {
 import { Maybe } from '../model'
 
 const renderNumericColumnValue = (value?: Maybe<number | string>): JSX.Element => (
-  <UppercaseValue>{value ? renderNumericValue(2, true)(value) : '—'}</UppercaseValue>
+  <>{value ? renderNumericValue(2, false, false)(value) : '—'}</>
 )
 
 export const getMetricsColumns = (
@@ -65,6 +65,7 @@ export const getMetricsColumns = (
               title: 'Current',
               sorter: defaultSort(`${cell.columnName}_current`),
               render: renderNumericColumnValue,
+              className: 'aligned-right',
             },
           ]
 
@@ -78,6 +79,7 @@ export const getMetricsColumns = (
                 title: 'Previous',
                 sorter: defaultSort(`${cell.columnName}_previous`),
                 render: renderNumericColumnValue,
+                className: 'aligned-right',
               },
               {
                 id: `${cell.columnName}_change`,
@@ -179,6 +181,7 @@ export const getMetricsColumnsFromRawData = (
   function filterColumns(column: ChildrenColumnType): boolean {
     return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
   }
+
   const keyColumns = metricsData?.current.key_columns?.map((column: string) => ({
     id: column,
     dataIndex: column,
@@ -203,6 +206,7 @@ export const getMetricsColumnsFromRawData = (
           sorter: defaultSort(`${colName}_current`),
           render: renderNumericColumnValue,
           width: getColumnWidth('Current'),
+          className: 'aligned-right',
         },
       ]
 
@@ -217,6 +221,7 @@ export const getMetricsColumnsFromRawData = (
             sorter: defaultSort(`${colName}_previous`),
             render: renderNumericColumnValue,
             width: getColumnWidth('Previous'),
+            className: 'aligned-right',
           },
           // TODO: waiting for BE
           // {
@@ -247,6 +252,7 @@ export const getMetricsColumnsFromRawData = (
       if (disabledColumns) {
         childrenColumns = childrenColumns.filter(filterColumns)
       }
+
       return [
         ...columnsData,
         {
@@ -258,6 +264,7 @@ export const getMetricsColumnsFromRawData = (
         },
       ]
     }
+
     return columnsData
   }, keyColumns)
 }
