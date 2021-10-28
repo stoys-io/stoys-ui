@@ -90,22 +90,29 @@ export const DataProfiler = (props: DataProfilerProps) => {
         return searchRegex.test(column.toLowerCase())
       })
       .reduce((acc: Array<DataItem>, column) => {
-        acc.push({
-          columnName: column,
-          key: column,
-          children: [...dataGrouppedByTitle[column]],
-        })
+        acc.push(
+          {
+            columnName: column,
+            key: column,
+            // children: [...dataGrouppedByTitle[column]],
+          },
+          ...dataGrouppedByTitle[column]
+        )
         return acc
       }, [])
 
-    if (isNormalizeChecked) {
-      return transformNormalize(groupedData)
-    }
+    // TODO: fix normalized
+    // if (isNormalizeChecked) {
+    //   return transformNormalize(groupedData)
+    // }
 
     return groupedData
   }, [dataGrouppedByTitle, searchValue, isNormalizeChecked])
 
-  const columnNames = useMemo(() => data.map(item => item.columnName), [data])
+  const columnNames: Array<string> = useMemo(
+    () => data.map(item => ('columnName' in item ? item.columnName : undefined)).filter(notEmpty),
+    [data]
+  )
 
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
     logarithmicChecked ? columnNames : []
@@ -243,24 +250,28 @@ export const DataProfiler = (props: DataProfilerProps) => {
   )
 }
 
-const transformNormalize = (data: Array<DataItem>) =>
-  data.map(item => ({
-    ...item,
-    children: item.children.map(child => {
-      const { count } = child
-      const countColumns = Object.keys(child).filter(column =>
-        column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
-      )
-      const normalizedCountValues = countColumns.reduce((acc, key) => {
-        const columnValue = child[key as CountColumnKey]
-        const normalizedValue = columnValue === null ? null : columnValue / count
+// const transformNormalize = (data: Array<DataItem>) =>
+//   data.map(item => ({
+//     ...item,
+//     children: item.children.map(child => {
+//       const { count } = child
+//       const countColumns = Object.keys(child).filter(column =>
+//         column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
+//       )
+//       const normalizedCountValues = countColumns.reduce((acc, key) => {
+//         const columnValue = child[key as CountColumnKey]
+//         const normalizedValue = columnValue === null ? null : columnValue / count
 
-        return { ...acc, [key]: normalizedValue }
-      }, {})
+//         return { ...acc, [key]: normalizedValue }
+//       }, {})
 
-      return {
-        ...child,
-        ...normalizedCountValues,
-      }
-    }),
-  }))
+//       return {
+//         ...child,
+//         ...normalizedCountValues,
+//       }
+//     }),
+//   }))
+
+function notEmpty<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined
+}

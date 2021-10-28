@@ -136,11 +136,12 @@ export interface ChildDataItem extends Omit<HydratedColumn, 'name'> {
   parent: string
 }
 
-export interface DataItem {
+export interface DataItemModel {
   columnName: string
   key: string
-  children: Array<ChildDataItem>
 }
+
+export type DataItem = DataItemModel | ChildDataItem
 
 export interface TableProps extends AntdTableProps<any> {
   data: Array<DataItem>
@@ -184,7 +185,7 @@ export interface ChartAndTableProps {
 }
 
 export interface TableSubheaderRowProps {
-  row: DataItem
+  row: DataItemModel
 }
 
 export interface ChartTableHeaderProps {

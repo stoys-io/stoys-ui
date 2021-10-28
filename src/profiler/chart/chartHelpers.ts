@@ -4,7 +4,7 @@ import { ChildDataItem, HygratePmfPlotDataItem } from '../model'
 export function hygratePmfPlotData(
   data?: Array<ChildDataItem>
 ): Maybe<Array<HygratePmfPlotDataItem>> {
-  if (!data) {
+  if (!data?.length) {
     return null
   }
 

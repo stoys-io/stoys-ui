@@ -32,24 +32,26 @@ import { ColorBlock } from './styles'
 const renderChartAndTableCell =
   (data: Array<DataItem>, displayNormalized: boolean) =>
   (value: string, row: DataItem | ChildDataItem, index: number) => {
-    const parent = data.find(dataItem => {
-      if ('parent' in row) {
-        return row.parent === dataItem.columnName
+    const children = data.filter(dataItem => {
+      if ('parent' in row && 'parent' in dataItem) {
+        return row.parent === dataItem.parent
       }
 
       return false
     })
-    const pmfPlotData = hygratePmfPlotData(parent?.children)
+
+    const pmfPlotData = hygratePmfPlotData(children as Array<ChildDataItem>)
     const renderedCellConfig: RenderedCellConfig = {
       children: <ChartAndTable data={pmfPlotData} displayNormalized={displayNormalized} />,
       props: {},
     }
-    const rowSpan = parent?.children.length || 1
+    const rowSpan = children.length || 1
 
-    if ('column' in row) {
+    if ('columnName' in row) {
       renderedCellConfig.props.colSpan = 0
     } else {
-      renderedCellConfig.props.rowSpan = index === 0 ? rowSpan : 0
+      const next = data[index + 1]
+      renderedCellConfig.props.rowSpan = next && !('columnName' in next) ? rowSpan : 0
     }
 
     return renderedCellConfig
