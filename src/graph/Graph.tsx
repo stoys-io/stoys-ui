@@ -1,5 +1,11 @@
 import React, { useMemo, useEffect } from 'react'
-import ReactFlow, { Background, isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
+import ReactFlow, {
+  ReactFlowProvider,
+  Background,
+  isNode,
+  Node as Node0,
+  Edge as Edge0,
+} from 'react-flow-renderer'
 
 import { Sidebar } from './components/Sidebar'
 import { SearchArgs } from './components/SidebarSearch'
@@ -93,19 +99,21 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
         chromaticScale={config.chromaticScale}
       />
       <GraphContainer>
-        <ReactFlow
-          nodesDraggable={false}
-          onElementClick={onElementClick}
-          onPaneClick={onPaneClick}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          elements={elements}
-          onlyRenderVisibleElements={true}
-          nodesConnectable={false}
-          minZoom={0.2}
-        >
-          <Background />
-        </ReactFlow>
+        <ReactFlowProvider>
+          <ReactFlow
+            nodesDraggable={false}
+            onElementClick={onElementClick}
+            onPaneClick={onPaneClick}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            elements={elements}
+            onlyRenderVisibleElements={true}
+            nodesConnectable={false}
+            minZoom={0.2}
+          >
+            <Background />
+          </ReactFlow>
+        </ReactFlowProvider>
       </GraphContainer>
       <DrawerContainer>
         <ConnectedDrawer>

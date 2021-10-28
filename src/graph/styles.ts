@@ -17,7 +17,7 @@ import {
 
 export const Container = styled.div`
   display: flex;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 `
 

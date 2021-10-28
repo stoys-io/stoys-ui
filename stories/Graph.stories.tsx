@@ -26,6 +26,34 @@ DiffGraph.args = {
   },
 }
 
+export const Multiple = () => (
+  <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex' }}>
+      <div style={{ height: '480px', width: '640px', border: '1px solid cyan' }}>
+        <GraphComponent data={[dataMock] as any} />
+      </div>
+      <div
+        style={{ height: '480px', width: '640px', marginLeft: '20px', border: '1px solid cyan' }}
+      >
+        <GraphComponent data={[dataMock] as any} />
+      </div>
+    </div>
+
+    <div style={{ display: 'flex', marginTop: '20px' }}>
+      <div style={{ height: '480px', width: '640px', border: '1px solid cyan' }}>
+        <GraphComponent data={[diffDataMock1, diffDataMock2] as any} />
+      </div>
+
+      <div
+        style={{ height: '480px', width: '640px', marginLeft: '20px', border: '1px solid cyan' }}
+      >
+        <GraphComponent data={[diffDataMock1, diffDataMock2] as any} />
+      </div>
+    </div>
+  </div>
+)
+Multiple.storyName = 'multiple instances'
+
 export const BigGraph = Template.bind({})
 BigGraph.storyName = 'lots of data - grpc'
 BigGraph.args = {
@@ -34,7 +62,7 @@ BigGraph.args = {
 
 export default {
   title: 'Chart/Graph',
-  component: [Graph, DiffGraph, BigGraph],
+  component: [Graph, DiffGraph, BigGraph, Multiple],
   argTypes: {
     data: {
       type: { required: true },
