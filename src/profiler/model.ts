@@ -112,6 +112,7 @@ export interface HydratedColumn extends Column {
 interface CellProps {
   colSpan?: number
   rowSpan?: number
+  className?: string
 }
 export interface RenderedCellConfig {
   children: Maybe<number | string | JSX.Element>

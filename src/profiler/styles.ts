@@ -92,20 +92,20 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
     padding: 0;
   }
 
-  tr.ant-table-row-level-0 {
-    &:hover > td.ant-table-cell-with-append {
-      background-color: #e8e8e8;
+  td.table-subheader-cell {
+    transition: none;
+    background-color: #e8e8e8;
+
+    > div {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      text-align: left;
     }
+  }
 
-    td.ant-table-cell-with-append {
-      transition: none;
+  tr.ant-table-row-level-0 {
+    &:hover > td.table-subheader-cell {
       background-color: #e8e8e8;
-
-      > div {
-        padding-top: 8px;
-        padding-bottom: 8px;
-        text-align: left;
-      }
     }
   }
 

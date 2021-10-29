@@ -75,6 +75,7 @@ const renderRow: Render = render => (value, row) => {
   if ('columnName' in row) {
     renderedCellConfig.children = <TableSubheaderRow row={row} />
     renderedCellConfig.props.colSpan = 8
+    renderedCellConfig.props.className = 'table-subheader-cell'
   }
 
   return renderedCellConfig
