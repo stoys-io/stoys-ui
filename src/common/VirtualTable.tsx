@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { VariableSizeGrid as Grid } from 'react-window'
 import ResizeObserver from 'rc-resize-observer'
-import classNames from 'classnames'
 import Table from 'antd/lib/table'
 
-import { MIN_TABLE_CELL_HEIGHT } from '../constants'
+import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
 
 function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
   const { columns, scroll } = props
@@ -56,10 +55,9 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
 
     const renderCell = (columnIndex: number, rowIndex: number): string | JSX.Element => {
       const value = (rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]
-      const { metaData } = rawData[rowIndex] as any
       const render = (mergedColumns as any)[columnIndex].render
 
-      return render(value, { metaData })
+      return render(value, rawData[rowIndex])
     }
 
     return (
@@ -92,9 +90,9 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
           style: React.CSSProperties
         }) => (
           <div
-            className={classNames('virtual-table-cell', {
-              'virtual-table-cell-last': columnIndex === mergedColumns?.length - 1,
-            })}
+            className={`virtual-table-cell ${
+              columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
+            }`}
             style={style}
           >
             {renderCell(columnIndex, rowIndex)}

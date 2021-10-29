@@ -23,7 +23,6 @@ const ChartAndTable = ({
 }: ChartAndTableProps): Maybe<JSX.Element> => {
   const { smallSize } = useContext(ConfigContext)
   const { checkedLogRows, checkedAxesRows, checkedTableRows } = useContext(CheckedRowsContext)
-
   if (!data) {
     return null
   }

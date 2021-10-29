@@ -5,7 +5,14 @@ import ChartCellTitle from './ChartCellTitle'
 import { ChartAndTable, hygratePmfPlotData } from '../chart'
 import { transformSecondsToDate } from '../../pmfPlot/helpers'
 import { renderNumericCell } from '../../common'
-import { VerticalColumn, VerticalData, VerticalTableProps } from '../model'
+import {
+  ChildDataItem,
+  DataItem,
+  DataItemModel,
+  VerticalColumn,
+  VerticalData,
+  VerticalTableProps,
+} from '../model'
 import { NORMALIZABLE_COLUMN_PREFIX } from '../constants'
 import { ColorBlock } from '../styles'
 import { formatPercentage } from '../../helpers'
@@ -23,13 +30,20 @@ const VerticalTable = (props: VerticalTableProps) => {
     displayNormalized,
     onChange,
     height,
+    ...otherProps
   } = props
-  const flattenData = data.map(item => item.children).flat()
+  const flattenData: Array<ChildDataItem> = data.filter(
+    (item): item is ChildDataItem => 'parent' in item
+  )
   const verticalColumns: Array<VerticalColumn> = flattenData.map((item, index) => {
-    const parent = data.find(dataItem => dataItem.columnName === item.parent)
-    const childrenLength = Number(parent?.children.length)
+    const parent: DataItemModel | undefined = data.find(
+      (dataItem): dataItem is DataItemModel =>
+        'columnName' in dataItem && dataItem.columnName === item.parent
+    )
+    const children = flattenData.filter(dataItem => parent?.columnName === dataItem.parent)
+    const childrenLength = Number(children.length)
     const colSpan = index % childrenLength ? 0 : childrenLength
-    const chartData = hygratePmfPlotData(parent?.children)
+    const chartData = hygratePmfPlotData(children)
 
     return {
       title: item.parent,
@@ -121,7 +135,7 @@ const VerticalTable = (props: VerticalTableProps) => {
       sticky
       bordered
       scroll={{ x: true, y: withoutPagination && height ? height : undefined }}
-      {...props}
+      {...otherProps}
       columns={verticalColumns}
       dataSource={dataSource}
       pagination={

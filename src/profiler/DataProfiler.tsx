@@ -15,7 +15,7 @@ import JsonDrawer from './components/JsonDrawer'
 import { NoData, TableWrapper } from './styles'
 
 export const DataProfiler = (props: DataProfilerProps) => {
-  const { datasets, config = {} } = props
+  const { datasets, config = {}, ...otherProps } = props
   const {
     smallSize,
     colors,
@@ -90,11 +90,13 @@ export const DataProfiler = (props: DataProfilerProps) => {
         return searchRegex.test(column.toLowerCase())
       })
       .reduce((acc: Array<DataItem>, column) => {
-        acc.push({
-          columnName: column,
-          key: column,
-          children: [...dataGrouppedByTitle[column]],
-        })
+        acc.push(
+          {
+            columnName: column,
+            key: column,
+          },
+          ...dataGrouppedByTitle[column]
+        )
         return acc
       }, [])
 
@@ -105,7 +107,10 @@ export const DataProfiler = (props: DataProfilerProps) => {
     return groupedData
   }, [dataGrouppedByTitle, searchValue, isNormalizeChecked])
 
-  const columnNames = useMemo(() => data.map(item => item.columnName), [data])
+  const columnNames: Array<string> = useMemo(
+    () => data.map(item => ('columnName' in item ? item.columnName : undefined)).filter(notEmpty),
+    [data]
+  )
 
   const [checkedLogRows, setCheckedLogRows] = useState<Array<string>>(
     logarithmicChecked ? columnNames : []
@@ -210,7 +215,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
         <TableWrapper smallSize={!!smallSize}>
           {isVertical ? (
             <VerticalTable
-              {...props}
+              {...otherProps}
               data={data}
               columns={columns}
               currentPage={current}
@@ -224,7 +229,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
             />
           ) : (
             <HorizontalTable
-              {...props}
+              {...otherProps}
               data={data}
               columns={columns}
               currentPage={current}
@@ -244,23 +249,28 @@ export const DataProfiler = (props: DataProfilerProps) => {
 }
 
 const transformNormalize = (data: Array<DataItem>) =>
-  data.map(item => ({
-    ...item,
-    children: item.children.map(child => {
-      const { count } = child
-      const countColumns = Object.keys(child).filter(column =>
+  data.map(item => {
+    if ('count' in item) {
+      const { count } = item
+      const countColumns = Object.keys(item).filter(column =>
         column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
       )
       const normalizedCountValues = countColumns.reduce((acc, key) => {
-        const columnValue = child[key as CountColumnKey]
+        const columnValue = item[key as CountColumnKey]
         const normalizedValue = columnValue === null ? null : columnValue / count
 
         return { ...acc, [key]: normalizedValue }
       }, {})
 
       return {
-        ...child,
+        ...item,
         ...normalizedCountValues,
       }
-    }),
-  }))
+    }
+
+    return item
+  })
+
+function notEmpty<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined
+}
