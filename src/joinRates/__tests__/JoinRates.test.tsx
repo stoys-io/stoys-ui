@@ -20,20 +20,20 @@ describe('Join Rates', () => {
   it('should render with one data object', () => {
     const { queryByText } = render(<JoinRates data={joinRatesMockData1} />)
 
-    expect(queryByText('left, right')).toBeTruthy()
+    expect(queryByText('left_with_very_long_long_long_name')).toBeTruthy()
   })
 
   it('should render with array of data objects', () => {
     const { queryByText } = render(<JoinRates data={[joinRatesMockData1, joinRatesMockData2]} />)
 
-    expect(queryByText('left, right')).toBeTruthy()
-    expect(queryByText('first, second')).toBeTruthy()
+    expect(queryByText('left_with_very_long_long_long_name')).toBeTruthy()
+    expect(queryByText('first')).toBeTruthy()
   })
 
   it('should parse json objects', () => {
     const { queryByText } = render(<JoinRates data={joinRatesMockData1} />)
 
-    expect(queryByText('left, right')).toBeTruthy()
+    expect(queryByText('left_with_very_long_long_long_name')).toBeTruthy()
   })
 
   it('should call onRowClickHandler', () => {
