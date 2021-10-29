@@ -5,7 +5,7 @@ import Space from 'antd/lib/space'
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
-import { useGraphStore } from '../graph-store'
+import { useGraphStore } from '../StoreProvider'
 import { ChromaticScale } from '../model'
 
 const highlightList = [
