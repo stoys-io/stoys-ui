@@ -94,17 +94,15 @@ export const DataProfiler = (props: DataProfilerProps) => {
           {
             columnName: column,
             key: column,
-            // children: [...dataGrouppedByTitle[column]],
           },
           ...dataGrouppedByTitle[column]
         )
         return acc
       }, [])
 
-    // TODO: fix normalized
-    // if (isNormalizeChecked) {
-    //   return transformNormalize(groupedData)
-    // }
+    if (isNormalizeChecked) {
+      return transformNormalize(groupedData)
+    }
 
     return groupedData
   }, [dataGrouppedByTitle, searchValue, isNormalizeChecked])
@@ -250,27 +248,28 @@ export const DataProfiler = (props: DataProfilerProps) => {
   )
 }
 
-// const transformNormalize = (data: Array<DataItem>) =>
-//   data.map(item => ({
-//     ...item,
-//     children: item.children.map(child => {
-//       const { count } = child
-//       const countColumns = Object.keys(child).filter(column =>
-//         column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
-//       )
-//       const normalizedCountValues = countColumns.reduce((acc, key) => {
-//         const columnValue = child[key as CountColumnKey]
-//         const normalizedValue = columnValue === null ? null : columnValue / count
+const transformNormalize = (data: Array<DataItem>) =>
+  data.map(item => {
+    if ('count' in item) {
+      const { count } = item
+      const countColumns = Object.keys(item).filter(column =>
+        column.startsWith(NORMALIZABLE_COLUMN_PREFIX)
+      )
+      const normalizedCountValues = countColumns.reduce((acc, key) => {
+        const columnValue = item[key as CountColumnKey]
+        const normalizedValue = columnValue === null ? null : columnValue / count
 
-//         return { ...acc, [key]: normalizedValue }
-//       }, {})
+        return { ...acc, [key]: normalizedValue }
+      }, {})
 
-//       return {
-//         ...child,
-//         ...normalizedCountValues,
-//       }
-//     }),
-//   }))
+      return {
+        ...item,
+        ...normalizedCountValues,
+      }
+    }
+
+    return item
+  })
 
 function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
