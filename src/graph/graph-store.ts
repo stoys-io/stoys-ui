@@ -30,24 +30,13 @@ export const createStore = () =>
         highlightedColumns: defaultHighlightedColumns,
       }),
     setHighlightedColumns: (columnId: string, tableId: string) => {
-      // TODO: Simplify. Columns and nodes search is basically the same thing.
-      // ( `collectParentColumnAndTableIds`, `findEdgeHelper`)
-      // No need to have a few functions to traverse the same graph
-
       const graph = get().graph
       const highlightMode = get().highlightMode
-
-      if (highlightMode === 'diffing' || highlightMode === 'none') {
-        const newHighlights = resetHighlight(graph)
-        return set({
-          highlightedColumns: defaultHighlightedColumns,
-          highlights: graphToHighlights(newHighlights),
-        })
-      }
-
       const highlightedColumns = get().highlightedColumns
+      const curHighlights = get().highlights
       const tables = get().tables
 
+      // Toggle columns
       if (columnId === highlightedColumns.selectedColumnId) {
         const newHighlights = resetHighlight(graph)
         return set({
@@ -56,79 +45,16 @@ export const createStore = () =>
         })
       }
 
-      let tableIds: Array<string> = []
-      let columnDependcies: Array<string> = []
-
-      if (highlightMode === 'parents') {
-        const tableAndColumnsIds = collectParentColumnAndTableIds(
-          tableId,
+      set(
+        onHighlightModeChangeColumns({
           columnId,
-          graph.edges,
-          tables
-        )
-
-        tableIds = tableAndColumnsIds.tableIds
-        columnDependcies = tableAndColumnsIds.columnIds
-      } else if (highlightMode === 'children') {
-        const tableAndColumnsIds = collectChildColumnAndTableIds(
           tableId,
-          columnId,
-          graph.edges,
-          tables
-        )
-
-        tableIds = tableAndColumnsIds.tableIds
-        columnDependcies = tableAndColumnsIds.columnIds
-      } else {
-        tableIds = [
-          ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
-          ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
-        ]
-
-        const tableColumnIds = tables
-          ?.filter(table => tableIds.includes(table.id))
-          .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
-
-        const selectedColumnDependcies = tables
-          ?.find(table => table.id === tableId)
-          ?.columns.find(column => column.id === columnId)?.dependencies
-
-        columnDependcies = [
-          ...(tableColumnIds ? tableColumnIds : []),
-          ...(selectedColumnDependcies ? selectedColumnDependcies : []),
-        ].filter(notEmpty)
-      }
-
-      const emptyColumns = (node: Node) => {
-        const relatedColumns = node.data.columns.filter((column: Column) =>
-          columnDependcies.includes(column.id)
-        )
-        return relatedColumns.length === 0
-      }
-
-      const emptyNodeIds = graph.nodes
-        .filter(node => tableIds.includes(node.id) && emptyColumns(node))
-        .map(node => node.id)
-
-      // Remove all unrelated to columns nodes and edges
-      const alteredGraph = {
-        nodes: graph.nodes.filter(node => !emptyNodeIds.includes(node.id)),
-        edges: graph.edges.filter(
-          edge => !(emptyNodeIds.includes(edge.source) || emptyNodeIds.includes(edge.target))
-        ),
-      }
-
-      const newHighlights = highlightHighlight(highlightMode)(alteredGraph, tableId)
-
-      return set({
-        highlights: graphToHighlights(newHighlights),
-        highlightedColumns: {
-          selectedTableId: tableId,
-          selectedColumnId: columnId,
-          relatedColumnsIds: columnDependcies,
-          relatedTablesIds: tableIds,
-        },
-      })
+          graph,
+          highlights: curHighlights,
+          highlightMode,
+          tables,
+        })
+      )
     },
 
     data: [],
@@ -214,23 +140,12 @@ export const createStore = () =>
     highlightMode: 'nearest',
     setHighlightMode: (highlightMode: Highlight, chromaticScale: ChromaticScale) => {
       const graph = get().graph
-      if (highlightMode === 'none') {
-        const newHighlights = resetHighlight(graph)
-
-        return set({
-          highlightMode,
-          highlights: graphToHighlights(newHighlights),
-          selectedNodeId: undefined,
-          highlightedColumns: defaultHighlightedColumns,
-        })
-      }
+      const baseRelease = get().baseRelease
+      const data = get().data
+      const tables = get().tables
+      const selectedNodeId = get().selectedNodeId
 
       if (highlightMode === 'diffing') {
-        // TODO: This block possibly does not belong here
-        const baseRelease = get().baseRelease
-        const data = get().data
-        const tables = get().tables
-
         const baseGraph = getBaseGraph(baseRelease, data, tables)
         const mergedGraph = getMergedGraph(graph, baseGraph)
         const highlights = graphToHighlights(mergedGraph)
@@ -243,7 +158,34 @@ export const createStore = () =>
         })
       }
 
-      const selectedNodeId = get().selectedNodeId
+      const curHighlights = get().highlights
+      const highlightedColumns = get().highlightedColumns
+      const isInColumnContext = highlightedColumns.selectedColumnId !== ''
+      if (isInColumnContext) {
+        return set({
+          highlightMode,
+          ...onHighlightModeChangeColumns({
+            columnId: highlightedColumns.selectedColumnId,
+            tableId: highlightedColumns.selectedTableId,
+            graph,
+            highlights: curHighlights,
+            highlightMode,
+            tables,
+          }),
+        })
+      }
+
+      if (highlightMode === 'none') {
+        const newHighlights = resetHighlight(graph)
+
+        return set({
+          highlightMode,
+          highlights: graphToHighlights(newHighlights),
+          selectedNodeId: undefined,
+          highlightedColumns: defaultHighlightedColumns,
+        })
+      }
+
       if (!selectedNodeId) {
         return set({ highlightMode })
       }
@@ -289,6 +231,111 @@ const graphToHighlights = (hGraph: Graph): StoredHighlights => {
   return {
     nodes: nodesTmpRefactoring,
     edges: edgesTmpRefactoring,
+  }
+}
+
+interface OnChangeModeColumnsArgs {
+  columnId: string
+  tableId: string
+  highlights: StoredHighlights
+  highlightMode: Highlight
+  graph: Graph
+  tables?: Table[]
+}
+
+const onHighlightModeChangeColumns = ({
+  columnId,
+  tableId,
+  highlights,
+  highlightMode,
+  graph,
+  tables,
+}: OnChangeModeColumnsArgs) => {
+  // TODO: Simplify. Columns and nodes search is basically the same thing.
+  // ( `collectParentColumnAndTableIds`, `findEdgeHelper`)
+  // No need to have a few functions to traverse the same graph
+  if (highlightMode === 'none') {
+    const newHighlights = resetHighlight(graph)
+    return {
+      highlightedColumns: defaultHighlightedColumns,
+      highlights: graphToHighlights(newHighlights),
+    }
+  }
+
+  if (highlightMode === 'diffing') {
+    return {
+      highlightedColumns: defaultHighlightedColumns,
+      highlights,
+    }
+  }
+
+  let tableIds: Array<string> = []
+  let columnDependcies: Array<string> = []
+
+  if (highlightMode === 'parents') {
+    const tableAndColumnsIds = collectParentColumnAndTableIds(
+      tableId,
+      columnId,
+      graph.edges,
+      tables
+    )
+
+    tableIds = tableAndColumnsIds.tableIds
+    columnDependcies = tableAndColumnsIds.columnIds
+  } else if (highlightMode === 'children') {
+    const tableAndColumnsIds = collectChildColumnAndTableIds(tableId, columnId, graph.edges, tables)
+
+    tableIds = tableAndColumnsIds.tableIds
+    columnDependcies = tableAndColumnsIds.columnIds
+  } else {
+    tableIds = [
+      ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
+      ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
+    ]
+
+    const tableColumnIds = tables
+      ?.filter(table => tableIds.includes(table.id))
+      .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
+
+    const selectedColumnDependcies = tables
+      ?.find(table => table.id === tableId)
+      ?.columns.find(column => column.id === columnId)?.dependencies
+
+    columnDependcies = [
+      ...(tableColumnIds ? tableColumnIds : []),
+      ...(selectedColumnDependcies ? selectedColumnDependcies : []),
+    ].filter(notEmpty)
+  }
+
+  const emptyColumns = (node: Node) => {
+    const relatedColumns = node.data.columns.filter((column: Column) =>
+      columnDependcies.includes(column.id)
+    )
+    return relatedColumns.length === 0
+  }
+
+  const emptyNodeIds = graph.nodes
+    .filter(node => tableIds.includes(node.id) && emptyColumns(node))
+    .map(node => node.id)
+
+  // Remove all unrelated to columns nodes and edges
+  const alteredGraph = {
+    nodes: graph.nodes.filter(node => !emptyNodeIds.includes(node.id)),
+    edges: graph.edges.filter(
+      edge => !(emptyNodeIds.includes(edge.source) || emptyNodeIds.includes(edge.target))
+    ),
+  }
+
+  const newHighlights = highlightHighlight(highlightMode)(alteredGraph, tableId)
+
+  return {
+    highlights: graphToHighlights(newHighlights),
+    highlightedColumns: {
+      selectedTableId: tableId,
+      selectedColumnId: columnId,
+      relatedColumnsIds: columnDependcies,
+      relatedTablesIds: tableIds,
+    },
   }
 }
 
@@ -355,10 +402,10 @@ interface StoredNodeStyle {
 }
 
 interface StoredEdgeStyle {
-  [key: string]:
-    | {
-        stroke: string
-        strokeWidth: string
-      }
-    | undefined
+  [key: string]: EdgeStyle | undefined
+}
+
+interface EdgeStyle {
+  stroke: string
+  strokeWidth: string
 }
