@@ -1,2 +1,2 @@
-import Graph from './Graph'
-export default Graph
+export { default } from './Graph'
+export { Props } from './Graph'

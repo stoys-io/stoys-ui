@@ -1,6 +1,7 @@
 {
   "id": "0bb1fc05-7fcd-428b-a0f9-751d11b5a041",
   "name": "grpc",
+  "version": "1",
   "tables": [
     {
       "id": "f02d59ee-ace6-4b9c-8070-c5a35e1da0bd",
@@ -1247,9 +1248,7 @@
       "id": "1d1f34e1-7430-4a59-a836-1b989d118607",
       "name": "//:popularity_count",
       "columns": [],
-      "dependencies": [
-        "3df8553b-3dbf-45e1-aeb8-193de1e0123a"
-      ]
+      "dependencies": ["3df8553b-3dbf-45e1-aeb8-193de1e0123a"]
     },
     {
       "id": "86c08ecf-49e1-47e2-9f4b-45d0b759dd0b",
@@ -1265,9 +1264,7 @@
       "id": "aaa8fff6-6dbe-4479-9d46-b9fe754a8577",
       "name": "//:overload",
       "columns": [],
-      "dependencies": [
-        "3df8553b-3dbf-45e1-aeb8-193de1e0123a"
-      ]
+      "dependencies": ["3df8553b-3dbf-45e1-aeb8-193de1e0123a"]
     },
     {
       "id": "eadae114-8d38-4c7f-bda1-edc51429e6e8",
@@ -1297,9 +1294,7 @@
       "id": "2d1c3d21-0f0e-4f68-917e-b145fe517fef",
       "name": "//:hpack_constants",
       "columns": [],
-      "dependencies": [
-        "3df8553b-3dbf-45e1-aeb8-193de1e0123a"
-      ]
+      "dependencies": ["3df8553b-3dbf-45e1-aeb8-193de1e0123a"]
     },
     {
       "id": "62ef8633-1378-4cd4-b6f8-076de7bae1be",
@@ -2817,9 +2812,7 @@
       "id": "386579a9-0dc2-4461-b01d-d4d416071da0",
       "name": "@upb//:descriptor_upb_proto_reflection",
       "columns": [],
-      "dependencies": [
-        "9486e541-b258-4e46-b985-c29c746a5a9f"
-      ]
+      "dependencies": ["9486e541-b258-4e46-b985-c29c746a5a9f"]
     },
     {
       "id": "894530e3-5f31-4463-970c-835932a42098",
@@ -3580,9 +3573,7 @@
           "name": "@boringssl//:src/ssl/internal.h"
         }
       ],
-      "dependencies": [
-        "785c1ea3-acd9-46fa-bd9c-be7889ff5a6d"
-      ]
+      "dependencies": ["785c1ea3-acd9-46fa-bd9c-be7889ff5a6d"]
     },
     {
       "id": "2140db2a-ecc5-4e5a-82d5-21cfea26da8d",
@@ -5824,17 +5815,13 @@
       "id": "bdc9ba95-c4c1-470a-8933-c5d5e4703957",
       "name": "@com_google_absl//absl/container:hashtable_debug_hooks",
       "columns": [],
-      "dependencies": [
-        "2a751db1-c23e-4c29-a39a-cd1927b41866"
-      ]
+      "dependencies": ["2a751db1-c23e-4c29-a39a-cd1927b41866"]
     },
     {
       "id": "1fec69b9-49a5-4f3f-b119-47842f74b4ff",
       "name": "@com_google_absl//absl/container:hash_policy_traits",
       "columns": [],
-      "dependencies": [
-        "57071426-2223-41b6-8c99-c25950d999ce"
-      ]
+      "dependencies": ["57071426-2223-41b6-8c99-c25950d999ce"]
     },
     {
       "id": "73010697-806c-4a74-94d6-7a1b535ee4f2",
@@ -6120,9 +6107,7 @@
       "id": "6efb4153-56f2-43a1-bc92-1c5a25517b50",
       "name": "//:handshaker_factory",
       "columns": [],
-      "dependencies": [
-        "fa0c6b17-857f-4fd8-b7c4-e55f085cfb67"
-      ]
+      "dependencies": ["fa0c6b17-857f-4fd8-b7c4-e55f085cfb67"]
     },
     {
       "id": "24069a65-4c0b-4163-8ab5-6a76f3327ca1",
@@ -6217,17 +6202,13 @@
       "id": "d1241bcc-103d-45dc-959f-369312019f4d",
       "name": "//:ref_counted_ptr",
       "columns": [],
-      "dependencies": [
-        "fa0c6b17-857f-4fd8-b7c4-e55f085cfb67"
-      ]
+      "dependencies": ["fa0c6b17-857f-4fd8-b7c4-e55f085cfb67"]
     },
     {
       "id": "c9681940-55b6-4852-aa26-48499f7133f3",
       "name": "//:atomic_utils",
       "columns": [],
-      "dependencies": [
-        "3df8553b-3dbf-45e1-aeb8-193de1e0123a"
-      ]
+      "dependencies": ["3df8553b-3dbf-45e1-aeb8-193de1e0123a"]
     },
     {
       "id": "bdf52fa4-176c-4f2f-9d1e-813ef856aa52",
@@ -6247,9 +6228,7 @@
       "id": "74aa42a9-0692-4258-b792-8e47817e4a0c",
       "name": "//:gpr",
       "columns": [],
-      "dependencies": [
-        "fa0c6b17-857f-4fd8-b7c4-e55f085cfb67"
-      ]
+      "dependencies": ["fa0c6b17-857f-4fd8-b7c4-e55f085cfb67"]
     },
     {
       "id": "f654c40f-ce05-4663-a1f8-9139e10b8a71",
@@ -6260,9 +6239,7 @@
           "name": "//:src/core/lib/surface/channel_stack_type.cc"
         }
       ],
-      "dependencies": [
-        "fa0c6b17-857f-4fd8-b7c4-e55f085cfb67"
-      ]
+      "dependencies": ["fa0c6b17-857f-4fd8-b7c4-e55f085cfb67"]
     },
     {
       "id": "ee751203-5f11-4813-84bc-71a467d7cbd7",
@@ -6700,9 +6677,7 @@
           "name": "@com_google_absl//absl/time/internal/cctz:src/civil_time_detail.cc"
         }
       ],
-      "dependencies": [
-        "2a751db1-c23e-4c29-a39a-cd1927b41866"
-      ]
+      "dependencies": ["2a751db1-c23e-4c29-a39a-cd1927b41866"]
     },
     {
       "id": "9701a684-f855-472e-80e3-77dea0afd465",
@@ -6782,9 +6757,7 @@
       "id": "8e015b60-0dac-463b-a562-1e589184e393",
       "name": "@com_google_absl//absl/strings:str_format",
       "columns": [],
-      "dependencies": [
-        "eae25eae-fc2f-46dc-a11c-57f8d81ee52e"
-      ]
+      "dependencies": ["eae25eae-fc2f-46dc-a11c-57f8d81ee52e"]
     },
     {
       "id": "eae25eae-fc2f-46dc-a11c-57f8d81ee52e",
@@ -6865,9 +6838,7 @@
       "id": "0a7fa70d-6854-4101-a0ab-d2d6dd7346aa",
       "name": "@com_google_absl//absl/numeric:representation",
       "columns": [],
-      "dependencies": [
-        "2a751db1-c23e-4c29-a39a-cd1927b41866"
-      ]
+      "dependencies": ["2a751db1-c23e-4c29-a39a-cd1927b41866"]
     },
     {
       "id": "9f65fb79-7969-4925-991b-0ea009a90d55",
@@ -7285,9 +7256,7 @@
       "id": "33b41817-f5d0-45c3-a881-45434573d8c8",
       "name": "@com_google_absl//absl/container:compressed_tuple",
       "columns": [],
-      "dependencies": [
-        "19eb956b-eb15-455a-b91a-5060cd848bf2"
-      ]
+      "dependencies": ["19eb956b-eb15-455a-b91a-5060cd848bf2"]
     },
     {
       "id": "19eb956b-eb15-455a-b91a-5060cd848bf2",
@@ -7317,9 +7286,7 @@
       "id": "03aaf00c-e686-43c0-a2b3-e38dd3cda058",
       "name": "@com_google_absl//absl/algorithm:algorithm",
       "columns": [],
-      "dependencies": [
-        "2a751db1-c23e-4c29-a39a-cd1927b41866"
-      ]
+      "dependencies": ["2a751db1-c23e-4c29-a39a-cd1927b41866"]
     },
     {
       "id": "0a1a6469-b9b3-4246-975f-ab3450ad5252",
@@ -7402,9 +7369,7 @@
       "id": "a804cce2-ea54-4618-bc0f-dda43b482d66",
       "name": "@com_google_absl//absl/base:errno_saver",
       "columns": [],
-      "dependencies": [
-        "2a751db1-c23e-4c29-a39a-cd1927b41866"
-      ]
+      "dependencies": ["2a751db1-c23e-4c29-a39a-cd1927b41866"]
     },
     {
       "id": "70deed35-4cd0-4ce8-a393-1a4c01d7b75f",
@@ -7463,9 +7428,7 @@
       "id": "57071426-2223-41b6-8c99-c25950d999ce",
       "name": "@com_google_absl//absl/meta:type_traits",
       "columns": [],
-      "dependencies": [
-        "2a751db1-c23e-4c29-a39a-cd1927b41866"
-      ]
+      "dependencies": ["2a751db1-c23e-4c29-a39a-cd1927b41866"]
     },
     {
       "id": "11f26ab6-56a4-4401-9232-f0aa3671a6f0",
@@ -7485,9 +7448,7 @@
           "name": "@com_google_absl//absl/base:internal/thread_annotations.h"
         }
       ],
-      "dependencies": [
-        "2a751db1-c23e-4c29-a39a-cd1927b41866"
-      ]
+      "dependencies": ["2a751db1-c23e-4c29-a39a-cd1927b41866"]
     },
     {
       "id": "2a751db1-c23e-4c29-a39a-cd1927b41866",
@@ -7529,25 +7490,19 @@
       "id": "104b8143-634a-47dd-9d7c-c690578509b2",
       "name": "//:useful",
       "columns": [],
-      "dependencies": [
-        "3df8553b-3dbf-45e1-aeb8-193de1e0123a"
-      ]
+      "dependencies": ["3df8553b-3dbf-45e1-aeb8-193de1e0123a"]
     },
     {
       "id": "6a62823d-500f-4664-a004-0ed78ff6d1c8",
       "name": "//:grpc_codegen",
       "columns": [],
-      "dependencies": [
-        "9d5b8b22-a8b9-4184-9c19-bc9519ff0c0b"
-      ]
+      "dependencies": ["9d5b8b22-a8b9-4184-9c19-bc9519ff0c0b"]
     },
     {
       "id": "5b54379c-25d2-4c73-9a0d-8dd90d86a9e3",
       "name": "//:gpr_tls",
       "columns": [],
-      "dependencies": [
-        "3df8553b-3dbf-45e1-aeb8-193de1e0123a"
-      ]
+      "dependencies": ["3df8553b-3dbf-45e1-aeb8-193de1e0123a"]
     },
     {
       "id": "3df8553b-3dbf-45e1-aeb8-193de1e0123a",
@@ -7626,9 +7581,7 @@
       "id": "c1cec99e-c2eb-4d00-a939-3be32c6da155",
       "name": "@upb//:descriptor_upb_proto",
       "columns": [],
-      "dependencies": [
-        "9486e541-b258-4e46-b985-c29c746a5a9f"
-      ]
+      "dependencies": ["9486e541-b258-4e46-b985-c29c746a5a9f"]
     },
     {
       "id": "9486e541-b258-4e46-b985-c29c746a5a9f",
@@ -7746,9 +7699,7 @@
       "id": "b567c40c-faa5-4f73-8de0-7c9ad61c9b8a",
       "name": "@upb//:table",
       "columns": [],
-      "dependencies": [
-        "c6b14064-16c0-4de9-89be-8ee5282a8c90"
-      ]
+      "dependencies": ["c6b14064-16c0-4de9-89be-8ee5282a8c90"]
     },
     {
       "id": "c6b14064-16c0-4de9-89be-8ee5282a8c90",

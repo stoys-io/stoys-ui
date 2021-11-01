@@ -6,7 +6,8 @@ import { DrawerNodeLabel } from '../styles'
 import { NoData } from '../../profiler/styles'
 import { RawMetricsData } from '../../metrics/model'
 import { JoinRates, Metrics, Profiler, Quality } from '../..'
-import { useGraphStore } from '../graph-store'
+import { useGraphStore } from '../StoreProvider'
+import { DataGraph, Table } from '../model'
 
 const { TabPane } = Tabs
 

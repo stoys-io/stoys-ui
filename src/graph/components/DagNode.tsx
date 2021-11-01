@@ -13,7 +13,8 @@ import {
 import { renderNumericValue } from '../../helpers'
 import { Column, DataPayload } from '../model'
 import { ItemText, ScrollCard, ScrollCardTitle } from '../styles'
-import { useGraphStore, GraphStore } from '../graph-store'
+import { GraphStore } from '../graph-store'
+import { useGraphStore } from '../StoreProvider'
 
 const selectBadge = (state: GraphStore) => state.badge
 const selectHighlightMode = (state: GraphStore) => state.highlightMode
