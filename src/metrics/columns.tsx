@@ -18,6 +18,18 @@ import {
 } from './model'
 import { Maybe } from '../model'
 
+function renderColumnsValues(value: {
+  prev?: Maybe<number | string>
+  cur: Maybe<number | string>
+}): JSX.Element {
+  return (
+    <>
+      <div>{renderNumericColumnValue(value.cur)}</div>
+      {value.prev === undefined ? null : <div>{renderNumericColumnValue(value.prev)}</div>}
+    </>
+  )
+}
+
 const renderNumericColumnValue = (value?: Maybe<number | string>): JSX.Element => (
   <>{value ? renderNumericValue(2, false, false)(value) : '—'}</>
 )
@@ -59,12 +71,12 @@ export const getMetricsColumns = (
         if (!isKeyColumn) {
           let childrenColumns: Array<ChildrenColumnType> = [
             {
-              id: `${cell.columnName}_current`,
-              key: `${cell.columnName}_current`,
-              dataIndex: `${cell.columnName}_current`,
-              title: 'Current',
-              sorter: defaultSort(`${cell.columnName}_current`),
-              render: renderNumericColumnValue,
+              id: cell.columnName,
+              key: cell.columnName,
+              dataIndex: cell.columnName,
+              title: cell.columnName,
+              sorter: defaultSort(cell.columnName),
+              render: renderColumnsValues,
               className: 'aligned-right',
             },
           ]
@@ -73,20 +85,11 @@ export const getMetricsColumns = (
             childrenColumns = [
               ...childrenColumns,
               {
-                id: `${cell.columnName}_previous`,
-                key: `${cell.columnName}_previous`,
-                dataIndex: `${cell.columnName}_previous`,
-                title: 'Previous',
-                sorter: defaultSort(`${cell.columnName}_previous`),
-                render: renderNumericColumnValue,
-                className: 'aligned-right',
-              },
-              {
                 id: `${cell.columnName}_change`,
                 key: `${cell.columnName}_change`,
                 dataIndex: `${cell.columnName}_change`,
                 title: <Tooltip title="Current - Previous">Change</Tooltip>,
-                titleString: 'Change',
+                titleString: `${cell.columnName} Change`,
                 sorter: defaultSort(`${cell.columnName}_change`),
                 render: renderNumericColumnValue,
                 disabled: true,
@@ -96,7 +99,7 @@ export const getMetricsColumns = (
                 key: `${cell.columnName}_change_percent`,
                 dataIndex: `${cell.columnName}_change_percent`,
                 title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
-                titleString: '% Change',
+                titleString: `${cell.columnName} % Change`,
                 sorter: defaultSort(`${cell.columnName}_change_percent`),
                 render: (value, item) => {
                   const threshold = item[`${cell.columnName}_threshold`]
@@ -119,7 +122,7 @@ export const getMetricsColumns = (
                 id: `${cell.columnName}_threshold`,
                 key: `${cell.columnName}_threshold`,
                 dataIndex: `${cell.columnName}_threshold`,
-                title: 'Threshold',
+                title: `${cell.columnName} Threshold`,
                 sorter: defaultSort(`${cell.columnName}_threshold`),
                 render: (value, item) => (
                   <Threshold
@@ -140,7 +143,7 @@ export const getMetricsColumns = (
               id: `${cell.columnName}_trends`,
               key: `${cell.columnName}_trends`,
               dataIndex: `${cell.columnName}_trends`,
-              title: 'Trends',
+              title: `${cell.columnName} Trends`,
               render: value => (value ? <Trends trends={value} /> : null),
               disabled: true,
             },
@@ -150,16 +153,7 @@ export const getMetricsColumns = (
             childrenColumns = childrenColumns.filter(filterColumns)
           }
 
-          return [
-            ...columnsData,
-            {
-              id: cell.columnName,
-              key: cell.columnName,
-              dataIndex: cell.columnName,
-              title: getGroupTitle(cell.columnName),
-              children: childrenColumns,
-            },
-          ]
+          return [...columnsData, ...childrenColumns]
         }
 
         return columnsData
@@ -199,12 +193,12 @@ export const getMetricsColumnsFromRawData = (
     if (!isKeyColumn) {
       let childrenColumns: Array<ChildrenColumnType> = [
         {
-          id: `${colName}_current`,
-          key: `${colName}_current`,
-          dataIndex: `${colName}_current`,
-          title: 'Current',
-          sorter: defaultSort(`${colName}_current`),
-          render: renderNumericColumnValue,
+          id: `${colName}`,
+          key: `${colName}`,
+          dataIndex: `${colName}`,
+          title: `${colName}`,
+          sorter: defaultSort(`${colName}`),
+          render: renderColumnsValues,
           width: getColumnWidth('Current'),
           className: 'aligned-right',
         },
@@ -213,23 +207,13 @@ export const getMetricsColumnsFromRawData = (
       if (metricsData.previous) {
         childrenColumns = [
           ...childrenColumns,
-          {
-            id: `${colName}_previous`,
-            key: `${colName}_previous`,
-            dataIndex: `${colName}_previous`,
-            title: 'Previous',
-            sorter: defaultSort(`${colName}_previous`),
-            render: renderNumericColumnValue,
-            width: getColumnWidth('Previous'),
-            className: 'aligned-right',
-          },
           // TODO: waiting for BE
           // {
           //   id: `${colName}_change`,
           //   key: `${colName}_change`,
           //   dataIndex: `${colName}_change`,
           //   title: <Tooltip title="Current - Previous">Change</Tooltip>,
-          //   titleString: 'Change',
+          //   titleString: `${colName} Change`,
           //   sorter: defaultSort(`${colName}_change`),
           //   render: renderNumericColumnValue,
           //   width: getColumnWidth('Change'),
@@ -240,7 +224,7 @@ export const getMetricsColumnsFromRawData = (
           //   key: `${colName}_change_percent`,
           //   dataIndex: `${colName}_change_percent`,
           //   title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
-          //   titleString: '% Change',
+          //   titleString: `${colName} % Change`,
           //   sorter: defaultSort(`${colName}_change_percent`),
           //   render: renderPercentColumnValue,
           //   width: getColumnWidth('% Change'),
@@ -253,16 +237,7 @@ export const getMetricsColumnsFromRawData = (
         childrenColumns = childrenColumns.filter(filterColumns)
       }
 
-      return [
-        ...columnsData,
-        {
-          id: colName,
-          key: colName,
-          dataIndex: colName,
-          title: getGroupTitle(colName),
-          children: childrenColumns,
-        },
-      ]
+      return [...columnsData, ...childrenColumns]
     }
 
     return columnsData

@@ -95,8 +95,13 @@ export interface SorterValue {
   [key: string]: number
 }
 
+export interface DataItemNode {
+  prev?: Maybe<string | number>
+  cur?: Maybe<string | number>
+}
+
 export interface MetricsTableData {
-  [key: string]: Maybe<string | number | Array<TrendNode>> | undefined
+  [key: string]: Maybe<string | number | Array<TrendNode> | DataItemNode> | undefined
 }
 
 export type TrendsProps = {
