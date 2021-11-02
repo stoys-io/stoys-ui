@@ -263,10 +263,6 @@ export const getMetricsColumnsFromRawData = (
         childrenColumns = [...childrenColumns, ...absDiffColumn, ...relativeDiffColumn]
       }
 
-      if (disabledColumns) {
-        childrenColumns = childrenColumns.filter(filterColumns(disabledColumns))
-      }
-
       return [
         ...columnsData,
         {
@@ -277,6 +273,10 @@ export const getMetricsColumnsFromRawData = (
           children: childrenColumns,
         },
       ]
+    }
+
+    if (disabledColumns) {
+      columnsData = columnsData.filter(filterColumns(disabledColumns))
     }
 
     return columnsData
