@@ -38,6 +38,7 @@ export const getMetricsTableData = (metricsData: MetricsData) => {
   if (!metricsData?.columns) {
     return []
   }
+
   const keyColumns = metricsData.columns
 
   const items = metricsData?.values?.map((row: Array<TableCellNode>) =>
@@ -61,9 +62,11 @@ export const getMetricsTableData = (metricsData: MetricsData) => {
         acc[`${cell.columnName}_threshold`] = cell.threshold
         acc[`${cell.columnName}_trends`] = cell.trends
       }
+
       return acc
     }, {})
   )
+
   return items?.map(addUniqueKey)
 }
 
@@ -71,7 +74,9 @@ export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
   if (!metricsData?.current.key_columns) {
     return []
   }
+
   const keyColumns = metricsData.current.key_columns
+
   const items = metricsData.current.data?.map(currentDataItem => {
     return Object.keys(currentDataItem).reduce(
       (
@@ -103,6 +108,7 @@ export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
             dataItem[`${columnName}_change_percent`] = changePercent
           }
         }
+
         return dataItem
       },
       {}

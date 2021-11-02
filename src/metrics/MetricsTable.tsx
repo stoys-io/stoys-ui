@@ -70,6 +70,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
       smallSize={smallSize}
       bordered
       sticky
+      showSorterTooltip={false}
       {...props}
       columns={_columns}
       dataSource={_data}

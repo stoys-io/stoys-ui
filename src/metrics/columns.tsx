@@ -30,6 +30,12 @@ function renderColumnsValues(value: {
   )
 }
 
+const filterColumns =
+  (disabledColumns?: Array<string>) =>
+  (column: ChildrenColumnType): boolean => {
+    return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
+  }
+
 const renderNumericColumnValue = (value?: Maybe<number | string>): JSX.Element => (
   <>{value ? renderNumericValue(2, false, false)(value) : '—'}</>
 )
@@ -40,10 +46,6 @@ export const getMetricsColumns = (
   saveMetricThreshold: SaveMetricThreshold | undefined,
   disabledColumns?: Array<string>
 ) => {
-  function filterColumns(column: ChildrenColumnType): boolean {
-    return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
-  }
-
   if (!metricsData?.columns) {
     return []
   }
@@ -159,7 +161,7 @@ export const getMetricsColumns = (
           ]
 
           if (disabledColumns) {
-            childrenColumns = childrenColumns.filter(filterColumns)
+            childrenColumns = childrenColumns.filter(filterColumns(disabledColumns))
           }
 
           return [
@@ -180,7 +182,7 @@ export const getMetricsColumns = (
   })
 
   if (disabledColumns) {
-    columns = columns.filter(filterColumns)
+    columns = columns.filter(filterColumns(disabledColumns))
   }
 
   return columns
@@ -190,10 +192,6 @@ export const getMetricsColumnsFromRawData = (
   metricsData: RawMetricsData,
   disabledColumns?: Array<string>
 ) => {
-  function filterColumns(column: ChildrenColumnType): boolean {
-    return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
-  }
-
   const keyColumns = metricsData?.current.key_columns?.map((column: string) => ({
     id: column,
     dataIndex: column,
@@ -205,6 +203,7 @@ export const getMetricsColumnsFromRawData = (
   }))
 
   const currentColumnNames = Object.keys(metricsData.current.data[0])
+
   return currentColumnNames?.reduce((columnsData: Array<ColumnType>, colName) => {
     const isKeyColumn =
       metricsData?.current.key_columns && !!metricsData?.current.key_columns.includes(colName)
@@ -214,7 +213,7 @@ export const getMetricsColumnsFromRawData = (
           id: `${colName}`,
           key: `${colName}`,
           dataIndex: `${colName}`,
-          title: `${colName}`,
+          title: 'Value',
           sorter: defaultSort(`${colName}`),
           render: renderColumnsValues,
           width: getColumnWidth('Current'),
@@ -229,8 +228,8 @@ export const getMetricsColumnsFromRawData = (
             id: `${colName}_change`,
             key: `${colName}_change`,
             dataIndex: `${colName}_change`,
-            title: <Tooltip title="Current - Previous">{colName} Change</Tooltip>,
-            titleString: `${colName} Change`,
+            title: <Tooltip title="Current - Previous">Change</Tooltip>,
+            titleString: 'Change',
             sorter: defaultSort(`${colName}_change`),
             render: renderNumericColumnValue,
             width: getColumnWidth('Change'),
@@ -240,10 +239,8 @@ export const getMetricsColumnsFromRawData = (
             id: `${colName}_change_percent`,
             key: `${colName}_change_percent`,
             dataIndex: `${colName}_change_percent`,
-            title: (
-              <Tooltip title="(Current - Previous) * 100% /Previous">{colName} % Change</Tooltip>
-            ),
-            titleString: `${colName} % Change`,
+            title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
+            titleString: '% Change',
             sorter: defaultSort(`${colName}_change_percent`),
             render: renderPercentColumnValue,
             width: getColumnWidth('% Change'),
@@ -253,10 +250,19 @@ export const getMetricsColumnsFromRawData = (
       }
 
       if (disabledColumns) {
-        childrenColumns = childrenColumns.filter(filterColumns)
+        childrenColumns = childrenColumns.filter(filterColumns(disabledColumns))
       }
 
-      return [...columnsData, ...childrenColumns]
+      return [
+        ...columnsData,
+        {
+          id: colName,
+          key: colName,
+          dataIndex: colName,
+          title: getGroupTitle(colName),
+          children: childrenColumns,
+        },
+      ]
     }
 
     return columnsData
