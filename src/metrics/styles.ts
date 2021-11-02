@@ -6,9 +6,19 @@ function getPaddingForTableCell({ smallSize }: { smallSize: boolean }): string {
 }
 
 export const StyledMetricTable = styled(Table)<{ smallSize: boolean }>`
+  .ant-table-thead
+    > tr
+    > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+    content: none;
+  }
+
   .ant-table-thead > tr > th {
     white-space: nowrap;
     padding: ${getPaddingForTableCell};
+
+    &:not(:last-child) {
+      border-right: 1px solid rgba(0, 0, 0, 0.06);
+    }
   }
 
   .ant-table-column-sorters {
