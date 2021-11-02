@@ -20,9 +20,12 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
       disabledColumns,
       height,
       smallSize = true,
+      showAbsDiffColumn,
+      showRelativeDiffColumn,
     } = {},
     onChange,
   } = props
+
   const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
   const _columns = useMemo(() => {
     if (columns) {
@@ -30,7 +33,10 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
     }
 
     if ('current' in data) {
-      return getMetricsColumnsFromRawData(data)
+      return getMetricsColumnsFromRawData(data, disabledColumns, {
+        showAbsDiffColumn,
+        showRelativeDiffColumn,
+      })
     }
 
     return getMetricsColumns(
@@ -39,7 +45,15 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
       saveMetricThreshold,
       disabledColumns
     )
-  }, [data, columns, previousReleaseDataIsShown, saveMetricThreshold])
+  }, [
+    data,
+    columns,
+    previousReleaseDataIsShown,
+    saveMetricThreshold,
+    disabledColumns,
+    showAbsDiffColumn,
+    showRelativeDiffColumn,
+  ])
 
   const _data = useMemo(() => {
     if ('current' in data) {

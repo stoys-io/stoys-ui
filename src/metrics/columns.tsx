@@ -33,7 +33,9 @@ function renderColumnsValues(value: {
 const filterColumns =
   (disabledColumns?: Array<string>) =>
   (column: ChildrenColumnType): boolean => {
-    return typeof column.title === 'string' && !disabledColumns?.includes(column.title)
+    const title = typeof column.title === 'string' ? column.title : column.titleString
+
+    return !disabledColumns?.includes(title!)
   }
 
 const renderNumericColumnValue = (value?: Maybe<number | string>): JSX.Element => (
@@ -190,8 +192,13 @@ export const getMetricsColumns = (
 
 export const getMetricsColumnsFromRawData = (
   metricsData: RawMetricsData,
-  disabledColumns?: Array<string>
+  disabledColumns?: Array<string>,
+  config: {
+    showAbsDiffColumn?: boolean
+    showRelativeDiffColumn?: boolean
+  } = {}
 ) => {
+  const { showAbsDiffColumn, showRelativeDiffColumn } = config
   const keyColumns = metricsData?.current.key_columns?.map((column: string) => ({
     id: column,
     dataIndex: column,
@@ -207,6 +214,7 @@ export const getMetricsColumnsFromRawData = (
   return currentColumnNames?.reduce((columnsData: Array<ColumnType>, colName) => {
     const isKeyColumn =
       metricsData?.current.key_columns && !!metricsData?.current.key_columns.includes(colName)
+
     if (!isKeyColumn) {
       let childrenColumns: Array<ChildrenColumnType> = [
         {
@@ -222,31 +230,38 @@ export const getMetricsColumnsFromRawData = (
       ]
 
       if (metricsData.previous) {
-        childrenColumns = [
-          ...childrenColumns,
-          {
-            id: `${colName}_change`,
-            key: `${colName}_change`,
-            dataIndex: `${colName}_change`,
-            title: <Tooltip title="Current - Previous">Change</Tooltip>,
-            titleString: 'Change',
-            sorter: defaultSort(`${colName}_change`),
-            render: renderNumericColumnValue,
-            width: getColumnWidth('Change'),
-            disabled: true,
-          },
-          {
-            id: `${colName}_change_percent`,
-            key: `${colName}_change_percent`,
-            dataIndex: `${colName}_change_percent`,
-            title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
-            titleString: '% Change',
-            sorter: defaultSort(`${colName}_change_percent`),
-            render: renderPercentColumnValue,
-            width: getColumnWidth('% Change'),
-            disabled: true,
-          },
-        ]
+        const absDiffColumn: Array<ChildrenColumnType> = showAbsDiffColumn
+          ? [
+              {
+                id: `${colName}_change`,
+                key: `${colName}_change`,
+                dataIndex: `${colName}_change`,
+                title: <Tooltip title="Current - Previous">Change</Tooltip>,
+                titleString: 'Change',
+                sorter: defaultSort(`${colName}_change`),
+                render: renderNumericColumnValue,
+                width: getColumnWidth('Change'),
+                disabled: true,
+              },
+            ]
+          : []
+        const relativeDiffColumn: Array<ChildrenColumnType> = showRelativeDiffColumn
+          ? [
+              {
+                id: `${colName}_change_percent`,
+                key: `${colName}_change_percent`,
+                dataIndex: `${colName}_change_percent`,
+                title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
+                titleString: '% Change',
+                sorter: defaultSort(`${colName}_change_percent`),
+                render: renderPercentColumnValue,
+                width: getColumnWidth('% Change'),
+                disabled: true,
+              },
+            ]
+          : []
+
+        childrenColumns = [...childrenColumns, ...absDiffColumn, ...relativeDiffColumn]
       }
 
       if (disabledColumns) {

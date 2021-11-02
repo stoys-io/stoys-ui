@@ -33,6 +33,8 @@ MetricsWithRawDataComparable.args = {
     disabledColumns: [],
     pagination: false,
     smallSize: true,
+    showAbsDiffColumn: true,
+    showRelativeDiffColumn: true,
   },
   bordered: false,
 }

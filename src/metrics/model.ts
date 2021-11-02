@@ -85,6 +85,8 @@ export interface ConfigProps {
   disabledColumns?: Array<string>
   height?: string | number
   smallSize?: boolean
+  showAbsDiffColumn?: boolean
+  showRelativeDiffColumn?: boolean
 }
 export interface MetricsTableProps extends TableProps<any> {
   data: MetricsData | RawMetricsData
