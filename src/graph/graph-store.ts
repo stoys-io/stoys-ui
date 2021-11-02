@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { RESIZE_AREA_HIGHT } from './constants'
+import { RESIZE_AREA_HEIGHT } from './constants'
 import { getBaseGraph, getMergedGraph } from './GraphComponent'
 import {
   highlightHighlight,
@@ -70,10 +70,10 @@ export const createStore = () =>
 
     drawerNodeId: undefined,
     closeDrawer: () => set({ drawerNodeId: undefined, drawerTab: undefined }),
-    hideDrawer: () => set({ drawerHeight: RESIZE_AREA_HIGHT }),
+    hideDrawer: () => set({ drawerHeight: RESIZE_AREA_HEIGHT }),
 
     openDrawer: (drawerNodeId: string) =>
-      get().drawerHeight === RESIZE_AREA_HIGHT
+      get().drawerHeight === RESIZE_AREA_HEIGHT
         ? set({ drawerNodeId, drawerHeight: defaultDrawerHeight })
         : set({ drawerNodeId }),
 

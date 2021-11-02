@@ -1,21 +1,26 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
-import { RESIZE_AREA_HIGHT } from '../constants'
-import { ResizeArea, StyledDrawer, DrawerContent } from '../styles'
+import React, { CSSProperties, ReactNode, useCallback, useEffect, useState, RefObject } from 'react'
 
-const Drawer = ({ children, drawerHeight, setDrawerHeight, visible }: Props) => {
+import AntDrawer from 'antd/lib/drawer'
+import { RESIZE_AREA_HEIGHT } from '../constants'
+import { ResizeArea, DrawerContent } from '../styles'
+
+const Drawer = ({ children, drawerHeight, setDrawerHeight, visible, containerRef }: Props) => {
   const [isResizing, setIsResizing] = useState<boolean>(false)
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    const height = document.body.offsetHeight - e.clientY
-
-    const maxHeight = document.body.offsetHeight * 0.9
-    if (height > RESIZE_AREA_HIGHT && height < maxHeight) {
-      setDrawerHeight(height)
-    }
-  }, [])
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      const containerHeight = containerRef?.current?.offsetHeight ?? 0
+      const height = containerHeight - e.clientY
+      const maxHeight = containerHeight * 0.9
+      if (height > RESIZE_AREA_HEIGHT && height < maxHeight) {
+        setDrawerHeight(height)
+      }
+    },
+    [containerRef]
+  )
 
   const handleMouseUp = useCallback(() => {
     if (drawerHeight < minHeight) {
-      setDrawerHeight(RESIZE_AREA_HIGHT)
+      setDrawerHeight(RESIZE_AREA_HEIGHT)
     }
     setIsResizing(false)
   }, [drawerHeight])
@@ -25,31 +30,36 @@ const Drawer = ({ children, drawerHeight, setDrawerHeight, visible }: Props) => 
   }, [])
 
   useEffect(() => {
+    const container = containerRef?.current
     if (isResizing) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp) // Depends on drawerHeight
+      container?.addEventListener('mousemove', handleMouseMove)
+      container?.addEventListener('mouseup', handleMouseUp) // Depends on drawerHeight
     } else {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
+      container?.removeEventListener('mousemove', handleMouseMove)
+      container?.removeEventListener('mouseup', handleMouseUp)
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
+      container?.removeEventListener('mousemove', handleMouseMove)
+      container?.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isResizing, drawerHeight])
+  }, [isResizing, drawerHeight, containerRef?.current])
 
   return (
-    <StyledDrawer
+    <AntDrawer
+      title={<ResizeArea onMouseDown={handleMouseDown} />}
       getContainer={false}
       placement="bottom"
       closable={false}
+      mask={false}
       visible={visible}
       height={drawerHeight}
+      style={style}
+      headerStyle={headerStyle}
+      bodyStyle={bodyStyle}
     >
-      <ResizeArea onMouseDown={handleMouseDown} />
       <DrawerContent>{children}</DrawerContent>
-    </StyledDrawer>
+    </AntDrawer>
   )
 }
 
@@ -60,6 +70,11 @@ interface Props {
   setDrawerHeight: (_: number) => void
   visible: boolean
   children: ReactNode
+  containerRef?: RefObject<HTMLDivElement>
 }
 
-const minHeight = RESIZE_AREA_HIGHT + 150
+const minHeight = RESIZE_AREA_HEIGHT + 150
+
+const style: CSSProperties = { position: 'absolute' }
+const bodyStyle = { padding: 0 }
+const headerStyle = { padding: 0 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useMemo, useEffect, useRef } from 'react'
 import ReactFlow, {
   ReactFlowProvider,
   Background,
@@ -18,7 +18,7 @@ import { DrawerTabs } from './components/DrawerTabs'
 import { graphLayout } from './graph-layout'
 import { useGraphStore } from './StoreProvider'
 
-import { Container, GraphContainer, DrawerContainer } from './styles'
+import { Container, GraphContainer } from './styles'
 import { Edge, Node, Graph, DataGraph, Table, ChromaticScale, Orientation } from './model'
 
 import { notEmpty, highlightNodesBatch } from './graph-ops'
@@ -26,6 +26,7 @@ import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from './const
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const config: Required<Config> = { ...defaultConfig, ...cfg }
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const releases = data.map(dataItem => dataItem.version)
   const currentRelease = config?.current || releases[0] // by default take first
@@ -50,7 +51,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const nodeClick = useGraphStore(state => state.nodeClick)
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
   const resetHighlightedColumns = useGraphStore(state => state.resetHighlightedColumns)
-  const hideDrawer = useGraphStore(state => state.hideDrawer)
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
@@ -60,7 +60,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   const onPaneClick = () => {
     resetHighlights()
-    hideDrawer()
     resetHighlightedColumns()
   }
 
@@ -92,7 +91,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   // TODO: Computing currentGraph layout is not fair in case of diffing
   const elements = graphLayout([...currentGraph.nodes, ...currentGraph.edges], config.orientation)
   return (
-    <Container>
+    <Container ref={containerRef}>
       <Sidebar
         onSearch={onSearchNode}
         releases={baseReleases}
@@ -115,11 +114,9 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           </ReactFlow>
         </ReactFlowProvider>
       </GraphContainer>
-      <DrawerContainer>
-        <ConnectedDrawer>
-          <DrawerTabs />
-        </ConnectedDrawer>
-      </DrawerContainer>
+      <ConnectedDrawer containerRef={containerRef}>
+        <DrawerTabs />
+      </ConnectedDrawer>
     </Container>
   )
 }
