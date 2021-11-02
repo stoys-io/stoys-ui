@@ -62,126 +62,125 @@ export const getMetricsColumns = (
     width: getColumnWidth(column.title),
   }))
 
-  let columns: Array<ColumnType> = []
+  const currentMetricsValue = metricsData?.values[0]
 
-  metricsData?.values?.forEach((row: Array<TableCellNode>, rowIndex: number) => {
-    if (rowIndex === 0) {
-      columns = row.reduce((columnsData: Array<ColumnType>, cell) => {
-        const columnKey = cell.columnName
-        const isKeyColumn =
-          metricsData?.columns &&
-          !!metricsData?.columns.find((column: ColumnNode) => column.columnName === columnKey)
+  let columns: Array<ColumnType> = currentMetricsValue.reduce(
+    (columnsData: Array<ColumnType>, cell) => {
+      const columnKey = cell.columnName
+      const isKeyColumn =
+        metricsData?.columns &&
+        !!metricsData?.columns.find((column: ColumnNode) => column.columnName === columnKey)
 
-        if (!isKeyColumn) {
-          let childrenColumns: Array<ChildrenColumnType> = [
-            {
-              id: `${cell.columnName}_current`,
-              key: `${cell.columnName}_current`,
-              dataIndex: `${cell.columnName}_current`,
-              title: 'Current',
-              sorter: defaultSort(`${cell.columnName}_current`),
-              render: renderNumericColumnValue,
-              className: 'aligned-right',
-            },
-          ]
+      if (!isKeyColumn) {
+        let childrenColumns: Array<ChildrenColumnType> = [
+          {
+            id: `${cell.columnName}_current`,
+            key: `${cell.columnName}_current`,
+            dataIndex: `${cell.columnName}_current`,
+            title: 'Current',
+            sorter: defaultSort(`${cell.columnName}_current`),
+            render: renderNumericColumnValue,
+            className: 'aligned-right',
+          },
+        ]
 
-          if (previousReleaseDataIsShown) {
-            childrenColumns = [
-              ...childrenColumns,
-              {
-                id: `${cell.columnName}_previous`,
-                key: `${cell.columnName}_previous`,
-                dataIndex: `${cell.columnName}_previous`,
-                title: 'Previous',
-                sorter: defaultSort(`${cell.columnName}_previous`),
-                render: renderNumericColumnValue,
-                className: 'aligned-right',
-              },
-              {
-                id: `${cell.columnName}_change`,
-                key: `${cell.columnName}_change`,
-                dataIndex: `${cell.columnName}_change`,
-                title: <Tooltip title="Current - Previous">Change</Tooltip>,
-                titleString: 'Change',
-                sorter: defaultSort(`${cell.columnName}_change`),
-                render: renderNumericColumnValue,
-                disabled: true,
-              },
-              {
-                id: `${cell.columnName}_change_percent`,
-                key: `${cell.columnName}_change_percent`,
-                dataIndex: `${cell.columnName}_change_percent`,
-                title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
-                titleString: '% Change',
-                sorter: defaultSort(`${cell.columnName}_change_percent`),
-                render: (value, item) => {
-                  const threshold = item[`${cell.columnName}_threshold`]
-                  if (
-                    value &&
-                    (threshold || threshold === 0) &&
-                    Math.abs(value) > Number(threshold)
-                  ) {
-                    return (
-                      <>
-                        <ChangePercentValue>{renderPercentColumnValue(value)}</ChangePercentValue>
-                        <ThresholdViolatedWrapper />
-                      </>
-                    )
-                  }
-                  return renderPercentColumnValue(value)
-                },
-              },
-              {
-                id: `${cell.columnName}_threshold`,
-                key: `${cell.columnName}_threshold`,
-                dataIndex: `${cell.columnName}_threshold`,
-                title: 'Threshold',
-                sorter: defaultSort(`${cell.columnName}_threshold`),
-                render: (value, item) => (
-                  <Threshold
-                    threshold={value}
-                    keyColumns={metricsData?.columns || []}
-                    metricsDataItem={item}
-                    valueColumnName={cell.columnName}
-                    saveMetricThreshold={saveMetricThreshold}
-                  />
-                ),
-              },
-            ]
-          }
-
+        if (previousReleaseDataIsShown) {
           childrenColumns = [
             ...childrenColumns,
             {
-              id: `${cell.columnName}_trends`,
-              key: `${cell.columnName}_trends`,
-              dataIndex: `${cell.columnName}_trends`,
-              title: 'Trends',
-              render: value => (value ? <Trends trends={value} /> : null),
+              id: `${cell.columnName}_previous`,
+              key: `${cell.columnName}_previous`,
+              dataIndex: `${cell.columnName}_previous`,
+              title: 'Previous',
+              sorter: defaultSort(`${cell.columnName}_previous`),
+              render: renderNumericColumnValue,
+              className: 'aligned-right',
+            },
+            {
+              id: `${cell.columnName}_change`,
+              key: `${cell.columnName}_change`,
+              dataIndex: `${cell.columnName}_change`,
+              title: <Tooltip title="Current - Previous">Change</Tooltip>,
+              titleString: 'Change',
+              sorter: defaultSort(`${cell.columnName}_change`),
+              render: renderNumericColumnValue,
               disabled: true,
             },
-          ]
-
-          if (disabledColumns) {
-            childrenColumns = childrenColumns.filter(filterColumns(disabledColumns))
-          }
-
-          return [
-            ...columnsData,
             {
-              id: cell.columnName,
-              key: cell.columnName,
-              dataIndex: cell.columnName,
-              title: getGroupTitle(cell.columnName),
-              children: childrenColumns,
+              id: `${cell.columnName}_change_percent`,
+              key: `${cell.columnName}_change_percent`,
+              dataIndex: `${cell.columnName}_change_percent`,
+              title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
+              titleString: '% Change',
+              sorter: defaultSort(`${cell.columnName}_change_percent`),
+              render: (value, item) => {
+                const threshold = item[`${cell.columnName}_threshold`]
+                if (
+                  value &&
+                  (threshold || threshold === 0) &&
+                  Math.abs(value) > Number(threshold)
+                ) {
+                  return (
+                    <>
+                      <ChangePercentValue>{renderPercentColumnValue(value)}</ChangePercentValue>
+                      <ThresholdViolatedWrapper />
+                    </>
+                  )
+                }
+                return renderPercentColumnValue(value)
+              },
+            },
+            {
+              id: `${cell.columnName}_threshold`,
+              key: `${cell.columnName}_threshold`,
+              dataIndex: `${cell.columnName}_threshold`,
+              title: 'Threshold',
+              sorter: defaultSort(`${cell.columnName}_threshold`),
+              render: (value, item) => (
+                <Threshold
+                  threshold={value}
+                  keyColumns={metricsData?.columns || []}
+                  metricsDataItem={item}
+                  valueColumnName={cell.columnName}
+                  saveMetricThreshold={saveMetricThreshold}
+                />
+              ),
             },
           ]
         }
 
-        return columnsData
-      }, keyColumns)
-    }
-  })
+        childrenColumns = [
+          ...childrenColumns,
+          {
+            id: `${cell.columnName}_trends`,
+            key: `${cell.columnName}_trends`,
+            dataIndex: `${cell.columnName}_trends`,
+            title: 'Trends',
+            render: value => (value ? <Trends trends={value} /> : null),
+            disabled: true,
+          },
+        ]
+
+        if (disabledColumns) {
+          childrenColumns = childrenColumns.filter(filterColumns(disabledColumns))
+        }
+
+        return [
+          ...columnsData,
+          {
+            id: cell.columnName,
+            key: cell.columnName,
+            dataIndex: cell.columnName,
+            title: getGroupTitle(cell.columnName),
+            children: childrenColumns,
+          },
+        ]
+      }
+
+      return columnsData
+    },
+    keyColumns
+  )
 
   if (disabledColumns) {
     columns = columns.filter(filterColumns(disabledColumns))
