@@ -78,6 +78,7 @@ export const getMetricsColumns = (
               sorter: defaultSort(cell.columnName),
               render: renderColumnsValues,
               className: 'aligned-right',
+              width: 200,
             },
           ]
 
@@ -207,29 +208,30 @@ export const getMetricsColumnsFromRawData = (
       if (metricsData.previous) {
         childrenColumns = [
           ...childrenColumns,
-          // TODO: waiting for BE
-          // {
-          //   id: `${colName}_change`,
-          //   key: `${colName}_change`,
-          //   dataIndex: `${colName}_change`,
-          //   title: <Tooltip title="Current - Previous">Change</Tooltip>,
-          //   titleString: `${colName} Change`,
-          //   sorter: defaultSort(`${colName}_change`),
-          //   render: renderNumericColumnValue,
-          //   width: getColumnWidth('Change'),
-          //   disabled: true,
-          // },
-          // {
-          //   id: `${colName}_change_percent`,
-          //   key: `${colName}_change_percent`,
-          //   dataIndex: `${colName}_change_percent`,
-          //   title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
-          //   titleString: `${colName} % Change`,
-          //   sorter: defaultSort(`${colName}_change_percent`),
-          //   render: renderPercentColumnValue,
-          //   width: getColumnWidth('% Change'),
-          //   disabled: true,
-          // },
+          {
+            id: `${colName}_change`,
+            key: `${colName}_change`,
+            dataIndex: `${colName}_change`,
+            title: <Tooltip title="Current - Previous">{colName} Change</Tooltip>,
+            titleString: `${colName} Change`,
+            sorter: defaultSort(`${colName}_change`),
+            render: renderNumericColumnValue,
+            width: getColumnWidth('Change'),
+            disabled: true,
+          },
+          {
+            id: `${colName}_change_percent`,
+            key: `${colName}_change_percent`,
+            dataIndex: `${colName}_change_percent`,
+            title: (
+              <Tooltip title="(Current - Previous) * 100% /Previous">{colName} % Change</Tooltip>
+            ),
+            titleString: `${colName} % Change`,
+            sorter: defaultSort(`${colName}_change_percent`),
+            render: renderPercentColumnValue,
+            width: getColumnWidth('% Change'),
+            disabled: true,
+          },
         ]
       }
 

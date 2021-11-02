@@ -17,6 +17,10 @@ export const StyledMetricTable = styled(Table)<{ smallSize: boolean }>`
     white-space: nowrap;
   }
 
+  th.ant-table-cell {
+    overflow: hidden;
+  }
+
   .ant-table-cell {
     position: relative;
     padding: ${getPaddingForTableCell};
