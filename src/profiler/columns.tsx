@@ -49,7 +49,7 @@ const renderChartAndTableCell =
 
     if ('columnName' in row) {
       renderedCellConfig.props.colSpan = 0
-    } else {
+    } else if (rowSpan > 1) {
       const next = data[index + 1]
       renderedCellConfig.props.rowSpan = next && !('columnName' in next) ? rowSpan : 0
     }
