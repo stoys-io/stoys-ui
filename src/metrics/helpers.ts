@@ -49,7 +49,8 @@ export const getMetricsTableData = (metricsData: MetricsData) => {
       }
 
       if (!isKeyColumn) {
-        acc[cell.columnName] = { cur: cell.currentValue, prev: cell.previousValue }
+        acc[`${cell.columnName}_current`] = cell.currentValue
+        acc[`${cell.columnName}_previous`] = cell.previousValue
         const changeValue =
           cell.currentValue && cell.previousValue
             ? Number(cell.currentValue) - Number(cell.previousValue)

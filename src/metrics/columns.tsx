@@ -71,14 +71,13 @@ export const getMetricsColumns = (
         if (!isKeyColumn) {
           let childrenColumns: Array<ChildrenColumnType> = [
             {
-              id: cell.columnName,
-              key: cell.columnName,
-              dataIndex: cell.columnName,
-              title: cell.columnName,
-              sorter: defaultSort(cell.columnName),
-              render: renderColumnsValues,
+              id: `${cell.columnName}_current`,
+              key: `${cell.columnName}_current`,
+              dataIndex: `${cell.columnName}_current`,
+              title: 'Current',
+              sorter: defaultSort(`${cell.columnName}_current`),
+              render: renderNumericColumnValue,
               className: 'aligned-right',
-              width: 200,
             },
           ]
 
@@ -86,11 +85,20 @@ export const getMetricsColumns = (
             childrenColumns = [
               ...childrenColumns,
               {
+                id: `${cell.columnName}_previous`,
+                key: `${cell.columnName}_previous`,
+                dataIndex: `${cell.columnName}_previous`,
+                title: 'Previous',
+                sorter: defaultSort(`${cell.columnName}_previous`),
+                render: renderNumericColumnValue,
+                className: 'aligned-right',
+              },
+              {
                 id: `${cell.columnName}_change`,
                 key: `${cell.columnName}_change`,
                 dataIndex: `${cell.columnName}_change`,
                 title: <Tooltip title="Current - Previous">Change</Tooltip>,
-                titleString: `${cell.columnName} Change`,
+                titleString: 'Change',
                 sorter: defaultSort(`${cell.columnName}_change`),
                 render: renderNumericColumnValue,
                 disabled: true,
@@ -100,7 +108,7 @@ export const getMetricsColumns = (
                 key: `${cell.columnName}_change_percent`,
                 dataIndex: `${cell.columnName}_change_percent`,
                 title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
-                titleString: `${cell.columnName} % Change`,
+                titleString: '% Change',
                 sorter: defaultSort(`${cell.columnName}_change_percent`),
                 render: (value, item) => {
                   const threshold = item[`${cell.columnName}_threshold`]
@@ -123,7 +131,7 @@ export const getMetricsColumns = (
                 id: `${cell.columnName}_threshold`,
                 key: `${cell.columnName}_threshold`,
                 dataIndex: `${cell.columnName}_threshold`,
-                title: `${cell.columnName} Threshold`,
+                title: 'Threshold',
                 sorter: defaultSort(`${cell.columnName}_threshold`),
                 render: (value, item) => (
                   <Threshold
@@ -144,7 +152,7 @@ export const getMetricsColumns = (
               id: `${cell.columnName}_trends`,
               key: `${cell.columnName}_trends`,
               dataIndex: `${cell.columnName}_trends`,
-              title: `${cell.columnName} Trends`,
+              title: 'Trends',
               render: value => (value ? <Trends trends={value} /> : null),
               disabled: true,
             },
@@ -154,7 +162,16 @@ export const getMetricsColumns = (
             childrenColumns = childrenColumns.filter(filterColumns)
           }
 
-          return [...columnsData, ...childrenColumns]
+          return [
+            ...columnsData,
+            {
+              id: cell.columnName,
+              key: cell.columnName,
+              dataIndex: cell.columnName,
+              title: getGroupTitle(cell.columnName),
+              children: childrenColumns,
+            },
+          ]
         }
 
         return columnsData
