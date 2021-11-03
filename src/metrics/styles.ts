@@ -34,6 +34,10 @@ export const StyledMetricTable = styled(Table)<{ smallSize: boolean }>`
   .ant-table-cell {
     position: relative;
     padding: ${getPaddingForTableCell};
+
+    &:not(:last-child) {
+      border-right: 1px solid #f0f0f0;
+    }
   }
 
   td.aligned-right {
