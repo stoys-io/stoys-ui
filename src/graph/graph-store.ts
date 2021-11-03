@@ -1,5 +1,4 @@
 import create from 'zustand'
-import { RESIZE_AREA_HEIGHT } from './constants'
 import { getBaseGraph, getMergedGraph } from './GraphComponent'
 import {
   highlightHighlight,
@@ -21,81 +20,19 @@ const defaultHighlightedColumns = {
 const defaultHighlights = { nodes: {}, edges: {} }
 export const createStore = () =>
   create<GraphStore>((set, get) => ({
+    dispatch: (fn: DispatchHandler) => set(fn as any),
+
     graph: { nodes: [], edges: [] },
 
     highlightedColumns: defaultHighlightedColumns,
-    resetHighlightedColumns: () =>
-      set({
-        highlightedColumns: defaultHighlightedColumns,
-      }),
-    setHighlightedColumns: (columnId: string, tableId: string) => {
-      const graph = get().graph
-      const highlightMode = get().highlightMode
-      const highlightedColumns = get().highlightedColumns
-      const curHighlights = get().highlights
-      const tables = get().tables
-
-      // Toggle columns
-      if (columnId === highlightedColumns.selectedColumnId) {
-        const newHighlights = resetHighlight(graph)
-        return set({
-          highlightedColumns: defaultHighlightedColumns,
-          highlights: graphToHighlights(newHighlights),
-        })
-      }
-
-      set(
-        onHighlightModeChangeColumns({
-          columnId,
-          tableId,
-          graph,
-          highlights: curHighlights,
-          highlightMode,
-          tables,
-        })
-      )
-    },
 
     data: [],
     tables: undefined,
-    setInitialStore: ({ graph, data, tables }) => set({ graph, data, tables }),
 
     drawerTab: undefined,
-    setDrawerTab: (drawerTab?: string) => set({ drawerTab }),
     drawerNodeId: undefined,
-    openDrawer: (drawerNodeId: string) => set({ drawerNodeId }),
-    closeDrawer: () => set({ drawerNodeId: undefined, drawerTab: undefined }),
 
     selectedNodeId: undefined,
-    nodeClick: (id: string, chromaticScale: ChromaticScale) => {
-      const highlightMode = get().highlightMode
-      // ignode node click when diffing
-      if (highlightMode === 'diffing') {
-        return set({
-          highlightedColumns: defaultHighlightedColumns,
-        })
-      }
-
-      const graph = get().graph
-      if (highlightMode === 'none') {
-        // Highlight single node
-        const newHighlights = highlightNodesBatch([id])(resetHighlight(graph))
-
-        return set({
-          highlights: graphToHighlights(newHighlights),
-          selectedNodeId: id,
-          highlightedColumns: defaultHighlightedColumns,
-        })
-      }
-
-      const newHighlights = highlightHighlight(highlightMode)(graph, id, chromaticScale)
-      return set({
-        highlights: graphToHighlights(newHighlights),
-        selectedNodeId: id,
-        highlightedColumns: defaultHighlightedColumns,
-      })
-    },
-
     searchNodeLabels: (value: string): string[] => {
       const graph = get().graph
       return graph.nodes
@@ -104,27 +41,7 @@ export const createStore = () =>
     },
 
     baseRelease: '',
-    setBaseRelease: (baseRelease: string) => {
-      if (baseRelease) {
-        const data = get().data
-        const tables = get().tables
-        const graph = get().graph
-
-        const baseGraph = getBaseGraph(baseRelease, data, tables)
-        const mergedGraph = getMergedGraph(graph, baseGraph)
-        const highlights = graphToHighlights(mergedGraph)
-
-        return set({
-          baseRelease,
-          highlightMode: 'diffing',
-          highlights,
-          graph: mergedGraph,
-        })
-      }
-    },
-
     badge: 'violations',
-    setBadge: (badge: Badge) => set({ badge }),
 
     highlightMode: 'nearest',
     setHighlightMode: (highlightMode: Highlight, chromaticScale: ChromaticScale) => {
@@ -192,12 +109,6 @@ export const createStore = () =>
       set(state => ({
         highlights: graphToHighlights(fn(state.graph)),
       })),
-
-    resetHighlights: () =>
-      get().highlightMode !== 'diffing' &&
-      set({
-        highlights: defaultHighlights,
-      }),
   }))
 
 const graphToHighlights = (hGraph: Graph): StoredHighlights => {
@@ -328,37 +239,115 @@ const onHighlightModeChangeColumns = ({
   }
 }
 
-export interface GraphStore {
-  graph: Graph
+export const setBadge = (badge: Badge) => ({ badge })
+export const setInitialStore = ({ graph, data, tables }: InitialArgs) => ({
+  graph,
+  data,
+  tables,
+})
 
+export const setBaseRelease =
+  (baseRelease: string) =>
+  ({ data, tables, graph }: GraphStore): Partial<GraphStore> => {
+    if (baseRelease) {
+      const baseGraph = getBaseGraph(baseRelease, data, tables)
+      const mergedGraph = getMergedGraph(graph, baseGraph)
+      const highlights = graphToHighlights(mergedGraph)
+
+      return {
+        baseRelease,
+        highlightMode: 'diffing',
+        highlights,
+        graph: mergedGraph,
+      }
+    }
+
+    return {}
+  }
+
+export const resetHighlightedColumns = { highlightedColumns: defaultHighlightedColumns }
+
+export const resetHighlights = (state: GraphStore) =>
+  state.highlightMode !== 'diffing' ? { highlights: defaultHighlights } : {}
+
+export const setHighlightedColumns =
+  (columnId: string, tableId: string) =>
+  ({ graph, highlightMode, highlightedColumns, highlights: curHighlights, tables }: GraphStore) => {
+    // Toggle columns
+    if (columnId === highlightedColumns.selectedColumnId) {
+      const newHighlights = resetHighlight(graph)
+      return {
+        highlightedColumns: defaultHighlightedColumns,
+        highlights: graphToHighlights(newHighlights),
+      }
+    }
+
+    return onHighlightModeChangeColumns({
+      columnId,
+      tableId,
+      graph,
+      highlights: curHighlights,
+      highlightMode,
+      tables,
+    })
+  }
+
+export const nodeClick =
+  (id: string, chromaticScale: ChromaticScale) =>
+  ({ highlightMode, graph }: GraphStore) => {
+    // ignode node click when diffing
+    if (highlightMode === 'diffing') {
+      return {
+        highlightedColumns: defaultHighlightedColumns,
+      }
+    }
+
+    if (highlightMode === 'none') {
+      // Highlight single node
+      const newHighlights = highlightNodesBatch([id])(resetHighlight(graph))
+
+      return {
+        highlights: graphToHighlights(newHighlights),
+        selectedNodeId: id,
+        highlightedColumns: defaultHighlightedColumns,
+      }
+    }
+
+    const newHighlights = highlightHighlight(highlightMode)(graph, id, chromaticScale)
+    return {
+      highlights: graphToHighlights(newHighlights),
+      selectedNodeId: id,
+      highlightedColumns: defaultHighlightedColumns,
+    }
+  }
+
+export const setDrawerTab = (drawerTab?: string) => ({ drawerTab })
+export const openDrawer = (drawerNodeId: string) => ({ drawerNodeId })
+export const closeDrawer = () => ({ drawerNodeId: undefined, drawerTab: undefined })
+
+type DispatchFn = (state: GraphStore) => Partial<GraphStore>
+type DispatchHandler = DispatchFn | Partial<GraphStore>
+export interface GraphStore {
+  dispatch: (fn: DispatchHandler) => void
+
+  graph: Graph
   highlightedColumns: HColumns
-  resetHighlightedColumns: () => void
-  setHighlightedColumns: (columnId: string, tableId: string) => void
 
   data: DataGraph[]
   tables?: Table[]
 
   drawerNodeId?: string
   drawerTab?: string
-  setDrawerTab: (_?: string) => void
-  closeDrawer: () => void
-  openDrawer: (id: string) => void
-
-  setInitialStore: (arg: InitialArgs) => void
 
   selectedNodeId?: string
-  nodeClick: (id: string, chromaticScale: ChromaticScale) => void
   searchNodeLabels: (value: string) => string[]
 
   baseRelease: string
-  setBaseRelease: (_: string) => void
 
   badge: Badge
-  setBadge: (_: Badge) => void
 
   highlights: StoredHighlights
   setHighlights: (fn: (_: Graph) => Graph) => void
-  resetHighlights: () => void
 
   highlightMode: Highlight
   setHighlightMode: (value: Highlight, chromaticScale: ChromaticScale) => void

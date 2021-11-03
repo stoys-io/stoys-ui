@@ -17,6 +17,7 @@ import { DrawerTabs } from './components/DrawerTabs'
 
 import { graphLayout } from './graph-layout'
 import { useGraphStore } from './StoreProvider'
+import { setInitialStore, resetHighlightedColumns, resetHighlights, nodeClick } from './graph-store'
 
 import { Container, GraphContainer } from './styles'
 import { Edge, Node, Graph, DataGraph, Table, ChromaticScale, Orientation } from './model'
@@ -45,22 +46,19 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     edges: mapInitialEdges(tables!),
   }
 
-  const setInitialStore = useGraphStore(state => state.setInitialStore)
+  const dispatch = useGraphStore(state => state.dispatch)
   const setHighlights = useGraphStore(state => state.setHighlights)
-  const resetHighlights = useGraphStore(state => state.resetHighlights)
-  const nodeClick = useGraphStore(state => state.nodeClick)
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
-  const resetHighlightedColumns = useGraphStore(state => state.resetHighlightedColumns)
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
-      return nodeClick(element.id, config.chromaticScale)
+      return dispatch(nodeClick(element.id, config.chromaticScale))
     }
   }
 
   const onPaneClick = () => {
-    resetHighlights()
-    resetHighlightedColumns()
+    dispatch(resetHighlights)
+    dispatch(resetHighlightedColumns)
   }
 
   const onSearchNode = ({ val, err, onError }: SearchArgs) => {
@@ -81,11 +79,14 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   useEffect(() => {
-    setInitialStore({
-      graph: currentGraph,
-      data,
-      tables,
-    }) // TODO: Leave only currentGraph argument ?
+    dispatch(
+      setInitialStore({
+        graph: currentGraph,
+        data,
+        tables,
+      })
+    )
+    // TODO: Leave only currentGraph argument ?
   }, [])
 
   // TODO: Computing currentGraph layout is not fair in case of diffing

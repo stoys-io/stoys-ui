@@ -7,6 +7,7 @@ import { NoData } from '../../profiler/styles'
 import { RawMetricsData } from '../../metrics/model'
 import { JoinRates, Metrics, Profiler, Quality } from '../..'
 import { useGraphStore } from '../StoreProvider'
+import { setDrawerTab, closeDrawer } from '../graph-store'
 
 const { TabPane } = Tabs
 
@@ -19,8 +20,7 @@ export const DrawerTabs = () => {
   const baseRelease = useGraphStore(state => state.baseRelease)
   const graphData = useGraphStore(state => state.data)
 
-  const setDrawerTab = useGraphStore(state => state.setDrawerTab)
-  const closeDrawer = useGraphStore(state => state.closeDrawer)
+  const dispatch = useGraphStore(state => state.dispatch)
 
   const baseData = useMemo(() => {
     if (!baseRelease) {
@@ -71,10 +71,10 @@ export const DrawerTabs = () => {
   const drawerTab = useGraphStore(state => state.drawerTab || firstNonEmptyTab)
 
   useEffect(() => {
-    setDrawerTab(firstNonEmptyTab)
+    dispatch(setDrawerTab(firstNonEmptyTab))
 
     return () => {
-      closeDrawer()
+      dispatch(closeDrawer)
     }
   }, [])
 

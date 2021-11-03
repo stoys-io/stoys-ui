@@ -13,17 +13,16 @@ import {
 import { renderNumericValue } from '../../helpers'
 import { Column, DataPayload } from '../model'
 import { ItemText, ScrollCard, ScrollCardTitle } from '../styles'
-import { GraphStore } from '../graph-store'
+import { GraphStore, setHighlightedColumns, openDrawer } from '../graph-store'
 import { useGraphStore } from '../StoreProvider'
 
 const selectBadge = (state: GraphStore) => state.badge
 const selectHighlightMode = (state: GraphStore) => state.highlightMode
-const selectOpenDrawer = (state: GraphStore) => state.openDrawer
 
-const selectColumns = (state: GraphStore) => state.setHighlightedColumns
 const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
 const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
 const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
+const selectDispatch = (state: GraphStore) => state.dispatch
 
 export const DagNode = memo(
   ({
@@ -36,11 +35,10 @@ export const DagNode = memo(
     const badge = useGraphStore(selectBadge)
     const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
 
-    const setHighlightedColumns = useGraphStore(selectColumns)
+    const dispatch = useGraphStore(selectDispatch)
     const selectedTableId = useGraphStore(selectTableId)
     const selectedColumnId = useGraphStore(selectColumnId)
     const relatedColumnsIds = useGraphStore(selectRelColumnIds)
-    const openDrawer = useGraphStore(selectOpenDrawer)
     const highlightMode = useGraphStore(selectHighlightMode)
 
     const actualBadge = badge === 'violations' ? violations : partitions
@@ -101,7 +99,7 @@ export const DagNode = memo(
         )}
         <ScrollCard
           title={
-            <ScrollCardTitle onClick={() => openDrawer(id)} color={titleHighlightColor}>
+            <ScrollCardTitle onClick={() => dispatch(openDrawer(id))} color={titleHighlightColor}>
               {label}
             </ScrollCardTitle>
           }
@@ -120,7 +118,7 @@ export const DagNode = memo(
                   color={getListItemHighlightedColor(column)}
                   onClick={(evt: React.MouseEvent<HTMLElement>) => {
                     evt.stopPropagation()
-                    setHighlightedColumns(column.id, id)
+                    dispatch(setHighlightedColumns(column.id, id))
                   }}
                 >
                   {column.name}
