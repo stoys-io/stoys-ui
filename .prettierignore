@@ -1,1 +1,6 @@
 coverage
+storybook-static
+dist
+**/*.test.ts
+**/*.test.tsx
+**/*.mock.ts

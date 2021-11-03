@@ -1,9 +1,0 @@
-{
-  "extends": ["tslint-config-standard", "tslint-react", "tslint-config-prettier"],
-  "rules": {
-    "jsx-boolean-value": false,
-    "jsx-curly-spacing": false,
-    "jsx-no-multiline-js": false,
-    "jsx-no-lambda": false
-  }
-}
