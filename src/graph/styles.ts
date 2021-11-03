@@ -43,10 +43,6 @@ export const DrawerNodeLabel = styled.div`
   font-weight: bold;
 `
 
-export const DrawerContent = styled.div`
-  padding: 0 16px;
-`
-
 export const ResizeArea = styled.div`
   background: #e2e2e2;
   height: ${RESIZE_AREA_HEIGHT}px;

@@ -29,7 +29,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const releases = data.map(dataItem => dataItem.version)
-  const currentRelease = config?.current || releases[0] // by default take first
+  const currentRelease = config?.currentRelease || releases[0] // by default take first
   const baseReleases = releases
     .filter(release => release !== currentRelease)
     .filter(notEmpty)
@@ -114,7 +114,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           </ReactFlow>
         </ReactFlowProvider>
       </GraphContainer>
-      <ConnectedDrawer containerRef={containerRef}>
+      <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer}>
         <DrawerTabs />
       </ConnectedDrawer>
     </Container>
@@ -129,8 +129,9 @@ export interface Props {
 }
 
 interface Config {
-  current?: string
+  currentRelease?: string
   orientation?: Orientation
+  openDrawer?: boolean
 
   // You can use any color scheme from https://github.com/d3/d3-scale-chromatic#sequential-single-hue
   // Pass the name of the scheme as chromaticScale prop (ex. 'interpolateBlues', 'interpolateGreens', etc.)
@@ -140,7 +141,8 @@ interface Config {
 const defaultConfig: Required<Config> = {
   orientation: 'horizontal',
   chromaticScale: 'interpolatePuOr',
-  current: '',
+  openDrawer: false,
+  currentRelease: '',
 }
 
 const nodeTypes = {

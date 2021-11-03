@@ -7,7 +7,6 @@ import { NoData } from '../../profiler/styles'
 import { RawMetricsData } from '../../metrics/model'
 import { JoinRates, Metrics, Profiler, Quality } from '../..'
 import { useGraphStore } from '../StoreProvider'
-import { DataGraph, Table } from '../model'
 
 const { TabPane } = Tabs
 
@@ -83,6 +82,7 @@ export const DrawerTabs = () => {
     <Tabs
       activeKey={drawerTab}
       onChange={setDrawerTab}
+      tabBarStyle={tabBarStyle}
       tabBarExtraContent={<DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>}
     >
       <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
@@ -152,3 +152,5 @@ const METRICS_KEY = 'metrics'
 const PROFILER_KEY = 'profiler'
 const QUALITY_KEY = 'quality'
 const METADATA_KEY = 'metadata'
+
+const tabBarStyle = { padding: '0 16px' }

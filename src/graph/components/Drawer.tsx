@@ -1,11 +1,13 @@
-import React, { CSSProperties, ReactNode, useCallback, useEffect, useState, RefObject } from 'react'
+import React, { CSSProperties, ReactNode, useCallback, useState, RefObject, useEffect } from 'react'
 
 import AntDrawer from 'antd/lib/drawer'
 import { RESIZE_AREA_HEIGHT } from '../constants'
-import { ResizeArea, DrawerContent } from '../styles'
+import { ResizeArea } from '../styles'
 
-const Drawer = ({ children, drawerHeight, setDrawerHeight, visible, containerRef }: Props) => {
+const Drawer = ({ children, visible, containerRef }: Props) => {
+  const [drawerHeight, setDrawerHeight] = useState<number>(0)
   const [isResizing, setIsResizing] = useState<boolean>(false)
+
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       const containerHeight = containerRef?.current?.offsetHeight ?? 0
@@ -34,20 +36,27 @@ const Drawer = ({ children, drawerHeight, setDrawerHeight, visible, containerRef
   }, [])
 
   useEffect(() => {
-    const container = containerRef?.current
     if (isResizing) {
-      container?.addEventListener('mousemove', handleMouseMove)
-      container?.addEventListener('mouseup', handleMouseUp) // Depends on drawerHeight
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp) // Depends on drawerHeight
     } else {
-      container?.removeEventListener('mousemove', handleMouseMove)
-      container?.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
     }
 
     return () => {
-      container?.removeEventListener('mousemove', handleMouseMove)
-      container?.removeEventListener('mouseup', handleMouseUp)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isResizing, drawerHeight, containerRef?.current])
+  }, [isResizing, drawerHeight])
+
+  useEffect(() => {
+    // Set initial height of 40% of Container
+    if (containerRef?.current) {
+      const initialHeight = Math.ceil((containerRef?.current?.offsetHeight ?? 0) * 0.4)
+      setDrawerHeight(initialHeight)
+    }
+  }, [])
 
   return (
     <AntDrawer
@@ -62,7 +71,7 @@ const Drawer = ({ children, drawerHeight, setDrawerHeight, visible, containerRef
       headerStyle={headerStyle}
       bodyStyle={bodyStyle}
     >
-      <DrawerContent>{children}</DrawerContent>
+      {children}
     </AntDrawer>
   )
 }
@@ -70,8 +79,6 @@ const Drawer = ({ children, drawerHeight, setDrawerHeight, visible, containerRef
 export default Drawer
 
 interface Props {
-  drawerHeight: number
-  setDrawerHeight: (_: number) => void
   visible: boolean
   children: ReactNode
   containerRef?: RefObject<HTMLDivElement>
