@@ -105,6 +105,7 @@ export const getMetricsColumns = (
               sorter: defaultSort(`${cell.columnName}_change`),
               render: renderNumericColumnValue,
               disabled: true,
+              className: 'aligned-right',
             },
             {
               id: `${cell.columnName}_change_percent`,
@@ -220,7 +221,7 @@ export const getMetricsColumnsFromRawData = (
           id: `${colName}`,
           key: `${colName}`,
           dataIndex: `${colName}`,
-          title: 'Value',
+          title: metricsData.previous ? 'Value' : getGroupTitle(colName),
           sorter: defaultSort(`${colName}`),
           render: renderColumnsValues,
           width: getColumnWidth('Current'),
@@ -241,6 +242,7 @@ export const getMetricsColumnsFromRawData = (
                 render: renderNumericColumnValue,
                 width: getColumnWidth('Change'),
                 disabled: true,
+                className: 'aligned-right',
               },
             ]
           : []
@@ -265,13 +267,17 @@ export const getMetricsColumnsFromRawData = (
 
       return [
         ...columnsData,
-        {
-          id: colName,
-          key: colName,
-          dataIndex: colName,
-          title: getGroupTitle(colName),
-          children: childrenColumns,
-        },
+        ...(metricsData.previous
+          ? [
+              {
+                id: colName,
+                key: colName,
+                dataIndex: colName,
+                title: getGroupTitle(colName),
+                children: childrenColumns,
+              },
+            ]
+          : childrenColumns),
       ]
     }
 
