@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import Drawer from 'antd/lib/drawer'
 import Select from 'antd/lib/select'
 import Input from 'antd/lib/input'
 
@@ -10,12 +9,13 @@ import {
   HIGHLIGHT_COLOR,
   NODE_HEIGHT,
   NODE_WIDTH,
-  RESIZE_AREA_HIGHT,
+  RESIZE_AREA_HEIGHT,
   GREY_LIGHT,
   GREY_ACCENT,
 } from './constants'
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   height: 100%;
   overflow: hidden;
@@ -34,41 +34,18 @@ export const SidebarContentWrapper = styled.div`
   z-index: 3;
 `
 
-export const DrawerContainer = styled.div`
-  .ant-drawer-content,
-  .ant-drawer-content-wrapper {
-    border-radius: ${RESIZE_AREA_HIGHT}px ${RESIZE_AREA_HIGHT}px 0 0;
-  }
-
-  .ant-drawer-top.ant-drawer-open,
-  .ant-drawer-bottom.ant-drawer-open {
-    height: unset;
-  }
-`
-
 export const GraphContainer = styled.div`
   height: 100vh;
   width: 100%;
-`
-
-export const StyledDrawer = styled(Drawer)`
-  .ant-drawer-body {
-    padding: 0;
-  }
 `
 
 export const DrawerNodeLabel = styled.div`
   font-weight: bold;
 `
 
-export const DrawerContent = styled.div`
-  padding: ${RESIZE_AREA_HIGHT}px 16px 0 16px;
-`
-
 export const ResizeArea = styled.div`
-  position: fixed;
-  background: ${GREY_LIGHT};
-  height: ${RESIZE_AREA_HIGHT}px;
+  background: #e2e2e2;
+  height: ${RESIZE_AREA_HEIGHT}px;
   width: 100%;
   cursor: ns-resize;
   z-index: 10;

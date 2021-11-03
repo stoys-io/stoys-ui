@@ -1,5 +1,5 @@
 import create from 'zustand'
-import { RESIZE_AREA_HIGHT } from './constants'
+import { RESIZE_AREA_HEIGHT } from './constants'
 import { getBaseGraph, getMergedGraph } from './GraphComponent'
 import {
   highlightHighlight,
@@ -18,7 +18,6 @@ const defaultHighlightedColumns = {
   relatedTablesIds: [],
 }
 
-const defaultDrawerHeight = 500
 const defaultHighlights = { nodes: {}, edges: {} }
 export const createStore = () =>
   create<GraphStore>((set, get) => ({
@@ -61,21 +60,11 @@ export const createStore = () =>
     tables: undefined,
     setInitialStore: ({ graph, data, tables }) => set({ graph, data, tables }),
 
-    drawerHeight: defaultDrawerHeight,
-    getDrawerHeight: () => get().drawerHeight,
-    setDrawerHeight: (drawerHeight: number) => set({ drawerHeight }),
-
     drawerTab: undefined,
     setDrawerTab: (drawerTab?: string) => set({ drawerTab }),
-
     drawerNodeId: undefined,
+    openDrawer: (drawerNodeId: string) => set({ drawerNodeId }),
     closeDrawer: () => set({ drawerNodeId: undefined, drawerTab: undefined }),
-    hideDrawer: () => set({ drawerHeight: RESIZE_AREA_HIGHT }),
-
-    openDrawer: (drawerNodeId: string) =>
-      get().drawerHeight === RESIZE_AREA_HIGHT
-        ? set({ drawerNodeId, drawerHeight: defaultDrawerHeight })
-        : set({ drawerNodeId }),
 
     selectedNodeId: undefined,
     nodeClick: (id: string, chromaticScale: ChromaticScale) => {
@@ -350,13 +339,9 @@ export interface GraphStore {
   tables?: Table[]
 
   drawerNodeId?: string
-  drawerHeight: number
-  getDrawerHeight: () => number
-  setDrawerHeight: (_: number) => void
   drawerTab?: string
   setDrawerTab: (_?: string) => void
   closeDrawer: () => void
-  hideDrawer: () => void
   openDrawer: (id: string) => void
 
   setInitialStore: (arg: InitialArgs) => void

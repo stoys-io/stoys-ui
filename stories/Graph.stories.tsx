@@ -27,6 +27,7 @@ DiffGraph.args = {
   config: {
     orientation: 'horizontal',
     chromaticScale: 'interpolatePuOr',
+    openDrawer: true,
   },
 }
 
