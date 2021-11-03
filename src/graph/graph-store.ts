@@ -18,7 +18,7 @@ const defaultHighlightedColumns = {
   relatedTablesIds: [],
 }
 
-const defaultDrawerHeight = 500
+const defaultDrawerHeight = 200
 const defaultHighlights = { nodes: {}, edges: {} }
 export const createStore = () =>
   create<GraphStore>((set, get) => ({
@@ -62,7 +62,6 @@ export const createStore = () =>
     setInitialStore: ({ graph, data, tables }) => set({ graph, data, tables }),
 
     drawerHeight: defaultDrawerHeight,
-    getDrawerHeight: () => get().drawerHeight,
     setDrawerHeight: (drawerHeight: number) => set({ drawerHeight }),
 
     drawerTab: undefined,
@@ -351,7 +350,6 @@ export interface GraphStore {
 
   drawerNodeId?: string
   drawerHeight: number
-  getDrawerHeight: () => number
   setDrawerHeight: (_: number) => void
   drawerTab?: string
   setDrawerTab: (_?: string) => void

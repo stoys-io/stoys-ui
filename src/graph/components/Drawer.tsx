@@ -9,7 +9,11 @@ const Drawer = ({ children, drawerHeight, setDrawerHeight, visible, containerRef
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       const containerHeight = containerRef?.current?.offsetHeight ?? 0
-      const height = containerHeight - e.clientY
+      const containerTop = containerRef?.current?.getBoundingClientRect().top ?? 0
+
+      const containerY = e.clientY - containerTop
+      const height = containerHeight - containerY
+
       const maxHeight = containerHeight * 0.9
       if (height > RESIZE_AREA_HEIGHT && height < maxHeight) {
         setDrawerHeight(height)
@@ -19,7 +23,7 @@ const Drawer = ({ children, drawerHeight, setDrawerHeight, visible, containerRef
   )
 
   const handleMouseUp = useCallback(() => {
-    if (drawerHeight < minHeight) {
+    if (drawerHeight < threshold) {
       setDrawerHeight(RESIZE_AREA_HEIGHT)
     }
     setIsResizing(false)
@@ -73,7 +77,7 @@ interface Props {
   containerRef?: RefObject<HTMLDivElement>
 }
 
-const minHeight = RESIZE_AREA_HEIGHT + 150
+const threshold = RESIZE_AREA_HEIGHT + 150
 
 const style: CSSProperties = { position: 'absolute' }
 const bodyStyle = { padding: 0 }
