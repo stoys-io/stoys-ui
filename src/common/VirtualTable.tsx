@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { VariableSizeGrid as Grid } from 'react-window'
 import ResizeObserver from 'rc-resize-observer'
 import Table from 'antd/lib/table'
@@ -25,32 +25,7 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
     }
   })
 
-  const gridRef = useRef<any>()
-  const [connectObject] = useState<any>(() => {
-    const obj = {}
-    Object.defineProperty(obj, 'scrollLeft', {
-      get: () => null,
-      set: (scrollLeft: number) => {
-        if (gridRef.current) {
-          gridRef.current.scrollTo({ scrollLeft })
-        }
-      },
-    })
-
-    return obj
-  })
-
-  const resetVirtualGrid = () => {
-    gridRef.current.resetAfterIndices({
-      columnIndex: 0,
-      shouldForceUpdate: true,
-    })
-  }
-
-  useEffect(() => resetVirtualGrid, [tableWidth, totalColumnWidth])
-
-  const renderVirtualList = (rawData: Array<object>, { scrollbarSize, ref, onScroll }: any) => {
-    ref.current = connectObject
+  const renderVirtualList = (rawData: Array<object>, { scrollbarSize, onScroll }: any) => {
     const totalHeight = rawData?.length * MIN_TABLE_CELL_HEIGHT
 
     const renderCell = (columnIndex: number, rowIndex: number): string | JSX.Element => {
@@ -62,7 +37,6 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
 
     return (
       <Grid
-        ref={gridRef}
         className="virtual-grid"
         columnCount={mergedColumns?.length}
         columnWidth={(index: number) => {
