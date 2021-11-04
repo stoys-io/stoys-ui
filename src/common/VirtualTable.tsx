@@ -27,7 +27,6 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
 
   const renderVirtualList = (rawData: Array<object>, { scrollbarSize, onScroll }: any) => {
     const totalHeight = rawData?.length * MIN_TABLE_CELL_HEIGHT
-    console.log(rawData)
 
     const renderCell = ({
       columnIndex,
@@ -67,7 +66,6 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
         columnCount={mergedColumns?.length}
         columnWidth={(index: number) => {
           const { width } = mergedColumns[index]
-
           const columnWidth =
             totalHeight > scroll!.y! && index === mergedColumns?.length - 1
               ? (width as number) - scrollbarSize - 1

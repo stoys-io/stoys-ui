@@ -29,15 +29,55 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
   } = props
 
   const { current, setCurrentPage, pageSize, setPageSize } = usePagination(pagination)
+
+  const _data = useMemo(() => {
+    if ('current' in data) {
+      return getMetricsDataFromRawData(data)
+    }
+
+    return getMetricsTableData(data)
+  }, [data])
+
+  const maxColumnsNames = useMemo(
+    () =>
+      _data.reduce((acc: { [key: string]: string }, row: any) => {
+        Object.keys(row).forEach((columnName: string | number) => {
+          const getColumnNameLength = (): number => {
+            if (!row[columnName]) {
+              return 0
+            }
+
+            if (typeof row[columnName] === 'object' && 'cur' in row[columnName]) {
+              const curLength = String(row[columnName].cur).length
+              const prevLength = String(row[columnName].prev).length
+
+              return curLength > prevLength ? curLength : prevLength
+            }
+
+            return String(row[columnName]).length
+          }
+
+          if (!acc[columnName] || getColumnNameLength() > acc[columnName]?.length) {
+            acc[columnName] = row[columnName] || ''
+          }
+        })
+
+        return acc
+      }, {}),
+    [_data]
+  )
+
   const _columns = useMemo(() => {
     if (columns) {
       return columns
     }
 
     if ('current' in data) {
-      return getMetricsColumnsFromRawData(data, disabledColumns, {
+      return getMetricsColumnsFromRawData(data, {
+        disabledColumns,
         showAbsDiffColumn,
         showRelativeDiffColumn,
+        maxColumnsNames,
       })
     }
 
@@ -57,14 +97,6 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
     showRelativeDiffColumn,
   ])
 
-  const _data = useMemo(() => {
-    if ('current' in data) {
-      return getMetricsDataFromRawData(data)
-    }
-
-    return getMetricsTableData(data)
-  }, [data])
-
   const _onChange = useCallback(
     (p, filters, sorter, extra) => {
       onChange?.(p, filters, sorter, extra)
@@ -83,7 +115,6 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
     smallSize,
     showSorterTooltip: false,
     ...props,
-    columns: _columns,
     dataSource: _data,
   }
 
@@ -93,6 +124,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
       sticky={true}
       scroll={{ x: true as true, y: pagination || !height ? undefined : height }}
       {..._tableProps}
+      columns={_columns}
       pagination={
         pagination
           ? {
@@ -108,6 +140,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
   ) : (
     <VirtualTable
       {..._tableProps}
+      columns={transformColumnsForVirtualGrid(_columns)}
       scroll={{
         x: true as true,
         y: height
@@ -118,4 +151,14 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
       }}
     />
   )
+}
+
+function transformColumnsForVirtualGrid(columns: any) {
+  return columns.reduce((acc: any, column: any) => {
+    if ('children' in column) {
+      return [...acc, ...column.children]
+    }
+
+    return [...acc, column]
+  }, [])
 }

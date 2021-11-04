@@ -191,13 +191,14 @@ export const getMetricsColumns = (
 
 export const getMetricsColumnsFromRawData = (
   metricsData: RawMetricsData,
-  disabledColumns?: Array<string>,
   config: {
+    disabledColumns?: Array<string>
     showAbsDiffColumn?: boolean
     showRelativeDiffColumn?: boolean
-  } = {}
+    maxColumnsNames: { [key: string]: string }
+  }
 ) => {
-  const { showAbsDiffColumn, showRelativeDiffColumn } = config
+  const { showAbsDiffColumn, showRelativeDiffColumn, maxColumnsNames, disabledColumns } = config
   const keyColumns = metricsData?.current.key_columns?.map((column: string) => ({
     id: column,
     dataIndex: column,
@@ -206,6 +207,9 @@ export const getMetricsColumnsFromRawData = (
     // fixed: 'left' as 'left',
     sorter: defaultSort(column),
     render: (value: any) => <span>{value}</span>,
+    width: getColumnWidth(
+      maxColumnsNames?.[column]?.length < column.length ? column : maxColumnsNames[column]
+    ),
   }))
 
   const currentColumnNames = Object.keys(metricsData.current.data[0])
@@ -224,6 +228,9 @@ export const getMetricsColumnsFromRawData = (
           sorter: defaultSort(`${colName}`),
           render: renderColumnsValues,
           className: 'aligned-right',
+          width: getColumnWidth(
+            maxColumnsNames?.[colName]?.length < colName.length ? colName : maxColumnsNames[colName]
+          ),
         },
       ]
 
@@ -240,6 +247,11 @@ export const getMetricsColumnsFromRawData = (
                 render: renderNumericColumnValue,
                 disabled: true,
                 className: 'aligned-right',
+                width: getColumnWidth(
+                  maxColumnsNames?.[colName]?.length < colName.length
+                    ? colName
+                    : maxColumnsNames[colName]
+                ),
               },
             ]
           : []
@@ -254,6 +266,11 @@ export const getMetricsColumnsFromRawData = (
                 sorter: defaultSort(`${colName}_change_percent`),
                 render: renderPercentColumnValue,
                 disabled: true,
+                width: getColumnWidth(
+                  maxColumnsNames?.[colName]?.length < colName.length
+                    ? colName
+                    : maxColumnsNames[colName]
+                ),
               },
             ]
           : []
