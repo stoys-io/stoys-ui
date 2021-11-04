@@ -117,6 +117,8 @@ export const DrawerTabs = () => {
               showAxesSwitcher: false,
               axesChecked: false,
 
+              showJsonSwitcher: false,
+
               showChartTableSwitcher: false,
               chartTableChecked: false,
               pagination: false,
