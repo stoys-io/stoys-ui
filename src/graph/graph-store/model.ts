@@ -5,8 +5,8 @@ export interface GraphStore {
 
   data: DataGraph[]
   tables?: Table[]
-
   graph: Graph
+
   highlights: StoredHighlights
   highlightedColumns: HColumns
 

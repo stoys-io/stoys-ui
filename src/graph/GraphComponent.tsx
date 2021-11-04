@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import ReactFlow, {
   ReactFlowProvider,
   Background,
@@ -32,22 +32,24 @@ import { DataGraph, ChromaticScale, Orientation } from './model'
 import { mapInitialNodes, mapInitialEdges } from './graph-ops'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
-  const releases = data.map(dataItem => dataItem.version)
+  const validCurrentRelease =
+    // check if the release specified in config is present in the data
+    cfg?.currentRelease && !!data.find(dataItem => dataItem.version === cfg.currentRelease)
+      ? cfg.currentRelease
+      : data[0].version
+
   const config: Required<Config> = {
     ...defaultConfig,
     ...cfg,
-    currentRelease: cfg?.currentRelease || data[0].version,
+    currentRelease: validCurrentRelease,
   }
-  const containerRef = useRef<HTMLDivElement>(null)
 
-  const baseReleases = releases
+  const releaseOptions = data
+    .map(dataItem => dataItem.version)
     .filter(release => release !== config.currentRelease)
     .map(release => ({ value: release, label: release }))
 
-  const tables = useMemo(
-    () => data.find(dataItem => dataItem.version === config.currentRelease)!.tables,
-    [data]
-  )
+  const tables = data.find(dataItem => dataItem.version === config.currentRelease)!.tables
 
   const currentGraph = {
     nodes: mapInitialNodes(tables),
@@ -88,8 +90,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   useEffect(() => {
     dispatch(
       setInitialStore({
-        graph: currentGraph,
         data,
+        graph: currentGraph,
         tables,
       })
     )
@@ -98,11 +100,13 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
   // TODO: Computing currentGraph layout is not fair in case of diffing
   const elements = graphLayout([...currentGraph.nodes, ...currentGraph.edges], config.orientation)
+
+  const containerRef = useRef<HTMLDivElement>(null)
   return (
     <Container ref={containerRef}>
       <Sidebar
         onSearch={onSearchNode}
-        releases={baseReleases}
+        releaseOptions={releaseOptions}
         chromaticScale={config.chromaticScale}
       />
       <GraphContainer>
