@@ -9,3 +9,4 @@ export const StoreProvider = ({ children }: { children: ReactNode }) => {
 }
 
 export const useGraphStore = useStore
+export const useGraphDispatch = () => useStore(state => state.dispatch)

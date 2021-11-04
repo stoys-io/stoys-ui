@@ -23,6 +23,7 @@ import {
   resetHighlights,
   nodeClick,
   highlightIds,
+  useGraphDispatch,
 } from './graph-store'
 
 import { Container, GraphContainer } from './styles'
@@ -52,7 +53,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     edges: mapInitialEdges(tables!),
   }
 
-  const dispatch = useGraphStore(state => state.dispatch)
+  const dispatch = useGraphDispatch()
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {

@@ -6,20 +6,19 @@ import { DrawerNodeLabel } from '../styles'
 import { NoData } from '../../profiler/styles'
 import { RawMetricsData } from '../../metrics/model'
 import { JoinRates, Metrics, Profiler, Quality } from '../..'
-import { useGraphStore, setDrawerTab, closeDrawer } from '../graph-store'
+import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../graph-store'
 
 const { TabPane } = Tabs
 
 export const DrawerTabs = () => {
-  const drawerNodeId = useGraphStore(state => state.drawerNodeId)
+  const dispatch = useGraphDispatch()
 
+  const drawerNodeId = useGraphStore(state => state.drawerNodeId)
   const curTable = useGraphStore(
     useCallback(state => state.tables?.find(table => table.id === drawerNodeId), [drawerNodeId])
   )
   const baseRelease = useGraphStore(state => state.baseRelease)
   const graphData = useGraphStore(state => state.data)
-
-  const dispatch = useGraphStore(state => state.dispatch)
 
   const baseData = useMemo(() => {
     if (!baseRelease) {

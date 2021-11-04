@@ -13,7 +13,13 @@ import {
 import { renderNumericValue } from '../../helpers'
 import { Column, DataPayload } from '../model'
 import { ItemText, ScrollCard, ScrollCardTitle } from '../styles'
-import { useGraphStore, GraphStore, setHighlightedColumns, openDrawer } from '../graph-store'
+import {
+  useGraphStore,
+  GraphStore,
+  setHighlightedColumns,
+  openDrawer,
+  useGraphDispatch,
+} from '../graph-store'
 
 const selectBadge = (state: GraphStore) => state.badge
 const selectHighlightMode = (state: GraphStore) => state.highlightMode
@@ -21,7 +27,6 @@ const selectHighlightMode = (state: GraphStore) => state.highlightMode
 const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
 const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
 const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
-const selectDispatch = (state: GraphStore) => state.dispatch
 
 export const DagNode = memo(
   ({
@@ -31,10 +36,10 @@ export const DagNode = memo(
     targetPosition,
     sourcePosition,
   }: NodeProps<DataPayload>): JSX.Element => {
+    const dispatch = useGraphDispatch()
+
     const badge = useGraphStore(selectBadge)
     const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
-
-    const dispatch = useGraphStore(selectDispatch)
     const selectedTableId = useGraphStore(selectTableId)
     const selectedColumnId = useGraphStore(selectColumnId)
     const relatedColumnsIds = useGraphStore(selectRelColumnIds)

@@ -6,13 +6,19 @@ import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
 import { ChromaticScale } from '../model'
-import { useGraphStore, setBadge, setBaseRelease, setHighlightMode } from '../graph-store'
+import {
+  useGraphStore,
+  useGraphDispatch,
+  setBadge,
+  setBaseRelease,
+  setHighlightMode,
+} from '../graph-store'
 
 export const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
+  const dispatch = useGraphDispatch()
+
   const badge = useGraphStore(state => state.badge)
   const highlightMode = useGraphStore(state => state.highlightMode)
-
-  const dispatch = useGraphStore(state => state.dispatch)
 
   return (
     <SidebarWrapper>
