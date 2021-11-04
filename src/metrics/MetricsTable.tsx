@@ -2,11 +2,13 @@ import React, { useCallback, useMemo } from 'react'
 
 import 'antd/lib/table/style/css'
 
+import VirtualTable from '../common/VirtualTable'
 import usePagination from '../hooks/usePagination'
 import { getMetricsColumns, getMetricsColumnsFromRawData } from './columns'
 import { getMetricsDataFromRawData, getMetricsTableData } from './helpers'
 import { MetricsTableProps } from './model'
 import { StyledMetricTable } from './styles'
+import { MIN_TABLE_CELL_HEIGHT, TABLE_HEIGHT } from '../quality/constants'
 
 export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
   const {
@@ -77,19 +79,22 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
     [pageSize, setPageSize, setCurrentPage]
   )
 
-  return (
+  const _tableProps = {
+    smallSize,
+    showSorterTooltip: false,
+    ...props,
+    columns: _columns,
+    dataSource: _data,
+  }
+
+  return pagination || !('current' in data) ? (
     <StyledMetricTable
       loading={isLoading}
-      scroll={{ x: true, y: pagination || !height ? undefined : height }}
-      smallSize={smallSize}
-      bordered
-      sticky
-      showSorterTooltip={false}
-      {...props}
-      columns={_columns}
-      dataSource={_data}
+      sticky={true}
+      scroll={{ x: true as true, y: pagination || !height ? undefined : height }}
+      {..._tableProps}
       pagination={
-        typeof pagination === 'object'
+        pagination
           ? {
               current: current,
               pageSize: pageSize,
@@ -99,6 +104,18 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
           : pagination
       }
       onChange={_onChange}
+    />
+  ) : (
+    <VirtualTable
+      {..._tableProps}
+      scroll={{
+        x: true as true,
+        y: height
+          ? height
+          : _data.length > 10
+          ? TABLE_HEIGHT
+          : _data.length * MIN_TABLE_CELL_HEIGHT,
+      }}
     />
   )
 }

@@ -27,12 +27,38 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
 
   const renderVirtualList = (rawData: Array<object>, { scrollbarSize, onScroll }: any) => {
     const totalHeight = rawData?.length * MIN_TABLE_CELL_HEIGHT
+    console.log(rawData)
 
-    const renderCell = (columnIndex: number, rowIndex: number): string | JSX.Element => {
-      const value = (rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]
-      const render = (mergedColumns as any)[columnIndex].render
+    const renderCell = ({
+      columnIndex,
+      rowIndex,
+      style,
+    }: {
+      columnIndex: number
+      rowIndex: number
+      style: React.CSSProperties
+    }) => {
+      const column = (mergedColumns as any)[columnIndex]
+      const columnsBefore = (mergedColumns as any).slice(0, columnIndex)
+      const left = columnsBefore.reduce((w: number, column: any) => column.width + w, 0)
+      const value = (rawData[rowIndex] as any)[column.dataIndex]
+      const render = column.render
+      const _style = {
+        ...style,
+        width: style.width ? style.width : column.width,
+        left: columnIndex ? left : style.left,
+      }
 
-      return render(value, rawData[rowIndex])
+      return (
+        <div
+          className={`virtual-table-cell ${
+            columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
+          }`}
+          style={_style}
+        >
+          {render(value, rawData[rowIndex])}
+        </div>
+      )
     }
 
     return (
@@ -42,9 +68,12 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
         columnWidth={(index: number) => {
           const { width } = mergedColumns[index]
 
-          return totalHeight > scroll!.y! && index === mergedColumns?.length - 1
-            ? (width as number) - scrollbarSize - 1
-            : (width as number)
+          const columnWidth =
+            totalHeight > scroll!.y! && index === mergedColumns?.length - 1
+              ? (width as number) - scrollbarSize - 1
+              : (width as number)
+
+          return columnWidth
         }}
         height={scroll!.y as number}
         rowCount={rawData?.length}
@@ -54,24 +83,7 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
           onScroll({ scrollLeft })
         }}
       >
-        {({
-          columnIndex,
-          rowIndex,
-          style,
-        }: {
-          columnIndex: number
-          rowIndex: number
-          style: React.CSSProperties
-        }) => (
-          <div
-            className={`virtual-table-cell ${
-              columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
-            }`}
-            style={style}
-          >
-            {renderCell(columnIndex, rowIndex)}
-          </div>
-        )}
+        {renderCell}
       </Grid>
     )
   }

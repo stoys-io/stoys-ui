@@ -2,14 +2,13 @@ import React from 'react'
 import Tooltip from 'antd/lib/tooltip'
 
 import { renderNumericValue } from '../helpers'
+import { getColumnWidth } from '../quality/columns'
 import Threshold from './Threshold'
 import Trends from './Trends'
-import { getColumnWidth } from '../quality/columns'
 import { defaultSort, renderPercentColumnValue, getGroupTitle } from './helpers'
 import { ChangePercentValue, ThresholdViolatedWrapper } from './styles'
 import {
   ColumnNode,
-  TableCellNode,
   ChildrenColumnType,
   MetricsData,
   RawMetricsData,
@@ -204,9 +203,9 @@ export const getMetricsColumnsFromRawData = (
     dataIndex: column,
     title: getGroupTitle(column),
     key: column,
-    fixed: 'left' as 'left',
+    // fixed: 'left' as 'left',
     sorter: defaultSort(column),
-    width: getColumnWidth(column),
+    render: (value: any) => <span>{value}</span>,
   }))
 
   const currentColumnNames = Object.keys(metricsData.current.data[0])
@@ -224,7 +223,6 @@ export const getMetricsColumnsFromRawData = (
           title: metricsData.previous ? 'Value' : getGroupTitle(colName),
           sorter: defaultSort(`${colName}`),
           render: renderColumnsValues,
-          width: getColumnWidth('Current'),
           className: 'aligned-right',
         },
       ]
@@ -240,7 +238,6 @@ export const getMetricsColumnsFromRawData = (
                 titleString: 'Change',
                 sorter: defaultSort(`${colName}_change`),
                 render: renderNumericColumnValue,
-                width: getColumnWidth('Change'),
                 disabled: true,
                 className: 'aligned-right',
               },
@@ -256,7 +253,6 @@ export const getMetricsColumnsFromRawData = (
                 titleString: '% Change',
                 sorter: defaultSort(`${colName}_change_percent`),
                 render: renderPercentColumnValue,
-                width: getColumnWidth('% Change'),
                 disabled: true,
               },
             ]
