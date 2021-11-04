@@ -5,16 +5,14 @@ import Space from 'antd/lib/space'
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle, SelectVersion } from '../styles'
-import { useGraphStore } from '../StoreProvider'
 import { ChromaticScale } from '../model'
-import { setBadge, setBaseRelease } from '../graph-store'
+import { useGraphStore, setBadge, setBaseRelease, setHighlightMode } from '../graph-store'
 
 export const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
   const badge = useGraphStore(state => state.badge)
-  const dispatch = useGraphStore(state => state.dispatch)
-
   const highlightMode = useGraphStore(state => state.highlightMode)
-  const setHighlightMode = useGraphStore(state => state.setHighlightMode)
+
+  const dispatch = useGraphStore(state => state.dispatch)
 
   return (
     <SidebarWrapper>
@@ -42,7 +40,7 @@ export const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
         </Radio.Group>
         <MenuTitle>Highlight:</MenuTitle>
         <Radio.Group
-          onChange={e => setHighlightMode(e.target.value, chromaticScale)}
+          onChange={e => dispatch(setHighlightMode(e.target.value, chromaticScale))}
           value={highlightMode}
         >
           <Space direction="vertical">

@@ -6,8 +6,7 @@ import { DrawerNodeLabel } from '../styles'
 import { NoData } from '../../profiler/styles'
 import { RawMetricsData } from '../../metrics/model'
 import { JoinRates, Metrics, Profiler, Quality } from '../..'
-import { useGraphStore } from '../StoreProvider'
-import { setDrawerTab, closeDrawer } from '../graph-store'
+import { useGraphStore, setDrawerTab, closeDrawer } from '../graph-store'
 
 const { TabPane } = Tabs
 
@@ -81,7 +80,7 @@ export const DrawerTabs = () => {
   return (
     <Tabs
       activeKey={drawerTab}
-      onChange={setDrawerTab}
+      onChange={tab => dispatch(setDrawerTab(tab))}
       tabBarStyle={tabBarStyle}
       tabBarExtraContent={<DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>}
     >

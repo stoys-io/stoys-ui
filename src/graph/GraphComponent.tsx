@@ -16,13 +16,19 @@ import { ConnectedDrawer } from './components/ConnectedDrawer'
 import { DrawerTabs } from './components/DrawerTabs'
 
 import { graphLayout } from './graph-layout'
-import { useGraphStore } from './StoreProvider'
-import { setInitialStore, resetHighlightedColumns, resetHighlights, nodeClick } from './graph-store'
+import {
+  useGraphStore,
+  setInitialStore,
+  resetHighlightedColumns,
+  resetHighlights,
+  nodeClick,
+  highlightIds,
+} from './graph-store'
 
 import { Container, GraphContainer } from './styles'
 import { Edge, Node, Graph, DataGraph, Table, ChromaticScale, Orientation } from './model'
 
-import { notEmpty, highlightNodesBatch } from './graph-ops'
+import { notEmpty } from './graph-ops'
 import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from './constants'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
@@ -47,7 +53,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   }
 
   const dispatch = useGraphStore(state => state.dispatch)
-  const setHighlights = useGraphStore(state => state.setHighlights)
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
@@ -75,7 +80,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return onError(false)
     }
 
-    setHighlights(highlightNodesBatch(nodeIds))
+    dispatch(highlightIds(nodeIds))
   }
 
   useEffect(() => {
