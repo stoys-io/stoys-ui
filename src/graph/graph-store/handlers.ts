@@ -8,8 +8,9 @@ import {
   notEmpty,
   resetHighlight,
   highlightNodesBatch,
+  getBaseGraph,
+  getMergedGraph,
 } from '../graph-ops'
-import { getBaseGraph, getMergedGraph } from '../GraphComponent'
 import { Graph, Table, Column, ChromaticScale, Badge, Highlight, Node } from '../model'
 
 export const setBadge = (badge: Badge) => ({ badge })
