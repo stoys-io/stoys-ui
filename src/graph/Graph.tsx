@@ -1,6 +1,6 @@
 import React from 'react'
 import GraphComponent, { Props } from './GraphComponent'
-import { StoreProvider } from './StoreProvider'
+import { StoreProvider } from './graph-store'
 
 const Graph = (props: Props) => (
   <StoreProvider>

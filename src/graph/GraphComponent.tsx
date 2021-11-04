@@ -16,12 +16,20 @@ import { ConnectedDrawer } from './components/ConnectedDrawer'
 import { DrawerTabs } from './components/DrawerTabs'
 
 import { graphLayout } from './graph-layout'
-import { useGraphStore } from './StoreProvider'
+import {
+  useGraphStore,
+  setInitialStore,
+  resetHighlightedColumns,
+  resetHighlights,
+  nodeClick,
+  highlightIds,
+  useGraphDispatch,
+} from './graph-store'
 
 import { Container, GraphContainer } from './styles'
 import { Edge, Node, Graph, DataGraph, Table, ChromaticScale, Orientation } from './model'
 
-import { notEmpty, highlightNodesBatch } from './graph-ops'
+import { notEmpty } from './graph-ops'
 import { ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR } from './constants'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
@@ -45,22 +53,18 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     edges: mapInitialEdges(tables!),
   }
 
-  const setInitialStore = useGraphStore(state => state.setInitialStore)
-  const setHighlights = useGraphStore(state => state.setHighlights)
-  const resetHighlights = useGraphStore(state => state.resetHighlights)
-  const nodeClick = useGraphStore(state => state.nodeClick)
+  const dispatch = useGraphDispatch()
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
-  const resetHighlightedColumns = useGraphStore(state => state.resetHighlightedColumns)
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
-      return nodeClick(element.id, config.chromaticScale)
+      return dispatch(nodeClick(element.id, config.chromaticScale))
     }
   }
 
   const onPaneClick = () => {
-    resetHighlights()
-    resetHighlightedColumns()
+    dispatch(resetHighlights)
+    dispatch(resetHighlightedColumns)
   }
 
   const onSearchNode = ({ val, err, onError }: SearchArgs) => {
@@ -77,15 +81,18 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       return onError(false)
     }
 
-    setHighlights(highlightNodesBatch(nodeIds))
+    dispatch(highlightIds(nodeIds))
   }
 
   useEffect(() => {
-    setInitialStore({
-      graph: currentGraph,
-      data,
-      tables,
-    }) // TODO: Leave only currentGraph argument ?
+    dispatch(
+      setInitialStore({
+        graph: currentGraph,
+        data,
+        tables,
+      })
+    )
+    // TODO: Leave only currentGraph argument ?
   }, [])
 
   // TODO: Computing currentGraph layout is not fair in case of diffing

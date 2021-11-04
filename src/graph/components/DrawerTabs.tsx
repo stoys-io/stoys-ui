@@ -6,21 +6,19 @@ import { DrawerNodeLabel } from '../styles'
 import { NoData } from '../../profiler/styles'
 import { RawMetricsData } from '../../metrics/model'
 import { JoinRates, Metrics, Profiler, Quality } from '../..'
-import { useGraphStore } from '../StoreProvider'
+import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../graph-store'
 
 const { TabPane } = Tabs
 
 export const DrawerTabs = () => {
-  const drawerNodeId = useGraphStore(state => state.drawerNodeId)
+  const dispatch = useGraphDispatch()
 
+  const drawerNodeId = useGraphStore(state => state.drawerNodeId)
   const curTable = useGraphStore(
     useCallback(state => state.tables?.find(table => table.id === drawerNodeId), [drawerNodeId])
   )
   const baseRelease = useGraphStore(state => state.baseRelease)
   const graphData = useGraphStore(state => state.data)
-
-  const setDrawerTab = useGraphStore(state => state.setDrawerTab)
-  const closeDrawer = useGraphStore(state => state.closeDrawer)
 
   const baseData = useMemo(() => {
     if (!baseRelease) {
@@ -71,17 +69,17 @@ export const DrawerTabs = () => {
   const drawerTab = useGraphStore(state => state.drawerTab || firstNonEmptyTab)
 
   useEffect(() => {
-    setDrawerTab(firstNonEmptyTab)
+    dispatch(setDrawerTab(firstNonEmptyTab))
 
     return () => {
-      closeDrawer()
+      dispatch(closeDrawer)
     }
   }, [])
 
   return (
     <Tabs
       activeKey={drawerTab}
-      onChange={setDrawerTab}
+      onChange={tab => dispatch(setDrawerTab(tab))}
       tabBarStyle={tabBarStyle}
       tabBarExtraContent={<DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>}
     >
