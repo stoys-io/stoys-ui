@@ -1,11 +1,10 @@
 import styled from '@emotion/styled'
-import Table from 'antd/lib/table'
 
 function getPaddingForTableCell({ smallSize }: { smallSize: boolean }): string {
   return smallSize ? '2px' : '12px 8px'
 }
 
-export const StyledMetricTable = styled(Table)<{ smallSize: boolean }>`
+export const StyledMetricTableWrapper = styled.div<{ smallSize: boolean }>`
   .ant-table-thead
     > tr
     > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {

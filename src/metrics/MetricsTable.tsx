@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import Table from 'antd/lib/table'
 
 import 'antd/lib/table/style/css'
 
@@ -7,7 +8,7 @@ import usePagination from '../hooks/usePagination'
 import { getMetricsColumns, getMetricsColumnsFromRawData } from './columns'
 import { getMetricsDataFromRawData, getMetricsTableData } from './helpers'
 import { MetricsTableProps } from './model'
-import { StyledMetricTable } from './styles'
+import { StyledMetricTableWrapper } from './styles'
 import { MIN_TABLE_CELL_HEIGHT, TABLE_HEIGHT } from '../quality/constants'
 
 export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
@@ -112,45 +113,48 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
   )
 
   const _tableProps = {
-    smallSize,
     showSorterTooltip: false,
     ...props,
     dataSource: _data,
   }
 
-  return pagination || !('current' in data) ? (
-    <StyledMetricTable
-      loading={isLoading}
-      sticky={true}
-      scroll={{ x: true as true, y: pagination || !height ? undefined : height }}
-      {..._tableProps}
-      columns={_columns}
-      pagination={
-        pagination
-          ? {
-              current: current,
-              pageSize: pageSize,
-              showSizeChanger: true,
-              ...pagination,
-            }
-          : pagination
-      }
-      onChange={_onChange}
-    />
-  ) : (
-    <VirtualTable
-      {..._tableProps}
-      columns={transformColumnsForVirtualGrid(_columns)}
-      parentsColumns={getParentsColumns(_columns)}
-      scroll={{
-        x: true as true,
-        y: height
-          ? height
-          : _data.length > 10
-          ? TABLE_HEIGHT
-          : _data.length * MIN_TABLE_CELL_HEIGHT,
-      }}
-    />
+  return (
+    <StyledMetricTableWrapper smallSize={smallSize}>
+      {pagination || !('current' in data) ? (
+        <Table
+          loading={isLoading}
+          sticky={true}
+          scroll={{ x: true as true, y: pagination || !height ? undefined : height }}
+          {..._tableProps}
+          columns={_columns}
+          pagination={
+            pagination
+              ? {
+                  current: current,
+                  pageSize: pageSize,
+                  showSizeChanger: true,
+                  ...pagination,
+                }
+              : pagination
+          }
+          onChange={_onChange}
+        />
+      ) : (
+        <VirtualTable
+          {..._tableProps}
+          columns={transformColumnsForVirtualGrid(_columns)}
+          parentsColumns={getParentsColumns(_columns)}
+          scroll={{
+            x: true as true,
+            y: height
+              ? height
+              : _data.length > 10
+              ? TABLE_HEIGHT
+              : _data.length * MIN_TABLE_CELL_HEIGHT,
+          }}
+        />
+      )}
+    </StyledMetricTableWrapper>
   )
 }
 
