@@ -204,8 +204,9 @@ export const getMetricsColumnsFromRawData = (
     id: column,
     dataIndex: column,
     title: getGroupTitle(column),
+    titleString: getGroupTitle(column),
     key: column,
-    // fixed: 'left' as 'left',
+    // fixed: 'left' as 'left', TODO: make fixed in virt grid
     sorter: defaultSort(column),
     render: (value: any) => <span>{value}</span>,
     width: getColumnWidth(

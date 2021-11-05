@@ -88,6 +88,52 @@ function VirtualTable(
     )
   }
 
+  const renderTableHeaderRow = (props: any) => {
+    const twoRowsColumnsName = parentsColumns
+      ?.filter((column: any) => 'rowSpan' in column)
+      .map(column => column.title)
+    const _columns = props.children.filter(
+      (col: any) => !twoRowsColumnsName?.includes(col.props.column.titleString)
+    )
+    const _parentsColumns = parentsColumns?.map(column => {
+      if ('rowSpan' in column) {
+        const childColumn = props.children.find(
+          (col: any) => col.props.column.titleString === column.title
+        )
+
+        return childColumn
+          ? { ...childColumn, props: { ...childColumn.props, rowSpan: column.rowSpan } }
+          : column
+      }
+
+      return column
+    })
+
+    return (
+      <>
+        {_parentsColumns ? (
+          <tr>
+            {_parentsColumns.map(col =>
+              'title' in col ? (
+                <th
+                  key={col.title}
+                  colSpan={col.colSpan}
+                  rowSpan={col.rowSpan}
+                  className="ant-table-cell"
+                >
+                  {col.title}
+                </th>
+              ) : (
+                col
+              )
+            )}
+          </tr>
+        ) : null}
+        <tr>{_columns.map((child: any) => child)}</tr>
+      </>
+    )
+  }
+
   return (
     <ResizeObserver
       onResize={({ width }) => {
@@ -102,27 +148,7 @@ function VirtualTable(
         components={
           {
             header: {
-              row: (props: any) => {
-                return (
-                  <>
-                    {parentsColumns ? (
-                      <tr>
-                        {parentsColumns.map(col => (
-                          <th
-                            key={col.title}
-                            colSpan={col.colSpan}
-                            rowSpan={col.rowSpan}
-                            className="ant-table-cell"
-                          >
-                            {col.title}
-                          </th>
-                        ))}
-                      </tr>
-                    ) : null}
-                    <tr>{props.children.map((child: any) => child)}</tr>
-                  </>
-                )
-              },
+              row: renderTableHeaderRow,
             },
             body: renderVirtualList,
           } as any
