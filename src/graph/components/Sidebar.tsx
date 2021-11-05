@@ -14,7 +14,7 @@ import {
   setHighlightMode,
 } from '../graph-store'
 
-export const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
+export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => {
   const dispatch = useGraphDispatch()
 
   const badge = useGraphStore(state => state.badge)
@@ -25,12 +25,12 @@ export const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
       <SidebarContentWrapper>
         <SidebarSearch onSearch={onSearch} />
 
-        {releases && releases.length ? (
+        {releaseOptions && releaseOptions.length ? (
           <>
             <MenuTitle>Select previous run:</MenuTitle>
             <SelectVersion
               placeholder="Previous Version"
-              options={releases}
+              options={releaseOptions}
               onChange={value => typeof value === 'string' && dispatch(setBaseRelease(value))}
               allowClear
             />
@@ -65,7 +65,7 @@ export const Sidebar = ({ onSearch, releases, chromaticScale }: Props) => {
 interface Props {
   onSearch: OnSearch
   chromaticScale: ChromaticScale
-  releases?: Array<{ label: string; value: string }>
+  releaseOptions?: Array<{ label: string; value: string }>
 }
 
 const highlightList = [

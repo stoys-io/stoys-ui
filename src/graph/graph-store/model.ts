@@ -5,8 +5,9 @@ export interface GraphStore {
 
   data: DataGraph[]
   tables?: Table[]
+  defaultGraph: Graph // "Current release" graph, stays constant
+  graph: Graph // The graph we display, can be merged graph in release mode
 
-  graph: Graph
   highlights: StoredHighlights
   highlightedColumns: HColumns
 

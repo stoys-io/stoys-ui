@@ -54,10 +54,14 @@ export interface KeyValueInput {
   value: string
 }
 
+export type RawMetricsDataItemData = Array<{
+  [key: string]: Maybe<string | number>
+}>
+
 export interface RawMetricsDataItem {
   table_name: string
   key_columns: Array<string>
-  data: Array<{ [key: string]: Maybe<string | number> }>
+  data: RawMetricsDataItemData
 }
 
 export interface RawMetricsData {
