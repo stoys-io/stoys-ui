@@ -144,6 +144,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
           {..._tableProps}
           columns={transformColumnsForVirtualGrid(_columns)}
           parentsColumns={getParentsColumns(_columns)}
+          rowHeight={'previous' in data ? 2 * MIN_TABLE_CELL_HEIGHT : MIN_TABLE_CELL_HEIGHT}
           scroll={{
             x: true as true,
             y: height

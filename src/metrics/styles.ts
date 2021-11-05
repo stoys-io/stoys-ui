@@ -30,7 +30,15 @@ export const StyledMetricTableWrapper = styled.div<{ smallSize: boolean }>`
     overflow: hidden;
   }
 
-  .ant-table-cell {
+  .virtual-table-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .ant-table-cell,
+  .virtual-table-cell {
     position: relative;
     padding: ${getPaddingForTableCell};
 
@@ -39,7 +47,8 @@ export const StyledMetricTableWrapper = styled.div<{ smallSize: boolean }>`
     }
   }
 
-  td.aligned-right {
+  td.aligned-right,
+  .virtual-table-cell.aligned-right {
     text-align: right;
   }
 `

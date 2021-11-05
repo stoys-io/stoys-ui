@@ -6,9 +6,9 @@ import Table from 'antd/lib/table'
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
 
 function VirtualTable(
-  props: Parameters<typeof Table>[0] & { parentsColumns?: Array<any> }
+  props: Parameters<typeof Table>[0] & { parentsColumns?: Array<any>; rowHeight?: number }
 ): JSX.Element {
-  const { columns, scroll, parentsColumns } = props
+  const { columns, scroll, parentsColumns, rowHeight } = props
   const [tableWidth, setTableWidth] = useState(0)
 
   const columnCount = columns!.length
@@ -28,7 +28,7 @@ function VirtualTable(
   })
 
   const renderVirtualList = (rawData: Array<object>, { scrollbarSize, onScroll }: any) => {
-    const totalHeight = rawData?.length * MIN_TABLE_CELL_HEIGHT
+    const totalHeight = rawData?.length * (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)
 
     const renderCell = ({
       columnIndex,
@@ -54,7 +54,7 @@ function VirtualTable(
         <div
           className={`virtual-table-cell ${
             columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
-          }`}
+          } ${column.className ? column.className : ''}`}
           style={_style}
         >
           {render(value, rawData[rowIndex])}
@@ -77,7 +77,7 @@ function VirtualTable(
         }}
         height={scroll!.y as number}
         rowCount={rawData?.length}
-        rowHeight={() => MIN_TABLE_CELL_HEIGHT}
+        rowHeight={() => (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)}
         width={tableWidth}
         onScroll={({ scrollLeft }: { scrollLeft: number }) => {
           onScroll({ scrollLeft })
