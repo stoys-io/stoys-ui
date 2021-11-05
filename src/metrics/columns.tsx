@@ -112,6 +112,7 @@ export const getMetricsColumns = (
               dataIndex: `${cell.columnName}_change_percent`,
               title: <Tooltip title="(Current - Previous) * 100% /Previous">% Change</Tooltip>,
               titleString: '% Change',
+              className: 'aligned-right',
               sorter: defaultSort(`${cell.columnName}_change_percent`),
               render: (value, item) => {
                 const threshold = item[`${cell.columnName}_threshold`]
@@ -266,6 +267,7 @@ export const getMetricsColumnsFromRawData = (
                 sorter: defaultSort(`${colName}_change_percent`),
                 render: renderPercentColumnValue,
                 disabled: true,
+                className: 'aligned-right',
                 width: getColumnWidth(
                   maxColumnsNames?.[colName]?.length < colName.length
                     ? colName
