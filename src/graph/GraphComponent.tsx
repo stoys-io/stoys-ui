@@ -54,10 +54,28 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const currentGraph = {
     nodes: mapInitialNodes(tables),
     edges: mapInitialEdges(tables),
+    release: config.currentRelease,
   }
+
+  useEffect(() => {
+    dispatch(
+      setInitialStore({
+        data,
+        graph: currentGraph,
+        tables,
+      })
+    )
+    // TODO: Leave only currentGraph argument ?
+  }, [])
 
   const dispatch = useGraphDispatch()
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
+
+  const graph = useGraphStore(
+    state => state.graph,
+    (oldGraph, newGraph) => oldGraph.release === newGraph.release
+  )
+  const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
 
   const onElementClick = (_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
@@ -86,20 +104,6 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
 
     dispatch(highlightIds(nodeIds))
   }
-
-  useEffect(() => {
-    dispatch(
-      setInitialStore({
-        data,
-        graph: currentGraph,
-        tables,
-      })
-    )
-    // TODO: Leave only currentGraph argument ?
-  }, [])
-
-  // TODO: Computing currentGraph layout is not fair in case of diffing
-  const elements = graphLayout([...currentGraph.nodes, ...currentGraph.edges], config.orientation)
 
   const containerRef = useRef<HTMLDivElement>(null)
   return (

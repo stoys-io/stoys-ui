@@ -25,6 +25,7 @@ export { Edge }
 export interface Graph {
   nodes: Node[]
   edges: Edge[]
+  release: string // We determine old/new graph state based on this field
 }
 
 export type Highlight = 'nearest' | 'parents' | 'children' | 'none' | 'diffing'

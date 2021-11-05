@@ -33,6 +33,7 @@ export const resetHighlight = (graph: Graph): Graph => ({
     ...node,
     data: { ...node.data, style: undefined },
   })),
+  release: graph.release,
 })
 
 export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
@@ -102,6 +103,7 @@ export const highlightGraph =
           },
         }
       }),
+      release: graph.release,
     }
   }
 
@@ -260,7 +262,7 @@ export const highlightHighlight = (highlightMode: Highlight) => {
     const highlightEdges = whichHighlight(graph, id)
 
     if (!highlightEdges.length) {
-      const tmpHighlightGraph = highlightNode(id)(resetHighlight(graph)) // TODO: Refactor
+      const tmpHighlightGraph = highlightNode(id)(graph) // TODO: Refactor
       return tmpHighlightGraph
     }
 
@@ -269,7 +271,7 @@ export const highlightHighlight = (highlightMode: Highlight) => {
       highlightEdges,
       highlightMode,
       chromaticScale
-    )(resetHighlight(graph)) // TODO: Refactor
+    )(graph) // TODO: Refactor
 
     return tmpHighlightGraph2
   }
@@ -308,17 +310,18 @@ export const getBaseGraph = (
     ? {
         nodes: mapInitialNodes(baseTables),
         edges: mapInitialEdges(baseTables),
+        release: baseRelease,
       }
     : undefined
 
   return baseGraph
 }
 
-export const getMergedGraph = (currentGraph: Graph, baseGraph?: Graph): Graph => {
-  const baseEdgeIds = baseGraph?.edges.map(mapIds)
+export const getMergedGraph = (currentGraph: Graph, baseGraph: Graph): Graph => {
+  const baseEdgeIds = baseGraph.edges.map(mapIds)
   const edgeIds = currentGraph.edges.map(mapIds)
   const edges = currentGraph.edges.map(edge => {
-    if (baseEdgeIds?.includes(edge.id)) {
+    if (baseEdgeIds.includes(edge.id)) {
       return edge
     }
 
@@ -327,18 +330,18 @@ export const getMergedGraph = (currentGraph: Graph, baseGraph?: Graph): Graph =>
       style: { stroke: DELETED_NODE_HIGHLIHT_COLOR },
     }
   })
-  const addedEdges = baseGraph?.edges
+  const addedEdges = baseGraph.edges
     .filter(edge => !edgeIds.includes(edge.id))
     .map(edge => ({ ...edge, style: { stroke: ADDED_NODE_HIGHLIGHT_COLOR } }))
 
-  const mergedEdges = [...edges, ...(addedEdges ? addedEdges : [])]
+  const mergedEdges = [...edges, ...addedEdges]
 
   const nodeIds = currentGraph.nodes.map(mapIds)
-  const baseNodeIds = baseGraph?.nodes.map(mapIds)
+  const baseNodeIds = baseGraph.nodes.map(mapIds)
   const nodes = currentGraph.nodes.map(node => {
-    if (baseNodeIds?.includes(node.id)) {
+    if (baseNodeIds.includes(node.id)) {
       const currentColumnsNames = node.data.columns.map(column => column.name)
-      const baseColumns = baseGraph?.nodes.find(n => node.id === n.id)?.data.columns
+      const baseColumns = baseGraph.nodes.find(n => node.id === n.id)?.data.columns
       const baseColumnsNames = baseColumns?.map(column => column.name)
       const addedColumns = node.data.columns
         .filter(column => !baseColumnsNames?.includes(column.name))
@@ -372,6 +375,7 @@ export const getMergedGraph = (currentGraph: Graph, baseGraph?: Graph): Graph =>
   return {
     edges: mergedEdges,
     nodes: mergedNodes,
+    release: `merged-${baseGraph?.release}`,
   }
 }
 
