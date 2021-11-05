@@ -141,6 +141,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
     <VirtualTable
       {..._tableProps}
       columns={transformColumnsForVirtualGrid(_columns)}
+      parentsColumns={getParentsColumns(_columns)}
       scroll={{
         x: true as true,
         y: height
@@ -161,4 +162,14 @@ function transformColumnsForVirtualGrid(columns: any) {
 
     return [...acc, column]
   }, [])
+}
+
+function getParentsColumns(columns: any) {
+  return columns.map((column: any) => {
+    if ('children' in column) {
+      return { title: column.title, colSpan: column.children.length }
+    }
+
+    return { title: column.title, rowSpan: 2 }
+  })
 }

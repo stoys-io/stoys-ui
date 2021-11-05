@@ -5,8 +5,10 @@ import Table from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
 
-function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
-  const { columns, scroll } = props
+function VirtualTable(
+  props: Parameters<typeof Table>[0] & { parentsColumns?: Array<any> }
+): JSX.Element {
+  const { columns, scroll, parentsColumns } = props
   const [tableWidth, setTableWidth] = useState(0)
 
   const columnCount = columns!.length
@@ -99,6 +101,29 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
         pagination={false}
         components={
           {
+            header: {
+              row: (props: any) => {
+                return (
+                  <>
+                    {parentsColumns ? (
+                      <tr>
+                        {parentsColumns.map(col => (
+                          <th
+                            key={col.title}
+                            colSpan={col.colSpan}
+                            rowSpan={col.rowSpan}
+                            className="ant-table-cell"
+                          >
+                            {col.title}
+                          </th>
+                        ))}
+                      </tr>
+                    ) : null}
+                    <tr>{props.children.map((child: any) => child)}</tr>
+                  </>
+                )
+              },
+            },
             body: renderVirtualList,
           } as any
         }
