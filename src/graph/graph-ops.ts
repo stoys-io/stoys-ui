@@ -31,7 +31,7 @@ interface HighlightHelperArgs {
   chromaticScale: ChromaticScale
 }
 
-export const highlightHelper = ({
+const highlightHelper = ({
   graph,
   selectedNodeId,
   edgesToHighlight,
@@ -42,10 +42,7 @@ export const highlightHelper = ({
   const edges = graph.edges.reduce((acc, edge: Edge) => {
     const highlightEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
     if (!highlightEdge) {
-      return {
-        ...edge,
-        style: { strokeWidth: 0 }, // Hide other edges
-      }
+      return acc
     }
 
     const edgeStyleObject = {
@@ -71,7 +68,7 @@ export const highlightHelper = ({
     )
 
     if (!relevantEdge) {
-      return node
+      return acc
     }
 
     const nodeStyleObject = {
