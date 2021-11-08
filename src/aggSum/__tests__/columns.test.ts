@@ -1,7 +1,7 @@
-import { getMetricsColumns } from '../columns'
+import { getAggSumColumns } from '../columns'
 import '../../__mocks__/matchMedia.mock'
 
-import { metricsData } from './MetricsTable.mock'
+import { aggSumData } from './AggSumTable.mock'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -9,7 +9,7 @@ beforeAll(() => {
   )
 })
 
-describe('getMetricsColumns', () => {
+describe('getAggSumColumns', () => {
   const resultingColumns = [
     {
       columnName: 'id',
@@ -26,12 +26,12 @@ describe('getMetricsColumns', () => {
   ]
 
   it('should return emty array when columns not passed', () => {
-    expect(getMetricsColumns(undefined, false, () => {})).toStrictEqual([])
-    expect(getMetricsColumns({ values: [] }, false, () => {})).toStrictEqual([])
+    expect(getAggSumColumns(undefined, false, () => {})).toStrictEqual([])
+    expect(getAggSumColumns({ values: [] }, false, () => {})).toStrictEqual([])
   })
 
   it('should return columns', () => {
-    expect(getMetricsColumns(metricsData, false, () => {})).toEqual(
+    expect(getAggSumColumns(aggSumData, false, () => {})).toEqual(
       expect.arrayContaining([
         expect.objectContaining(resultingColumns[0]),
         expect.objectContaining(resultingColumns[1]),
@@ -40,7 +40,7 @@ describe('getMetricsColumns', () => {
   })
 
   it('should return filtered columns', () => {
-    expect(getMetricsColumns(metricsData, false, () => {}, ['id'])).toEqual(
+    expect(getAggSumColumns(aggSumData, false, () => {}, ['id'])).toEqual(
       expect.arrayContaining([
         expect.not.objectContaining(resultingColumns[0]),
         expect.objectContaining(resultingColumns[1]),

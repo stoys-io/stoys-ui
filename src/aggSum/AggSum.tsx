@@ -5,13 +5,14 @@ import 'antd/lib/table/style/css'
 
 import VirtualTable from '../common/VirtualTable'
 import usePagination from '../hooks/usePagination'
-import { getMetricsColumns, getMetricsColumnsFromRawData } from './columns'
-import { getMetricsDataFromRawData, getMetricsTableData } from './helpers'
-import { MetricsTableProps, ParentColumns } from './model'
+import { getAggSumColumns, getAggSumColumnsFromRawData } from './columns'
+import { getAggSumDataFromRawData, getAggSumTableData } from './helpers'
+import { AggSumTableProps, ParentColumns } from './model'
 import { StyledMetricTableWrapper } from './styles'
 import { MIN_TABLE_CELL_HEIGHT, TABLE_HEIGHT } from '../quality/constants'
 
-export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
+// Aggregate summary
+const AggSum = (props: AggSumTableProps): JSX.Element => {
   const {
     columns,
     data,
@@ -33,10 +34,10 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
 
   const _data = useMemo(() => {
     if ('current' in data) {
-      return getMetricsDataFromRawData(data)
+      return getAggSumDataFromRawData(data)
     }
 
-    return getMetricsTableData(data)
+    return getAggSumTableData(data)
   }, [data])
 
   const maxColumnsNames = useMemo(
@@ -74,7 +75,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
     }
 
     if ('current' in data) {
-      return getMetricsColumnsFromRawData(data, {
+      return getAggSumColumnsFromRawData(data, {
         disabledColumns,
         showAbsDiffColumn,
         showRelativeDiffColumn,
@@ -82,7 +83,7 @@ export const MetricsTable = (props: MetricsTableProps): JSX.Element => {
       })
     }
 
-    return getMetricsColumns(
+    return getAggSumColumns(
       data,
       !!previousReleaseDataIsShown,
       saveMetricThreshold,
@@ -178,3 +179,5 @@ function getParentsColumns(columns: any): Array<ParentColumns> {
     return { title: column.title, rowSpan: 2 }
   })
 }
+
+export default AggSum

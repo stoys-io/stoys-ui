@@ -1,6 +1,6 @@
-import { MetricsData } from '../model'
+import { AggSumData } from '../model'
 
-export const metricsData: MetricsData = {
+export const aggSumData: AggSumData = {
   columns: [
     { columnName: 'id', title: 'id' },
     { columnName: 'value', title: 'value' },
@@ -63,7 +63,7 @@ export const metricsData: MetricsData = {
   ],
 }
 
-export const bigMetricsData: MetricsData = {
+export const bigAggSumData: AggSumData = {
   columns: [
     { columnName: 'id', title: 'id' },
     { columnName: 'value', title: 'value' },

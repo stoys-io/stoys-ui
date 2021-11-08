@@ -10,7 +10,7 @@ describe('Treshold', () => {
     { title: 'id', columnName: 'id' },
     { title: 'count', columnName: 'count' },
   ]
-  const metricsDataItem = { id: 'id_value', count: 'count_value' }
+  const aggSumDataItem = { id: 'id_value', count: 'count_value' }
   const valueColumnName = 'id'
 
   it('should render treshold', () => {
@@ -18,7 +18,7 @@ describe('Treshold', () => {
       <Treshold
         threshold={treshold}
         keyColumns={keyColumns}
-        metricsDataItem={metricsDataItem}
+        aggSumDataItem={aggSumDataItem}
         valueColumnName={valueColumnName}
       />
     )
@@ -34,7 +34,7 @@ describe('Treshold', () => {
           <Treshold
             threshold={treshold}
             keyColumns={keyColumns}
-            metricsDataItem={metricsDataItem}
+            aggSumDataItem={aggSumDataItem}
             valueColumnName={valueColumnName}
             saveMetricThreshold={saveMetricThresholdMock}
           />
@@ -55,7 +55,7 @@ describe('Treshold', () => {
           <Treshold
             threshold={treshold}
             keyColumns={keyColumns}
-            metricsDataItem={metricsDataItem}
+            aggSumDataItem={aggSumDataItem}
             valueColumnName={valueColumnName}
             saveMetricThreshold={saveMetricThresholdMock}
           />
@@ -82,7 +82,7 @@ describe('Treshold', () => {
           <Treshold
             threshold={treshold}
             keyColumns={keyColumns}
-            metricsDataItem={metricsDataItem}
+            aggSumDataItem={aggSumDataItem}
             valueColumnName={valueColumnName}
             saveMetricThreshold={saveMetricThresholdMock}
           />
@@ -108,7 +108,7 @@ describe('Treshold', () => {
         <Treshold
           threshold={treshold}
           keyColumns={keyColumns}
-          metricsDataItem={metricsDataItem}
+          aggSumDataItem={aggSumDataItem}
           valueColumnName={valueColumnName}
           saveMetricThreshold={saveMetricThresholdMock}
         />
@@ -142,7 +142,7 @@ describe('Treshold', () => {
         <Treshold
           threshold={treshold}
           keyColumns={keyColumns}
-          metricsDataItem={metricsDataItem}
+          aggSumDataItem={aggSumDataItem}
           valueColumnName={valueColumnName}
           saveMetricThreshold={saveMetricThresholdMock}
         />

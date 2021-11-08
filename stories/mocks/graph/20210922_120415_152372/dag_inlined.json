@@ -20618,7 +20618,7 @@
           }
         }
       ],
-      "metrics": [
+      "aggSum": [
         [
           {
             "location": null,

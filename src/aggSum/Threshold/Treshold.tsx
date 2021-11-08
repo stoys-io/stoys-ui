@@ -20,7 +20,7 @@ import ModalRadioGroup from './ModalRadioGroup'
 const Threshold = ({
   threshold,
   keyColumns,
-  metricsDataItem,
+  aggSumDataItem,
   valueColumnName,
   saveMetricThreshold,
 }: ThresholdProps): JSX.Element => {
@@ -31,7 +31,7 @@ const Threshold = ({
   const getKeyColumnsWithValues = (): Array<KeyValueInput> =>
     keyColumns.map(column => ({
       key: column.columnName,
-      value: metricsDataItem[column.columnName],
+      value: aggSumDataItem[column.columnName],
     }))
 
   const [keyColumnsWithValue, updateKeyColumnsValue] =
@@ -106,7 +106,7 @@ const Threshold = ({
               <ModalRadioGroup
                 key={column.columnName}
                 keyColumn={column}
-                metricsDataItem={metricsDataItem}
+                aggSumDataItem={aggSumDataItem}
                 onChangeHandler={onChangeHandler}
               />
             ))}

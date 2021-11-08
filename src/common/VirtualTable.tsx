@@ -4,7 +4,7 @@ import ResizeObserver from 'rc-resize-observer'
 import Table from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
-import { ParentColumns } from '../metrics/model'
+import { ParentColumns } from '../aggSum/model'
 
 function VirtualTable(
   props: Parameters<typeof Table>[0] & { parentsColumns?: Array<ParentColumns>; rowHeight?: number }

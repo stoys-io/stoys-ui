@@ -54,22 +54,22 @@ export interface KeyValueInput {
   value: string
 }
 
-export type RawMetricsDataItemData = Array<{
+export type RawAggSumDataItemData = Array<{
   [key: string]: Maybe<string | number>
 }>
 
-export interface RawMetricsDataItem {
+export interface RawAggSumDataItem {
   table_name: string
   key_columns: Array<string>
-  data: RawMetricsDataItemData
+  data: RawAggSumDataItemData
 }
 
-export interface RawMetricsData {
-  current: RawMetricsDataItem
-  previous?: RawMetricsDataItem
+export interface RawAggSumData {
+  current: RawAggSumDataItem
+  previous?: RawAggSumDataItem
 }
 
-export interface MetricsData {
+export interface AggSumData {
   columns?: Array<ColumnNode>
   values: Array<Array<TableCellNode>>
 }
@@ -92,8 +92,8 @@ export interface ConfigProps {
   showAbsDiffColumn?: boolean
   showRelativeDiffColumn?: boolean
 }
-export interface MetricsTableProps extends TableProps<any> {
-  data: MetricsData | RawMetricsData
+export interface AggSumTableProps extends TableProps<any> {
+  data: AggSumData | RawAggSumData
   config?: ConfigProps
 }
 
@@ -106,7 +106,7 @@ export interface DataItemNode {
   cur?: Maybe<string | number>
 }
 
-export interface MetricsTableData {
+export interface AggSumTableData {
   [key: string]: Maybe<string | number | Array<TrendNode> | DataItemNode> | undefined
 }
 
@@ -116,7 +116,7 @@ export type TrendsProps = {
 
 export type ModalRadioGroupProps = {
   keyColumn: ColumnNode
-  metricsDataItem: {
+  aggSumDataItem: {
     [key: string]: string | number | Array<{ [key: string]: string | number }>
   }
   onChangeHandler: (e: RadioChangeEvent, key: string) => void
@@ -125,7 +125,7 @@ export type ModalRadioGroupProps = {
 export type ThresholdProps = {
   threshold: number
   keyColumns: Array<ColumnNode>
-  metricsDataItem: {
+  aggSumDataItem: {
     [key: string]: string
   }
   valueColumnName: string
