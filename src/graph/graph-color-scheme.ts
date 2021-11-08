@@ -2,11 +2,11 @@ import * as d3ScaleChromatic from 'd3-scale-chromatic'
 import { Highlight, ChromaticScale } from './model'
 
 export const colorScheme =
-  (highlight: Highlight, chromaticScale: ChromaticScale) => (rank: number) => {
+  (highlightMode: Highlight, chromaticScale: ChromaticScale) => (rank: number) => {
     const gradient =
-      highlight === 'nearest'
+      highlightMode === 'nearest'
         ? hyperbolicNearest
-        : highlight === 'children'
+        : highlightMode === 'children'
         ? hyperbolicGradientRight
         : hyperbolicGradientLeft
 

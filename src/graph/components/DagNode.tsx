@@ -11,7 +11,7 @@ import {
   GREY_ACCENT,
 } from '../constants'
 import { renderNumericValue } from '../../helpers'
-import { Column, DataPayload } from '../model'
+import { Column, NodeDataPayload } from '../model'
 import { ItemText, ScrollCard, ScrollCardTitle } from '../styles'
 import {
   useGraphStore,
@@ -35,7 +35,7 @@ export const DagNode = memo(
     isConnectable,
     targetPosition,
     sourcePosition,
-  }: NodeProps<DataPayload>): JSX.Element => {
+  }: NodeProps<NodeDataPayload>): JSX.Element => {
     const dispatch = useGraphDispatch()
 
     const badge = useGraphStore(selectBadge)

@@ -1,16 +1,17 @@
-import { GraphStore, InitialArgs, StoredHighlights } from './model'
+import { GraphStore, InitialArgs } from './model'
 import { defaultHighlights, defaultHighlightedColumns } from './store'
 
 import {
-  highlightHighlight,
+  highlightGraph,
   collectParentColumnAndTableIds,
   collectChildColumnAndTableIds,
   notEmpty,
   highlightNodesBatch,
   getBaseGraph,
   getMergedGraph,
+  highlightSingleNode,
 } from '../graph-ops'
-import { Graph, Table, Column, ChromaticScale, Badge, Highlight, Node } from '../model'
+import { Graph, Table, Column, ChromaticScale, Badge, Highlight, Highlights, Node } from '../model'
 
 export const setBadge = (badge: Badge) => ({ badge })
 export const setInitialStore = ({ graph, data, tables }: InitialArgs) => ({
@@ -25,10 +26,9 @@ export const setBaseRelease =
   ({ data, tables, graph, highlightedColumns }: GraphStore): Partial<GraphStore> => {
     if (baseRelease) {
       const baseGraph = getBaseGraph(baseRelease, data, tables)
-      const mergedGraph = baseGraph
+      const { graph: mergedGraph, highlights } = baseGraph
         ? getMergedGraph(graph, baseGraph)
         : getMergedGraph(graph, graph)
-      const highlights = graphToHighlights(mergedGraph)
 
       return {
         baseRelease,
@@ -66,7 +66,7 @@ export const setHighlightedColumns =
     if (columnId === highlightedColumns.selectedColumnId) {
       return {
         highlightedColumns: defaultHighlightedColumns,
-        highlights: graphToHighlights(defaultGraph),
+        highlights: defaultHighlights,
       }
     }
 
@@ -92,18 +92,18 @@ export const nodeClick =
 
     if (highlightMode === 'none') {
       // Highlight single node
-      const newHighlights = highlightNodesBatch([id])(defaultGraph)
+      const newHighlights = highlightSingleNode(id)
 
       return {
-        highlights: graphToHighlights(newHighlights),
+        highlights: newHighlights,
         selectedNodeId: id,
         highlightedColumns: defaultHighlightedColumns,
       }
     }
 
-    const newHighlights = highlightHighlight(highlightMode)(defaultGraph, id, chromaticScale)
+    const newHighlights = highlightGraph(highlightMode, defaultGraph, id, chromaticScale)
     return {
-      highlights: graphToHighlights(newHighlights),
+      highlights: newHighlights,
       selectedNodeId: id,
       highlightedColumns: defaultHighlightedColumns,
     }
@@ -113,11 +113,9 @@ export const setDrawerTab = (drawerTab?: string) => ({ drawerTab })
 export const openDrawer = (drawerNodeId: string) => ({ drawerNodeId })
 export const closeDrawer = () => ({ drawerNodeId: undefined, drawerTab: undefined })
 
-export const highlightIds =
-  (ids: string[]) =>
-  ({ defaultGraph }: GraphStore) => ({
-    highlights: graphToHighlights(highlightNodesBatch(ids)(defaultGraph)),
-  })
+export const highlightIds = (ids: string[]) => ({
+  highlights: highlightNodesBatch(ids),
+})
 
 export const setHighlightMode =
   (highlightMode: Highlight, chromaticScale: ChromaticScale) =>
@@ -133,11 +131,9 @@ export const setHighlightMode =
   }: GraphStore) => {
     if (highlightMode === 'diffing') {
       const baseGraph = getBaseGraph(baseRelease, data, tables)
-      const mergedGraph = baseGraph
+      const { graph: mergedGraph, highlights } = baseGraph
         ? getMergedGraph(graph, baseGraph)
         : getMergedGraph(graph, graph)
-
-      const highlights = graphToHighlights(mergedGraph)
 
       return {
         highlightMode,
@@ -165,7 +161,7 @@ export const setHighlightMode =
     if (highlightMode === 'none') {
       return {
         highlightMode,
-        highlights: graphToHighlights(defaultGraph),
+        highlights: defaultHighlights,
         selectedNodeId: undefined,
         highlightedColumns: defaultHighlightedColumns,
         graph: defaultGraph,
@@ -175,53 +171,32 @@ export const setHighlightMode =
     if (!selectedNodeId) {
       return {
         highlightMode,
-        highlights: graphToHighlights(defaultGraph),
+        highlights: defaultHighlights,
         graph: defaultGraph,
         highlightedColumns: defaultHighlightedColumns,
       }
     }
 
-    const newHighlights = highlightHighlight(highlightMode)(
+    const newHighlights = highlightGraph(
+      highlightMode,
       defaultGraph,
       selectedNodeId,
       chromaticScale
     )
+
     return {
       highlightMode,
-      highlights: graphToHighlights(newHighlights),
+      highlights: newHighlights,
       graph: defaultGraph,
       highlightedColumns: defaultHighlightedColumns,
       selectedNodeId,
     }
   }
 
-const graphToHighlights = (hGraph: Graph): StoredHighlights => {
-  const nodesTmpRefactoring = hGraph.nodes.reduce(
-    (acc, node) => ({
-      ...acc,
-      [node.id]: node.data.style,
-    }),
-    {}
-  )
-
-  const edgesTmpRefactoring = hGraph.edges.reduce(
-    (acc, edge) => ({
-      ...acc,
-      [edge.id]: edge.style,
-    }),
-    {}
-  )
-
-  return {
-    nodes: nodesTmpRefactoring,
-    edges: edgesTmpRefactoring,
-  }
-}
-
 interface OnChangeModeColumnsArgs {
   columnId: string
   tableId: string
-  highlights: StoredHighlights
+  highlights: Highlights
   highlightMode: Highlight
   graph: Graph
   tables?: Table[]
@@ -241,7 +216,7 @@ const onHighlightModeChangeColumns = ({
   if (highlightMode === 'none') {
     return {
       highlightedColumns: defaultHighlightedColumns,
-      highlights: graphToHighlights(graph),
+      highlights: defaultHighlights,
     }
   }
 
@@ -310,10 +285,10 @@ const onHighlightModeChangeColumns = ({
     release: graph.release,
   }
 
-  const newHighlights = highlightHighlight(highlightMode)(alteredGraph, tableId)
+  const newHighlights = highlightGraph(highlightMode, alteredGraph, tableId)
 
   return {
-    highlights: graphToHighlights(newHighlights),
+    highlights: newHighlights,
     highlightedColumns: {
       selectedTableId: tableId,
       selectedColumnId: columnId,

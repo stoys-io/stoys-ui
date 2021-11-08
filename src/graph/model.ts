@@ -1,31 +1,60 @@
 import { JoinRatesData } from '../joinRates/model'
 import { Dataset as ProfilerData } from '../profiler/model'
 import { QualityData } from '../quality'
-import { Node as Node0, Edge } from 'react-flow-renderer'
+import { Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 import { RawMetricsDataItemData } from '../metrics/model'
 
-export interface DataPayload {
+export interface NodeDataPayload {
   label: string
   partitions: number
   violations: number
   columns: Column[]
-  style?: {
-    color: string
-  }
 }
 
 // Same as React-flow Node, but the data is required
-export interface DataNode<T> extends Node0<T> {
+interface DataNode<T> extends Node0<T> {
   data: T
 }
 
-export type Node = DataNode<DataPayload>
-export { Edge }
+export type Node = DataNode<NodeDataPayload>
+
+export interface EdgeDataPayload {
+  rank: number
+}
+
+interface DataEdge<T> extends Edge0<T> {
+  data: T
+}
+
+export type Edge = DataEdge<EdgeDataPayload>
 
 export interface Graph {
   nodes: Node[]
   edges: Edge[]
   release: string // We determine old/new graph state based on this field
+}
+
+export interface GraphExtended {
+  graph: Graph
+  highlights: Highlights
+}
+
+export interface Highlights {
+  nodes: NodeStyle
+  edges: EdgeStyle
+}
+
+interface NodeStyle {
+  [key: string]: { color: string } | undefined
+}
+
+interface EdgeStyle {
+  [key: string]: EdgeStyleProps | undefined
+}
+
+interface EdgeStyleProps {
+  stroke: string
+  strokeWidth: string
 }
 
 export type Highlight = 'nearest' | 'parents' | 'children' | 'none' | 'diffing'

@@ -8,7 +8,7 @@ export interface GraphStore {
   defaultGraph: Graph // "Current release" graph, stays constant
   graph: Graph // The graph we display, can be merged graph in release mode
 
-  highlights: StoredHighlights
+  highlights: Highlights
   highlightedColumns: HColumns
 
   baseRelease: string
@@ -28,11 +28,6 @@ export interface InitialArgs {
   tables?: Table[]
 }
 
-export interface StoredHighlights {
-  nodes: StoredNodeStyle
-  edges: StoredEdgeStyle
-}
-
 export type DispatchHandler = DispatchFn | Partial<GraphStore>
 type DispatchFn = (state: GraphStore) => Partial<GraphStore>
 
@@ -43,15 +38,20 @@ interface HColumns {
   relatedTablesIds: Array<string>
 }
 
-interface StoredNodeStyle {
+interface Highlights {
+  nodes: NodeStyle
+  edges: EdgeStyle
+}
+
+interface NodeStyle {
   [key: string]: { color: string } | undefined
 }
 
-interface StoredEdgeStyle {
-  [key: string]: EdgeStyle | undefined
+interface EdgeStyle {
+  [key: string]: EdgeStyleProps | undefined
 }
 
-interface EdgeStyle {
+interface EdgeStyleProps {
   stroke: string
   strokeWidth: string
 }

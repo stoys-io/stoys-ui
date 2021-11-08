@@ -3,109 +3,95 @@ import {
   DELETED_NODE_HIGHLIHT_COLOR,
   HIGHLIGHT_COLOR,
 } from './constants'
-import { Graph, Edge, Node, DataGraph, Table, ChromaticScale, Highlight } from './model'
+import {
+  Graph,
+  Edge,
+  Node,
+  DataGraph,
+  Table,
+  ChromaticScale,
+  Highlight,
+  Highlights,
+  GraphExtended,
+} from './model'
 import { colorScheme } from './graph-color-scheme'
 
-export const highlightNode = (id: string) => (graph: Graph) => ({
-  ...graph,
-  nodes: graph.nodes.map((node: Node) => {
-    if (node.id !== id) {
-      return node
+export const highlightSingleNode = (id: string): Highlights => ({
+  edges: {},
+  nodes: { [id]: { color: HIGHLIGHT_COLOR } },
+})
+
+export const highlightNodesBatch = (ids: string[]): Highlights => ({
+  edges: {},
+  nodes: ids.reduce(
+    (acc, id: string) => ({
+      ...acc,
+      [id]: { color: HIGHLIGHT_COLOR },
+    }),
+    {}
+  ),
+})
+
+interface HighlightHelperArgs {
+  graph: Graph
+  selectedNodeId: string
+  edgesToHighlight: Edge[]
+  highlightMode: Highlight
+  chromaticScale: ChromaticScale
+}
+
+const highlightHelper = ({
+  graph,
+  selectedNodeId,
+  edgesToHighlight,
+  highlightMode,
+  chromaticScale,
+}: HighlightHelperArgs): Highlights => {
+  const getColor = colorScheme(highlightMode, chromaticScale)
+  const edges = graph.edges.reduce((acc, edge: Edge) => {
+    const highlightEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
+    if (!highlightEdge) {
+      return acc
+    }
+
+    const edgeStyleObject = {
+      stroke: getColor(highlightEdge.data.rank),
+      strokeWidth: '2px',
     }
 
     return {
-      ...node,
-      data: {
-        ...node.data,
-        style: node.style?.color ? undefined : { color: HIGHLIGHT_COLOR },
-      },
+      ...acc,
+      [highlightEdge.id]: edgeStyleObject,
     }
-  }),
-})
+  }, {})
 
-export const resetHighlight = (graph: Graph): Graph => ({
-  edges: graph.edges.map((edge: Edge) => ({
-    ...edge,
-    style: undefined,
-    data: { rank: 1 },
-  })),
-  nodes: graph.nodes.map((node: Node) => ({
-    ...node,
-    data: { ...node.data, style: undefined },
-  })),
-  release: graph.release,
-})
+  const nodes = graph.nodes.reduce((acc, node: Node) => {
+    const relevantEdges = edgesToHighlight.filter(
+      edge => edge.source === node.id || edge.target === node.id
+    )
 
-export const highlightNodesBatch = (ids: string[]) => (graph: Graph) => ({
-  ...graph,
-  nodes: graph.nodes.map((node: Node) => {
-    if (!ids.includes(node.id)) {
-      return {
-        ...node,
-        data: { ...node.data, style: undefined },
-      }
+    const relevantEdge = relevantEdges.reduce(
+      // Node will have the rank lowest of its edges
+      (cur, next) => (cur.data.rank < next.data.rank ? cur : next),
+      relevantEdges[0]
+    )
+
+    if (!relevantEdge) {
+      return acc
+    }
+
+    const nodeStyleObject = {
+      color: node.id === selectedNodeId ? HIGHLIGHT_COLOR : getColor(relevantEdge.data.rank),
     }
 
     return {
-      ...node,
-      data: { ...node.data, style: node.style?.color ? undefined : { color: HIGHLIGHT_COLOR } },
+      ...acc,
+      [node.id]: nodeStyleObject,
     }
-  }),
-})
+  }, {})
 
-export const highlightGraph =
-  (
-    nodeId: string,
-    edgesToHighlight: Edge[],
-    highlight: Highlight,
-    chromaticScale: ChromaticScale
-  ) =>
-  (graph: Graph) => {
-    const getColor = colorScheme(highlight, chromaticScale)
-
-    return {
-      edges: graph.edges.map((edge: Edge) => {
-        const highlightEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
-        if (!highlightEdge) {
-          return {
-            ...edge,
-            style: { strokeWidth: 0 }, // Hide other edges
-          }
-        }
-
-        return {
-          ...highlightEdge,
-          style: { stroke: getColor(highlightEdge.data.rank), strokeWidth: '2px' },
-        }
-      }),
-      nodes: graph.nodes.map((node: Node) => {
-        const relevantEdges = edgesToHighlight.filter(
-          edge => edge.source === node.id || edge.target === node.id
-        )
-
-        const relevantEdge = relevantEdges.reduce(
-          // Node will have the rank lowest of its edges
-          (cur, next) => (cur.data.rank < next.data.rank ? cur : next),
-          relevantEdges[0]
-        )
-
-        if (!relevantEdge) {
-          return node
-        }
-
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            style: node.style?.color
-              ? undefined
-              : { color: node.id === nodeId ? HIGHLIGHT_COLOR : getColor(relevantEdge.data.rank) },
-          },
-        }
-      }),
-      release: graph.release,
-    }
-  }
+  return { edges, nodes }
+}
 
 export const findNearestEdges = (graph: Graph, id: string): Edge[] => [
   ...graph.edges.filter(edge => edge.source === id).map(edge => ({ ...edge, data: { rank: 1 } })), // parents
@@ -247,34 +233,33 @@ export interface ColumnAndTableIds {
   columnIds: Array<string>
 }
 
-const highlightDispatch = (highlightMode: Highlight) =>
+const searchFnDispatch = (highlightMode: Highlight) =>
   highlightMode === 'parents'
     ? findUpstreamEdges
     : highlightMode === 'children'
     ? findDownstreamEdges
     : findNearestEdges
 
-// TODO: To much highlight in the names
-export const highlightHighlight = (highlightMode: Highlight) => {
-  const whichHighlight = highlightDispatch(highlightMode)
+export const highlightGraph = (
+  highlightMode: Highlight,
+  graph: Graph,
+  id: string,
+  chromaticScale: ChromaticScale = 'interpolatePuOr'
+): Highlights => {
+  const graphSearchFn = searchFnDispatch(highlightMode)
+  const edgesToHighlight = graphSearchFn(graph, id)
 
-  return (graph: Graph, id: string, chromaticScale: ChromaticScale = 'interpolatePuOr'): Graph => {
-    const highlightEdges = whichHighlight(graph, id)
-
-    if (!highlightEdges.length) {
-      const tmpHighlightGraph = highlightNode(id)(graph) // TODO: Refactor
-      return tmpHighlightGraph
-    }
-
-    const tmpHighlightGraph2 = highlightGraph(
-      id,
-      highlightEdges,
-      highlightMode,
-      chromaticScale
-    )(graph) // TODO: Refactor
-
-    return tmpHighlightGraph2
+  if (!edgesToHighlight.length) {
+    return highlightSingleNode(id)
   }
+
+  return highlightHelper({
+    graph,
+    selectedNodeId: id,
+    edgesToHighlight,
+    highlightMode,
+    chromaticScale,
+  })
 }
 
 export const getBaseGraph = (
@@ -317,22 +302,23 @@ export const getBaseGraph = (
   return baseGraph
 }
 
-export const getMergedGraph = (currentGraph: Graph, baseGraph: Graph): Graph => {
+export const getMergedGraph = (currentGraph: Graph, baseGraph: Graph): GraphExtended => {
   const baseEdgeIds = baseGraph.edges.map(mapIds)
   const edgeIds = currentGraph.edges.map(mapIds)
-  const edges = currentGraph.edges.map(edge => {
-    if (baseEdgeIds.includes(edge.id)) {
-      return edge
-    }
+  const edges = currentGraph.edges
+  const edgeHighlightsDeleted = edges.reduce(
+    (acc, edge) =>
+      !baseEdgeIds.includes(edge.id)
+        ? { ...acc, [edge.id]: { stroke: DELETED_NODE_HIGHLIHT_COLOR } }
+        : acc,
+    {}
+  )
 
-    return {
-      ...edge,
-      style: { stroke: DELETED_NODE_HIGHLIHT_COLOR },
-    }
-  })
-  const addedEdges = baseGraph.edges
-    .filter(edge => !edgeIds.includes(edge.id))
-    .map(edge => ({ ...edge, style: { stroke: ADDED_NODE_HIGHLIGHT_COLOR } }))
+  const addedEdges = baseGraph.edges.filter(edge => !edgeIds.includes(edge.id))
+  const edgeHighlightsAdded = addedEdges.reduce(
+    (acc, edge) => ({ ...acc, [edge.id]: { stroke: ADDED_NODE_HIGHLIGHT_COLOR } }),
+    {}
+  )
 
   const mergedEdges = [...edges, ...addedEdges]
 
@@ -356,27 +342,36 @@ export const getMergedGraph = (currentGraph: Graph, baseGraph: Graph): Graph => 
       return { ...node, data: { ...node.data, columns } }
     }
 
-    return {
-      ...node,
-      data: {
-        ...node.data,
-        style: { color: DELETED_NODE_HIGHLIHT_COLOR },
-      },
-    }
+    return node
   })
-  const addedNodes = baseGraph?.nodes
-    .filter(node => !nodeIds.includes(node.id))
-    .map(node => ({
-      ...node,
-      data: { ...node.data, style: { color: ADDED_NODE_HIGHLIGHT_COLOR } },
-    }))
-  const mergedNodes = [...nodes, ...(addedNodes ? addedNodes : [])]
 
-  return {
+  const nodeHighlightsDeleted = nodes.reduce(
+    (acc, node) =>
+      !baseNodeIds.includes(node.id)
+        ? { ...acc, [node.id]: { color: DELETED_NODE_HIGHLIHT_COLOR } }
+        : acc,
+    {}
+  )
+
+  const addedNodes = baseGraph?.nodes.filter(node => !nodeIds.includes(node.id))
+  const nodeHighlightsAdded = addedNodes.reduce(
+    (acc, node) => ({ ...acc, [node.id]: { color: ADDED_NODE_HIGHLIGHT_COLOR } }),
+    {}
+  )
+
+  const mergedNodes = [...nodes, ...(addedNodes ? addedNodes : [])]
+  const graph = {
     edges: mergedEdges,
     nodes: mergedNodes,
     release: `merged-${baseGraph?.release}`,
   }
+
+  const highlights = {
+    edges: { ...edgeHighlightsDeleted, ...edgeHighlightsAdded },
+    nodes: { ...nodeHighlightsDeleted, ...nodeHighlightsAdded },
+  }
+
+  return { graph, highlights }
 }
 
 function mapIds(element: { id: string }): string {
@@ -384,7 +379,7 @@ function mapIds(element: { id: string }): string {
 }
 
 const initialPosition = { x: 0, y: 0 }
-export const mapInitialNodes = (tables: Array<Table>): Node[] =>
+export const mapInitialNodes = (tables: Table[]): Node[] =>
   tables.map(
     (table: Table): Node => ({
       id: table.id,
@@ -399,7 +394,7 @@ export const mapInitialNodes = (tables: Array<Table>): Node[] =>
     })
   )
 
-export const mapInitialEdges = (tables: Array<Table>): Edge[] =>
+export const mapInitialEdges = (tables: Table[]): Edge[] =>
   tables
     .filter((t: Table) => t.dependencies !== undefined)
     .reduce((acc: Edge[], table: Table) => {
@@ -408,7 +403,6 @@ export const mapInitialEdges = (tables: Array<Table>): Edge[] =>
           id: `${table.id}-${dep}-${table.name}`,
           source: table.id,
           target: dep,
-          style: undefined, // Edge color will be set by style field
           data: { rank: 1 },
           type: 'dagEdge',
         })
