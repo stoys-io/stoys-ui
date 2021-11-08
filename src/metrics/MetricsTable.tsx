@@ -7,7 +7,7 @@ import VirtualTable from '../common/VirtualTable'
 import usePagination from '../hooks/usePagination'
 import { getMetricsColumns, getMetricsColumnsFromRawData } from './columns'
 import { getMetricsDataFromRawData, getMetricsTableData } from './helpers'
-import { MetricsTableProps } from './model'
+import { MetricsTableProps, ParentColumns } from './model'
 import { StyledMetricTableWrapper } from './styles'
 import { MIN_TABLE_CELL_HEIGHT, TABLE_HEIGHT } from '../quality/constants'
 
@@ -169,7 +169,7 @@ function transformColumnsForVirtualGrid(columns: any) {
   }, [])
 }
 
-function getParentsColumns(columns: any) {
+function getParentsColumns(columns: any): Array<ParentColumns> {
   return columns.map((column: any) => {
     if ('children' in column) {
       return { title: column.title, colSpan: column.children.length }

@@ -4,9 +4,10 @@ import ResizeObserver from 'rc-resize-observer'
 import Table from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
+import { ParentColumns } from '../metrics/model'
 
 function VirtualTable(
-  props: Parameters<typeof Table>[0] & { parentsColumns?: Array<any>; rowHeight?: number }
+  props: Parameters<typeof Table>[0] & { parentsColumns?: Array<ParentColumns>; rowHeight?: number }
 ): JSX.Element {
   const { columns, scroll, parentsColumns, rowHeight } = props
   const [tableWidth, setTableWidth] = useState(0)
@@ -46,8 +47,8 @@ function VirtualTable(
       const render = column.render
       const _style = {
         ...style,
-        width: style.width ? style.width : column.width,
-        left: columnIndex ? left : style.left,
+        width: column.width,
+        left: left,
       }
 
       return (
