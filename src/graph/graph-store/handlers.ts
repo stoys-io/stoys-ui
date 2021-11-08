@@ -1,4 +1,4 @@
-import { GraphStore, InitialArgs, StoredHighlights } from './model'
+import { GraphStore, InitialArgs } from './model'
 import { defaultHighlights, defaultHighlightedColumns } from './store'
 
 import {
@@ -11,7 +11,7 @@ import {
   getMergedGraph,
   highlightSingleNode,
 } from '../graph-ops'
-import { Graph, Table, Column, ChromaticScale, Badge, Highlight, Node } from '../model'
+import { Graph, Table, Column, ChromaticScale, Badge, Highlight, Highlights, Node } from '../model'
 
 export const setBadge = (badge: Badge) => ({ badge })
 export const setInitialStore = ({ graph, data, tables }: InitialArgs) => ({
@@ -26,10 +26,9 @@ export const setBaseRelease =
   ({ data, tables, graph, highlightedColumns }: GraphStore): Partial<GraphStore> => {
     if (baseRelease) {
       const baseGraph = getBaseGraph(baseRelease, data, tables)
-      const mergedGraph = baseGraph
+      const { graph: mergedGraph, highlights } = baseGraph
         ? getMergedGraph(graph, baseGraph)
         : getMergedGraph(graph, graph)
-      const highlights = graphToHighlights(mergedGraph)
 
       return {
         baseRelease,
@@ -132,11 +131,9 @@ export const setHighlightMode =
   }: GraphStore) => {
     if (highlightMode === 'diffing') {
       const baseGraph = getBaseGraph(baseRelease, data, tables)
-      const mergedGraph = baseGraph
+      const { graph: mergedGraph, highlights } = baseGraph
         ? getMergedGraph(graph, baseGraph)
         : getMergedGraph(graph, graph)
-
-      const highlights = graphToHighlights(mergedGraph)
 
       return {
         highlightMode,
@@ -196,33 +193,10 @@ export const setHighlightMode =
     }
   }
 
-const graphToHighlights = (hGraph: Graph): StoredHighlights => {
-  const nodesTmpRefactoring = hGraph.nodes.reduce(
-    (acc, node) => ({
-      ...acc,
-      [node.id]: node.data.style,
-    }),
-    {}
-  )
-
-  const edgesTmpRefactoring = hGraph.edges.reduce(
-    (acc, edge) => ({
-      ...acc,
-      [edge.id]: edge.style,
-    }),
-    {}
-  )
-
-  return {
-    nodes: nodesTmpRefactoring,
-    edges: edgesTmpRefactoring,
-  }
-}
-
 interface OnChangeModeColumnsArgs {
   columnId: string
   tableId: string
-  highlights: StoredHighlights
+  highlights: Highlights
   highlightMode: Highlight
   graph: Graph
   tables?: Table[]

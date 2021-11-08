@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { EdgeProps, getBezierPath, getMarkerEnd } from 'react-flow-renderer'
 import { useGraphStore } from '../graph-store'
+import { EdgeDataPayload } from '../model'
 
 export const DagEdge = ({
   id,
@@ -10,10 +11,9 @@ export const DagEdge = ({
   targetY,
   sourcePosition,
   targetPosition,
-  data,
   arrowHeadType,
   markerEndId,
-}: EdgeProps) => {
+}: EdgeProps<EdgeDataPayload>) => {
   const style = useGraphStore(useCallback(state => state.highlights.edges[id], [id]))
 
   const edgePath = getBezierPath({
@@ -27,24 +27,12 @@ export const DagEdge = ({
   const markerEnd = getMarkerEnd(arrowHeadType, markerEndId)
 
   return (
-    <>
-      <path
-        id={id}
-        style={style}
-        className="react-flow__edge-path"
-        d={edgePath}
-        markerEnd={markerEnd}
-      />
-      <text>
-        <textPath
-          href={`#${id}`}
-          style={{ fontSize: '12px' }}
-          startOffset="50%"
-          textAnchor="middle"
-        >
-          {data.text}
-        </textPath>
-      </text>
-    </>
+    <path
+      id={id}
+      style={style}
+      className="react-flow__edge-path"
+      d={edgePath}
+      markerEnd={markerEnd}
+    />
   )
 }
