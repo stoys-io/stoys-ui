@@ -4,7 +4,7 @@ import { Tabs } from 'antd'
 import { DrawerNodeLabel } from '../styles'
 
 import { NoData } from '../../profiler/styles'
-import { RawMetricsData } from '../../metrics/model'
+import { RawMetricsData } from '../../aggSum/model'
 import { JoinRates, Metrics, Profiler, Quality } from '../..'
 import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../graph-store'
 

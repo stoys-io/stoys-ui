@@ -2,7 +2,7 @@ import { JoinRatesData } from '../joinRates/model'
 import { Dataset as ProfilerData } from '../profiler/model'
 import { QualityData } from '../quality'
 import { Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
-import { RawMetricsDataItemData } from '../metrics/model'
+import { RawMetricsDataItemData } from '../aggSum/model'
 
 export interface NodeDataPayload {
   label: string
