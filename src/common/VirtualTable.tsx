@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { VariableSizeGrid as Grid } from 'react-window'
 import ResizeObserver from 'rc-resize-observer'
 import Table from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
+import { ParentColumns } from '../metrics/model'
 
-function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
-  const { columns, scroll } = props
+function VirtualTable(
+  props: Parameters<typeof Table>[0] & { parentsColumns?: Array<ParentColumns>; rowHeight?: number }
+): JSX.Element {
+  const { columns, scroll, parentsColumns, rowHeight } = props
   const [tableWidth, setTableWidth] = useState(0)
 
   const columnCount = columns!.length
@@ -25,80 +28,110 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
     }
   })
 
-  const gridRef = useRef<any>()
-  const [connectObject] = useState<any>(() => {
-    const obj = {}
-    Object.defineProperty(obj, 'scrollLeft', {
-      get: () => null,
-      set: (scrollLeft: number) => {
-        if (gridRef.current) {
-          gridRef.current.scrollTo({ scrollLeft })
-        }
-      },
-    })
+  const renderVirtualList = (rawData: Array<object>, { scrollbarSize, onScroll }: any) => {
+    const totalHeight = rawData?.length * (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)
 
-    return obj
-  })
+    const renderCell = ({
+      columnIndex,
+      rowIndex,
+      style,
+    }: {
+      columnIndex: number
+      rowIndex: number
+      style: React.CSSProperties
+    }) => {
+      const column = (mergedColumns as any)[columnIndex]
+      const columnsBefore = (mergedColumns as any).slice(0, columnIndex)
+      const left = columnsBefore.reduce((w: number, column: any) => column.width + w, 0)
+      const value = (rawData[rowIndex] as any)[column.dataIndex]
+      const render = column.render
+      const _style = {
+        ...style,
+        width: column.width,
+        left: left,
+      }
 
-  const resetVirtualGrid = () => {
-    gridRef.current.resetAfterIndices({
-      columnIndex: 0,
-      shouldForceUpdate: true,
-    })
-  }
-
-  useEffect(() => resetVirtualGrid, [tableWidth, totalColumnWidth])
-
-  const renderVirtualList = (rawData: Array<object>, { scrollbarSize, ref, onScroll }: any) => {
-    ref.current = connectObject
-    const totalHeight = rawData?.length * MIN_TABLE_CELL_HEIGHT
-
-    const renderCell = (columnIndex: number, rowIndex: number): string | JSX.Element => {
-      const value = (rawData[rowIndex] as any)[(mergedColumns as any)[columnIndex].dataIndex]
-      const render = (mergedColumns as any)[columnIndex].render
-
-      return render(value, rawData[rowIndex])
+      return (
+        <div
+          className={`virtual-table-cell ${
+            columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
+          } ${column.className ? column.className : ''}`}
+          style={_style}
+        >
+          {render(value, rawData[rowIndex])}
+        </div>
+      )
     }
 
     return (
       <Grid
-        ref={gridRef}
         className="virtual-grid"
         columnCount={mergedColumns?.length}
         columnWidth={(index: number) => {
           const { width } = mergedColumns[index]
+          const columnWidth =
+            totalHeight > scroll!.y! && index === mergedColumns?.length - 1
+              ? (width as number) - scrollbarSize - 1
+              : (width as number)
 
-          return totalHeight > scroll!.y! && index === mergedColumns?.length - 1
-            ? (width as number) - scrollbarSize - 1
-            : (width as number)
+          return columnWidth
         }}
         height={scroll!.y as number}
         rowCount={rawData?.length}
-        rowHeight={() => MIN_TABLE_CELL_HEIGHT}
+        rowHeight={() => (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)}
         width={tableWidth}
         onScroll={({ scrollLeft }: { scrollLeft: number }) => {
           onScroll({ scrollLeft })
         }}
       >
-        {({
-          columnIndex,
-          rowIndex,
-          style,
-        }: {
-          columnIndex: number
-          rowIndex: number
-          style: React.CSSProperties
-        }) => (
-          <div
-            className={`virtual-table-cell ${
-              columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
-            }`}
-            style={style}
-          >
-            {renderCell(columnIndex, rowIndex)}
-          </div>
-        )}
+        {renderCell}
       </Grid>
+    )
+  }
+
+  const renderTableHeaderRow = (props: any) => {
+    const twoRowsColumnsName = parentsColumns
+      ?.filter((column: any) => 'rowSpan' in column)
+      .map(column => column.title)
+    const _columns = props.children.filter(
+      (col: any) => !twoRowsColumnsName?.includes(col.props.column.titleString)
+    )
+    const _parentsColumns = parentsColumns?.map(column => {
+      if ('rowSpan' in column) {
+        const childColumn = props.children.find(
+          (col: any) => col.props.column.titleString === column.title
+        )
+
+        return childColumn
+          ? { ...childColumn, props: { ...childColumn.props, rowSpan: column.rowSpan } }
+          : column
+      }
+
+      return column
+    })
+
+    return (
+      <>
+        {_parentsColumns ? (
+          <tr>
+            {_parentsColumns.map(col =>
+              'title' in col ? (
+                <th
+                  key={col.title}
+                  colSpan={col.colSpan}
+                  rowSpan={col.rowSpan}
+                  className="ant-table-cell"
+                >
+                  {col.title}
+                </th>
+              ) : (
+                col
+              )
+            )}
+          </tr>
+        ) : null}
+        <tr>{_columns.map((child: any) => child)}</tr>
+      </>
     )
   }
 
@@ -115,6 +148,9 @@ function VirtualTable(props: Parameters<typeof Table>[0]): JSX.Element {
         pagination={false}
         components={
           {
+            header: {
+              row: renderTableHeaderRow,
+            },
             body: renderVirtualList,
           } as any
         }

@@ -1,14 +1,23 @@
 import styled from '@emotion/styled'
-import Table from 'antd/lib/table'
 
 function getPaddingForTableCell({ smallSize }: { smallSize: boolean }): string {
   return smallSize ? '2px' : '12px 8px'
 }
 
-export const StyledMetricTable = styled(Table)<{ smallSize: boolean }>`
+export const StyledMetricTableWrapper = styled.div<{ smallSize: boolean }>`
+  .ant-table-thead
+    > tr
+    > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+    content: none;
+  }
+
   .ant-table-thead > tr > th {
     white-space: nowrap;
     padding: ${getPaddingForTableCell};
+
+    &:not(:last-child) {
+      border-right: 1px solid rgba(0, 0, 0, 0.06);
+    }
   }
 
   .ant-table-column-sorters {
@@ -17,12 +26,29 @@ export const StyledMetricTable = styled(Table)<{ smallSize: boolean }>`
     white-space: nowrap;
   }
 
-  .ant-table-cell {
-    position: relative;
-    padding: ${getPaddingForTableCell};
+  th.ant-table-cell {
+    overflow: hidden;
   }
 
-  td.aligned-right {
+  .virtual-table-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .ant-table-cell,
+  .virtual-table-cell {
+    position: relative;
+    padding: ${getPaddingForTableCell};
+
+    &:not(:last-child) {
+      border-right: 1px solid #f0f0f0;
+    }
+  }
+
+  td.aligned-right,
+  .virtual-table-cell.aligned-right {
     text-align: right;
   }
 `

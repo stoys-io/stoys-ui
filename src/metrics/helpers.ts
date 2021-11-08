@@ -5,6 +5,7 @@ import { renderNumericValue } from '../helpers'
 
 import {
   ColumnNode,
+  DataItemNode,
   MetricsData,
   MetricsTableData,
   RawMetricsData,
@@ -37,6 +38,7 @@ export const getMetricsTableData = (metricsData: MetricsData) => {
   if (!metricsData?.columns) {
     return []
   }
+
   const keyColumns = metricsData.columns
 
   const items = metricsData?.values?.map((row: Array<TableCellNode>) =>
@@ -60,9 +62,11 @@ export const getMetricsTableData = (metricsData: MetricsData) => {
         acc[`${cell.columnName}_threshold`] = cell.threshold
         acc[`${cell.columnName}_trends`] = cell.trends
       }
+
       return acc
     }, {})
   )
+
   return items?.map(addUniqueKey)
 }
 
@@ -70,16 +74,23 @@ export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
   if (!metricsData?.current.key_columns) {
     return []
   }
+
   const keyColumns = metricsData.current.key_columns
+
   const items = metricsData.current.data?.map(currentDataItem => {
     return Object.keys(currentDataItem).reduce(
-      (dataItem: { [key: string]: Maybe<string | number> }, columnName) => {
+      (
+        dataItem: {
+          [key: string]: Maybe<string | number> | DataItemNode
+        },
+        columnName
+      ) => {
         const isKeyColumn = keyColumns.includes(columnName)
         const currentValue = currentDataItem[columnName]
         if (isKeyColumn) {
           dataItem[columnName] = currentValue
         } else {
-          dataItem[`${columnName}_current`] = currentValue
+          dataItem[columnName] = { cur: currentValue }
           if (metricsData.previous?.data) {
             const matchedPreviousDataItem = metricsData.previous?.data.find(item => {
               return keyColumns.every(
@@ -89,7 +100,7 @@ export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
             const previousValue = matchedPreviousDataItem
               ? matchedPreviousDataItem[columnName]
               : null
-            dataItem[`${columnName}_previous`] = previousValue
+            dataItem[columnName] = { cur: currentValue, prev: previousValue }
             const changeValue =
               currentValue && previousValue ? Number(currentValue) - Number(previousValue) : null
             const changePercent = changeValue ? (changeValue * 100) / Number(previousValue) : null
@@ -97,6 +108,7 @@ export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
             dataItem[`${columnName}_change_percent`] = changePercent
           }
         }
+
         return dataItem
       },
       {}

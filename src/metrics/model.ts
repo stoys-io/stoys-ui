@@ -89,6 +89,8 @@ export interface ConfigProps {
   disabledColumns?: Array<string>
   height?: string | number
   smallSize?: boolean
+  showAbsDiffColumn?: boolean
+  showRelativeDiffColumn?: boolean
 }
 export interface MetricsTableProps extends TableProps<any> {
   data: MetricsData | RawMetricsData
@@ -99,8 +101,13 @@ export interface SorterValue {
   [key: string]: number
 }
 
+export interface DataItemNode {
+  prev?: Maybe<string | number>
+  cur?: Maybe<string | number>
+}
+
 export interface MetricsTableData {
-  [key: string]: Maybe<string | number | Array<TrendNode>> | undefined
+  [key: string]: Maybe<string | number | Array<TrendNode> | DataItemNode> | undefined
 }
 
 export type TrendsProps = {
@@ -123,4 +130,10 @@ export type ThresholdProps = {
   }
   valueColumnName: string
   saveMetricThreshold?: SaveMetricThreshold
+}
+
+export interface ParentColumns {
+  title: string
+  colSpan?: number
+  rowSpan?: number
 }
