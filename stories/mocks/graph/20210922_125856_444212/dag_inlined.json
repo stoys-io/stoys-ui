@@ -19932,7 +19932,7 @@
           }
         }
       ],
-      "metrics": [
+      "aggSum": [
         [
           {
             "location": null,

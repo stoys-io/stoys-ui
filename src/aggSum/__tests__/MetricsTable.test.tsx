@@ -2,8 +2,8 @@ import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
 import '../../__mocks__/matchMedia.mock'
 
-import { MetricsTable } from '../MetricsTable'
-import { metricsData, bigMetricsData } from './MetricsTable.mock'
+import AggSum from '../AggSum'
+import { aggSumData, bigAggSumData } from './AggSumTable.mock'
 
 beforeAll(() => {
   HTMLCanvasElement.prototype.getContext = jest.fn(
@@ -11,9 +11,9 @@ beforeAll(() => {
   )
 })
 
-describe('MetricsTable', () => {
+describe('AggSumTable', () => {
   it('should render passed data', () => {
-    const { queryByText } = render(<MetricsTable data={metricsData} />)
+    const { queryByText } = render(<AggSum data={aggSumData} />)
 
     expect(queryByText('id')).toBeTruthy()
     expect(queryByText('value')).toBeTruthy()
@@ -23,7 +23,7 @@ describe('MetricsTable', () => {
 
   describe('pagination', () => {
     it('should render pagination', () => {
-      const { container } = render(<MetricsTable data={bigMetricsData} />)
+      const { container } = render(<AggSum data={bigAggSumData} />)
       const currentPageNode = container.querySelector('.ant-pagination-item-active')
 
       expect(currentPageNode.textContent).toBe('1')
@@ -36,9 +36,7 @@ describe('MetricsTable', () => {
     })
 
     it("shouldn't render pagination", () => {
-      const { container } = render(
-        <MetricsTable data={metricsData} config={{ pagination: false }} />
-      )
+      const { container } = render(<AggSum data={aggSumData} config={{ pagination: false }} />)
       const currentPageNode = container.querySelector('.ant-pagination-item-active')
 
       expect(currentPageNode).toBeNull()

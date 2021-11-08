@@ -6,7 +6,7 @@ import { StyledRadioGroup } from './styles'
 
 const ModalRadioGroup = ({
   keyColumn,
-  metricsDataItem,
+  aggSumDataItem,
   onChangeHandler,
 }: ModalRadioGroupProps): JSX.Element => {
   const { columnName, title } = keyColumn
@@ -16,10 +16,10 @@ const ModalRadioGroup = ({
       <label htmlFor="treshhold-radio-group">{title}</label>
       <Radio.Group
         id="treshhold-radio-group"
-        defaultValue={metricsDataItem[columnName]}
+        defaultValue={aggSumDataItem[columnName]}
         onChange={(e: RadioChangeEvent) => onChangeHandler(e, columnName)}
       >
-        <Radio value={metricsDataItem[columnName]}>{metricsDataItem[columnName]}</Radio>
+        <Radio value={aggSumDataItem[columnName]}>{aggSumDataItem[columnName]}</Radio>
         <Radio value="*">Any</Radio>
       </Radio.Group>
     </StyledRadioGroup>

@@ -19820,7 +19820,7 @@
           }
         }
       ],
-      "metrics": [
+      "aggSum": [
         [
           {
             "location": null,

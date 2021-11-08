@@ -1,3 +1,5 @@
-export { MetricsTable as Metrics } from './MetricsTable'
-export { getMetricsColumns } from './columns'
-export { MetricsTableProps } from './model'
+import AggSum from './AggSum'
+
+export default AggSum
+export { getAggSumColumns } from './columns'
+export { AggSumTableProps } from './model'

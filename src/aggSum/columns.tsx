@@ -10,8 +10,8 @@ import { ChangePercentValue, ThresholdViolatedWrapper } from './styles'
 import {
   ColumnNode,
   ChildrenColumnType,
-  MetricsData,
-  RawMetricsData,
+  AggSumData,
+  RawAggSumData,
   SaveMetricThreshold,
   ColumnType,
 } from './model'
@@ -41,17 +41,17 @@ const renderNumericColumnValue = (value?: Maybe<number | string>): JSX.Element =
   <>{value ? renderNumericValue(2, false, false)(value) : '—'}</>
 )
 
-export const getMetricsColumns = (
-  metricsData: MetricsData | undefined,
+export const getAggSumColumns = (
+  aggSumData: AggSumData | undefined,
   previousReleaseDataIsShown: boolean,
   saveMetricThreshold: SaveMetricThreshold | undefined,
   disabledColumns?: Array<string>
 ) => {
-  if (!metricsData?.columns) {
+  if (!aggSumData?.columns) {
     return []
   }
 
-  const keyColumns = metricsData.columns.map((column: ColumnNode) => ({
+  const keyColumns = aggSumData.columns.map((column: ColumnNode) => ({
     ...column,
     id: column.columnName,
     dataIndex: column.columnName,
@@ -61,14 +61,14 @@ export const getMetricsColumns = (
     width: getColumnWidth(column.title),
   }))
 
-  const currentMetricsValue = metricsData?.values[0]
+  const currentAggSumValue = aggSumData?.values[0]
 
-  let columns: Array<ColumnType> = currentMetricsValue.reduce(
+  let columns: Array<ColumnType> = currentAggSumValue.reduce(
     (columnsData: Array<ColumnType>, cell) => {
       const columnKey = cell.columnName
       const isKeyColumn =
-        metricsData?.columns &&
-        !!metricsData?.columns.find((column: ColumnNode) => column.columnName === columnKey)
+        aggSumData?.columns &&
+        !!aggSumData?.columns.find((column: ColumnNode) => column.columnName === columnKey)
 
       if (!isKeyColumn) {
         let childrenColumns: Array<ChildrenColumnType> = [
@@ -140,8 +140,8 @@ export const getMetricsColumns = (
               render: (value, item) => (
                 <Threshold
                   threshold={value}
-                  keyColumns={metricsData?.columns || []}
-                  metricsDataItem={item}
+                  keyColumns={aggSumData?.columns || []}
+                  aggSumDataItem={item}
                   valueColumnName={cell.columnName}
                   saveMetricThreshold={saveMetricThreshold}
                 />
@@ -190,8 +190,8 @@ export const getMetricsColumns = (
   return columns
 }
 
-export const getMetricsColumnsFromRawData = (
-  metricsData: RawMetricsData,
+export const getAggSumColumnsFromRawData = (
+  aggSumData: RawAggSumData,
   config: {
     disabledColumns?: Array<string>
     showAbsDiffColumn?: boolean
@@ -200,7 +200,7 @@ export const getMetricsColumnsFromRawData = (
   }
 ) => {
   const { showAbsDiffColumn, showRelativeDiffColumn, maxColumnsNames, disabledColumns } = config
-  const keyColumns = metricsData?.current.key_columns?.map((column: string) => ({
+  const keyColumns = aggSumData?.current.key_columns?.map((column: string) => ({
     id: column,
     dataIndex: column,
     title: getGroupTitle(column),
@@ -214,11 +214,11 @@ export const getMetricsColumnsFromRawData = (
     ),
   }))
 
-  const currentColumnNames = Object.keys(metricsData.current.data[0])
+  const currentColumnNames = Object.keys(aggSumData.current.data[0])
 
   return currentColumnNames?.reduce((columnsData: Array<ColumnType>, colName) => {
     const isKeyColumn =
-      metricsData?.current.key_columns && !!metricsData?.current.key_columns.includes(colName)
+      aggSumData?.current.key_columns && !!aggSumData?.current.key_columns.includes(colName)
 
     if (!isKeyColumn) {
       let childrenColumns: Array<ChildrenColumnType> = [
@@ -226,7 +226,7 @@ export const getMetricsColumnsFromRawData = (
           id: `${colName}`,
           key: `${colName}`,
           dataIndex: `${colName}`,
-          title: metricsData.previous ? 'Value' : getGroupTitle(colName),
+          title: aggSumData.previous ? 'Value' : getGroupTitle(colName),
           sorter: defaultSort(`${colName}`),
           render: renderColumnsValues,
           className: 'aligned-right',
@@ -236,7 +236,7 @@ export const getMetricsColumnsFromRawData = (
         },
       ]
 
-      if (metricsData.previous) {
+      if (aggSumData.previous) {
         const absDiffColumn: Array<ChildrenColumnType> = showAbsDiffColumn
           ? [
               {
@@ -283,7 +283,7 @@ export const getMetricsColumnsFromRawData = (
 
       return [
         ...columnsData,
-        ...(metricsData.previous
+        ...(aggSumData.previous
           ? [
               {
                 id: colName,

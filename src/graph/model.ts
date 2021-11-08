@@ -2,7 +2,7 @@ import { JoinRatesData } from '../joinRates/model'
 import { Dataset as ProfilerData } from '../profiler/model'
 import { QualityData } from '../quality'
 import { Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
-import { RawMetricsDataItemData } from '../aggSum/model'
+import { RawAggSumDataItemData } from '../aggSum/model'
 
 export interface NodeDataPayload {
   label: string
@@ -80,7 +80,7 @@ export interface Table {
   dp_result?: ProfilerData
   dq_result?: QualityData
   dq_join_results?: JoinRatesData[]
-  metrics?: RawMetricsDataItemData[]
+  aggSum?: RawAggSumDataItemData[]
   metadata?: {
     [key: string]: string | number
   }

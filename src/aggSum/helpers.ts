@@ -6,9 +6,9 @@ import { renderNumericValue } from '../helpers'
 import {
   ColumnNode,
   DataItemNode,
-  MetricsData,
-  MetricsTableData,
-  RawMetricsData,
+  AggSumData,
+  AggSumTableData,
+  RawAggSumData,
   SorterValue,
   TableCellNode,
 } from './model'
@@ -27,22 +27,22 @@ export const getGroupTitle = (key: string) =>
     .map(t => t[0].toUpperCase() + t.slice(1))
     .join(' ')
 
-function addUniqueKey(item: MetricsTableData) {
+function addUniqueKey(item: AggSumTableData) {
   return {
     ...item,
     key: uuidv4(),
   }
 }
 
-export const getMetricsTableData = (metricsData: MetricsData) => {
-  if (!metricsData?.columns) {
+export const getAggSumTableData = (aggSumData: AggSumData) => {
+  if (!aggSumData?.columns) {
     return []
   }
 
-  const keyColumns = metricsData.columns
+  const keyColumns = aggSumData.columns
 
-  const items = metricsData?.values?.map((row: Array<TableCellNode>) =>
-    row.reduce((acc: MetricsTableData, cell) => {
+  const items = aggSumData?.values?.map((row: Array<TableCellNode>) =>
+    row.reduce((acc: AggSumTableData, cell) => {
       const columnKey = cell.columnName
       const isKeyColumn = !!keyColumns.find((column: ColumnNode) => column.columnName === columnKey)
       if (isKeyColumn) {
@@ -70,14 +70,14 @@ export const getMetricsTableData = (metricsData: MetricsData) => {
   return items?.map(addUniqueKey)
 }
 
-export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
-  if (!metricsData?.current.key_columns) {
+export const getAggSumDataFromRawData = (aggSumData: RawAggSumData) => {
+  if (!aggSumData?.current.key_columns) {
     return []
   }
 
-  const keyColumns = metricsData.current.key_columns
+  const keyColumns = aggSumData.current.key_columns
 
-  const items = metricsData.current.data?.map(currentDataItem => {
+  const items = aggSumData.current.data?.map(currentDataItem => {
     return Object.keys(currentDataItem).reduce(
       (
         dataItem: {
@@ -91,8 +91,8 @@ export const getMetricsDataFromRawData = (metricsData: RawMetricsData) => {
           dataItem[columnName] = currentValue
         } else {
           dataItem[columnName] = { cur: currentValue }
-          if (metricsData.previous?.data) {
-            const matchedPreviousDataItem = metricsData.previous?.data.find(item => {
+          if (aggSumData.previous?.data) {
+            const matchedPreviousDataItem = aggSumData.previous?.data.find(item => {
               return keyColumns.every(
                 keyColName => item[keyColName] === currentDataItem[keyColName]
               )

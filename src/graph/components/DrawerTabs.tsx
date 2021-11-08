@@ -4,8 +4,8 @@ import { Tabs } from 'antd'
 import { DrawerNodeLabel } from '../styles'
 
 import { NoData } from '../../profiler/styles'
-import { RawMetricsData } from '../../aggSum/model'
-import { JoinRates, Metrics, Profiler, Quality } from '../..'
+import { RawAggSumData } from '../../aggSum/model'
+import { JoinRates, AggSum, Profiler, Quality } from '../..'
 import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../graph-store'
 
 const { TabPane } = Tabs
@@ -31,10 +31,10 @@ export const DrawerTabs = () => {
   }, [baseRelease, curTable, graphData])
 
   const profilerData = curTable?.dp_result ? [curTable.dp_result] : null
-  const metrics: RawMetricsData | null = curTable?.metrics
+  const aggSum: RawAggSumData | null = curTable?.aggSum
     ? {
         current: {
-          data: curTable.metrics[0],
+          data: curTable.aggSum[0],
           table_name: curTable.name,
           key_columns: ['location'],
         },
@@ -46,9 +46,9 @@ export const DrawerTabs = () => {
     profilerData.push(baseData.dp_result)
   }
 
-  if (baseData?.metrics && metrics) {
-    metrics.previous = {
-      data: baseData.metrics[0],
+  if (baseData?.aggSum && aggSum) {
+    aggSum.previous = {
+      data: baseData.aggSum[0],
       table_name: baseData.name,
       key_columns: ['location'],
     }
@@ -56,7 +56,7 @@ export const DrawerTabs = () => {
 
   const firstNonEmptyTab = curTable?.dq_join_results
     ? JOIN_RATES_KEY
-    : metrics
+    : aggSum
     ? METADATA_KEY
     : profilerData
     ? PROFILER_KEY
@@ -90,10 +90,10 @@ export const DrawerTabs = () => {
           <NoData>No data</NoData>
         )}
       </TabPane>
-      <TabPane tab="Metrics" key={METRICS_KEY}>
-        {metrics ? (
-          <Metrics
-            data={metrics}
+      <TabPane tab="AggSum" key={AGG_SUM_KEY}>
+        {aggSum ? (
+          <AggSum
+            data={aggSum}
             config={{
               previousReleaseDataIsShown: true,
               disabledColumns: [],
@@ -148,7 +148,7 @@ export const DrawerTabs = () => {
 }
 
 const JOIN_RATES_KEY = 'join_rates'
-const METRICS_KEY = 'metrics'
+const AGG_SUM_KEY = 'aggSum'
 const PROFILER_KEY = 'profiler'
 const QUALITY_KEY = 'quality'
 const METADATA_KEY = 'metadata'
