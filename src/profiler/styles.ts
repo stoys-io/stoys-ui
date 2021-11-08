@@ -83,6 +83,14 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
       }
     }
 
+    td.chart-cell {
+      width: ${COLUMN_CHART_WIDTH}px;
+
+      @media screen and (max-width: 1024px) {
+        width: ${SMALL_COLUMN_CHART_WIDTH}px;
+      }
+    }
+
     .toolbox-icon {
       font-size: 17px;
     }

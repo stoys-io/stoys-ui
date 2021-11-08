@@ -17,14 +17,7 @@ import { formatPercentage } from '../helpers'
 import { renderNumericCell } from '../common'
 
 import { transformSecondsToDate } from '../pmfPlot/helpers'
-import {
-  AxesOptions,
-  DataItem,
-  ChildDataItem,
-  LogarithmicScale,
-  Render,
-  RenderedCellConfig,
-} from './model'
+import { DataItem, ChildDataItem, Render, RenderedCellConfig } from './model'
 import { Maybe } from '../model'
 
 import { ColorBlock } from './styles'
