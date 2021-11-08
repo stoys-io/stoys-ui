@@ -3,10 +3,12 @@ import {
   DELETED_NODE_HIGHLIHT_COLOR,
   HIGHLIGHT_COLOR,
 } from './constants'
+
 import {
   Graph,
   Edge,
   Node,
+  Badge,
   DataGraph,
   Table,
   ChromaticScale,
@@ -14,7 +16,8 @@ import {
   Highlights,
   GraphExtended,
 } from './model'
-import { colorScheme } from './graph-color-scheme'
+
+import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './graph-color-scheme'
 
 export const highlightSingleNode = (id: string): Highlights => ({
   edges: {},
@@ -155,6 +158,29 @@ export const findDownstreamEdges = (graph: Graph, id: string): Edge[] => {
 
   const visitedEdges = findEdgeHelper(graph.edges, startEdges[0], startEdges, [startEdges[0]])
   return visitedEdges
+}
+
+interface HMetricsArgs {
+  metric: Badge
+  graph: Graph
+}
+
+export const highlightMetrics = ({ metric, graph }: HMetricsArgs): Highlights => {
+  const getColor = (rank: number) =>
+    getChromaticColor(hyperbolicGradientRight(rank), 'interpolatePuOr')
+
+  const maxMetricValue = Math.max(...graph.nodes.map(node => node.data[metric]), 0)
+  const nodeHighlights = graph.nodes.reduce((acc, node) => {
+    const normalizedMetricsVal = node.data[metric] / maxMetricValue
+    const nodeColor = { color: getColor(normalizedMetricsVal) }
+
+    return {
+      ...acc,
+      [node.id]: nodeColor,
+    }
+  }, {})
+
+  return { nodes: nodeHighlights, edges: {} }
 }
 
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {

@@ -35,7 +35,7 @@ const hyperbolicGradientLeft = (n: number): number => {
 }
 
 // ------------|----|--|-|-|||
-const hyperbolicGradientRight = (n: number): number => {
+export const hyperbolicGradientRight = (n: number): number => {
   const low = 0.5
   const high = 1
   const diff = high - low
@@ -43,7 +43,7 @@ const hyperbolicGradientRight = (n: number): number => {
   return low + diff * (1 - 1 / (n + 1))
 }
 
-const getChromaticColor = (t: number, chromaticScale: ChromaticScale) => {
+export const getChromaticColor = (t: number, chromaticScale: ChromaticScale) => {
   // t is [0, 1]
   const scale = d3ScaleChromatic[chromaticScale]
 

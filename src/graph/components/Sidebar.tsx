@@ -92,6 +92,11 @@ const highlightList = [
     label: 'Downstream (children)',
   },
   {
+    key: 'metrics',
+    value: 'metrics',
+    label: 'Metrics',
+  },
+  {
     key: 'diffing',
     value: 'diffing',
     label: 'Version diff',

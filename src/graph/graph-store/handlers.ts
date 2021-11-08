@@ -10,10 +10,22 @@ import {
   getBaseGraph,
   getMergedGraph,
   highlightSingleNode,
+  highlightMetrics,
 } from '../graph-ops'
 import { Graph, Table, Column, ChromaticScale, Badge, Highlight, Highlights, Node } from '../model'
 
-export const setBadge = (badge: Badge) => ({ badge })
+export const setBadge =
+  (badge: Badge) =>
+  ({ graph }: GraphStore): Partial<GraphStore> => {
+    const newHighlightMode = 'metrics'
+    const highlights = highlightMetrics({ metric: badge, graph })
+    return {
+      badge,
+      highlights,
+      highlightMode: newHighlightMode,
+    }
+  }
+
 export const setInitialStore = ({ graph, data, tables }: InitialArgs) => ({
   graph,
   defaultGraph: graph,
@@ -50,8 +62,8 @@ export const setBaseRelease =
 
 export const resetHighlightedColumns = { highlightedColumns: defaultHighlightedColumns }
 
-export const resetHighlights = (state: GraphStore) =>
-  state.highlightMode !== 'diffing' ? { highlights: defaultHighlights } : {}
+export const resetHighlights = ({ highlightMode }: GraphStore) =>
+  ['diffing', 'metrics'].includes(highlightMode) ? { highlights: defaultHighlights } : {}
 
 export const setHighlightedColumns =
   (columnId: string, tableId: string) =>
@@ -84,7 +96,7 @@ export const nodeClick =
   (id: string, chromaticScale: ChromaticScale) =>
   ({ highlightMode, defaultGraph }: GraphStore) => {
     // ignode node click when diffing
-    if (highlightMode === 'diffing') {
+    if (highlightMode === 'diffing' || highlightMode === 'metrics') {
       return {
         highlightedColumns: defaultHighlightedColumns,
       }
@@ -124,6 +136,7 @@ export const setHighlightMode =
     defaultGraph,
     baseRelease,
     data,
+    badge,
     tables,
     selectedNodeId,
     highlights: curHighlights,
@@ -162,6 +175,16 @@ export const setHighlightMode =
       return {
         highlightMode,
         highlights: defaultHighlights,
+        selectedNodeId: undefined,
+        highlightedColumns: defaultHighlightedColumns,
+        graph: defaultGraph,
+      }
+    }
+
+    if (highlightMode === 'metrics') {
+      return {
+        highlightMode,
+        highlights: highlightMetrics({ metric: badge, graph }),
         selectedNodeId: undefined,
         highlightedColumns: defaultHighlightedColumns,
         graph: defaultGraph,
@@ -220,7 +243,7 @@ const onHighlightModeChangeColumns = ({
     }
   }
 
-  if (highlightMode === 'diffing') {
+  if (highlightMode === 'diffing' || highlightMode === 'metrics') {
     return {
       highlightedColumns: defaultHighlightedColumns,
       highlights,
