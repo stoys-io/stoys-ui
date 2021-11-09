@@ -138,12 +138,12 @@ const AggSum = (props: AggSumTableProps): JSX.Element => {
           parentsColumns={getParentsColumns(_columns)}
           rowHeight={'previous' in data ? 2 * MIN_TABLE_CELL_HEIGHT : MIN_TABLE_CELL_HEIGHT}
           scroll={{
-            x: true as true,
-            y: height
-              ? height
-              : _data.length > 10
-              ? TABLE_HEIGHT
-              : _data.length * MIN_TABLE_CELL_HEIGHT,
+            y:
+              typeof height === 'number'
+                ? height
+                : _data.length > 10
+                ? TABLE_HEIGHT
+                : _data.length * MIN_TABLE_CELL_HEIGHT,
           }}
         />
       )}
