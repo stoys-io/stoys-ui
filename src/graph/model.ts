@@ -57,7 +57,7 @@ interface EdgeStyleProps {
   strokeWidth: string
 }
 
-export type Highlight = 'nearest' | 'parents' | 'children' | 'none' | 'diffing'
+export type Highlight = 'none' | 'nearest' | 'parents' | 'children' | 'metrics' | 'diffing'
 
 export type Badge = 'violations' | 'partitions'
 
