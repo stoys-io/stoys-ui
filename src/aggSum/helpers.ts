@@ -11,6 +11,7 @@ import {
   RawAggSumData,
   SorterValue,
   TableCellNode,
+  ParentColumns,
 } from './model'
 import { Maybe } from '../model'
 
@@ -115,4 +116,39 @@ export const getAggSumDataFromRawData = (aggSumData: RawAggSumData) => {
     )
   })
   return items?.map(addUniqueKey)
+}
+
+export function transformColumnsForVirtualGrid(columns: any) {
+  return columns.reduce((acc: any, column: any) => {
+    if ('children' in column) {
+      return [...acc, ...column.children]
+    }
+
+    return [...acc, column]
+  }, [])
+}
+
+export function getParentsColumns(columns: any): Array<ParentColumns> {
+  return columns.map((column: any) => {
+    if ('children' in column) {
+      return { title: column.title, colSpan: column.children.length }
+    }
+
+    return { title: column.title, rowSpan: 2 }
+  })
+}
+
+export function getColumnNameLength(row: any, columnName: string | number): number {
+  if (!row[columnName]) {
+    return 0
+  }
+
+  if (typeof row[columnName] === 'object' && 'cur' in row[columnName]) {
+    const curLength = String(row[columnName].cur).length
+    const prevLength = String(row[columnName].prev).length
+
+    return curLength > prevLength ? curLength : prevLength
+  }
+
+  return String(row[columnName]).length
 }

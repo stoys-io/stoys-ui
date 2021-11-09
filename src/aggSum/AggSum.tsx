@@ -6,8 +6,14 @@ import 'antd/lib/table/style/css'
 import VirtualTable from '../common/VirtualTable'
 import usePagination from '../hooks/usePagination'
 import { getAggSumColumns, getAggSumColumnsFromRawData } from './columns'
-import { getAggSumDataFromRawData, getAggSumTableData } from './helpers'
-import { AggSumTableProps, ParentColumns } from './model'
+import {
+  getAggSumDataFromRawData,
+  getAggSumTableData,
+  getColumnNameLength,
+  getParentsColumns,
+  transformColumnsForVirtualGrid,
+} from './helpers'
+import { AggSumTableProps } from './model'
 import { StyledMetricTableWrapper } from './styles'
 import { MIN_TABLE_CELL_HEIGHT, TABLE_HEIGHT } from '../quality/constants'
 
@@ -44,22 +50,7 @@ const AggSum = (props: AggSumTableProps): JSX.Element => {
     () =>
       _data.reduce((acc: { [key: string]: string }, row: any) => {
         Object.keys(row).forEach((columnName: string | number) => {
-          const getColumnNameLength = (): number => {
-            if (!row[columnName]) {
-              return 0
-            }
-
-            if (typeof row[columnName] === 'object' && 'cur' in row[columnName]) {
-              const curLength = String(row[columnName].cur).length
-              const prevLength = String(row[columnName].prev).length
-
-              return curLength > prevLength ? curLength : prevLength
-            }
-
-            return String(row[columnName]).length
-          }
-
-          if (!acc[columnName] || getColumnNameLength() > acc[columnName]?.length) {
+          if (!acc[columnName] || getColumnNameLength(row, columnName) > acc[columnName]?.length) {
             acc[columnName] = row[columnName] || ''
           }
         })
@@ -158,26 +149,6 @@ const AggSum = (props: AggSumTableProps): JSX.Element => {
       )}
     </StyledMetricTableWrapper>
   )
-}
-
-function transformColumnsForVirtualGrid(columns: any) {
-  return columns.reduce((acc: any, column: any) => {
-    if ('children' in column) {
-      return [...acc, ...column.children]
-    }
-
-    return [...acc, column]
-  }, [])
-}
-
-function getParentsColumns(columns: any): Array<ParentColumns> {
-  return columns.map((column: any) => {
-    if ('children' in column) {
-      return { title: column.title, colSpan: column.children.length }
-    }
-
-    return { title: column.title, rowSpan: 2 }
-  })
 }
 
 export default AggSum
