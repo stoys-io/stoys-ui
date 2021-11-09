@@ -5,7 +5,7 @@ import { Orientation } from './model'
 
 const nodeWidth = NODE_WIDTH
 const nodeHeight = NODE_HEIGHT
-const ranksep = 60
+const ranksep = 64
 const nodesep = 16
 const startX = 48
 const startY = 32

@@ -15,6 +15,7 @@ import {
   Highlight,
   Highlights,
   GraphExtended,
+  Column,
 } from './model'
 
 import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './graph-color-scheme'
@@ -413,7 +414,7 @@ export const mapInitialNodes = (tables: Table[]): Node[] =>
         label: table.name,
         partitions: table.measures?.rows ?? 0,
         violations: table.measures?.violations ?? 0,
-        columns: table.columns,
+        columns: columnsWithTypeData(table),
       },
       position: initialPosition,
       type: 'dagNode',
@@ -436,3 +437,25 @@ export const mapInitialEdges = (tables: Table[]): Edge[] =>
 
       return [...acc, ...items]
     }, [])
+
+const columnsWithTypeData = (table: Table): Column[] => {
+  if (table.dp_result === undefined) {
+    return table.columns
+  }
+
+  const dpColumns = table.dp_result.columns
+  const columns = table.columns.map(column => {
+    const dpColumn = dpColumns.find(dpCol => dpCol.name === column.name)
+    if (!dpColumn) {
+      return column
+    }
+
+    const columnType = {
+      dataType: dpColumn['data_type'],
+      nullable: dpColumn.nullable || false,
+    }
+    return { ...column, columnType }
+  })
+
+  return columns
+}
