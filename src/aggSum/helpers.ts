@@ -11,7 +11,7 @@ import {
   RawAggSumData,
   SorterValue,
   TableCellNode,
-  ParentColumns,
+  ParentColumn,
 } from './model'
 import { Maybe } from '../model'
 
@@ -128,7 +128,7 @@ export function transformColumnsForVirtualGrid(columns: any) {
   }, [])
 }
 
-export function getParentsColumns(columns: any): Array<ParentColumns> {
+export function getParentsColumns(columns: any): Array<ParentColumn> {
   return columns.map((column: any) => {
     if ('children' in column) {
       return { title: column.title, colSpan: column.children.length }

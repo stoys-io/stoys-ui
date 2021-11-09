@@ -4,10 +4,10 @@ import ResizeObserver from 'rc-resize-observer'
 import Table, { TableProps } from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
-import { AggSumTableData, ParentColumns } from '../aggSum/model'
+import { AggSumTableData, ParentColumn } from '../aggSum/model'
 
 function VirtualTable(
-  props: TableProps<AggSumTableData> & { parentsColumns?: Array<ParentColumns>; rowHeight?: number }
+  props: TableProps<AggSumTableData> & { parentsColumns?: Array<ParentColumn>; rowHeight?: number }
 ): JSX.Element {
   const { columns, scroll, parentsColumns, rowHeight } = props
   const [tableWidth, setTableWidth] = useState(0)
@@ -89,12 +89,37 @@ function VirtualTable(
     )
   }
 
-  const renderTableHeaderRow = (props: any) => {
-    const twoRowsColumnsName = parentsColumns
-      ?.filter((column: any) => 'rowSpan' in column)
+  return (
+    <ResizeObserver
+      onResize={({ width }) => {
+        setTableWidth(width)
+      }}
+    >
+      <Table
+        {...props}
+        className="virtual-table"
+        columns={mergedColumns}
+        pagination={false}
+        components={
+          {
+            header: {
+              row: renderTableHeaderRow(parentsColumns),
+            },
+            body: renderVirtualList,
+          } as any
+        }
+      />
+    </ResizeObserver>
+  )
+}
+
+const renderTableHeaderRow =
+  (parentsColumns?: Array<ParentColumn>) => (props: { children: Array<JSX.Element> }) => {
+    const twoRowsColumnsName: Array<string> | undefined = parentsColumns
+      ?.filter((column: ParentColumn) => 'rowSpan' in column)
       .map(column => column.title)
     const _columns = props.children.filter(
-      (col: any) => !twoRowsColumnsName?.includes(col.props.column.titleString)
+      (col: JSX.Element) => !twoRowsColumnsName?.includes(col.props.column.titleString)
     )
     const _parentsColumns = parentsColumns?.map(column => {
       if ('rowSpan' in column) {
@@ -134,29 +159,5 @@ function VirtualTable(
       </>
     )
   }
-
-  return (
-    <ResizeObserver
-      onResize={({ width }) => {
-        setTableWidth(width)
-      }}
-    >
-      <Table
-        {...props}
-        className="virtual-table"
-        columns={mergedColumns}
-        pagination={false}
-        components={
-          {
-            header: {
-              row: renderTableHeaderRow,
-            },
-            body: renderVirtualList,
-          } as any
-        }
-      />
-    </ResizeObserver>
-  )
-}
 
 export default VirtualTable

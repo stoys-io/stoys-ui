@@ -132,7 +132,7 @@ export type ThresholdProps = {
   saveMetricThreshold?: SaveMetricThreshold
 }
 
-export interface ParentColumns {
+export interface ParentColumn {
   title: string
   colSpan?: number
   rowSpan?: number
