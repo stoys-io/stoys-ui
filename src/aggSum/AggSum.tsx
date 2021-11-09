@@ -13,7 +13,7 @@ import {
   getParentsColumns,
   transformColumnsForVirtualGrid,
 } from './helpers'
-import { AggSumTableProps } from './model'
+import { AggSumTableData, AggSumTableProps } from './model'
 import { StyledMetricTableWrapper } from './styles'
 import { MIN_TABLE_CELL_HEIGHT, TABLE_HEIGHT } from '../quality/constants'
 
@@ -48,10 +48,10 @@ const AggSum = (props: AggSumTableProps): JSX.Element => {
 
   const maxColumnsNames = useMemo(
     () =>
-      _data.reduce((acc: { [key: string]: string }, row: any) => {
+      _data.reduce((acc: { [key: string]: string }, row: AggSumTableData) => {
         Object.keys(row).forEach((columnName: string | number) => {
           if (!acc[columnName] || getColumnNameLength(row, columnName) > acc[columnName]?.length) {
-            acc[columnName] = row[columnName] || ''
+            acc[columnName] = String(row[columnName]) || String(columnName)
           }
         })
 

@@ -35,7 +35,7 @@ function addUniqueKey(item: AggSumTableData) {
   }
 }
 
-export const getAggSumTableData = (aggSumData: AggSumData) => {
+export const getAggSumTableData = (aggSumData: AggSumData): Array<AggSumTableData> => {
   if (!aggSumData?.columns) {
     return []
   }
@@ -71,7 +71,7 @@ export const getAggSumTableData = (aggSumData: AggSumData) => {
   return items?.map(addUniqueKey)
 }
 
-export const getAggSumDataFromRawData = (aggSumData: RawAggSumData) => {
+export const getAggSumDataFromRawData = (aggSumData: RawAggSumData): Array<AggSumTableData> => {
   if (!aggSumData?.current.key_columns) {
     return []
   }

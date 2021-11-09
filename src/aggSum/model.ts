@@ -92,7 +92,7 @@ export interface ConfigProps {
   showAbsDiffColumn?: boolean
   showRelativeDiffColumn?: boolean
 }
-export interface AggSumTableProps extends TableProps<any> {
+export interface AggSumTableProps extends TableProps<AggSumTableData> {
   data: AggSumData | RawAggSumData
   config?: ConfigProps
 }

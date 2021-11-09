@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react'
 import { VariableSizeGrid as Grid } from 'react-window'
 import ResizeObserver from 'rc-resize-observer'
-import Table from 'antd/lib/table'
+import Table, { TableProps } from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
-import { ParentColumns } from '../aggSum/model'
+import { AggSumTableData, ParentColumns } from '../aggSum/model'
 
 function VirtualTable(
-  props: Parameters<typeof Table>[0] & { parentsColumns?: Array<ParentColumns>; rowHeight?: number }
+  props: TableProps<AggSumTableData> & { parentsColumns?: Array<ParentColumns>; rowHeight?: number }
 ): JSX.Element {
   const { columns, scroll, parentsColumns, rowHeight } = props
   const [tableWidth, setTableWidth] = useState(0)
