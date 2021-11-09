@@ -16,13 +16,14 @@ import { Graph, Table, Column, ChromaticScale, Badge, Highlight, Highlights, Nod
 
 export const setBadge =
   (badge: Badge) =>
-  ({ graph }: GraphStore): Partial<GraphStore> => {
+  ({ defaultGraph }: GraphStore): Partial<GraphStore> => {
     const newHighlightMode = 'metrics'
-    const highlights = highlightMetrics({ metric: badge, graph })
+    const highlights = highlightMetrics({ metric: badge, graph: defaultGraph })
     return {
       badge,
       highlights,
       highlightMode: newHighlightMode,
+      graph: defaultGraph,
     }
   }
 
