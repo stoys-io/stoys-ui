@@ -96,7 +96,7 @@ export interface Column {
 }
 
 interface ColumnType {
-  dataType: string
+  data_type: string
   nullable: boolean
 }
 

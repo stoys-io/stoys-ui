@@ -155,4 +155,4 @@ export const DagNode = memo(
 )
 
 const formatColumnType = (column: Column) =>
-  column.columnType && `${column.columnType.dataType}${column.columnType.nullable ? '?' : ''}`
+  column.columnType && `${column.columnType.data_type}${column.columnType.nullable ? '?' : ''}`

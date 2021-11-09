@@ -451,7 +451,7 @@ const columnsWithTypeData = (table: Table): Column[] => {
     }
 
     const columnType = {
-      dataType: dpColumn['data_type'],
+      data_type: dpColumn.data_type,
       nullable: dpColumn.nullable || false,
     }
     return { ...column, columnType }
