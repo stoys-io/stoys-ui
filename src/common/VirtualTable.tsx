@@ -4,10 +4,10 @@ import ResizeObserver from 'rc-resize-observer'
 import Table, { ColumnType, TableProps } from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
-import { AggSumTableData, ParentColumn } from '../aggSum/model'
+import { ParentColumn } from '../aggSum/model'
 
 function VirtualTable(
-  props: TableProps<AggSumTableData> & {
+  props: TableProps<any> & {
     parentsColumns?: Array<ParentColumn>
     rowHeight?: number
     scroll: { y: number }
@@ -109,47 +109,15 @@ const renderTableHeaderRow =
 
 const renderVirtualList =
   (
-    mergedColumns: Array<ColumnType<AggSumTableData>>,
+    mergedColumns: Array<ColumnType<any>>,
     {
       tableWidth,
       rowHeight,
       scroll,
     }: { tableWidth: number; rowHeight?: number; scroll: { y: number } }
   ) =>
-  (rawData: Array<object>, { scrollbarSize, onScroll }: any) => {
+  (rawData: Array<any>, { scrollbarSize, onScroll }: any) => {
     const totalHeight = rawData?.length * (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)
-
-    const renderCell = ({
-      columnIndex,
-      rowIndex,
-      style,
-    }: {
-      columnIndex: number
-      rowIndex: number
-      style: React.CSSProperties
-    }) => {
-      const column = (mergedColumns as any)[columnIndex]
-      const columnsBefore = (mergedColumns as any).slice(0, columnIndex)
-      const left = columnsBefore.reduce((w: number, column: any) => column.width + w, 0)
-      const value = (rawData[rowIndex] as any)[column.dataIndex]
-      const render = column.render
-      const _style = {
-        ...style,
-        width: column.width,
-        left: left,
-      }
-
-      return (
-        <div
-          className={`virtual-table-cell ${
-            columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
-          } ${column.className ? column.className : ''}`}
-          style={_style}
-        >
-          {render(value, rawData[rowIndex])}
-        </div>
-      )
-    }
 
     return (
       <Grid
@@ -170,8 +138,42 @@ const renderVirtualList =
         width={tableWidth}
         onScroll={onScroll}
       >
-        {renderCell}
+        {renderCell(mergedColumns, rawData)}
       </Grid>
+    )
+  }
+
+const renderCell =
+  (mergedColumns: Array<ColumnType<any>>, rawData: Array<any>) =>
+  ({
+    columnIndex,
+    rowIndex,
+    style,
+  }: {
+    columnIndex: number
+    rowIndex: number
+    style: React.CSSProperties
+  }) => {
+    const column = (mergedColumns as any)[columnIndex]
+    const columnsBefore = (mergedColumns as any).slice(0, columnIndex)
+    const left = columnsBefore.reduce((w: number, column: any) => column.width + w, 0)
+    const value = rawData[rowIndex][column.dataIndex]
+    const render = column.render
+    const _style = {
+      ...style,
+      width: column.width,
+      left: left,
+    }
+
+    return (
+      <div
+        className={`virtual-table-cell ${
+          columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
+        } ${column.className ? column.className : ''}`}
+        style={_style}
+      >
+        {render(value, rawData[rowIndex])}
+      </div>
     )
   }
 
