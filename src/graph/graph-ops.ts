@@ -55,7 +55,10 @@ const highlightHelper = ({
   const edges = graph.edges.reduce((acc, edge: Edge) => {
     const highlightEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
     if (!highlightEdge) {
-      return acc
+      return {
+        ...acc,
+        [edge.id]: { strokeWidth: 0 }, // Hide irrelevant edges
+      }
     }
 
     const edgeStyleObject = {
@@ -65,7 +68,7 @@ const highlightHelper = ({
 
     return {
       ...acc,
-      [highlightEdge.id]: edgeStyleObject,
+      [edge.id]: edgeStyleObject,
     }
   }, {})
 
