@@ -6,8 +6,8 @@ import Table, { ColumnType, TableProps } from 'antd/lib/table'
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
 import { ParentColumn } from '../aggSum/model'
 
-function VirtualTable(
-  props: TableProps<any> & {
+function VirtualTable<T extends object>(
+  props: TableProps<T> & {
     parentsColumns?: Array<ParentColumn>
     rowHeight?: number
     scroll: { y: number }
@@ -21,9 +21,9 @@ function VirtualTable(
     () => columns!.reduce((acc, column) => acc + Number(column.width), 0),
     [columns]
   )
-  const mergedColumns = columns!.map(column => {
+  const mergedColumns: MergedColumns<T> = columns!.map(column => {
     if (column.width && totalColumnWidth > tableWidth) {
-      return column
+      return { ...column, width: Number(column.width) }
     }
 
     return {
@@ -48,7 +48,7 @@ function VirtualTable(
             header: {
               row: renderTableHeaderRow(parentsColumns),
             },
-            body: renderVirtualList(mergedColumns, {
+            body: renderVirtualList<T>(mergedColumns, {
               scroll,
               tableWidth,
               rowHeight,
@@ -108,15 +108,24 @@ const renderTableHeaderRow =
   }
 
 const renderVirtualList =
-  (
-    mergedColumns: Array<ColumnType<any>>,
+  <T extends object>(
+    mergedColumns: MergedColumns<T>,
     {
       tableWidth,
       rowHeight,
       scroll,
     }: { tableWidth: number; rowHeight?: number; scroll: { y: number } }
   ) =>
-  (rawData: Array<any>, { scrollbarSize, onScroll }: any) => {
+  (
+    rawData: Array<T>,
+    {
+      scrollbarSize,
+      onScroll,
+    }: {
+      scrollbarSize: number
+      onScroll: (info: { currentTarget?: HTMLElement; scrollLeft?: number }) => void
+    }
+  ) => {
     const totalHeight = rawData?.length * (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)
 
     return (
@@ -127,8 +136,8 @@ const renderVirtualList =
           const { width } = mergedColumns[index]
           const columnWidth =
             totalHeight > scroll.y && index === mergedColumns?.length - 1
-              ? (width as number) - scrollbarSize - 1
-              : (width as number)
+              ? width - scrollbarSize - 1
+              : width
 
           return columnWidth
         }}
@@ -144,7 +153,7 @@ const renderVirtualList =
   }
 
 const renderCell =
-  (mergedColumns: Array<ColumnType<any>>, rawData: Array<any>) =>
+  <T extends object>(mergedColumns: MergedColumns<T>, rawData: Array<T>) =>
   ({
     columnIndex,
     rowIndex,
@@ -157,7 +166,7 @@ const renderCell =
     const column = (mergedColumns as any)[columnIndex]
     const columnsBefore = (mergedColumns as any).slice(0, columnIndex)
     const left = columnsBefore.reduce((w: number, column: any) => column.width + w, 0)
-    const value = rawData[rowIndex][column.dataIndex]
+    const value = (rawData[rowIndex] as any)[column.dataIndex]
     const render = column.render
     const _style = {
       ...style,
@@ -176,5 +185,7 @@ const renderCell =
       </div>
     )
   }
+
+type MergedColumns<T> = Array<ColumnType<T> & { width: number }>
 
 export default VirtualTable
