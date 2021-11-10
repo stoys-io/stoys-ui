@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ReactFlow, {
   ReactFlowProvider,
   Background,
@@ -14,6 +14,7 @@ import { DagEdge } from './components/DagEdge'
 
 import { ConnectedDrawer } from './components/ConnectedDrawer'
 import { DrawerTabs } from './components/DrawerTabs'
+import { Spinner } from './components/Spinner'
 
 import { graphLayout } from './graph-layout'
 import {
@@ -32,6 +33,8 @@ import { DataGraph, ChromaticScale, Orientation } from './model'
 import { mapInitialNodes, mapInitialEdges } from './graph-ops'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+
   const validCurrentRelease =
     // check if the release specified in config is present in the data
     cfg?.currentRelease && !!data.find(dataItem => dataItem.version === cfg.currentRelease)
@@ -122,10 +125,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             elements={elements}
+            onLoad={() => setIsLoading(false)}
             onlyRenderVisibleElements={true}
             nodesConnectable={false}
             minZoom={0.2}
           >
+            <Spinner spinning={isLoading} />
             <Background />
           </ReactFlow>
         </ReactFlowProvider>
