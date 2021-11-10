@@ -64,7 +64,7 @@ export const setBaseRelease =
 export const resetHighlightedColumns = { highlightedColumns: defaultHighlightedColumns }
 
 export const resetHighlights = ({ highlightMode }: GraphStore) =>
-  ['diffing', 'metrics'].includes(highlightMode) ? { highlights: defaultHighlights } : {}
+  !['diffing', 'metrics'].includes(highlightMode) ? { highlights: defaultHighlights } : {}
 
 export const setHighlightedColumns =
   (columnId: string, tableId: string) =>

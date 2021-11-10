@@ -92,6 +92,12 @@ export interface Column {
   name: string
   dependencies?: Array<string>
   style?: { color?: string }
+  columnType?: ColumnType
+}
+
+interface ColumnType {
+  data_type: string
+  nullable: boolean
 }
 
 export type Orientation = 'horizontal' | 'vertical'

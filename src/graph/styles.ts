@@ -123,10 +123,26 @@ export const ScrollCardTitle = styled.div<{ color: string }>`
   color: ${props => props.color};
 `
 
+export const ItemContent = styled.div`
+  width: 100%;
+  display: flex;
+`
+
 export const ItemText = styled.div<{ color: string; hoverable: boolean }>`
+  flex: 1;
+
   color: ${props => props.color};
   &:hover {
     color: ${props => (props.hoverable ? HIGHLIGHT_COLOR : props.color)};
   }
 }
+`
+
+export const ItemExtra = styled.div`
+  color: ${GREY_ACCENT};
+  min-width: 30%;
+  margin-left: 0.4em;
+
+  font-style: italic;
+  font-weight: 300;
 `

@@ -12,7 +12,7 @@ import {
 } from '../constants'
 import { renderNumericValue } from '../../helpers'
 import { Column, NodeDataPayload } from '../model'
-import { ItemText, ScrollCard, ScrollCardTitle } from '../styles'
+import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
 import {
   useGraphStore,
   GraphStore,
@@ -117,16 +117,19 @@ export const DagNode = memo(
             dataSource={_columns}
             renderItem={(column: Column) => (
               <List.Item>
-                <ItemText
-                  hoverable={isHoverableColumn}
-                  color={getListItemHighlightedColor(column)}
-                  onClick={(evt: React.MouseEvent<HTMLElement>) => {
-                    evt.stopPropagation()
-                    dispatch(setHighlightedColumns(column.id, id))
-                  }}
-                >
-                  {column.name}
-                </ItemText>
+                <ItemContent>
+                  <ItemText
+                    hoverable={isHoverableColumn}
+                    color={getListItemHighlightedColor(column)}
+                    onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                      evt.stopPropagation()
+                      dispatch(setHighlightedColumns(column.id, id))
+                    }}
+                  >
+                    {column.name}
+                  </ItemText>
+                  <ItemExtra>{formatColumnType(column)}</ItemExtra>
+                </ItemContent>
               </List.Item>
             )}
           />
@@ -150,3 +153,6 @@ export const DagNode = memo(
     )
   }
 )
+
+const formatColumnType = (column: Column) =>
+  column.columnType && `${column.columnType.data_type}${column.columnType.nullable ? '?' : ''}`
