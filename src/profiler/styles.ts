@@ -5,13 +5,7 @@ import AntdTable from 'antd/lib/table'
 import Empty from 'antd/lib/empty'
 
 import { CellWrapper } from '../common/styles'
-import {
-  MIN_CHART_CELL_HEIGHT,
-  MIN_TABLE_ROW_HEIGHT,
-  TABLE_ROW_HEIGHT,
-  COLUMN_CHART_WIDTH,
-  SMALL_COLUMN_CHART_WIDTH,
-} from './constants'
+import { MIN_CHART_CELL_HEIGHT, MIN_TABLE_ROW_HEIGHT, TABLE_ROW_HEIGHT } from './constants'
 
 const smallTableStyles = (props: { smallSize: boolean }) =>
   props.smallSize
@@ -31,26 +25,6 @@ const smallTableStyles = (props: { smallSize: boolean }) =>
               > div {
                 padding-top: 2px;
                 padding-bottom: 2px;
-              }
-            }
-          }
-
-          .table-flex-row {
-            > span {
-              width: ${COLUMN_CHART_WIDTH}px;
-
-              @media screen and (max-width: 1024px) {
-                width: ${SMALL_COLUMN_CHART_WIDTH}px;
-              }
-
-              .ant-radio-group {
-                margin-right: 10px;
-
-                > .ant-radio-button-wrapper {
-                  height: 25px;
-                  line-height: 25px;
-                  font-size: 18px;
-                }
               }
             }
           }
@@ -75,20 +49,14 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
 
     th.chart-cell {
       position: relative;
-      width: ${COLUMN_CHART_WIDTH}px;
+      width: 45%;
+      min-width: 250px;
       padding: 4px 8px 4px 0px;
-
-      @media screen and (max-width: 1024px) {
-        width: ${SMALL_COLUMN_CHART_WIDTH}px;
-      }
     }
 
     td.chart-cell {
-      width: ${COLUMN_CHART_WIDTH}px;
-
-      @media screen and (max-width: 1024px) {
-        width: ${SMALL_COLUMN_CHART_WIDTH}px;
-      }
+      width: 45%;
+      min-width: 250px;
     }
 
     .toolbox-icon {
@@ -200,12 +168,9 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
 
   th.chart-cell {
     position: relative;
-    width: ${COLUMN_CHART_WIDTH}px;
+    width: 45%;
+    min-width: 250px;
     padding: 4px;
-
-    @media screen and (max-width: 1024px) {
-      width: ${SMALL_COLUMN_CHART_WIDTH}px;
-    }
   }
 
   ${smallTableStyles};
