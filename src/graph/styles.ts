@@ -105,6 +105,10 @@ export const ScrollCard = styled(Card, {
     padding: 0 12px; // this is to fit the list
   }
 
+  .ant-card-actions > li {
+    margin: 4px 0;
+  }
+
   .ant-list-item {
     padding: 0;
   }

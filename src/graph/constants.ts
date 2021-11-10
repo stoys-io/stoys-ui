@@ -1,4 +1,4 @@
-export const NODE_HEIGHT = 136
+export const NODE_HEIGHT = 230
 export const NODE_WIDTH = 220
 export const RESIZE_AREA_HEIGHT = 20
 

@@ -1,6 +1,9 @@
-import React, { memo, useCallback } from 'react'
+import React, { memo, useState, useCallback } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
+
 import List from 'antd/lib/list'
+import { Menu, Dropdown, message } from 'antd'
+import { DownOutlined } from '@ant-design/icons'
 
 import {
   ADDED_NODE_HIGHLIGHT_COLOR,
@@ -36,6 +39,8 @@ export const DagNode = memo(
     targetPosition,
     sourcePosition,
   }: NodeProps<NodeDataPayload>): JSX.Element => {
+    const [curMetric, setCurMetric] = useState<string>('data_type')
+
     const dispatch = useGraphDispatch()
 
     const badge = useGraphStore(selectBadge)
@@ -83,6 +88,19 @@ export const DagNode = memo(
 
     const isHoverableColumn = !['none', 'diffing'].includes(highlightMode)
 
+    const menu = (
+      <Menu onClick={({ key }) => setCurMetric(key)}>
+        <Menu.Item key="data_type">data_type</Menu.Item>
+        <Menu.Item key="count">count</Menu.Item>
+        <Menu.Item key="count_empty">count_empty</Menu.Item>
+        <Menu.Item key="count_nulls">count_nulls</Menu.Item>
+        <Menu.Item key="count_unique">count_unique</Menu.Item>
+        <Menu.Item key="max_length">max_length</Menu.Item>
+        <Menu.Item key="min">min</Menu.Item>
+        <Menu.Item key="max">max</Menu.Item>
+      </Menu>
+    )
+
     return (
       <div className="nowheel">
         {/* nowheel enables scrolling */}
@@ -111,6 +129,20 @@ export const DagNode = memo(
           type="inner"
           extra={actualBadgeFormatted}
           highlightColor={cardHighlightedColor}
+          actions={[
+            <Dropdown overlay={menu} trigger={['click']}>
+              <a
+                className="ant-dropdown-link"
+                onClick={e => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                }}
+              >
+                metrics: {curMetric}
+                <DownOutlined />
+              </a>
+            </Dropdown>,
+          ]}
         >
           <List
             size="small"
