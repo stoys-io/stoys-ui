@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { renderNumericValue } from '../helpers'
 
+import { ColumnsType, ColumnType } from 'antd/lib/table'
 import {
   ColumnNode,
   DataItemNode,
@@ -48,16 +49,11 @@ export const getAggSumTableData = (aggSumData: AggSumData): Array<AggSumTableDat
       const isKeyColumn = !!keyColumns.find((column: ColumnNode) => column.columnName === columnKey)
       if (isKeyColumn) {
         acc[cell.columnName] = cell.currentValue
-      }
-
-      if (!isKeyColumn) {
+      } else {
         acc[`${cell.columnName}_current`] = cell.currentValue
         acc[`${cell.columnName}_previous`] = cell.previousValue
-        const changeValue =
-          cell.currentValue && cell.previousValue
-            ? Number(cell.currentValue) - Number(cell.previousValue)
-            : null
-        const changePercent = changeValue ? (changeValue * 100) / Number(cell.previousValue) : null
+        const changeValue = getChangeValue(cell.currentValue, cell.previousValue)
+        const changePercent = getChangePercentValue(changeValue, cell.previousValue)
         acc[`${cell.columnName}_change`] = changeValue
         acc[`${cell.columnName}_change_percent`] = changePercent
         acc[`${cell.columnName}_threshold`] = cell.threshold
@@ -102,9 +98,8 @@ export const getAggSumDataFromRawData = (aggSumData: RawAggSumData): Array<AggSu
               ? matchedPreviousDataItem[columnName]
               : null
             dataItem[columnName] = { cur: currentValue, prev: previousValue }
-            const changeValue =
-              currentValue && previousValue ? Number(currentValue) - Number(previousValue) : null
-            const changePercent = changeValue ? (changeValue * 100) / Number(previousValue) : null
+            const changeValue = getChangeValue(currentValue, previousValue)
+            const changePercent = getChangePercentValue(changeValue, previousValue)
             dataItem[`${columnName}_change`] = changeValue
             dataItem[`${columnName}_change_percent`] = changePercent
           }
@@ -118,7 +113,21 @@ export const getAggSumDataFromRawData = (aggSumData: RawAggSumData): Array<AggSu
   return items?.map(addUniqueKey)
 }
 
-export function transformColumnsForVirtualGrid(columns: any) {
+function getChangeValue(
+  currentValue?: Maybe<string | number>,
+  previousValue?: Maybe<string | number>
+): Maybe<number> {
+  return currentValue && previousValue ? Number(currentValue) - Number(previousValue) : null
+}
+
+function getChangePercentValue(
+  changeValue?: Maybe<number>,
+  previousValue?: Maybe<string | number>
+): Maybe<number> {
+  return changeValue && previousValue ? (changeValue * 100) / Number(previousValue) : null
+}
+
+export function transformColumnsForVirtualGrid<T>(columns: ColumnsType<T>): Array<ColumnType<T>> {
   return columns.reduce((acc: any, column: any) => {
     if ('children' in column) {
       return [...acc, ...column.children]
@@ -128,7 +137,7 @@ export function transformColumnsForVirtualGrid(columns: any) {
   }, [])
 }
 
-export function getParentsColumns(columns: any): Array<ParentColumn> {
+export function getParentsColumns<T>(columns: ColumnsType<T>): Array<ParentColumn> {
   return columns.map((column: any) => {
     if ('children' in column) {
       return { title: column.title, colSpan: column.children.length }
@@ -138,14 +147,18 @@ export function getParentsColumns(columns: any): Array<ParentColumn> {
   })
 }
 
-export function getColumnNameLength(row: any, columnName: string | number): number {
-  if (!row[columnName]) {
+export function getColumnNameLength(row: AggSumTableData, columnName: string): number {
+  if (row[columnName] === undefined || row[columnName] === null || Array.isArray(row[columnName])) {
     return 0
   }
 
-  if (typeof row[columnName] === 'object' && 'cur' in row[columnName]) {
-    const curLength = String(row[columnName].cur).length
-    const prevLength = String(row[columnName].prev).length
+  if (typeof row[columnName] === 'object') {
+    const curLength = (row[columnName] as DataItemNode).cur
+      ? String((row[columnName] as DataItemNode).cur).length
+      : 0
+    const prevLength = (row[columnName] as DataItemNode).prev
+      ? String((row[columnName] as DataItemNode).prev).length
+      : 0
 
     return curLength > prevLength ? curLength : prevLength
   }

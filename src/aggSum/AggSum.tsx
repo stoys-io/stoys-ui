@@ -49,7 +49,7 @@ const AggSum = (props: AggSumTableProps): JSX.Element => {
   const maxColumnsNames = useMemo(
     () =>
       _data.reduce((acc: { [key: string]: string }, row: AggSumTableData) => {
-        Object.keys(row).forEach((columnName: string | number) => {
+        Object.keys(row).forEach((columnName: string) => {
           if (!acc[columnName] || getColumnNameLength(row, columnName) > acc[columnName]?.length) {
             acc[columnName] = String(row[columnName]) || String(columnName)
           }
