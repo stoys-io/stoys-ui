@@ -241,7 +241,9 @@ export const DataProfiler = (props: DataProfilerProps) => {
               height={height}
             />
           )}
-          <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
+          {isJsonShown ? (
+            <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
+          ) : null}
         </TableWrapper>
       </CheckedRowsContext.Provider>
     </ConfigContext.Provider>
