@@ -4,7 +4,6 @@ import { ColumnsType } from 'antd/lib/table'
 
 import {
   COLUMNS_TITLES,
-  COLUMN_CHART_WIDTH,
   ITEM_VALUE_COLUMN_NAMES,
   LEFT_ALIGN_COLUMNS,
   VISISBLE_COLUMNS,
@@ -174,7 +173,6 @@ export const getColumns = (
       title: <ChartAndTableHeaderCellTitle />,
       key: 'chart',
       className: 'chart-cell',
-      width: COLUMN_CHART_WIDTH,
       render: renderChartAndTableCell(data, displayNormalized),
       align: 'left' as 'left',
     },

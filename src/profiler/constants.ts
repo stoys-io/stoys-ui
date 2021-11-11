@@ -1,7 +1,3 @@
-export const COLUMN_CHART_WIDTH = 520
-
-export const SMALL_COLUMN_CHART_WIDTH = 520
-
 export const TABLE_ROW_HEIGHT = 80
 
 export const MIN_TABLE_ROW_HEIGHT = 40
