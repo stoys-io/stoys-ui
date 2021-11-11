@@ -124,11 +124,11 @@ export const DagNode = memo(
             dataSource={_columns}
             renderItem={(column: Column) => {
               const columnExtra =
-                columnMetric === 'data_type'
+                column.metrics?.[columnMetric] === undefined
+                  ? ''
+                  : columnMetric === 'data_type'
                   ? formatColumnDataType(column)
-                  : column.metrics
-                  ? column.metrics[columnMetric]
-                  : ''
+                  : column.metrics[columnMetric]
 
               return (
                 <List.Item>

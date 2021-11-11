@@ -116,6 +116,10 @@ const columnMetricOptions: ColumnMetricOption[] = [
     value: 'count_unique',
   },
   {
+    label: 'count_zeros',
+    value: 'count_zeros',
+  },
+  {
     label: 'max_length',
     value: 'max_length',
   },
@@ -126,6 +130,10 @@ const columnMetricOptions: ColumnMetricOption[] = [
   {
     label: 'max',
     value: 'max',
+  },
+  {
+    label: 'mean',
+    value: 'mean',
   },
 ]
 
