@@ -21,7 +21,7 @@ import {
   useGraphDispatch,
 } from '../graph-store'
 
-const selectBadge = (state: GraphStore) => state.badge
+const selectTableMetric = (state: GraphStore) => state.tableMetric
 const selectHighlightMode = (state: GraphStore) => state.highlightMode
 
 const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
@@ -38,15 +38,20 @@ export const DagNode = memo(
   }: NodeProps<NodeDataPayload>): JSX.Element => {
     const dispatch = useGraphDispatch()
 
-    const badge = useGraphStore(selectBadge)
     const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
     const selectedTableId = useGraphStore(selectTableId)
     const selectedColumnId = useGraphStore(selectColumnId)
     const relatedColumnsIds = useGraphStore(selectRelColumnIds)
     const highlightMode = useGraphStore(selectHighlightMode)
 
-    const actualBadge = badge === 'violations' ? violations : partitions
-    const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
+    const tableMeric = useGraphStore(selectTableMetric)
+    const tableMericValFormatted =
+      tableMeric === 'none'
+        ? null
+        : tableMeric === 'violations'
+        ? formatTableMetric(violations)
+        : formatTableMetric(partitions)
+
     const _columns =
       selectedTableId && id !== selectedTableId
         ? columns.filter((column: Column) => relatedColumnsIds.includes(column.id))
@@ -90,14 +95,14 @@ export const DagNode = memo(
           <Handle
             type="source"
             position={Position['Top']}
-            style={{ top: -3, background: '#555' }}
+            style={handleStyleTop}
             isConnectable={isConnectable}
           />
         ) : (
           <Handle
             type="source"
             position={Position['Left']}
-            style={{ left: -3, background: '#555', zIndex: 1 }}
+            style={handleStyleLeft}
             isConnectable={isConnectable}
           />
         )}
@@ -109,7 +114,7 @@ export const DagNode = memo(
           }
           size="small"
           type="inner"
-          extra={actualBadgeFormatted}
+          extra={tableMericValFormatted}
           highlightColor={cardHighlightedColor}
         >
           <List
@@ -138,14 +143,14 @@ export const DagNode = memo(
           <Handle
             type="target"
             position={Position['Bottom']}
-            style={{ bottom: -3, background: '#555' }}
+            style={handleStyleBottom}
             isConnectable={isConnectable}
           />
         ) : (
           <Handle
             type="target"
             position={Position['Right']}
-            style={{ right: -3, background: '#555' }}
+            style={handleStyleRight}
             isConnectable={isConnectable}
           />
         )}
@@ -153,6 +158,13 @@ export const DagNode = memo(
     )
   }
 )
+const formatTableMetric = (val: number) => renderNumericValue(2, true)(val)
 
 const formatColumnType = (column: Column) =>
   column.columnType && `${column.columnType.data_type}${column.columnType.nullable ? '?' : ''}`
+
+const handleStyleTop = { top: -3, background: '#555' }
+const handleStyleLeft = { left: -3, background: '#555', zIndex: 1 }
+
+const handleStyleBottom = { bottom: -3, background: '#555' }
+const handleStyleRight = { right: -3, background: '#555' }

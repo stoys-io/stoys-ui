@@ -8,7 +8,7 @@ import {
   Graph,
   Edge,
   Node,
-  Badge,
+  TableMetric,
   DataGraph,
   Table,
   ChromaticScale,
@@ -19,6 +19,7 @@ import {
 } from './model'
 
 import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './graph-color-scheme'
+import { defaultHighlights } from './graph-store/store'
 
 export const highlightSingleNode = (id: string): Highlights => ({
   edges: {},
@@ -165,11 +166,15 @@ export const findDownstreamEdges = (graph: Graph, id: string): Edge[] => {
 }
 
 interface HMetricsArgs {
-  metric: Badge
+  metric: TableMetric
   graph: Graph
 }
 
 export const highlightMetrics = ({ metric, graph }: HMetricsArgs): Highlights => {
+  if (metric === 'none') {
+    return defaultHighlights
+  }
+
   const getColor = (rank: number) =>
     getChromaticColor(hyperbolicGradientRight(rank), 'interpolatePuOr')
 

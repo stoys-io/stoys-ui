@@ -59,7 +59,8 @@ interface EdgeStyleProps {
 
 export type Highlight = 'none' | 'nearest' | 'parents' | 'children' | 'metrics' | 'diffing'
 
-export type Badge = 'violations' | 'partitions'
+export type TableMetric = 'none' | 'violations' | 'partitions'
+export type ColumnMetric = 'data_type' | string // data_type, count_*, min, max... to be defined (maybe)
 
 export interface DataGraph {
   id: string

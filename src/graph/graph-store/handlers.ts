@@ -12,20 +12,34 @@ import {
   highlightSingleNode,
   highlightMetrics,
 } from '../graph-ops'
-import { Graph, Table, Column, ChromaticScale, Badge, Highlight, Highlights, Node } from '../model'
+import {
+  Graph,
+  Table,
+  Column,
+  ChromaticScale,
+  Highlight,
+  Highlights,
+  Node,
+  TableMetric,
+  ColumnMetric,
+} from '../model'
 
-export const setBadge =
-  (badge: Badge) =>
+export const setTableMetric =
+  (tableMetric: TableMetric) =>
   ({ defaultGraph }: GraphStore): Partial<GraphStore> => {
     const newHighlightMode = 'metrics'
-    const highlights = highlightMetrics({ metric: badge, graph: defaultGraph })
+    const highlights = highlightMetrics({ metric: tableMetric, graph: defaultGraph })
     return {
-      badge,
+      tableMetric,
       highlights,
       highlightMode: newHighlightMode,
       graph: defaultGraph,
     }
   }
+
+export const setColumnMetric = (columnMetric: ColumnMetric) => ({
+  columnMetric,
+})
 
 export const setInitialStore = ({ graph, data, tables }: InitialArgs) => ({
   graph,
@@ -137,7 +151,7 @@ export const setHighlightMode =
     defaultGraph,
     baseRelease,
     data,
-    badge,
+    tableMetric,
     tables,
     selectedNodeId,
     highlights: curHighlights,
@@ -185,7 +199,7 @@ export const setHighlightMode =
     if (highlightMode === 'metrics') {
       return {
         highlightMode,
-        highlights: highlightMetrics({ metric: badge, graph }),
+        highlights: highlightMetrics({ metric: tableMetric, graph }),
         selectedNodeId: undefined,
         highlightedColumns: defaultHighlightedColumns,
         graph: defaultGraph,
