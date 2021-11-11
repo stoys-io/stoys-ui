@@ -481,7 +481,7 @@ const columnsWithExtraData = (table: Table): Column[] => {
     const metrics = {
       data_type,
       count,
-      // Only non-`null` metrics``
+      // Only non-`null` metrics
       ...(count_empty ? { count_empty } : {}),
       ...(count_nulls ? { count_nulls } : {}),
       ...(count_unique ? { count_unique } : {}),
