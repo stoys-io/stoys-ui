@@ -92,7 +92,7 @@ export interface ConfigProps {
   showAbsDiffColumn?: boolean
   showRelativeDiffColumn?: boolean
 }
-export interface AggSumTableProps extends TableProps<any> {
+export interface AggSumTableProps extends TableProps<AggSumTableData> {
   data: AggSumData | RawAggSumData
   config?: ConfigProps
 }
@@ -132,7 +132,7 @@ export type ThresholdProps = {
   saveMetricThreshold?: SaveMetricThreshold
 }
 
-export interface ParentColumns {
+export interface ParentColumn {
   title: string
   colSpan?: number
   rowSpan?: number

@@ -57,7 +57,7 @@ AggSum.args = {
 AggSum.storyName = 'with comparable data'
 
 export default {
-  title: 'Data Quality/AggSumm',
+  title: 'Data Quality/AggSum',
   component: AggSum,
   argTypes: {
     data: {
