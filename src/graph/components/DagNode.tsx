@@ -11,7 +11,7 @@ import {
   GREY_ACCENT,
 } from '../constants'
 import { renderNumericValue } from '../../helpers'
-import { Column, NodeDataPayload } from '../model'
+import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../model'
 import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
 import {
   useGraphStore,
@@ -122,32 +122,23 @@ export const DagNode = memo(
           <List
             size="small"
             dataSource={_columns}
-            renderItem={(column: Column) => {
-              const columnExtra =
-                column.metrics?.[columnMetric] === undefined
-                  ? ''
-                  : columnMetric === 'data_type'
-                  ? formatColumnDataType(column)
-                  : column.metrics[columnMetric]
-
-              return (
-                <List.Item>
-                  <ItemContent>
-                    <ItemText
-                      hoverable={isHoverableColumn}
-                      color={getListItemHighlightedColor(column)}
-                      onClick={(evt: React.MouseEvent<HTMLElement>) => {
-                        evt.stopPropagation()
-                        dispatch(setHighlightedColumns(column.id, id))
-                      }}
-                    >
-                      {column.name}
-                    </ItemText>
-                    <ItemExtra>{columnExtra}</ItemExtra>
-                  </ItemContent>
-                </List.Item>
-              )
-            }}
+            renderItem={(column: Column) => (
+              <List.Item>
+                <ItemContent>
+                  <ItemText
+                    hoverable={isHoverableColumn}
+                    color={getListItemHighlightedColor(column)}
+                    onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                      evt.stopPropagation()
+                      dispatch(setHighlightedColumns(column.id, id))
+                    }}
+                  >
+                    {column.name}
+                  </ItemText>
+                  <ItemExtra>{formatColumnExtra(column, columnMetric)}</ItemExtra>
+                </ItemContent>
+              </List.Item>
+            )}
           />
         </ScrollCard>
         {targetPosition === 'bottom' ? (
@@ -169,11 +160,25 @@ export const DagNode = memo(
     )
   }
 )
-const formatTableMetric = (val: number) => renderNumericValue(2, true)(val)
 
-const formatColumnDataType = (column: Column) =>
-  column.metrics?.data_type &&
-  `${column.metrics?.data_type.type}${column.metrics.data_type.nullable ? '?' : ''}`
+const formatColumnExtra = (column: Column, columnMetric: ColumnMetric): string => {
+  if (column.metrics === undefined) {
+    return ''
+  }
+
+  if (columnMetric === 'data_type' && column.metrics[columnMetric] !== undefined) {
+    return formatColumnDataType(column.metrics['data_type']!)
+  }
+
+  return formatColumnMetric(column.metrics[columnMetric] as string | number)
+}
+
+const fmt = renderNumericValue(2, true)
+const formatTableMetric = (val: number) => fmt(val)
+const formatColumnMetric = (val: number | string) => (typeof val === 'number' ? fmt(val) : val)
+
+const formatColumnDataType = (data_type: NodeColumnDataType) =>
+  `${data_type.type}${data_type.nullable ? '?' : ''}`
 
 const handleStyleTop = { top: -3, background: '#555' }
 const handleStyleLeft = { left: -3, background: '#555', zIndex: 1 }

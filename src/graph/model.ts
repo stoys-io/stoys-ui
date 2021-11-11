@@ -119,7 +119,7 @@ interface NodeColumnsMetrics {
   mean?: number
 }
 
-interface NodeColumnDataType {
+export interface NodeColumnDataType {
   type: string
   nullable: boolean
 }
