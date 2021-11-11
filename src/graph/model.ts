@@ -60,7 +60,17 @@ interface EdgeStyleProps {
 export type Highlight = 'none' | 'nearest' | 'parents' | 'children' | 'metrics' | 'diffing'
 
 export type TableMetric = 'none' | 'violations' | 'partitions'
-export type ColumnMetric = 'data_type' | string // data_type, count_*, min, max... to be defined (maybe)
+export type ColumnMetric =
+  | 'data_type'
+  | 'count'
+  | 'count_empty'
+  | 'count_nulls'
+  | 'count_unique'
+  | 'count_zeros'
+  | 'max_length'
+  | 'min'
+  | 'max'
+  | 'mean'
 
 export interface DataGraph {
   id: string
@@ -93,11 +103,24 @@ export interface Column {
   name: string
   dependencies?: Array<string>
   style?: { color?: string }
-  columnType?: ColumnType
+  metrics?: NodeColumnsMetrics
 }
 
-interface ColumnType {
-  data_type: string
+interface NodeColumnsMetrics {
+  data_type?: NodeColumnDataType
+  count?: number
+  count_empty?: number
+  count_nulls?: number
+  count_unique?: number
+  count_zeros?: number
+  max_length?: number
+  min?: string
+  max?: string
+  mean?: number
+}
+
+interface NodeColumnDataType {
+  type: string
   nullable: boolean
 }
 

@@ -22,6 +22,7 @@ import {
 } from '../graph-store'
 
 const selectTableMetric = (state: GraphStore) => state.tableMetric
+const selectColumnMetric = (state: GraphStore) => state.columnMetric
 const selectHighlightMode = (state: GraphStore) => state.highlightMode
 
 const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
@@ -44,6 +45,7 @@ export const DagNode = memo(
     const relatedColumnsIds = useGraphStore(selectRelColumnIds)
     const highlightMode = useGraphStore(selectHighlightMode)
 
+    const columnMetric = useGraphStore(selectColumnMetric)
     const tableMeric = useGraphStore(selectTableMetric)
     const tableMericValFormatted =
       tableMeric === 'none'
@@ -120,23 +122,32 @@ export const DagNode = memo(
           <List
             size="small"
             dataSource={_columns}
-            renderItem={(column: Column) => (
-              <List.Item>
-                <ItemContent>
-                  <ItemText
-                    hoverable={isHoverableColumn}
-                    color={getListItemHighlightedColor(column)}
-                    onClick={(evt: React.MouseEvent<HTMLElement>) => {
-                      evt.stopPropagation()
-                      dispatch(setHighlightedColumns(column.id, id))
-                    }}
-                  >
-                    {column.name}
-                  </ItemText>
-                  <ItemExtra>{formatColumnType(column)}</ItemExtra>
-                </ItemContent>
-              </List.Item>
-            )}
+            renderItem={(column: Column) => {
+              const columnExtra =
+                columnMetric === 'data_type'
+                  ? formatColumnDataType(column)
+                  : column.metrics
+                  ? column.metrics[columnMetric]
+                  : ''
+
+              return (
+                <List.Item>
+                  <ItemContent>
+                    <ItemText
+                      hoverable={isHoverableColumn}
+                      color={getListItemHighlightedColor(column)}
+                      onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                        evt.stopPropagation()
+                        dispatch(setHighlightedColumns(column.id, id))
+                      }}
+                    >
+                      {column.name}
+                    </ItemText>
+                    <ItemExtra>{columnExtra}</ItemExtra>
+                  </ItemContent>
+                </List.Item>
+              )
+            }}
           />
         </ScrollCard>
         {targetPosition === 'bottom' ? (
@@ -160,8 +171,9 @@ export const DagNode = memo(
 )
 const formatTableMetric = (val: number) => renderNumericValue(2, true)(val)
 
-const formatColumnType = (column: Column) =>
-  column.columnType && `${column.columnType.data_type}${column.columnType.nullable ? '?' : ''}`
+const formatColumnDataType = (column: Column) =>
+  column.metrics?.data_type &&
+  `${column.metrics?.data_type.type}${column.metrics.data_type.nullable ? '?' : ''}`
 
 const handleStyleTop = { top: -3, background: '#555' }
 const handleStyleLeft = { left: -3, background: '#555', zIndex: 1 }
