@@ -8,19 +8,23 @@ const Template: Story<any> = args => <D3PlotComponent {...args} />
 
 export const D3Plot = Template.bind({})
 D3Plot.args = {
-  data: PmfPlotData,
+  dataset: [PmfPlotData],
+  config: {
+    height: 500,
+  },
 }
 D3Plot.storyName = 'One dataset'
 
+export const D3PlotWithThreeDatasets = Template.bind({})
+D3PlotWithThreeDatasets.args = {
+  dataset: PmfPlotThreeDatasets,
+  config: {
+    height: 500,
+  },
+}
+D3PlotWithThreeDatasets.storyName = 'Three datasets *'
+
 export default {
   title: 'Chart/D3',
-  component: D3Plot,
-  argTypes: {
-    data: {
-      type: { required: true },
-    },
-    config: {
-      control: 'object',
-    },
-  },
+  component: [D3Plot, D3PlotWithThreeDatasets],
 }

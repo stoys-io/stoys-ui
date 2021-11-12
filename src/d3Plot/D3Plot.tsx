@@ -2,46 +2,50 @@ import React from 'react'
 import * as d3 from 'd3'
 
 import useD3 from './useD3'
+import { COLORS } from '../profiler/constants'
 
-const BarChart = ({ data }: any) => {
-  const height = 500 // TODO: move to config
-  const width = 1000
-  console.log(data)
+const D3Plot = ({ dataset, config }: any) => {
+  const { height, color } = config
 
   const ref = useD3((svg: any) => {
-    const lowValues = data.map((item: any) => item.low)
+    const { width } = svg.node().getBoundingClientRect()
+    const flattedData = dataset.flat()
+
+    const lowValues = flattedData.map((item: any) => item.low)
     const minValue = Math.min(...lowValues)
 
-    const highValues = data.map((item: any) => item.high)
+    const highValues = flattedData.map((item: any) => item.high)
     const maxValue = Math.max(...highValues)
 
     const barSimpleWidth = width / (maxValue - minValue)
 
-    const counts = data.map((item: any) => item.count)
+    const counts = flattedData.map((item: any) => item.count)
     const maxCount = Math.max(...counts)
-    const minCount = Math.min(...counts)
-    const barSimpleHeight = height / (maxCount - minCount)
+    const barSimpleHeight = (height * 0.95) / maxCount
 
-    console.log('values => ', minValue, maxValue, barSimpleWidth)
-    console.log('counts => ', minCount, maxCount, barSimpleHeight)
-    svg
-      .append('g')
-      .attr('fill', '#3c763d')
-      .selectAll('rect')
-      .data(data)
-      .join('rect')
-      .attr('width', (item: any) => {
-        return (item.high - item.low) * barSimpleWidth
-      })
-      .attr('height', function (data: any) {
-        return data.count * barSimpleHeight
-      })
-      .attr('x', function (data: any, i: number) {
-        return (data.low - minValue) * barSimpleWidth
-      })
-      .attr('y', function (data: any) {
-        return height - data.count * barSimpleHeight
-      })
+    dataset.map((data: any, index: number) => {
+      const _color = color && color[index] ? color[index] : COLORS[index]
+
+      svg
+        .append('g')
+        .attr('fill', _color)
+        .attr('opacity', '0.75')
+        .selectAll('rect')
+        .data(data)
+        .join('rect')
+        .attr('width', (item: any) => {
+          return (item.high - item.low) * barSimpleWidth
+        })
+        .attr('height', function (item: any) {
+          return item.count * barSimpleHeight
+        })
+        .attr('x', function (item: any) {
+          return (item.low - minValue) * barSimpleWidth
+        })
+        .attr('y', function (item: any) {
+          return height - item.count * barSimpleHeight
+        })
+    })
   }, [])
 
   return (
@@ -49,12 +53,10 @@ const BarChart = ({ data }: any) => {
       ref={ref as any}
       style={{
         height,
-        width,
-        marginRight: '0px',
-        marginLeft: '0px',
+        width: '100%',
       }}
     />
   )
 }
 
-export default BarChart
+export default D3Plot

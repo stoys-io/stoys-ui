@@ -1,7 +1,8 @@
 import React, { useContext } from 'react'
 import Empty from 'antd/lib/empty'
 
-import PmfPlot from '../../pmfPlot'
+import PmfPlot from '../../pmfPlot' // TODO: del
+import D3Plot from '../../d3Plot/D3Plot'
 import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'
 import BarChart from './BarChart'
@@ -95,7 +96,8 @@ const ChartAndTable = ({
   const pmfPlotDataData = data.map(dataItem => dataItem?.pmf || [])
 
   return (
-    <PmfPlot
+    <D3Plot
+      dataset={pmfPlotDataData}
       data={pmfPlotDataData}
       config={{
         height,
