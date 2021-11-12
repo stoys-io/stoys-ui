@@ -13,13 +13,7 @@ import {
 import { renderNumericValue } from '../../helpers'
 import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../model'
 import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
-import {
-  useGraphStore,
-  GraphStore,
-  setHighlightedColumns,
-  openDrawer,
-  useGraphDispatch,
-} from '../graph-store'
+import { useGraphStore, GraphStore, setHighlightedColumns, useGraphDispatch } from '../graph-store'
 
 const selectTableMetric = (state: GraphStore) => state.tableMetric
 const selectColumnMetric = (state: GraphStore) => state.columnMetric
@@ -109,11 +103,7 @@ export const DagNode = memo(
           />
         )}
         <ScrollCard
-          title={
-            <ScrollCardTitle onClick={() => dispatch(openDrawer(id))} color={titleHighlightColor}>
-              {label}
-            </ScrollCardTitle>
-          }
+          title={<ScrollCardTitle color={titleHighlightColor}>{label}</ScrollCardTitle>}
           size="small"
           type="inner"
           extra={tableMetricValFormatted}
