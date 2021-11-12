@@ -96,6 +96,10 @@ const tableMetricOptions: TableMetricOption[] = [
 
 const columnMetricOptions: ColumnMetricOption[] = [
   {
+    label: 'None',
+    value: 'none',
+  },
+  {
     label: 'data_type',
     value: 'data_type',
   },
@@ -179,7 +183,7 @@ interface TableMetricOption {
 
 interface ColumnMetricOption {
   label: string
-  value: string
+  value: ColumnMetric
 }
 
 interface HighlighOption {

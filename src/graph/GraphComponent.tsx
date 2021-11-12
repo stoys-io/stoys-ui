@@ -83,15 +83,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
 
   const elementClick = usePreventDoubleClick((_: any, element: Node0 | Edge0) => {
-    /* console.log(element)
-     * console.log('click') */
     if (isNode(element)) {
       return dispatch(nodeClick(element.id, config.chromaticScale))
     }
   })
 
   const nodeDoubleClick = (_: any, node: Node0) => {
-    console.log('double click')
     dispatch(openDrawer(node.id))
   }
 

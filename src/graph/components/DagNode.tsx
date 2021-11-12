@@ -157,7 +157,7 @@ export const DagNode = memo(
 )
 
 const formatColumnExtra = (column: Column, columnMetric: ColumnMetric): string => {
-  if (column.metrics === undefined) {
+  if (column.metrics === undefined || columnMetric === 'none') {
     return ''
   }
 

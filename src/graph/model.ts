@@ -61,6 +61,7 @@ export type Highlight = 'none' | 'nearest' | 'parents' | 'children' | 'metrics' 
 
 export type TableMetric = 'none' | 'violations' | 'partitions'
 export type ColumnMetric =
+  | 'none'
   | 'data_type'
   | 'count'
   | 'count_empty'
