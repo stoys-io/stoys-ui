@@ -20,7 +20,6 @@ import {
 
 import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './graph-color-scheme'
 import { defaultHighlights } from './graph-store/store'
-import { setColumnMetric } from './graph-store'
 
 export const highlightSingleNode = (id: string): Highlights => ({
   edges: {},
