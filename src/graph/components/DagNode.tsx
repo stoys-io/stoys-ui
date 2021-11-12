@@ -122,24 +122,28 @@ export const DagNode = memo(
           <List
             size="small"
             dataSource={_columns}
-            renderItem={(column: Column) => (
-              <List.Item>
-                <ItemContent>
-                  <ItemText
-                    hoverable={isHoverableColumn}
-                    color={getListItemHighlightedColor(column)}
-                    onClick={(evt: React.MouseEvent<HTMLElement>) => {
-                      evt.stopPropagation()
-                      dispatch(setHighlightedColumns(column.id, id))
-                    }}
-                    title={column.name}
-                  >
-                    {column.name}
-                  </ItemText>
-                  <ItemExtra>{formatColumnExtra(column, columnMetric)}</ItemExtra>
-                </ItemContent>
-              </List.Item>
-            )}
+            renderItem={(column: Column) => {
+              const columnExtra = formatColumnExtra(column, columnMetric)
+              const tooltip = `${column.name}: ${columnExtra}`
+
+              return (
+                <List.Item>
+                  <ItemContent title={tooltip}>
+                    <ItemText
+                      hoverable={isHoverableColumn}
+                      color={getListItemHighlightedColor(column)}
+                      onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                        evt.stopPropagation()
+                        dispatch(setHighlightedColumns(column.id, id))
+                      }}
+                    >
+                      {column.name}
+                    </ItemText>
+                    <ItemExtra>{columnExtra}</ItemExtra>
+                  </ItemContent>
+                </List.Item>
+              )
+            }}
           />
         </ScrollCard>
         {targetPosition === 'bottom' ? (
