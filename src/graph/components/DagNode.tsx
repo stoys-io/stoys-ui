@@ -11,7 +11,7 @@ import {
   GREY_ACCENT,
 } from '../constants'
 import { renderNumericValue } from '../../helpers'
-import { Column, NodeDataPayload } from '../model'
+import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../model'
 import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
 import {
   useGraphStore,
@@ -21,7 +21,8 @@ import {
   useGraphDispatch,
 } from '../graph-store'
 
-const selectBadge = (state: GraphStore) => state.badge
+const selectTableMetric = (state: GraphStore) => state.tableMetric
+const selectColumnMetric = (state: GraphStore) => state.columnMetric
 const selectHighlightMode = (state: GraphStore) => state.highlightMode
 
 const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
@@ -38,15 +39,21 @@ export const DagNode = memo(
   }: NodeProps<NodeDataPayload>): JSX.Element => {
     const dispatch = useGraphDispatch()
 
-    const badge = useGraphStore(selectBadge)
     const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
     const selectedTableId = useGraphStore(selectTableId)
     const selectedColumnId = useGraphStore(selectColumnId)
     const relatedColumnsIds = useGraphStore(selectRelColumnIds)
     const highlightMode = useGraphStore(selectHighlightMode)
 
-    const actualBadge = badge === 'violations' ? violations : partitions
-    const actualBadgeFormatted = renderNumericValue(2, true)(actualBadge)
+    const columnMetric = useGraphStore(selectColumnMetric)
+    const tableMetric = useGraphStore(selectTableMetric)
+    const tableMetricValFormatted =
+      tableMetric === 'none'
+        ? null
+        : tableMetric === 'violations'
+        ? formatTableMetric(violations)
+        : formatTableMetric(partitions)
+
     const _columns =
       selectedTableId && id !== selectedTableId
         ? columns.filter((column: Column) => relatedColumnsIds.includes(column.id))
@@ -90,14 +97,14 @@ export const DagNode = memo(
           <Handle
             type="source"
             position={Position['Top']}
-            style={{ top: -3, background: '#555' }}
+            style={handleStyleTop}
             isConnectable={isConnectable}
           />
         ) : (
           <Handle
             type="source"
             position={Position['Left']}
-            style={{ left: -3, background: '#555', zIndex: 1 }}
+            style={handleStyleLeft}
             isConnectable={isConnectable}
           />
         )}
@@ -109,7 +116,7 @@ export const DagNode = memo(
           }
           size="small"
           type="inner"
-          extra={actualBadgeFormatted}
+          extra={tableMetricValFormatted}
           highlightColor={cardHighlightedColor}
         >
           <List
@@ -128,7 +135,7 @@ export const DagNode = memo(
                   >
                     {column.name}
                   </ItemText>
-                  <ItemExtra>{formatColumnType(column)}</ItemExtra>
+                  <ItemExtra>{formatColumnExtra(column, columnMetric)}</ItemExtra>
                 </ItemContent>
               </List.Item>
             )}
@@ -138,14 +145,14 @@ export const DagNode = memo(
           <Handle
             type="target"
             position={Position['Bottom']}
-            style={{ bottom: -3, background: '#555' }}
+            style={handleStyleBottom}
             isConnectable={isConnectable}
           />
         ) : (
           <Handle
             type="target"
             position={Position['Right']}
-            style={{ right: -3, background: '#555' }}
+            style={handleStyleRight}
             isConnectable={isConnectable}
           />
         )}
@@ -154,5 +161,27 @@ export const DagNode = memo(
   }
 )
 
-const formatColumnType = (column: Column) =>
-  column.columnType && `${column.columnType.data_type}${column.columnType.nullable ? '?' : ''}`
+const formatColumnExtra = (column: Column, columnMetric: ColumnMetric): string => {
+  if (column.metrics === undefined) {
+    return ''
+  }
+
+  if (columnMetric === 'data_type' && column.metrics[columnMetric] !== undefined) {
+    return formatColumnDataType(column.metrics['data_type']!)
+  }
+
+  return formatColumnMetric(column.metrics[columnMetric] as string | number)
+}
+
+const fmt = renderNumericValue(2, true)
+const formatTableMetric = (val: number) => fmt(val)
+const formatColumnMetric = (val: number | string) => (typeof val === 'number' ? fmt(val) : val)
+
+const formatColumnDataType = (data_type: NodeColumnDataType) =>
+  `${data_type.type}${data_type.nullable ? '?' : ''}`
+
+const handleStyleTop = { top: -3, background: '#555' }
+const handleStyleLeft = { left: -3, background: '#555', zIndex: 1 }
+
+const handleStyleBottom = { bottom: -3, background: '#555' }
+const handleStyleRight = { right: -3, background: '#555' }

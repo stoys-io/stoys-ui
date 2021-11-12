@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import Select from 'antd/lib/select'
 import Input from 'antd/lib/input'
 
 const { Search } = Input
@@ -32,6 +31,10 @@ export const SidebarContentWrapper = styled.div`
   padding: 20px 10px 10px 10px;
   background-color: ${GREY_LIGHT};
   z-index: 3;
+
+  & > * {
+    width: 100%;
+  }
 `
 
 export const GraphContainer = styled.div`
@@ -66,10 +69,6 @@ export const ResizeArea = styled.div`
 
 export const MenuTitle = styled.h4`
   margin-top: 20px;
-`
-
-export const SelectVersion = styled(Select)`
-  width: 100%;
 `
 
 export const NodeSearch = styled(Search)<{ error: string }>`

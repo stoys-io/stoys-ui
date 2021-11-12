@@ -1,4 +1,4 @@
-import { Graph, DataGraph, Badge, Highlight, Table } from '../model'
+import { Graph, DataGraph, Highlight, Table, TableMetric, ColumnMetric } from '../model'
 
 export interface GraphStore {
   dispatch: (fn: DispatchHandler) => void
@@ -12,7 +12,8 @@ export interface GraphStore {
   highlightedColumns: HColumns
 
   baseRelease: string
-  badge: Badge
+  tableMetric: TableMetric
+  columnMetric: ColumnMetric
   highlightMode: Highlight
 
   selectedNodeId?: string

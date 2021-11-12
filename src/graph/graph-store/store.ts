@@ -24,7 +24,8 @@ export const createStore = () =>
     },
 
     baseRelease: '',
-    badge: 'violations',
+    tableMetric: 'none',
+    columnMetric: 'data_type',
 
     highlightMode: 'nearest',
     highlights: defaultHighlights,

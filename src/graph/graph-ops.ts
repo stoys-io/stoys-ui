@@ -8,7 +8,7 @@ import {
   Graph,
   Edge,
   Node,
-  Badge,
+  TableMetric,
   DataGraph,
   Table,
   ChromaticScale,
@@ -19,6 +19,8 @@ import {
 } from './model'
 
 import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './graph-color-scheme'
+import { defaultHighlights } from './graph-store/store'
+import { setColumnMetric } from './graph-store'
 
 export const highlightSingleNode = (id: string): Highlights => ({
   edges: {},
@@ -165,11 +167,15 @@ export const findDownstreamEdges = (graph: Graph, id: string): Edge[] => {
 }
 
 interface HMetricsArgs {
-  metric: Badge
+  metric: TableMetric
   graph: Graph
 }
 
 export const highlightMetrics = ({ metric, graph }: HMetricsArgs): Highlights => {
+  if (metric === 'none') {
+    return defaultHighlights
+  }
+
   const getColor = (rank: number) =>
     getChromaticColor(hyperbolicGradientRight(rank), 'interpolatePuOr')
 
@@ -417,7 +423,7 @@ export const mapInitialNodes = (tables: Table[]): Node[] =>
         label: table.name,
         partitions: table.measures?.rows ?? 0,
         violations: table.measures?.violations ?? 0,
-        columns: columnsWithTypeData(table),
+        columns: columnsWithExtraData(table),
       },
       position: initialPosition,
       type: 'dagNode',
@@ -441,7 +447,7 @@ export const mapInitialEdges = (tables: Table[]): Edge[] =>
       return [...acc, ...items]
     }, [])
 
-const columnsWithTypeData = (table: Table): Column[] => {
+const columnsWithExtraData = (table: Table): Column[] => {
   if (table.dp_result === undefined) {
     return table.columns
   }
@@ -453,11 +459,40 @@ const columnsWithTypeData = (table: Table): Column[] => {
       return column
     }
 
-    const columnType = {
-      data_type: dpColumn.data_type,
-      nullable: dpColumn.nullable || false,
+    const {
+      data_type: dt,
+      nullable,
+      count,
+      count_empty,
+      count_nulls,
+      count_unique,
+      count_zeros,
+      max_length,
+      min,
+      max,
+      mean,
+    } = dpColumn
+
+    const data_type = {
+      type: dt,
+      nullable: nullable || false,
     }
-    return { ...column, columnType }
+
+    const metrics = {
+      data_type,
+      count,
+      // Only non-`null` metrics
+      ...(count_empty ? { count_empty } : {}),
+      ...(count_nulls ? { count_nulls } : {}),
+      ...(count_unique ? { count_unique } : {}),
+      ...(count_zeros ? { count_zeros } : {}),
+      ...(max_length ? { max_length } : {}),
+      ...(min ? { min } : {}),
+      ...(max ? { max } : {}),
+      ...(mean ? { mean } : {}),
+    }
+
+    return { ...column, metrics }
   })
 
   return columns
