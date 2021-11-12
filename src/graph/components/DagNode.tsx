@@ -132,6 +132,7 @@ export const DagNode = memo(
                       evt.stopPropagation()
                       dispatch(setHighlightedColumns(column.id, id))
                     }}
+                    title={column.name}
                   >
                     {column.name}
                   </ItemText>
