@@ -46,11 +46,11 @@ export const DagNode = memo(
     const highlightMode = useGraphStore(selectHighlightMode)
 
     const columnMetric = useGraphStore(selectColumnMetric)
-    const tableMeric = useGraphStore(selectTableMetric)
-    const tableMericValFormatted =
-      tableMeric === 'none'
+    const tableMetric = useGraphStore(selectTableMetric)
+    const tableMetricValFormatted =
+      tableMetric === 'none'
         ? null
-        : tableMeric === 'violations'
+        : tableMetric === 'violations'
         ? formatTableMetric(violations)
         : formatTableMetric(partitions)
 
@@ -116,7 +116,7 @@ export const DagNode = memo(
           }
           size="small"
           type="inner"
-          extra={tableMericValFormatted}
+          extra={tableMetricValFormatted}
           highlightColor={cardHighlightedColor}
         >
           <List
