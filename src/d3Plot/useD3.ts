@@ -6,6 +6,10 @@ const useD3 = (renderChartFn: any, dependencies: any) => {
 
   useEffect(() => {
     renderChartFn(d3.select(ref.current as any))
+
+    return () => {
+      ;(ref.current as any).innerHTML = ''
+    }
   }, dependencies)
   return ref
 }

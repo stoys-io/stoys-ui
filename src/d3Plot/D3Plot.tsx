@@ -1,109 +1,119 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import * as d3 from 'd3'
 
 import useD3 from './useD3'
 import { COLORS } from '../profiler/constants'
 
-const MARGIN_LEFT = 25
-const MARGIN_RIGHT = 25
-const MARGIN_TOP = 25
-const MARGIN_BOTTOM = 25
-
 const D3Plot = ({ dataset, config }: any) => {
-  const { height, color } = config
+  const { height, color, showAxes } = config
 
-  const ref = useD3((svg: any) => {
-    const { width } = svg.node().getBoundingClientRect()
-    const flattedData = dataset.flat()
+  const margin = useMemo(
+    () => ({
+      left: showAxes ? 25 : 2,
+      right: showAxes ? 25 : 2,
+      top: showAxes ? 25 : 2,
+      bottom: showAxes ? 25 : 2,
+    }),
+    [showAxes]
+  )
 
-    const lowValues = d3.map(flattedData, (item: any) => item.low)
-    const minValue = d3.min(lowValues)
+  const ref = useD3(
+    (svg: any) => {
+      const { width } = svg.node().getBoundingClientRect()
+      const flattedData = dataset.flat()
 
-    const highValues = d3.map(flattedData, (item: any) => item.high)
-    const maxValue = d3.max(highValues)
+      const lowValues = d3.map(flattedData, (item: any) => item.low)
+      const minValue = d3.min(lowValues)
 
-    const barSimpleWidth = (width - MARGIN_LEFT - MARGIN_RIGHT) / (maxValue - minValue)
+      const highValues = d3.map(flattedData, (item: any) => item.high)
+      const maxValue = d3.max(highValues)
 
-    const counts = d3.map(flattedData, (item: any) => item.count)
-    const maxCount = d3.max(counts)
-    const barSimpleHeight = (height - MARGIN_TOP - MARGIN_BOTTOM) / maxCount
+      const barSimpleWidth = (width - margin.left - margin.right) / (maxValue - minValue)
 
-    const xType = d3.scaleLinear
-    const yType = d3.scaleLinear // TODO: add log scale here
+      const counts = d3.map(flattedData, (item: any) => item.count)
+      const maxCount = d3.max(counts)
+      const barSimpleHeight = (height - margin.top - margin.bottom) / maxCount
 
-    const xRange = [MARGIN_LEFT, width - MARGIN_RIGHT]
-    const yRange = [height - MARGIN_BOTTOM, MARGIN_TOP]
+      const xType = d3.scaleLinear
+      const yType = d3.scaleLinear // TODO: add log scale here
 
-    const xDomain = [minValue, maxValue]
-    const yDomain = [0, maxCount]
+      const xRange = [margin.left, width - margin.right] // [left, right]
+      const yRange = [height - margin.bottom, margin.top] // [bottom, top]
 
-    const xScale = xType(xDomain, xRange)
-    const yScale = yType(yDomain, yRange)
+      const xDomain = [minValue, maxValue]
+      const yDomain = [0, maxCount]
 
-    const xAxis = d3
-      .axisBottom(xScale)
-      .ticks(width / 80)
-      .tickSizeOuter(0)
-    const yAxis = d3.axisLeft(yScale).ticks(height / 40)
+      const xScale = xType(xDomain, xRange)
+      const yScale = yType(yDomain, yRange)
 
-    svg
-      .append('g')
-      .attr('transform', `translate(${MARGIN_LEFT},0)`)
-      .call(yAxis)
-      .call((g: any) => g.select('.domain').remove())
-      .call((g: any) =>
-        g
-          .selectAll('.tick line')
-          .clone()
-          .attr('x2', width - MARGIN_LEFT - MARGIN_RIGHT)
-          .attr('stroke-opacity', 0.1)
-      )
-      .call((g: any) =>
-        g
-          .append('text')
-          .attr('x', -MARGIN_LEFT)
-          .attr('y', 10)
-          .attr('fill', 'currentColor')
-          .attr('text-anchor', 'start')
-      )
+      if (showAxes) {
+        const xAxis = d3
+          .axisBottom(xScale)
+          .ticks(width / 100)
+          .tickSizeOuter(0)
+        const yAxis = d3.axisLeft(yScale).ticks(height / 100)
 
-    svg
-      .append('g')
-      .attr('transform', `translate(0,${height - MARGIN_BOTTOM})`)
-      .call(xAxis)
-      .call((g: any) =>
-        g
-          .append('text')
-          .attr('x', width - MARGIN_RIGHT)
-          .attr('y', 27)
-          .attr('fill', 'currentColor')
-          .attr('text-anchor', 'end')
-      )
+        svg
+          .append('g')
+          .attr('transform', `translate(${margin.left},0)`)
+          .call(yAxis)
+          .call((g: any) => g.select('.domain').remove())
+          .call((g: any) =>
+            g
+              .selectAll('.tick line')
+              .clone()
+              .attr('x2', width - margin.left - margin.right)
+              .attr('stroke-opacity', 0.1)
+          )
+          .call((g: any) =>
+            g
+              .append('text')
+              .attr('x', -margin.left)
+              .attr('y', 10)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'start')
+          )
 
-    dataset.map((data: any, index: number) => {
-      const _color = color && color[index] ? color[index] : COLORS[index]
+        svg
+          .append('g')
+          .attr('transform', `translate(0,${height - margin.bottom})`)
+          .call(xAxis)
+          .call((g: any) =>
+            g
+              .append('text')
+              .attr('x', width - margin.right)
+              .attr('y', 27)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'end')
+          )
+      }
 
-      svg
-        .append('g')
-        .attr('fill', _color)
-        .attr('opacity', '0.75')
-        .selectAll('rect')
-        .data(data)
-        .join('rect')
-        .attr('width', (item: any) => {
-          return (item.high - item.low) * barSimpleWidth
-        })
-        .attr('height', function (item: any) {
-          return item.count * barSimpleHeight
-        })
-        .attr('x', function (item: any) {
-          return xScale(item.low)
-        })
-        .attr('y', function (item: any) {
-          return yScale(item.count)
-        })
-    })
-  }, [])
+      dataset.map((data: any, index: number) => {
+        const _color = color && color[index] ? color[index] : COLORS[index]
+
+        svg
+          .append('g')
+          .attr('fill', _color)
+          .attr('opacity', '0.75')
+          .selectAll('rect')
+          .data(data)
+          .join('rect')
+          .attr('width', (item: any) => {
+            return (item.high - item.low) * barSimpleWidth
+          })
+          .attr('height', function (item: any) {
+            return item.count * barSimpleHeight
+          })
+          .attr('x', function (item: any) {
+            return xScale(item.low)
+          })
+          .attr('y', function (item: any) {
+            return yScale(item.count)
+          })
+      })
+    },
+    [config]
+  )
 
   return (
     <svg
