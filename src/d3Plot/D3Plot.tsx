@@ -11,16 +11,16 @@ const D3Plot = ({ dataset, config }: any) => {
     const { width } = svg.node().getBoundingClientRect()
     const flattedData = dataset.flat()
 
-    const lowValues = flattedData.map((item: any) => item.low)
-    const minValue = Math.min(...lowValues)
+    const lowValues = d3.map(flattedData, (item: any) => item.low)
+    const minValue = d3.min(lowValues)
 
-    const highValues = flattedData.map((item: any) => item.high)
-    const maxValue = Math.max(...highValues)
+    const highValues = d3.map(flattedData, (item: any) => item.high)
+    const maxValue = d3.max(highValues)
 
     const barSimpleWidth = width / (maxValue - minValue)
 
-    const counts = flattedData.map((item: any) => item.count)
-    const maxCount = Math.max(...counts)
+    const counts = d3.map(flattedData, (item: any) => item.count)
+    const maxCount = d3.max(counts)
     const barSimpleHeight = (height * 0.95) / maxCount
 
     dataset.map((data: any, index: number) => {

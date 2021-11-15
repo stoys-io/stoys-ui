@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import Empty from 'antd/lib/empty'
 
-import PmfPlot from '../../pmfPlot' // TODO: del
 import D3Plot from '../../d3Plot/D3Plot'
 import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'

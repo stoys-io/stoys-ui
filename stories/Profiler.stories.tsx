@@ -2,7 +2,7 @@ import React from 'react'
 import { Story } from '@storybook/react'
 
 import { Profiler as ProfilerComponent, DataProfilerProps } from '../src/profiler'
-import {Profiler as ProfilerD3Component} from '../src/profilerD3'
+import { Profiler as ProfilerD3Component } from '../src/profilerD3'
 import firstDatasetMock from './mocks/yellow_tripdata_2020-02.csv.dp_result.json'
 import secondDatasetMock from './mocks/yellow_tripdata_2020-03.csv.dp_result.json'
 import { Dataset, Orient } from '../src/profiler/model'
