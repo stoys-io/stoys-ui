@@ -46,6 +46,8 @@ const D3Plot = ({ dataset, config }: any) => {
       const xScale = xType(xDomain, xRange)
       const yScale = yType(yDomain, yRange)
 
+      svg.call(zoom)
+
       if (showAxes) {
         const xAxis = d3
           .axisBottom(xScale)
@@ -56,6 +58,7 @@ const D3Plot = ({ dataset, config }: any) => {
         svg
           .append('g')
           .attr('transform', `translate(${margin.left},0)`)
+          .attr('class', 'y-axis')
           .call(yAxis)
           .call((g: any) => g.select('.domain').remove())
           .call((g: any) =>
@@ -77,6 +80,7 @@ const D3Plot = ({ dataset, config }: any) => {
         svg
           .append('g')
           .attr('transform', `translate(0,${height - margin.bottom})`)
+          .attr('class', 'x-axis')
           .call(xAxis)
           .call((g: any) =>
             g
@@ -111,6 +115,28 @@ const D3Plot = ({ dataset, config }: any) => {
             return yScale(item.count)
           })
       })
+
+      function zoom(_svg: any) {
+        const extent: [[number, number], [number, number]] = [
+          [margin.left, margin.top],
+          [width - margin.right, height - margin.top],
+        ]
+
+        const zoomX = d3.zoom().scaleExtent([1, 8]).translateExtent(extent).extent(extent)
+
+        _svg.call(zoomX.on('zoom', zoomed))
+
+        function zoomed(event: any) {
+          xScale.range(xRange.map(item => event.transform.applyX(item)))
+          _svg
+            .selectAll('rect')
+            .attr('x', (item: any) => xScale(item.low))
+            .attr(
+              'width',
+              (item: any) => (item.high - item.low) * barSimpleWidth * event.transform.k
+            )
+        }
+      }
     },
     [config]
   )
