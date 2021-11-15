@@ -29,33 +29,37 @@ export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => 
 
         {releaseOptions && releaseOptions.length ? (
           <>
-            <MenuTitle>Select previous run:</MenuTitle>
-            <Select
+            <MenuTitle>Select previous run: </MenuTitle>
+            <Select<string>
               placeholder="Previous Version"
               options={releaseOptions}
-              onChange={value => typeof value === 'string' && dispatch(setBaseRelease(value))}
+              onChange={value => dispatch(setBaseRelease(value))}
               allowClear
             />
           </>
         ) : null}
 
-        <MenuTitle>Table metric:</MenuTitle>
-        <Select
+        <MenuTitle>Table metric: </MenuTitle>
+        <Select<TableMetric>
+          showSearch
           placeholder="Table metric"
           options={tableMetricOptions}
-          onChange={value => dispatch(setTableMetric(value as TableMetric))}
+          onChange={value => dispatch(setTableMetric(value))}
+          filterOption={filterOption as any}
           defaultValue={tableMetric}
         />
 
-        <MenuTitle>Column metric:</MenuTitle>
-        <Select
-          placeholder="Table metric"
+        <MenuTitle>Column metric: </MenuTitle>
+        <Select<ColumnMetric>
+          showSearch
+          placeholder="Column metric"
           options={columnMetricOptions}
-          onChange={value => dispatch(setColumnMetric(value as ColumnMetric))}
+          onChange={value => dispatch(setColumnMetric(value))}
+          filterOption={filterOption as any}
           defaultValue={columnMetric}
         />
 
-        <MenuTitle>Highlight:</MenuTitle>
+        <MenuTitle>Highlight: </MenuTitle>
         <Radio.Group
           onChange={e => dispatch(setHighlightMode(e.target.value, chromaticScale))}
           value={highlightMode}
@@ -77,6 +81,10 @@ interface Props {
   onSearch: OnSearch
   chromaticScale: ChromaticScale
   releaseOptions?: Array<{ label: string; value: string }>
+}
+
+const filterOption = (searchInput: string, option: TableMetricOption | ColumnMetricOption) => {
+  return option.label.toLowerCase().indexOf(searchInput.toLowerCase()) >= 0
 }
 
 const tableMetricOptions: TableMetricOption[] = [
