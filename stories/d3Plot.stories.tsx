@@ -20,7 +20,8 @@ D3PlotWithThreeDatasets.args = {
   dataset: PmfPlotThreeDatasets,
   config: {
     height: 500,
-    showAxes: true,
+    showAxes: false,
+    showLogScale: false,
   },
 }
 D3PlotWithThreeDatasets.storyName = 'Three datasets *'

@@ -5,7 +5,7 @@ import useD3 from './useD3'
 import { COLORS } from '../profiler/constants'
 
 const D3Plot = ({ dataset, config }: any) => {
-  const { height, color, showAxes } = config
+  const { height, color, showAxes, showLogScale } = config
 
   const margin = useMemo(
     () => ({
@@ -32,19 +32,20 @@ const D3Plot = ({ dataset, config }: any) => {
 
       const counts = d3.map(flattedData, (item: any) => item.count)
       const maxCount = d3.max(counts)
-      const barSimpleHeight = (height - margin.top - margin.bottom) / maxCount
 
       const xType = d3.scaleLinear
-      const yType = d3.scaleLinear // TODO: add log scale here
+      const yType = showLogScale ? d3.scaleLog : d3.scaleLinear
 
       const xRange = [margin.left, width - margin.right] // [left, right]
       const yRange = [height - margin.bottom, margin.top] // [bottom, top]
 
       const xDomain = [minValue, maxValue]
-      const yDomain = [0, maxCount]
+      const yDomain = [showLogScale ? 1 : 0, maxCount]
 
       const xScale = xType(xDomain, xRange)
       const yScale = yType(yDomain, yRange)
+
+      const _height = showLogScale ? yScale(1) : yScale(0)
 
       svg.call(zoom)
 
@@ -102,18 +103,10 @@ const D3Plot = ({ dataset, config }: any) => {
           .selectAll('rect')
           .data(data)
           .join('rect')
-          .attr('width', (item: any) => {
-            return (item.high - item.low) * barSimpleWidth
-          })
-          .attr('height', function (item: any) {
-            return item.count * barSimpleHeight
-          })
-          .attr('x', function (item: any) {
-            return xScale(item.low)
-          })
-          .attr('y', function (item: any) {
-            return yScale(item.count)
-          })
+          .attr('width', (item: any) => (item.high - item.low) * barSimpleWidth)
+          .attr('height', (item: any) => _height - yScale(item.count))
+          .attr('x', (item: any) => xScale(item.low))
+          .attr('y', (item: any) => yScale(item.count))
       })
 
       function zoom(_svg: any) {
