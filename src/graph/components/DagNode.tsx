@@ -13,13 +13,7 @@ import {
 import { renderNumericValue } from '../../helpers'
 import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../model'
 import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
-import {
-  useGraphStore,
-  GraphStore,
-  setHighlightedColumns,
-  openDrawer,
-  useGraphDispatch,
-} from '../graph-store'
+import { useGraphStore, GraphStore, setHighlightedColumns, useGraphDispatch } from '../graph-store'
 
 const selectTableMetric = (state: GraphStore) => state.tableMetric
 const selectColumnMetric = (state: GraphStore) => state.columnMetric
@@ -109,11 +103,7 @@ export const DagNode = memo(
           />
         )}
         <ScrollCard
-          title={
-            <ScrollCardTitle onClick={() => dispatch(openDrawer(id))} color={titleHighlightColor}>
-              {label}
-            </ScrollCardTitle>
-          }
+          title={<ScrollCardTitle color={titleHighlightColor}>{label}</ScrollCardTitle>}
           size="small"
           type="inner"
           extra={tableMetricValFormatted}
@@ -122,24 +112,28 @@ export const DagNode = memo(
           <List
             size="small"
             dataSource={_columns}
-            renderItem={(column: Column) => (
-              <List.Item>
-                <ItemContent>
-                  <ItemText
-                    hoverable={isHoverableColumn}
-                    color={getListItemHighlightedColor(column)}
-                    onClick={(evt: React.MouseEvent<HTMLElement>) => {
-                      evt.stopPropagation()
-                      dispatch(setHighlightedColumns(column.id, id))
-                    }}
-                    title={column.name}
-                  >
-                    {column.name}
-                  </ItemText>
-                  <ItemExtra>{formatColumnExtra(column, columnMetric)}</ItemExtra>
-                </ItemContent>
-              </List.Item>
-            )}
+            renderItem={(column: Column) => {
+              const columnExtra = formatColumnExtra(column, columnMetric)
+              const tooltip = `${column.name}: ${columnExtra}`
+
+              return (
+                <List.Item>
+                  <ItemContent title={tooltip}>
+                    <ItemText
+                      hoverable={isHoverableColumn}
+                      color={getListItemHighlightedColor(column)}
+                      onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                        evt.stopPropagation()
+                        dispatch(setHighlightedColumns(column.id, id))
+                      }}
+                    >
+                      {column.name}
+                    </ItemText>
+                    <ItemExtra>{columnExtra}</ItemExtra>
+                  </ItemContent>
+                </List.Item>
+              )
+            }}
           />
         </ScrollCard>
         {targetPosition === 'bottom' ? (
@@ -163,7 +157,7 @@ export const DagNode = memo(
 )
 
 const formatColumnExtra = (column: Column, columnMetric: ColumnMetric): string => {
-  if (column.metrics === undefined) {
+  if (column.metrics === undefined || columnMetric === 'none') {
     return ''
   }
 

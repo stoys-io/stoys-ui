@@ -25,12 +25,14 @@ import {
   nodeClick,
   highlightIds,
   useGraphDispatch,
+  openDrawer,
 } from './graph-store'
 
 import { Container, GraphContainer } from './styles'
 import { DataGraph, ChromaticScale, Orientation } from './model'
 
 import { mapInitialNodes, mapInitialEdges } from './graph-ops'
+import { usePreventDoubleClick } from './usePreventDoubleClick'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -80,10 +82,14 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
   const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
 
-  const onElementClick = (_: any, element: Node0 | Edge0) => {
+  const elementClick = usePreventDoubleClick((_: any, element: Node0 | Edge0) => {
     if (isNode(element)) {
       return dispatch(nodeClick(element.id, config.chromaticScale))
     }
+  })
+
+  const nodeDoubleClick = (_: any, node: Node0) => {
+    dispatch(openDrawer(node.id))
   }
 
   const onPaneClick = () => {
@@ -120,7 +126,8 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
         <ReactFlowProvider>
           <ReactFlow
             nodesDraggable={false}
-            onElementClick={onElementClick}
+            onElementClick={elementClick}
+            onNodeDoubleClick={nodeDoubleClick}
             onPaneClick={onPaneClick}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}

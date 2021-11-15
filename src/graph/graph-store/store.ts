@@ -25,7 +25,7 @@ export const createStore = () =>
 
     baseRelease: '',
     tableMetric: 'none',
-    columnMetric: 'data_type',
+    columnMetric: 'none',
 
     highlightMode: 'nearest',
     highlights: defaultHighlights,
