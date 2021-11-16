@@ -49,8 +49,10 @@ const D3Plot = ({ dataset, config }: any) => {
 
       svg.call(zoom)
 
+      let xAxis: any
+
       if (showAxes) {
-        const xAxis = d3
+        xAxis = d3
           .axisBottom(xScale)
           .ticks(width / 100)
           .tickSizeOuter(0)
@@ -128,6 +130,10 @@ const D3Plot = ({ dataset, config }: any) => {
               'width',
               (item: any) => (item.high - item.low) * barSimpleWidth * event.transform.k
             )
+
+          if (xAxis) {
+            _svg.selectAll('.x-axis').call(xAxis)
+          }
         }
       }
     },
