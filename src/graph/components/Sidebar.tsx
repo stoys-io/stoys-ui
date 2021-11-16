@@ -4,6 +4,7 @@ import Space from 'antd/lib/space'
 import Select from 'antd/lib/select'
 
 import SidebarSearch, { OnSearch } from './SidebarSearch'
+import { ScrollableSelect } from './ScrollableSelect'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle } from '../styles'
 import { ChromaticScale, TableMetric, Highlight, ColumnMetric } from '../model'
@@ -40,23 +41,21 @@ export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => 
         ) : null}
 
         <MenuTitle>Table metric: </MenuTitle>
-        <Select<TableMetric>
-          showSearch
+        <ScrollableSelect
           placeholder="Table metric"
           options={tableMetricOptions}
           onChange={value => dispatch(setTableMetric(value))}
-          filterOption={filterOption as any}
-          defaultValue={tableMetric}
+          filterOption={filterOption}
+          value={tableMetric}
         />
 
         <MenuTitle>Column metric: </MenuTitle>
-        <Select<ColumnMetric>
-          showSearch
+        <ScrollableSelect
           placeholder="Column metric"
           options={columnMetricOptions}
           onChange={value => dispatch(setColumnMetric(value))}
-          filterOption={filterOption as any}
-          defaultValue={columnMetric}
+          filterOption={filterOption}
+          value={columnMetric}
         />
 
         <MenuTitle>Highlight: </MenuTitle>
