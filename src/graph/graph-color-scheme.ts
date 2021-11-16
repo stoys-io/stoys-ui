@@ -26,7 +26,7 @@ const hyperbolicNearest = (n: number): number => {
 }
 
 // |||-|-|--|----|-----------
-const hyperbolicGradientLeft = (n: number): number => {
+export const hyperbolicGradientLeft = (n: number): number => {
   const low = 0
   const high = 0.5
   const diff = high - low

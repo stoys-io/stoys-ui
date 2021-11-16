@@ -11,6 +11,7 @@ import {
   getMergedGraph,
   highlightSingleNode,
   highlightMetrics,
+  highlightColumnMetrics,
 } from '../graph-ops'
 import {
   Graph,
@@ -26,12 +27,17 @@ import {
 
 export const setTableMetric =
   (tableMetric: TableMetric) =>
-  ({ defaultGraph }: GraphStore): Partial<GraphStore> => {
+  ({ defaultGraph, columnMetric }: GraphStore): Partial<GraphStore> => {
     const newHighlightMode = 'metrics'
     const highlights = highlightMetrics({ metric: tableMetric, graph: defaultGraph })
+    const columnMetricMaxValue = highlightColumnMetrics({
+      metric: columnMetric,
+      graph: defaultGraph,
+    })
     return {
       tableMetric,
       highlights,
+      columnMetricMaxValue,
       highlightMode: newHighlightMode,
       graph: defaultGraph,
     }

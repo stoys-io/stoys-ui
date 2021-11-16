@@ -14,14 +14,7 @@ import { renderNumericValue } from '../../helpers'
 import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../model'
 import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
 import { useGraphStore, GraphStore, setHighlightedColumns, useGraphDispatch } from '../graph-store'
-
-const selectTableMetric = (state: GraphStore) => state.tableMetric
-const selectColumnMetric = (state: GraphStore) => state.columnMetric
-const selectHighlightMode = (state: GraphStore) => state.highlightMode
-
-const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
-const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
-const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
+import { getColor } from '../graph-ops'
 
 export const DagNode = memo(
   ({
@@ -34,6 +27,8 @@ export const DagNode = memo(
     const dispatch = useGraphDispatch()
 
     const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
+    const columnMetricMaxValue = useGraphStore(state => state.columnMetricMaxValue)
+
     const selectedTableId = useGraphStore(selectTableId)
     const selectedColumnId = useGraphStore(selectColumnId)
     const relatedColumnsIds = useGraphStore(selectRelColumnIds)
@@ -53,28 +48,48 @@ export const DagNode = memo(
         ? columns.filter((column: Column) => relatedColumnsIds.includes(column.id))
         : columns
 
-    const getListItemHighlightedColor = (column: Column): string => {
-      if (id === selectedTableId && column.id === selectedColumnId) {
-        return NODE_TEXT_COLOR
-      }
+    // TODO: Move to `ColumnHighlights` ?
+    const getListItemHighlightedColor =
+      highlightMode === 'metrics'
+        ? (column: Column): string => {
+            /* console.log({ highlightMode, columnMetricMaxValue, columnMetric }) */
+            if (columnMetricMaxValue === 0) {
+              return RESET_COLOR
+            }
 
-      if (id === selectedTableId) {
-        return TRANSPARENT_NODE_TEXT_COLOR
-      }
+            if (columnMetric === 'none' || columnMetric === 'data_type') {
+              return RESET_COLOR
+            }
 
-      if (
-        style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
-        style?.color === DELETED_NODE_HIGHLIHT_COLOR
-      ) {
-        return style.color
-      }
+            // TODO: something about it
+            const m = column.metrics?.[columnMetric] ?? 0
+            const m2 = typeof m === 'string' ? +m : m
+            const normalizedColMVal = m2 / columnMetricMaxValue
 
-      if (column?.style?.color) {
-        return column.style.color
-      }
+            return getColor(normalizedColMVal)
+          }
+        : (column: Column): string => {
+            if (id === selectedTableId && column.id === selectedColumnId) {
+              return NODE_TEXT_COLOR
+            }
 
-      return RESET_COLOR
-    }
+            if (id === selectedTableId) {
+              return TRANSPARENT_NODE_TEXT_COLOR
+            }
+
+            if (
+              style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
+              style?.color === DELETED_NODE_HIGHLIHT_COLOR
+            ) {
+              return style.color
+            }
+
+            if (column?.style?.color) {
+              return column.style.color
+            }
+
+            return RESET_COLOR
+          }
 
     const cardHighlightedColor = style?.color ? style.color : GREY_ACCENT
     const titleHighlightColor =
@@ -155,6 +170,13 @@ export const DagNode = memo(
     )
   }
 )
+
+const selectTableMetric = (state: GraphStore) => state.tableMetric
+const selectColumnMetric = (state: GraphStore) => state.columnMetric
+const selectHighlightMode = (state: GraphStore) => state.highlightMode
+const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
+const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
+const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
 
 const formatColumnExtra = (column: Column, columnMetric: ColumnMetric): string => {
   if (column.metrics === undefined || columnMetric === 'none') {

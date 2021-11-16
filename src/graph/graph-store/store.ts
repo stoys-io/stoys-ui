@@ -26,6 +26,7 @@ export const createStore = () =>
     baseRelease: '',
     tableMetric: 'none',
     columnMetric: 'none',
+    columnMetricMaxValue: 0,
 
     highlightMode: 'nearest',
     highlights: defaultHighlights,
@@ -39,6 +40,7 @@ export const defaultHighlightedColumns = {
 }
 
 export const defaultHighlights = { nodes: {}, edges: {} }
+export const defaultColumnHighlights = {}
 
 const defaultGraphValue = {
   nodes: [],
