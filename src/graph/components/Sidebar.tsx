@@ -49,23 +49,13 @@ export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => 
           value={tableMetric}
         />
 
-        <Select<TableMetric>
-          showSearch
-          placeholder="Table metric"
-          options={tableMetricOptions}
-          onChange={value => dispatch(setTableMetric(value))}
-          filterOption={filterOption as any}
-          defaultValue={tableMetric}
-        />
-
         <MenuTitle>Column metric: </MenuTitle>
-        <Select<ColumnMetric>
-          showSearch
+        <ScrollableSelect
           placeholder="Column metric"
           options={columnMetricOptions}
           onChange={value => dispatch(setColumnMetric(value))}
-          filterOption={filterOption as any}
-          defaultValue={columnMetric}
+          filterOption={filterOption}
+          value={columnMetric}
         />
 
         <MenuTitle>Highlight: </MenuTitle>
