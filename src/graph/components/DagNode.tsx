@@ -14,7 +14,7 @@ import { renderNumericValue } from '../../helpers'
 import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../model'
 import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
 import { useGraphStore, GraphStore, setHighlightedColumns, useGraphDispatch } from '../graph-store'
-import { getColor } from '../graph-ops'
+import { getMetricsColumnColor } from '../graph-ops'
 
 export const DagNode = memo(
   ({
@@ -52,7 +52,6 @@ export const DagNode = memo(
     const getListItemHighlightedColor =
       highlightMode === 'metrics'
         ? (column: Column): string => {
-            /* console.log({ highlightMode, columnMetricMaxValue, columnMetric }) */
             if (columnMetricMaxValue === 0) {
               return RESET_COLOR
             }
@@ -61,12 +60,17 @@ export const DagNode = memo(
               return RESET_COLOR
             }
 
-            // TODO: something about it
-            const m = column.metrics?.[columnMetric] ?? 0
-            const m2 = typeof m === 'string' ? +m : m
-            const normalizedColMVal = m2 / columnMetricMaxValue
+            const colMetricVal = column.metrics?.[columnMetric] ?? 0
+            const colMetricVal2 = // TODO: Metric types should be well defined
+              typeof colMetricVal !== 'string'
+                ? colMetricVal
+                : !isNaN(+colMetricVal)
+                ? +colMetricVal
+                : 0
 
-            return getColor(normalizedColMVal)
+            const normalizedColMVal = colMetricVal2 / columnMetricMaxValue
+
+            return getMetricsColumnColor(normalizedColMVal)
           }
         : (column: Column): string => {
             if (id === selectedTableId && column.id === selectedColumnId) {

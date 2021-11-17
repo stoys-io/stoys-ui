@@ -24,6 +24,7 @@ import {
   getChromaticColor,
   hyperbolicGradientRight,
   hyperbolicGradientLeft,
+  shiftedFlatScale,
 } from './graph-color-scheme'
 import { defaultHighlights } from './graph-store/store'
 
@@ -176,8 +177,8 @@ interface HColumnMetricsArgs {
   graph: Graph
 }
 
-export const getColor = (rank: number) =>
-  getChromaticColor(hyperbolicGradientLeft(rank), 'interpolatePuOr')
+export const getMetricsColumnColor = (t: number) =>
+  getChromaticColor(hyperbolicGradientRight(t, 0.2, 1), 'interpolateReds')
 
 export const highlightColumnMetrics = ({ metric, graph }: HColumnMetricsArgs): number => {
   if (metric === 'none' || metric === 'data_type') {
@@ -189,8 +190,8 @@ export const highlightColumnMetrics = ({ metric, graph }: HColumnMetricsArgs): n
       ...acc,
       ...node.data.columns.map(col => {
         const val = col.metrics?.[metric] ?? 0
-        return typeof val === 'string' ? +val : val
-        // TODO: This garbage should be gone with new graph data structure
+        return typeof val !== 'string' ? val : !isNaN(+val) ? +val : 0
+        // TODO: Metric types should be well defined
       }),
     ]
   }, [])
