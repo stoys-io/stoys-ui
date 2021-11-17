@@ -25,6 +25,8 @@ import {
   ColumnMetric,
 } from '../model'
 
+export const setCountNormalize = (countNormalize: boolean) => ({ countNormalize })
+
 export const setTableMetric =
   (tableMetric: TableMetric) =>
   ({ defaultGraph, columnMetric }: GraphStore): Partial<GraphStore> => {

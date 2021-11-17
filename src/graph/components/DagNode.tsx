@@ -10,7 +10,7 @@ import {
   TRANSPARENT_NODE_TEXT_COLOR,
   GREY_ACCENT,
 } from '../constants'
-import { renderNumericValue } from '../../helpers'
+import { formatPercentage, renderNumericValue } from '../../helpers'
 import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../model'
 import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
 import { useGraphStore, GraphStore, setHighlightedColumns, useGraphDispatch } from '../graph-store'
@@ -28,6 +28,7 @@ export const DagNode = memo(
 
     const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
     const columnMetricMaxValue = useGraphStore(state => state.columnMetricMaxValue)
+    const countNormalize = useGraphStore(state => state.countNormalize)
 
     const selectedTableId = useGraphStore(selectTableId)
     const selectedColumnId = useGraphStore(selectColumnId)
@@ -132,7 +133,7 @@ export const DagNode = memo(
             size="small"
             dataSource={_columns}
             renderItem={(column: Column) => {
-              const columnExtra = formatColumnExtra(column, columnMetric)
+              const columnExtra = formatColumnExtra(column, columnMetric, countNormalize)
               const tooltip = `${column.name}: ${columnExtra}`
 
               return (
@@ -182,13 +183,25 @@ const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTa
 const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
 const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
 
-const formatColumnExtra = (column: Column, columnMetric: ColumnMetric): string => {
+const formatColumnExtra = (
+  column: Column,
+  columnMetric: ColumnMetric,
+  countNormalize: boolean = false
+): string => {
   if (column.metrics === undefined || columnMetric === 'none') {
     return ''
   }
 
   if (columnMetric === 'data_type' && column.metrics[columnMetric] !== undefined) {
     return formatColumnDataType(column.metrics['data_type']!)
+  }
+
+  if (columnMetric.startsWith('count_') && countNormalize) {
+    const totalCount = column.metrics['count'] ?? 1
+    const count = (column.metrics[columnMetric] as number) ?? 1 // FIXME: counts are always defined
+    const normalized = count / totalCount
+
+    return formatPercentage(normalized)
   }
 
   return formatColumnMetric(column.metrics[columnMetric] as string | number)

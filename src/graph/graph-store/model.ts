@@ -15,6 +15,7 @@ export interface GraphStore {
   tableMetric: TableMetric
   columnMetric: ColumnMetric
   columnMetricMaxValue: number
+  countNormalize: boolean
 
   highlightMode: Highlight
 

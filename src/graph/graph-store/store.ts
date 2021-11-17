@@ -27,6 +27,7 @@ export const createStore = () =>
     tableMetric: 'none',
     columnMetric: 'none',
     columnMetricMaxValue: 0,
+    countNormalize: false,
 
     highlightMode: 'nearest',
     highlights: defaultHighlights,
