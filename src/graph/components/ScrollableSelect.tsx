@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Select, { SelectValue } from 'antd/lib/select'
 
 const ScrollableSelect = <T extends SelectValue>({
@@ -8,10 +8,12 @@ const ScrollableSelect = <T extends SelectValue>({
   onChange,
   options,
 }: Props<T>) => {
+  const [isOpen, setIsOpen] = useState(false)
+
   const lengthOptions = options.length
   const curIndex = options.findIndex(option => option.value === value)
 
-  const onWheel = (evt: React.WheelEvent) => {
+  const wheel = (evt: React.WheelEvent) => {
     if (isWheelUp(evt)) {
       if (curIndex === 0) {
         return
@@ -27,8 +29,16 @@ const ScrollableSelect = <T extends SelectValue>({
     return onChange(options[curIndex + 1].value as T)
   }
 
+  const wheelFn = withThreshold(wheel, isWheelUp, scrollRate)
+  const onWheel = (evt: React.WheelEvent) => {
+    // Prevent wheel on open dropdown
+    if (!isOpen) {
+      wheelFn(evt)
+    }
+  }
+
   return (
-    <div onWheel={withThreshold(onWheel, isWheelUp, scrollRate)}>
+    <div onWheel={onWheel}>
       <Select<T>
         showSearch
         placeholder={placeholder}
@@ -38,6 +48,7 @@ const ScrollableSelect = <T extends SelectValue>({
         value={value}
         defaultValue={value}
         style={style}
+        onDropdownVisibleChange={setIsOpen}
       />
     </div>
   )
