@@ -63,14 +63,14 @@ export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => 
           value={columnMetric}
         />
 
-        {showCountNormalize && (
-          <Checkbox
-            checked={countNormalize}
-            onChange={e => dispatch(setCountNormalize(e.target.checked))}
-          >
-            normalize count?
-          </Checkbox>
-        )}
+        <Checkbox
+          checked={countNormalize}
+          onChange={e => dispatch(setCountNormalize(e.target.checked))}
+          disabled={!showCountNormalize}
+          style={checkboxStyle}
+        >
+          normalize count?
+        </Checkbox>
 
         <MenuTitle>Highlight: </MenuTitle>
         <Radio.Group
@@ -96,6 +96,7 @@ interface Props {
   releaseOptions?: Array<{ label: string; value: string }>
 }
 
+const checkboxStyle = { marginTop: '8px' }
 const filterOption = (searchInput: string, option: TableMetricOption | ColumnMetricOption) => {
   return option.label.toLowerCase().indexOf(searchInput.toLowerCase()) >= 0
 }

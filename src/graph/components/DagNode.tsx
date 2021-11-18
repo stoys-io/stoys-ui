@@ -1,3 +1,5 @@
+// TODO: Remove type guards. Metric types should be well defined
+
 import React, { memo, useCallback } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import List from 'antd/lib/list'
@@ -49,52 +51,86 @@ export const DagNode = memo(
         ? columns.filter((column: Column) => relatedColumnsIds.includes(column.id))
         : columns
 
+    const columnMaxCount = (metric: ColumnMetric) => {
+      if (!metric.startsWith('count_') || metric === 'none' || metric === 'data_type') {
+        return 1
+      }
+
+      const allValues = _columns.map(column => {
+        const tmp = column.metrics?.[metric] ?? 1
+        const v = typeof tmp !== 'string' ? tmp : !isNaN(+tmp) ? +tmp : 1
+
+        return v
+      })
+      return Math.max(...allValues, 1)
+    }
+
+    const columnColorCountNormalizedMetrics = (column: Column): string => {
+      if (columnMetricMaxValue === 0) {
+        return RESET_COLOR
+      }
+
+      if (columnMetric === 'none' || columnMetric === 'data_type') {
+        return RESET_COLOR
+      }
+
+      const tmp = column.metrics?.[columnMetric] ?? 0
+      const count = typeof tmp !== 'string' ? tmp : !isNaN(+tmp) ? +tmp : 0
+
+      const totalCount = columnMaxCount(columnMetric)
+      const normalized = count / totalCount
+
+      return getMetricsColumnColor(normalized)
+    }
+
+    const columnColorMetrics = (column: Column): string => {
+      if (columnMetricMaxValue === 0) {
+        return RESET_COLOR
+      }
+
+      if (columnMetric === 'none' || columnMetric === 'data_type') {
+        return RESET_COLOR
+      }
+
+      const colMetricVal = column.metrics?.[columnMetric] ?? 0
+      const colMetricVal2 =
+        typeof colMetricVal !== 'string' ? colMetricVal : !isNaN(+colMetricVal) ? +colMetricVal : 0
+
+      const normalizedColMVal = colMetricVal2 / columnMetricMaxValue
+
+      return getMetricsColumnColor(normalizedColMVal)
+    }
+
+    const columnColorOnFocus = (column: Column): string => {
+      if (id === selectedTableId && column.id === selectedColumnId) {
+        return NODE_TEXT_COLOR
+      }
+
+      if (id === selectedTableId) {
+        return TRANSPARENT_NODE_TEXT_COLOR
+      }
+
+      if (
+        style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
+        style?.color === DELETED_NODE_HIGHLIHT_COLOR
+      ) {
+        return style.color
+      }
+
+      if (column?.style?.color) {
+        return column.style.color
+      }
+
+      return RESET_COLOR
+    }
+
     // TODO: Move to `ColumnHighlights` ?
-    const getListItemHighlightedColor =
-      highlightMode === 'metrics'
-        ? (column: Column): string => {
-            if (columnMetricMaxValue === 0) {
-              return RESET_COLOR
-            }
-
-            if (columnMetric === 'none' || columnMetric === 'data_type') {
-              return RESET_COLOR
-            }
-
-            const colMetricVal = column.metrics?.[columnMetric] ?? 0
-            const colMetricVal2 = // TODO: Metric types should be well defined
-              typeof colMetricVal !== 'string'
-                ? colMetricVal
-                : !isNaN(+colMetricVal)
-                ? +colMetricVal
-                : 0
-
-            const normalizedColMVal = colMetricVal2 / columnMetricMaxValue
-
-            return getMetricsColumnColor(normalizedColMVal)
-          }
-        : (column: Column): string => {
-            if (id === selectedTableId && column.id === selectedColumnId) {
-              return NODE_TEXT_COLOR
-            }
-
-            if (id === selectedTableId) {
-              return TRANSPARENT_NODE_TEXT_COLOR
-            }
-
-            if (
-              style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
-              style?.color === DELETED_NODE_HIGHLIHT_COLOR
-            ) {
-              return style.color
-            }
-
-            if (column?.style?.color) {
-              return column.style.color
-            }
-
-            return RESET_COLOR
-          }
+    const columnColor =
+      highlightMode !== 'metrics'
+        ? columnColorOnFocus
+        : columnMetric.startsWith('count_') && countNormalize
+        ? columnColorCountNormalizedMetrics
+        : columnColorMetrics
 
     const cardHighlightedColor = style?.color ? style.color : GREY_ACCENT
     const titleHighlightColor =
@@ -141,7 +177,7 @@ export const DagNode = memo(
                   <ItemContent title={tooltip}>
                     <ItemText
                       hoverable={isHoverableColumn}
-                      color={getListItemHighlightedColor(column)}
+                      color={columnColor(column)}
                       onClick={(evt: React.MouseEvent<HTMLElement>) => {
                         evt.stopPropagation()
                         dispatch(setHighlightedColumns(column.id, id))
@@ -198,7 +234,7 @@ const formatColumnExtra = (
 
   if (columnMetric.startsWith('count_') && countNormalize) {
     const totalCount = column.metrics['count'] ?? 1
-    const count = (column.metrics[columnMetric] as number) ?? 1 // FIXME: counts are always defined
+    const count = (column.metrics[columnMetric] as number) ?? 0
     const normalized = count / totalCount
 
     return formatPercentage(normalized)
