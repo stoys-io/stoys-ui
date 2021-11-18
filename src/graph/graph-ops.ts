@@ -231,7 +231,7 @@ export function notEmpty<TValue>(value: TValue | null | undefined): value is TVa
   return value !== null && value !== undefined
 }
 
-export function collectChildColumnAndTableIds(
+export function collectChildColumnAndTableIds( // TODO: re-write this one
   tId: string,
   cId: string,
   edges: Array<Edge>,
@@ -240,6 +240,7 @@ export function collectChildColumnAndTableIds(
   let tableQueue = [tId]
   let columnsResult = [cId]
   let tableResult: Array<string | undefined> = []
+  let visitedTables: string[] = []
 
   while (tableQueue.length) {
     const currentTableId = tableQueue.shift()
@@ -256,7 +257,12 @@ export function collectChildColumnAndTableIds(
 
     edges
       .filter(edge => edge.source === currentTableId)
-      .forEach(edge => tableQueue.push(edge.target))
+      .forEach(edge => {
+        if (!visitedTables.includes(edge.target)) {
+          visitedTables.push(edge.target)
+          tableQueue.push(edge.target)
+        }
+      })
   }
 
   return {
@@ -265,7 +271,7 @@ export function collectChildColumnAndTableIds(
   }
 }
 
-export function collectParentColumnAndTableIds(
+export function collectParentColumnAndTableIds( // TODO: re-write this one
   tId: string,
   cId: string,
   edges: Array<Edge>,
@@ -274,6 +280,7 @@ export function collectParentColumnAndTableIds(
   let tableQueue = [tId]
   let columnsResult = [cId]
   let tableResult: Array<string | undefined> = []
+  let visitedTables: string[] = []
 
   while (tableQueue.length) {
     const currentTableId = tableQueue.shift()
@@ -289,7 +296,12 @@ export function collectParentColumnAndTableIds(
 
     edges
       .filter(edge => edge.target === currentTableId)
-      .forEach(edge => tableQueue.push(edge.source))
+      .forEach(edge => {
+        if (!visitedTables.includes(edge.target)) {
+          visitedTables.push(edge.source)
+          tableQueue.push(edge.source)
+        }
+      })
   }
 
   return {

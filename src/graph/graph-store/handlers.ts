@@ -352,7 +352,6 @@ const onHighlightModeChangeColumns = ({
       selectedTableId: tableId,
       selectedColumnId: columnId,
       relatedColumnsIds: columnDependcies,
-      relatedTablesIds: tableIds,
     },
   }
 }

@@ -38,7 +38,6 @@ interface HColumns {
   selectedTableId: string
   selectedColumnId: string
   relatedColumnsIds: Array<string>
-  relatedTablesIds: Array<string>
 }
 
 interface Highlights {
