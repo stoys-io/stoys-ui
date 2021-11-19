@@ -3,6 +3,7 @@ import * as d3 from 'd3'
 
 import useD3 from './useD3'
 import { COLORS } from '../profiler/constants'
+import { removeZeroData } from '../pmfPlot/helpers'
 
 const D3Plot = ({ dataset, config }: any) => {
   const { height, color, showAxes, showLogScale } = config
@@ -17,20 +18,28 @@ const D3Plot = ({ dataset, config }: any) => {
     [showAxes]
   )
 
+  const plotData: Array<any> = dataset
+    .map((data: any, index: number) => {
+      return data.map((dataItem: any) => ({
+        ...dataItem,
+        color: (Array.isArray(color) ? color[index] : color) || COLORS[index],
+      }))
+    })
+    .flat()
+
   const ref = useD3(
     (svg: any) => {
       const { width } = svg.node().getBoundingClientRect()
-      const flattedData = dataset.flat()
 
-      const lowValues = d3.map(flattedData, (item: any) => item.low)
+      const lowValues = d3.map(plotData, (item: any) => item.low)
       const minValue = d3.min(lowValues)
 
-      const highValues = d3.map(flattedData, (item: any) => item.high)
+      const highValues = d3.map(plotData, (item: any) => item.high)
       const maxValue = d3.max(highValues)
 
       const barSimpleWidth = (width - margin.left - margin.right) / (maxValue - minValue)
 
-      const counts = d3.map(flattedData, (item: any) => item.count)
+      const counts = d3.map(plotData, (item: any) => item.count)
       const maxCount = d3.max(counts)
 
       const xType = d3.scaleLinear
@@ -47,7 +56,12 @@ const D3Plot = ({ dataset, config }: any) => {
 
       const _height = showLogScale ? yScale(1) : yScale(0)
 
-      svg.call(zoom)
+      const windowWidth = window.innerWidth
+
+      svg
+        .call(zoom)
+        .on('pointerenter pointermove', pointermoved)
+        .on('pointerleave', () => tooltip.style('display', 'none').selectChildren().remove())
 
       let xAxis: any
 
@@ -95,21 +109,17 @@ const D3Plot = ({ dataset, config }: any) => {
           )
       }
 
-      dataset.map((data: any, index: number) => {
-        const _color = color && color[index] ? color[index] : COLORS[index]
-
-        svg
-          .append('g')
-          .attr('fill', _color)
-          .attr('opacity', '0.75')
-          .selectAll('rect')
-          .data(data)
-          .join('rect')
-          .attr('width', (item: any) => (item.high - item.low) * barSimpleWidth)
-          .attr('height', (item: any) => _height - yScale(item.count))
-          .attr('x', (item: any) => xScale(item.low))
-          .attr('y', (item: any) => yScale(item.count))
-      })
+      svg
+        .append('g')
+        .selectAll('rect')
+        .data(plotData)
+        .join('rect')
+        .attr('width', (item: any) => (item.high - item.low) * barSimpleWidth)
+        .attr('height', (item: any) => _height - yScale(item.count))
+        .attr('x', (item: any) => xScale(item.low))
+        .attr('y', (item: any) => yScale(item.count))
+        .attr('fill', (d: any) => d.color)
+        .attr('opacity', '0.75') // TODO: remove - use mix blend mode
 
       function zoom(_svg: any) {
         const extent: [[number, number], [number, number]] = [
@@ -134,6 +144,61 @@ const D3Plot = ({ dataset, config }: any) => {
           if (xAxis) {
             _svg.selectAll('.x-axis').call(xAxis)
           }
+        }
+      }
+
+      const body = d3.select('body')
+      const tooltip = body.append('div').style('pointer-events', 'none')
+
+      function pointermoved(event: any) {
+        const [xCoordinate, yCoordinate] = d3.pointer(event) // [x, y]
+        const xValue = xScale.invert(xCoordinate)
+
+        const tooltipValues = plotData.filter(
+          (item: any) => item.low < xValue && xValue <= item.high
+        )
+
+        const colorBadge = (color: string) => `
+          <span style="
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 100%;
+            margin-right: 5px;
+            margin-left: 5px;
+            background-color: ${color};
+          "></span>
+        `
+
+        if (tooltipValues.length) {
+          tooltip
+            .style('display', 'block')
+            .attr('class', 'plot-tooltip')
+            .style('padding', '2px')
+            .style('position', 'fixed')
+            .style('background-color', '#fff')
+            .style('border', '1px solid #000')
+            .html(() => {
+              return tooltipValues
+                .map(
+                  value =>
+                    `<div>${colorBadge(value.color)} ${value.low} - ${value.high} <b>${
+                      value.count
+                    }</b></div>`
+                )
+                .join('')
+            })
+
+          const { width: tooltipWidth } = tooltip.node()!.getBoundingClientRect()
+
+          let y = yCoordinate + 15
+          let x = xCoordinate + 15
+
+          if (x + tooltipWidth > windowWidth) {
+            x = x - tooltipWidth - 15
+          }
+
+          tooltip.style('top', `${y}px`).style('left', `${x}px`)
         }
       }
     },
