@@ -16,9 +16,16 @@ import {
   Highlights,
   GraphExtended,
   Column,
+  ColumnMetric,
 } from './model'
 
-import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './graph-color-scheme'
+import {
+  colorScheme,
+  getChromaticColor,
+  hyperbolicGradientRight,
+  hyperbolicGradientLeft,
+  shiftedFlatScale,
+} from './graph-color-scheme'
 import { defaultHighlights } from './graph-store/store'
 
 export const highlightSingleNode = (id: string): Highlights => ({
@@ -165,11 +172,39 @@ export const findDownstreamEdges = (graph: Graph, id: string): Edge[] => {
   return visitedEdges
 }
 
+interface HColumnMetricsArgs {
+  metric: ColumnMetric
+  graph: Graph
+}
+
+export const getMetricsColumnColor = (t: number) =>
+  getChromaticColor(hyperbolicGradientRight(t, 0.2, 1), 'interpolateReds')
+
+export const highlightColumnMetrics = ({ metric, graph }: HColumnMetricsArgs): number => {
+  if (metric === 'none' || metric === 'data_type') {
+    return 0
+  }
+
+  const allMetricValues = graph.nodes.reduce((acc: number[], node): number[] => {
+    return [
+      ...acc,
+      ...node.data.columns.map(col => {
+        const val = col.metrics?.[metric] ?? 0
+        return typeof val !== 'string' ? val : !isNaN(+val) ? +val : 0
+        // TODO: Metric types should be well defined
+      }),
+    ]
+  }, [])
+
+  const maxMetricValue = Math.max(...allMetricValues, 0)
+
+  return maxMetricValue
+}
+
 interface HMetricsArgs {
   metric: TableMetric
   graph: Graph
 }
-
 export const highlightMetrics = ({ metric, graph }: HMetricsArgs): Highlights => {
   if (metric === 'none') {
     return defaultHighlights
@@ -196,7 +231,7 @@ export function notEmpty<TValue>(value: TValue | null | undefined): value is TVa
   return value !== null && value !== undefined
 }
 
-export function collectChildColumnAndTableIds(
+export function collectChildColumnAndTableIds( // TODO: re-write this one
   tId: string,
   cId: string,
   edges: Array<Edge>,
@@ -205,6 +240,7 @@ export function collectChildColumnAndTableIds(
   let tableQueue = [tId]
   let columnsResult = [cId]
   let tableResult: Array<string | undefined> = []
+  let visitedTables: string[] = []
 
   while (tableQueue.length) {
     const currentTableId = tableQueue.shift()
@@ -221,7 +257,12 @@ export function collectChildColumnAndTableIds(
 
     edges
       .filter(edge => edge.source === currentTableId)
-      .forEach(edge => tableQueue.push(edge.target))
+      .forEach(edge => {
+        if (!visitedTables.includes(edge.target)) {
+          visitedTables.push(edge.target)
+          tableQueue.push(edge.target)
+        }
+      })
   }
 
   return {
@@ -230,7 +271,7 @@ export function collectChildColumnAndTableIds(
   }
 }
 
-export function collectParentColumnAndTableIds(
+export function collectParentColumnAndTableIds( // TODO: re-write this one
   tId: string,
   cId: string,
   edges: Array<Edge>,
@@ -239,6 +280,7 @@ export function collectParentColumnAndTableIds(
   let tableQueue = [tId]
   let columnsResult = [cId]
   let tableResult: Array<string | undefined> = []
+  let visitedTables: string[] = []
 
   while (tableQueue.length) {
     const currentTableId = tableQueue.shift()
@@ -254,7 +296,12 @@ export function collectParentColumnAndTableIds(
 
     edges
       .filter(edge => edge.target === currentTableId)
-      .forEach(edge => tableQueue.push(edge.source))
+      .forEach(edge => {
+        if (!visitedTables.includes(edge.target)) {
+          visitedTables.push(edge.source)
+          tableQueue.push(edge.source)
+        }
+      })
   }
 
   return {
@@ -364,13 +411,18 @@ export const getMergedGraph = (currentGraph: Graph, baseGraph: Graph): GraphExte
       const currentColumnsNames = node.data.columns.map(column => column.name)
       const baseColumns = baseGraph.nodes.find(n => node.id === n.id)?.data.columns
       const baseColumnsNames = baseColumns?.map(column => column.name)
+
+      // TODO: Move to columnHighlights
       const addedColumns = node.data.columns
         .filter(column => !baseColumnsNames?.includes(column.name))
         .map(column => ({ ...column, style: { color: ADDED_NODE_HIGHLIGHT_COLOR } }))
       const addedColumnsNames = addedColumns.map(column => column.name)
+
+      // TODO: Move to columnHighlights
       const deletedColumns = baseColumns
         ?.filter(column => !currentColumnsNames.includes(column.name))
         .map(column => ({ ...column, style: { color: DELETED_NODE_HIGHLIHT_COLOR } }))
+
       const _columns = node.data.columns.filter(column => !addedColumnsNames?.includes(column.name))
       const columns = [...addedColumns, ...(deletedColumns ? deletedColumns : []), ..._columns]
 

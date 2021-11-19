@@ -139,8 +139,13 @@ export const ItemText = styled.div<{ color: string; hoverable: boolean }>`
 
 export const ItemExtra = styled.div`
   color: ${GREY_ACCENT};
+
   min-width: 30%;
+  max-width: 70%;
   margin-left: 0.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   font-style: italic;
   font-weight: 300;

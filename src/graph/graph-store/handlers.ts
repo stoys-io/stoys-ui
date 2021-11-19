@@ -11,6 +11,7 @@ import {
   getMergedGraph,
   highlightSingleNode,
   highlightMetrics,
+  highlightColumnMetrics,
 } from '../graph-ops'
 import {
   Graph,
@@ -24,22 +25,39 @@ import {
   ColumnMetric,
 } from '../model'
 
+export const setCountNormalize = (countNormalize: boolean) => ({ countNormalize })
+
 export const setTableMetric =
   (tableMetric: TableMetric) =>
-  ({ defaultGraph }: GraphStore): Partial<GraphStore> => {
+  ({ defaultGraph, columnMetric }: GraphStore): Partial<GraphStore> => {
     const newHighlightMode = 'metrics'
     const highlights = highlightMetrics({ metric: tableMetric, graph: defaultGraph })
+    const columnMetricMaxValue = highlightColumnMetrics({
+      metric: columnMetric,
+      graph: defaultGraph,
+    })
     return {
       tableMetric,
       highlights,
+      columnMetricMaxValue,
       highlightMode: newHighlightMode,
       graph: defaultGraph,
     }
   }
 
-export const setColumnMetric = (columnMetric: ColumnMetric) => ({
-  columnMetric,
-})
+export const setColumnMetric =
+  (columnMetric: ColumnMetric) =>
+  ({ defaultGraph }: GraphStore) => {
+    const columnMetricMaxValue = highlightColumnMetrics({
+      metric: columnMetric,
+      graph: defaultGraph,
+    })
+
+    return {
+      columnMetric,
+      columnMetricMaxValue,
+    }
+  }
 
 export const setInitialStore = ({ graph, data, tables }: InitialArgs) => ({
   graph,
@@ -156,6 +174,7 @@ export const setHighlightMode =
     selectedNodeId,
     highlights: curHighlights,
     highlightedColumns,
+    columnMetric,
   }: GraphStore) => {
     if (highlightMode === 'diffing') {
       const baseGraph = getBaseGraph(baseRelease, data, tables)
@@ -168,6 +187,20 @@ export const setHighlightMode =
         highlights,
         graph: mergedGraph,
         highlightedColumns: defaultHighlightedColumns,
+      }
+    }
+
+    if (highlightMode === 'metrics') {
+      return {
+        highlightMode,
+        highlights: highlightMetrics({ metric: tableMetric, graph }),
+        columnMetricMaxValue: highlightColumnMetrics({
+          metric: columnMetric,
+          graph: defaultGraph,
+        }),
+        selectedNodeId: undefined,
+        highlightedColumns: defaultHighlightedColumns,
+        graph: defaultGraph,
       }
     }
 
@@ -190,16 +223,6 @@ export const setHighlightMode =
       return {
         highlightMode,
         highlights: defaultHighlights,
-        selectedNodeId: undefined,
-        highlightedColumns: defaultHighlightedColumns,
-        graph: defaultGraph,
-      }
-    }
-
-    if (highlightMode === 'metrics') {
-      return {
-        highlightMode,
-        highlights: highlightMetrics({ metric: tableMetric, graph }),
         selectedNodeId: undefined,
         highlightedColumns: defaultHighlightedColumns,
         graph: defaultGraph,
@@ -331,7 +354,6 @@ const onHighlightModeChangeColumns = ({
       selectedTableId: tableId,
       selectedColumnId: columnId,
       relatedColumnsIds: columnDependcies,
-      relatedTablesIds: tableIds,
     },
   }
 }

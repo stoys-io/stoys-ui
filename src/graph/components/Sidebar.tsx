@@ -2,6 +2,7 @@ import React from 'react'
 import Radio from 'antd/lib/radio'
 import Space from 'antd/lib/space'
 import Select from 'antd/lib/select'
+import Checkbox from 'antd/lib/checkbox'
 
 import SidebarSearch, { OnSearch } from './SidebarSearch'
 import { ScrollableSelect } from './ScrollableSelect'
@@ -15,13 +16,17 @@ import {
   setColumnMetric,
   setBaseRelease,
   setHighlightMode,
+  setCountNormalize,
 } from '../graph-store'
 
 export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => {
   const dispatch = useGraphDispatch()
   const tableMetric = useGraphStore(state => state.tableMetric)
   const columnMetric = useGraphStore(state => state.columnMetric)
+  const countNormalize = useGraphStore(state => state.countNormalize)
   const highlightMode = useGraphStore(state => state.highlightMode)
+
+  const showCountNormalize = columnMetric.startsWith('count_')
 
   return (
     <SidebarWrapper>
@@ -58,6 +63,15 @@ export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => 
           value={columnMetric}
         />
 
+        <Checkbox
+          checked={countNormalize}
+          onChange={e => dispatch(setCountNormalize(e.target.checked))}
+          disabled={!showCountNormalize}
+          style={checkboxStyle}
+        >
+          normalize count?
+        </Checkbox>
+
         <MenuTitle>Highlight: </MenuTitle>
         <Radio.Group
           onChange={e => dispatch(setHighlightMode(e.target.value, chromaticScale))}
@@ -82,6 +96,7 @@ interface Props {
   releaseOptions?: Array<{ label: string; value: string }>
 }
 
+const checkboxStyle = { marginTop: '8px' }
 const filterOption = (searchInput: string, option: TableMetricOption | ColumnMetricOption) => {
   return option.label.toLowerCase().indexOf(searchInput.toLowerCase()) >= 0
 }

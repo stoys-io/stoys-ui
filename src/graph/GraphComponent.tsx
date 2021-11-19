@@ -135,7 +135,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
             onLoad={() => setIsLoading(false)}
             onlyRenderVisibleElements={true}
             nodesConnectable={false}
-            minZoom={0.2}
+            minZoom={0.12}
           >
             <Spinner spinning={isLoading} />
             <Background />

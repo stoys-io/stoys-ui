@@ -9,11 +9,14 @@ export interface GraphStore {
   graph: Graph // The graph we display, can be merged graph in release mode
 
   highlights: Highlights
-  highlightedColumns: HColumns
+  highlightedColumns: HColumns // TODO: rename to selected columns
 
   baseRelease: string
   tableMetric: TableMetric
   columnMetric: ColumnMetric
+  columnMetricMaxValue: number
+  countNormalize: boolean
+
   highlightMode: Highlight
 
   selectedNodeId?: string
@@ -36,12 +39,15 @@ interface HColumns {
   selectedTableId: string
   selectedColumnId: string
   relatedColumnsIds: Array<string>
-  relatedTablesIds: Array<string>
 }
 
 interface Highlights {
   nodes: NodeStyle
   edges: EdgeStyle
+}
+
+export interface ColumnStyle {
+  [key: string]: { color: string } | undefined
 }
 
 interface NodeStyle {
