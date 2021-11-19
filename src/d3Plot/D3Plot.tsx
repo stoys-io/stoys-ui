@@ -57,6 +57,7 @@ const D3Plot = ({ dataset, config }: any) => {
       const _height = showLogScale ? yScale(1) : yScale(0)
 
       const windowWidth = window.innerWidth
+      const windowHeight = window.innerHeight
 
       svg
         .call(zoom)
@@ -189,13 +190,19 @@ const D3Plot = ({ dataset, config }: any) => {
                 .join('')
             })
 
-          const { width: tooltipWidth } = tooltip.node()!.getBoundingClientRect()
+          const { width: tooltipWidth, height: tooltipHeight } = tooltip
+            .node()!
+            .getBoundingClientRect()
 
-          let y = yCoordinate + 15
-          let x = xCoordinate + 15
+          let y = event.y + 15
+          let x = event.x + 15
 
           if (x + tooltipWidth > windowWidth) {
             x = x - tooltipWidth - 15
+          }
+
+          if (y + tooltipHeight > windowHeight) {
+            y = y - tooltipHeight - 15
           }
 
           tooltip.style('top', `${y}px`).style('left', `${x}px`)
