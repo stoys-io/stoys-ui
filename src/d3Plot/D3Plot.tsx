@@ -3,7 +3,6 @@ import * as d3 from 'd3'
 
 import useD3 from './useD3'
 import { COLORS } from '../profiler/constants'
-import { removeZeroData } from '../pmfPlot/helpers'
 
 const D3Plot = ({ dataset, config }: any) => {
   const { height, color, showAxes, showLogScale } = config
@@ -120,7 +119,7 @@ const D3Plot = ({ dataset, config }: any) => {
         .attr('x', (item: any) => xScale(item.low))
         .attr('y', (item: any) => yScale(item.count))
         .attr('fill', (d: any) => d.color)
-        .attr('opacity', '0.75') // TODO: remove - use mix blend mode
+        .style('mix-blend-mode', 'multiply')
 
       function zoom(_svg: any) {
         const extent: [[number, number], [number, number]] = [
