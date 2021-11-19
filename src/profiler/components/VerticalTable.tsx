@@ -3,7 +3,7 @@ import Table from 'antd/lib/table'
 
 import ChartCellTitle from './ChartCellTitle'
 import { ChartAndTable, hygratePmfPlotData } from '../chart'
-import { transformSecondsToDate } from '../../pmfPlot/helpers'
+import { transformSecondsToDate } from '../../helpers'
 import { renderNumericCell } from '../../common'
 import {
   ChildDataItem,

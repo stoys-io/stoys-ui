@@ -12,10 +12,9 @@ import {
 import ChartAndTableHeaderCellTitle from './components/ChartAndTableHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
 import { ChartAndTable, hygratePmfPlotData } from './chart'
-import { formatPercentage } from '../helpers'
+import { formatPercentage, transformSecondsToDate } from '../helpers'
 import { renderNumericCell } from '../common'
 
-import { transformSecondsToDate } from '../pmfPlot/helpers'
 import { DataItem, ChildDataItem, Render, RenderedCellConfig } from './model'
 import { Maybe } from '../model'
 

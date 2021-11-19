@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { transformSecondsToDate } from '../../pmfPlot/helpers'
+import { transformSecondsToDate } from '../../helpers'
 import { renderNumericCell } from '../../common'
 import { renderNormalized } from '../columns'
 import { CELL_TABLE_HEADER_HEIGHT, COLORS } from '../constants'
