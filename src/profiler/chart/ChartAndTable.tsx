@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import Empty from 'antd/lib/empty'
 
-import D3Plot from '../../d3Plot/D3Plot'
+import PmfPlot from '../../PmfPlot'
 import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'
 import BarChart from './BarChart'
@@ -14,7 +14,7 @@ import {
   TABLE_ROW_HEIGHT,
 } from '../constants'
 import { StyledEmpty } from '../styles'
-import { ChartWrapper } from '../../pmfPlot/styles'
+import { ChartWrapper } from '../../PmfPlot/styles'
 
 const ChartAndTable = ({
   data,
@@ -95,7 +95,7 @@ const ChartAndTable = ({
   const pmfPlotDataData = data.map(dataItem => dataItem?.pmf || [])
 
   return (
-    <D3Plot
+    <PmfPlot
       dataset={pmfPlotDataData}
       data={pmfPlotDataData}
       config={{
