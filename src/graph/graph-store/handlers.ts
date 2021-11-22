@@ -3,8 +3,6 @@ import { defaultHighlights, defaultHighlightedColumns } from './store'
 
 import {
   highlightGraph,
-  collectParentColumnAndTableIds,
-  collectChildColumnAndTableIds,
   notEmpty,
   highlightNodesBatch,
   getBaseGraph,
@@ -13,6 +11,9 @@ import {
   highlightMetrics,
   highlightColumnMetrics,
 } from '../graph-ops'
+
+import { traverseColumnsParents, traverseColumnsChildren } from '../graph-traversal'
+
 import {
   Graph,
   Table,
@@ -260,7 +261,7 @@ interface OnChangeModeColumnsArgs {
   highlights: Highlights
   highlightMode: Highlight
   graph: Graph
-  tables?: Table[]
+  tables: Table[]
 }
 
 const onHighlightModeChangeColumns = ({
@@ -292,17 +293,12 @@ const onHighlightModeChangeColumns = ({
   let columnDependcies: Array<string> = []
 
   if (highlightMode === 'parents') {
-    const tableAndColumnsIds = collectParentColumnAndTableIds(
-      tableId,
-      columnId,
-      graph.edges,
-      tables
-    )
+    const tableAndColumnsIds = traverseColumnsParents(columnId, tables)
 
     tableIds = tableAndColumnsIds.tableIds
     columnDependcies = tableAndColumnsIds.columnIds
   } else if (highlightMode === 'children') {
-    const tableAndColumnsIds = collectChildColumnAndTableIds(tableId, columnId, graph.edges, tables)
+    const tableAndColumnsIds = traverseColumnsChildren(columnId, tables)
 
     tableIds = tableAndColumnsIds.tableIds
     columnDependcies = tableAndColumnsIds.columnIds
