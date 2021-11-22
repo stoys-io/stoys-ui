@@ -3,6 +3,7 @@
 import React, { memo, useCallback } from 'react'
 import { Handle, NodeProps, Position } from 'react-flow-renderer'
 import List from 'antd/lib/list'
+import Tooltip from 'antd/lib/tooltip'
 
 import {
   ADDED_NODE_HIGHLIGHT_COLOR,
@@ -174,19 +175,21 @@ export const DagNode = memo(
 
               return (
                 <List.Item>
-                  <ItemContent title={tooltip}>
-                    <ItemText
-                      hoverable={isHoverableColumn}
-                      color={columnColor(column)}
-                      onClick={(evt: React.MouseEvent<HTMLElement>) => {
-                        evt.stopPropagation()
-                        dispatch(setHighlightedColumns(column.id, id))
-                      }}
-                    >
-                      {column.name}
-                    </ItemText>
-                    <ItemExtra>{columnExtra}</ItemExtra>
-                  </ItemContent>
+                  <Tooltip title={tooltip} placement="bottomLeft" mouseLeaveDelay={0}>
+                    <ItemContent>
+                      <ItemText
+                        hoverable={isHoverableColumn}
+                        color={columnColor(column)}
+                        onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                          evt.stopPropagation()
+                          dispatch(setHighlightedColumns(column.id, id))
+                        }}
+                      >
+                        {column.name}
+                      </ItemText>
+                      <ItemExtra>{columnExtra}</ItemExtra>
+                    </ItemContent>
+                  </Tooltip>
                 </List.Item>
               )
             }}
