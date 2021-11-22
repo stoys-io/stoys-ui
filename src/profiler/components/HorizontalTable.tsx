@@ -32,10 +32,9 @@ const HorizontalTable = (props: TableProps) => {
     },
     [pageSize, setPageSize, setCurrentPage]
   )
-  const keys = useMemo(() => data.map(item => item.key), [data])
+
   const tableProps = {
     sticky: true,
-    expandable: { expandIcon: () => null, expandedRowKeys: keys },
     scroll: {
       x: true as true,
       y: withoutPagination && height ? height : '100%',
