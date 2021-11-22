@@ -4,6 +4,8 @@ import Table from 'antd/lib/table'
 import 'antd/lib/table/style/css'
 
 import { TableProps } from '../model'
+import VirtualTable from '../../common/VirtualTable'
+import { TABLE_HEIGHT } from '../../quality/constants'
 
 const HorizontalTable = (props: TableProps) => {
   const {
@@ -34,29 +36,30 @@ const HorizontalTable = (props: TableProps) => {
   )
 
   const tableProps = {
-    sticky: true,
-    scroll: {
-      x: true as true,
-      y: withoutPagination && height ? height : '100%',
-    },
     ...otherProps,
     dataSource: data,
     columns: columns as any,
   }
 
-  return (
-    <Table
-      {...tableProps}
-      pagination={
-        withoutPagination
-          ? false
-          : {
-              current: currentPage,
-              pageSize,
-              showSizeChanger: true,
-              ...pagination,
-            }
+  return withoutPagination ? (
+    <VirtualTable
+      scroll={
+        {
+          y: typeof height === 'number' ? height : TABLE_HEIGHT,
+        } as any
       }
+      rowHeight={80}
+      {...tableProps}
+    />
+  ) : (
+    <Table
+      sticky
+      scroll={{
+        x: true as true,
+        y: withoutPagination && height ? height : '100%',
+      }}
+      {...tableProps}
+      pagination={{ current: currentPage, pageSize, showSizeChanger: true, ...pagination }}
       onChange={handleChangePagination}
     />
   )

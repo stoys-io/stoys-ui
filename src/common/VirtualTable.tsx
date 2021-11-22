@@ -168,10 +168,31 @@ const renderCell =
     const left = columnsBefore.reduce((w: number, column: any) => column.width + w, 0)
     const value = (rawData[rowIndex] as any)[column.dataIndex]
     const render = column.render
-    const _style = {
+    let _style = {
       ...style,
       width: column.width,
       left: left,
+    }
+
+    const renderedValue = render(value, rawData[rowIndex], rowIndex)
+    if (renderedValue?.children) {
+      if (renderedValue.props.rowSpan === 0 || renderedValue.props.colSpan === 0) {
+        return null
+      }
+
+      if (renderedValue.props.colSpan) {
+        _style = {
+          ..._style,
+          width: '100%',
+        }
+      }
+
+      if (renderedValue.props.rowSpan) {
+        _style = {
+          ..._style,
+          height: 50,
+        }
+      }
     }
 
     return (
@@ -181,7 +202,7 @@ const renderCell =
         } ${column.className ? column.className : ''}`}
         style={_style}
       >
-        {render(value, rawData[rowIndex])}
+        {renderedValue?.children ? renderedValue.children : renderedValue}
       </div>
     )
   }

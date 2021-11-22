@@ -183,8 +183,6 @@ export const DataProfiler = (props: DataProfilerProps) => {
       return !prevState
     })
   }, [config])
-  console.log('data => ', data)
-  console.log('columns => ', columns)
 
   return (
     <ConfigContext.Provider value={_config}>
