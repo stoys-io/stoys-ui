@@ -5,6 +5,7 @@ import Table, { ColumnType, TableProps } from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
 import { ParentColumn } from '../aggSum/model'
+import { TABLE_ROW_HEIGHT } from '../profiler/constants'
 
 function VirtualTable<T extends object>(
   props: TableProps<T> & {
@@ -191,14 +192,14 @@ const renderCell =
       if (renderedValue.props.colSpan) {
         _style = {
           ..._style,
-          width: '100%',
+          width: '100%', // TODO: remove hardcode
         }
       }
 
       if (renderedValue.props.rowSpan) {
         _style = {
           ..._style,
-          height: 50,
+          height: TABLE_ROW_HEIGHT * renderedValue.props.rowSpan,
         }
       }
     }
@@ -207,7 +208,7 @@ const renderCell =
       <div
         className={`virtual-table-cell ${
           columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
-        } ${column.className ? column.className : ''}`}
+        } ${column.className ? column.className : ''} ${column.align}`}
         style={_style}
       >
         {renderedValue?.children ? renderedValue.children : renderedValue}

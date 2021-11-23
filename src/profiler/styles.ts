@@ -36,6 +36,16 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
   position: relative;
   overflow: hidden;
 
+  .virtual-table-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    &.right {
+      text-align: right;
+    }
+  }
+
   table {
     margin-bottom: 0;
 
@@ -187,6 +197,7 @@ export const FlexWrapper = styled.div`
 export const TableSubheader = styled(CellWrapper)`
   width: 100%;
   height: 100%;
+  background-color: rgb(232, 232, 232);
 `
 
 export const ColorBlock = styled.span<{ color: string; position?: 'top' }>`

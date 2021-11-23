@@ -6,7 +6,7 @@ import 'antd/lib/table/style/css'
 import { TableProps } from '../model'
 import VirtualTable from '../../common/VirtualTable'
 import { TABLE_HEIGHT } from '../../quality/constants'
-import { MIN_SMALL_CHART_CELL_HEIGHT } from '../constants'
+import { TABLE_ROW_HEIGHT } from '../constants'
 
 const HorizontalTable = (props: TableProps) => {
   const {
@@ -49,7 +49,7 @@ const HorizontalTable = (props: TableProps) => {
           y: typeof height === 'number' ? height : TABLE_HEIGHT,
         } as any
       }
-      rowHeight={MIN_SMALL_CHART_CELL_HEIGHT}
+      rowHeight={TABLE_ROW_HEIGHT}
       {...tableProps}
     />
   ) : (
