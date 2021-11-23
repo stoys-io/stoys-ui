@@ -21,6 +21,7 @@ import {
   Highlights,
   TableMetric,
   ColumnMetric,
+  Edge,
 } from '../model'
 
 export const setCountNormalize = (countNormalize: boolean) => ({ countNormalize })
@@ -314,33 +315,32 @@ const onHighlightModeChangeColumns = ({
 
   let tableIds: string[] = []
   let columnDependcies: string[] = []
+  let subgraphEdges: Edge[] = []
   if (highlightMode === 'parents') {
     columnDependcies = Object.keys(traverseGraph(depsIndex, columnId))
     tableIds = columnDependcies.map(col => columnIndex[col].tableId)
+    subgraphEdges = graph.edges.filter(
+      edge => tableIds.includes(edge.source) || !tableIds.includes(edge.target)
+    )
   } else if (highlightMode === 'children') {
     columnDependcies = Object.keys(traverseGraph(columnIndex, columnId))
     tableIds = columnDependcies.map(col => columnIndex[col].tableId)
+    subgraphEdges = graph.edges.filter(
+      edge => !tableIds.includes(edge.source) || tableIds.includes(edge.target)
+    )
   } else {
     columnDependcies = [
       ...(columnIndex[columnId]?.dependencies ?? []),
       ...(depsIndex[columnId]?.dependencies ?? []),
     ]
     tableIds = [...columnDependcies.map(col => columnIndex[col].tableId), tableId]
+    subgraphEdges = graph.edges.filter(
+      edge => tableIds.includes(edge.source) && tableIds.includes(edge.target)
+    )
   }
 
   // Remove all unrelated to columns nodes and edges
   const subgraphNodes = graph.nodes.filter(node => tableIds.includes(node.id))
-  const subgraphEdges =
-    highlightMode === 'nearest'
-      ? graph.edges.filter(edge => tableIds.includes(edge.source) && tableIds.includes(edge.target))
-      : highlightMode === 'children'
-      ? graph.edges.filter(
-          edge => !tableIds.includes(edge.source) || tableIds.includes(edge.target)
-        )
-      : graph.edges.filter(
-          edge => tableIds.includes(edge.source) || !tableIds.includes(edge.target)
-        )
-
   const columnSubgraph = {
     nodes: subgraphNodes,
     edges: subgraphEdges,
