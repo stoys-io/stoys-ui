@@ -128,6 +128,14 @@ const renderVirtualList =
   ) => {
     const totalHeight = rawData?.length * (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)
 
+    const getRowHeight = (index: number): number => {
+      if ('rowHeight' in rawData[index]) {
+        return (rawData[index] as any).rowHeight
+      }
+
+      return rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT
+    }
+
     return (
       <Grid
         className="virtual-grid"
@@ -143,7 +151,7 @@ const renderVirtualList =
         }}
         height={scroll.y}
         rowCount={rawData?.length}
-        rowHeight={() => (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)}
+        rowHeight={getRowHeight}
         width={tableWidth}
         onScroll={onScroll}
       >

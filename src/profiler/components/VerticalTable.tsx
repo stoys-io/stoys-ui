@@ -3,7 +3,7 @@ import Table from 'antd/lib/table'
 
 import ChartCellTitle from './ChartCellTitle'
 import { ChartAndTable, hygratePmfPlotData } from '../chart'
-import { transformSecondsToDate } from '../../helpers'
+import { transformSecondsToDate, formatPercentage } from '../../helpers'
 import { renderNumericCell } from '../../common'
 import {
   ChildDataItem,
@@ -15,7 +15,6 @@ import {
 } from '../model'
 import { NORMALIZABLE_COLUMN_PREFIX } from '../constants'
 import { ColorBlock } from '../styles'
-import { formatPercentage } from '../../helpers'
 
 const VerticalTable = (props: VerticalTableProps) => {
   const {
