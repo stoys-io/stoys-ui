@@ -322,27 +322,21 @@ const onHighlightModeChangeColumns = ({
     ].filter(notEmpty)
   }
 
-  const emptyColumns = (node: Node) => {
-    const relatedColumns = node.data.columns.filter((column: Column) =>
-      columnDependcies.includes(column.id)
-    )
-    return relatedColumns.length === 0
-  }
-
-  const emptyNodeIds = graph.nodes
-    .filter(node => tableIds.includes(node.id) && emptyColumns(node))
-    .map(node => node.id)
-
   // Remove all unrelated to columns nodes and edges
-  const alteredGraph = {
-    nodes: graph.nodes.filter(node => !emptyNodeIds.includes(node.id)),
-    edges: graph.edges.filter(
-      edge => !(emptyNodeIds.includes(edge.source) || emptyNodeIds.includes(edge.target))
-    ),
+  const columnSubgraph = {
+    nodes: graph.nodes.filter(node => tableIds.includes(node.id)),
+    edges:
+      highlightMode === 'children'
+        ? graph.edges.filter(
+            edge => !tableIds.includes(edge.source) || tableIds.includes(edge.target)
+          )
+        : graph.edges.filter(
+            edge => tableIds.includes(edge.source) || !tableIds.includes(edge.target)
+          ),
     release: graph.release,
   }
 
-  const newHighlights = highlightGraph(highlightMode, alteredGraph, tableId)
+  const newHighlights = highlightGraph(highlightMode, columnSubgraph, tableId)
 
   return {
     highlights: newHighlights,

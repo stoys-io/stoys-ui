@@ -31,14 +31,6 @@ export const traverseColumnsChildren = (cId: string, tables: Table[]): ColumnAnd
     return { ...acc, ...cols }
   }, {})
 
-  const hasChildren = columnIndex[cId].dependencies?.length !== 0
-  if (!hasChildren) {
-    return {
-      tableIds: [],
-      columnIds: [cId],
-    }
-  }
-
   const visitedColumns = traverseHelper(columnIndex, cId, [cId], { [cId]: true })
   const tableIds = visitedColumns.map(col => columnIndex[col].tableId)
 
@@ -90,9 +82,8 @@ type ColumnExtended = {
   tableId: string
 }
 
-type Deps = { dependencies: string[] }
 interface Traversable<T = {}> {
-  [key: string]: T & Deps
+  [key: string]: T & { dependencies: string[] }
 }
 
 export interface ColumnAndTableIds {
