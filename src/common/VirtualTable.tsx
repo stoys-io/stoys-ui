@@ -28,6 +28,7 @@ function VirtualTable<T extends object>(
     [columns]
   )
   const mergedColumns: MergedColumns<T> = columns!.map(column => {
+    // TODO: make it more flexible
     if (columnWithMaxWidth && totalColumnWidth < tableWidth) {
       if (column.key !== columnWithMaxWidth) {
         return { ...column, width: Number(column.width) }
