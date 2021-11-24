@@ -3,9 +3,6 @@ import { defaultHighlights, defaultHighlightedColumns } from './store'
 
 import {
   highlightGraph,
-  collectParentColumnAndTableIds,
-  collectChildColumnAndTableIds,
-  notEmpty,
   highlightNodesBatch,
   getBaseGraph,
   getMergedGraph,
@@ -13,16 +10,18 @@ import {
   highlightMetrics,
   highlightColumnMetrics,
 } from '../graph-ops'
+
+import { traverseGraph, Traversable } from '../graph-traversal'
+
 import {
   Graph,
   Table,
-  Column,
   ChromaticScale,
   Highlight,
   Highlights,
-  Node,
   TableMetric,
   ColumnMetric,
+  Edge,
 } from '../model'
 
 export const setCountNormalize = (countNormalize: boolean) => ({ countNormalize })
@@ -260,7 +259,7 @@ interface OnChangeModeColumnsArgs {
   highlights: Highlights
   highlightMode: Highlight
   graph: Graph
-  tables?: Table[]
+  tables: Table[]
 }
 
 const onHighlightModeChangeColumns = ({
@@ -271,9 +270,6 @@ const onHighlightModeChangeColumns = ({
   graph,
   tables,
 }: OnChangeModeColumnsArgs) => {
-  // TODO: Simplify. Columns and nodes search is basically the same thing.
-  // ( `collectParentColumnAndTableIds`, `findEdgeHelper`)
-  // No need to have a few functions to traverse the same graph
   if (highlightMode === 'none') {
     return {
       highlightedColumns: defaultHighlightedColumns,
@@ -288,65 +284,70 @@ const onHighlightModeChangeColumns = ({
     }
   }
 
-  let tableIds: Array<string> = []
-  let columnDependcies: Array<string> = []
+  // TODO: Should we store indices ?
+  const columnIndex: Traversable<{ tableId: string }> = tables.reduce((acc, t) => {
+    const cols = t.columns.reduce(
+      (accCols, col) => ({
+        ...accCols,
+        [col.id]: { ...col, tableId: t.id },
+      }),
+      {}
+    )
 
+    return { ...acc, ...cols }
+  }, {})
+
+  const depsIndex = Object.entries(columnIndex).reduce((acc: Traversable, [id, col]) => {
+    if (!col.dependencies?.length) {
+      return acc
+    }
+
+    col.dependencies.forEach((dep: string) => {
+      if (!acc[dep]) {
+        acc[dep] = { dependencies: [id] }
+      }
+
+      acc[dep].dependencies.push(id)
+    })
+
+    return acc
+  }, {})
+
+  let tableIds: string[] = []
+  let columnDependcies: string[] = []
+  let subgraphEdges: Edge[] = []
   if (highlightMode === 'parents') {
-    const tableAndColumnsIds = collectParentColumnAndTableIds(
-      tableId,
-      columnId,
-      graph.edges,
-      tables
+    columnDependcies = Object.keys(traverseGraph(depsIndex, columnId))
+    tableIds = columnDependcies.map(col => columnIndex[col].tableId)
+    subgraphEdges = graph.edges.filter(
+      edge => tableIds.includes(edge.source) || !tableIds.includes(edge.target)
     )
-
-    tableIds = tableAndColumnsIds.tableIds
-    columnDependcies = tableAndColumnsIds.columnIds
   } else if (highlightMode === 'children') {
-    const tableAndColumnsIds = collectChildColumnAndTableIds(tableId, columnId, graph.edges, tables)
-
-    tableIds = tableAndColumnsIds.tableIds
-    columnDependcies = tableAndColumnsIds.columnIds
-  } else {
-    tableIds = [
-      ...graph.edges.filter(edge => edge.source === tableId).map(edge => edge.target),
-      ...graph.edges.filter(edge => edge.target === tableId).map(edge => edge.source),
-    ]
-
-    const tableColumnIds = tables
-      ?.filter(table => tableIds.includes(table.id))
-      .map(table => table.columns.find(column => column.dependencies?.includes(columnId))?.id)
-
-    const selectedColumnDependcies = tables
-      ?.find(table => table.id === tableId)
-      ?.columns.find(column => column.id === columnId)?.dependencies
-
-    columnDependcies = [
-      ...(tableColumnIds ? tableColumnIds : []),
-      ...(selectedColumnDependcies ? selectedColumnDependcies : []),
-    ].filter(notEmpty)
-  }
-
-  const emptyColumns = (node: Node) => {
-    const relatedColumns = node.data.columns.filter((column: Column) =>
-      columnDependcies.includes(column.id)
+    columnDependcies = Object.keys(traverseGraph(columnIndex, columnId))
+    tableIds = columnDependcies.map(col => columnIndex[col].tableId)
+    subgraphEdges = graph.edges.filter(
+      edge => !tableIds.includes(edge.source) || tableIds.includes(edge.target)
     )
-    return relatedColumns.length === 0
+  } else {
+    columnDependcies = [
+      ...(columnIndex[columnId]?.dependencies ?? []),
+      ...(depsIndex[columnId]?.dependencies ?? []),
+    ]
+    tableIds = [...columnDependcies.map(col => columnIndex[col].tableId), tableId]
+    subgraphEdges = graph.edges.filter(
+      edge => tableIds.includes(edge.source) && tableIds.includes(edge.target)
+    )
   }
-
-  const emptyNodeIds = graph.nodes
-    .filter(node => tableIds.includes(node.id) && emptyColumns(node))
-    .map(node => node.id)
 
   // Remove all unrelated to columns nodes and edges
-  const alteredGraph = {
-    nodes: graph.nodes.filter(node => !emptyNodeIds.includes(node.id)),
-    edges: graph.edges.filter(
-      edge => !(emptyNodeIds.includes(edge.source) || emptyNodeIds.includes(edge.target))
-    ),
+  const subgraphNodes = graph.nodes.filter(node => tableIds.includes(node.id))
+  const columnSubgraph = {
+    nodes: subgraphNodes,
+    edges: subgraphEdges,
     release: graph.release,
   }
 
-  const newHighlights = highlightGraph(highlightMode, alteredGraph, tableId)
+  const newHighlights = highlightGraph(highlightMode, columnSubgraph, tableId)
 
   return {
     highlights: newHighlights,
