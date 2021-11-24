@@ -213,7 +213,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
           setCheckedAxesRows,
           checkedTableRows,
           setCheckedTableRows,
-          dataLength: data.length,
+          dataLength: columnNames.length,
         }}
       >
         {showProfilerToolbar ? (
