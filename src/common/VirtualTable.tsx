@@ -12,17 +12,30 @@ function VirtualTable<T extends object>(
     parentsColumns?: Array<ParentColumn>
     rowHeight?: number
     scroll: { y: number }
+    columnWithMaxWidth?: string
   }
 ): JSX.Element {
-  const { columns, scroll, parentsColumns, rowHeight } = props
+  const { columns, scroll, parentsColumns, rowHeight, columnWithMaxWidth } = props
   const [tableWidth, setTableWidth] = useState(0)
 
   const columnCount = columns!.length
   const totalColumnWidth = useMemo(
-    () => columns!.reduce((acc, column) => acc + Number(column.width), 0),
+    () =>
+      columns!.reduce(
+        (acc, column) => (column.key === columnWithMaxWidth ? acc : acc + Number(column.width)),
+        0
+      ),
     [columns]
   )
   const mergedColumns: MergedColumns<T> = columns!.map(column => {
+    if (columnWithMaxWidth && totalColumnWidth < tableWidth) {
+      if (column.key !== columnWithMaxWidth) {
+        return { ...column, width: Number(column.width) }
+      }
+
+      return { ...column, width: tableWidth - totalColumnWidth }
+    }
+
     if (column.width && totalColumnWidth > tableWidth) {
       return { ...column, width: Number(column.width) }
     }

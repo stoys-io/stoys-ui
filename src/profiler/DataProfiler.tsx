@@ -13,6 +13,7 @@ import TableSettings from './components/TableSettings'
 import JsonDrawer from './components/JsonDrawer'
 
 import { NoData, TableWrapper } from './styles'
+import { getColumnNameLength } from '../aggSum/helpers'
 
 export const DataProfiler = (props: DataProfilerProps) => {
   const { datasets, config = {}, ...otherProps } = props
@@ -140,8 +141,25 @@ export const DataProfiler = (props: DataProfilerProps) => {
     return visibleColumns?.filter(column => _columns.includes(column))
   }, [visibleColumns, datasets])
 
+  const maxColumnsNames = useMemo(
+    () =>
+      data.reduce((acc: { [key: string]: string }, row: any) => {
+        Object.keys(row).forEach((columnName: string) => {
+          if (
+            (typeof row[columnName] === 'string' || typeof row[columnName] === 'number') &&
+            (!acc[columnName] || getColumnNameLength(row, columnName) > acc[columnName]?.length)
+          ) {
+            acc[columnName] = String(row[columnName]) || String(columnName)
+          }
+        })
+
+        return acc
+      }, {}),
+    [data]
+  )
+
   const columns = useMemo(
-    () => getColumns(data, isNormalizeChecked, validVisibleColumns),
+    () => getColumns(data, isNormalizeChecked, validVisibleColumns, maxColumnsNames),
     [data, config, validVisibleColumns, isNormalizeChecked]
   )
 

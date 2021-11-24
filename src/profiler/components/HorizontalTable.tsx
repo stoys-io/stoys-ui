@@ -49,6 +49,7 @@ const HorizontalTable = (props: TableProps) => {
           y: typeof height === 'number' ? height : TABLE_HEIGHT,
         } as any
       }
+      columnWithMaxWidth="chart"
       rowHeight={TABLE_ROW_HEIGHT}
       {...tableProps}
     />
