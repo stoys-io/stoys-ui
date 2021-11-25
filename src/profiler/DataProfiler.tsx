@@ -167,14 +167,24 @@ export const DataProfiler = (props: DataProfilerProps) => {
     () => ({
       smallSize,
       showChartTableSwitcher,
-      chartTableChecked,
       setChartTableChecked,
       showLogarithmicSwitcher,
       setLogChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
       showAxesSwitcher,
       setAxesChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
     }),
-    [config, setChartTableChecked, setCheckedAxesRows, setCheckedLogRows, columnNames]
+    [
+      smallSize,
+      setChartTableChecked,
+      setCheckedAxesRows,
+      setCheckedLogRows,
+      columnNames,
+      showChartTableSwitcher,
+      showLogarithmicSwitcher,
+      setCheckedLogRows,
+      showAxesSwitcher,
+      setCheckedAxesRows,
+    ]
   )
 
   const _setIsVerticalView = useCallback(
