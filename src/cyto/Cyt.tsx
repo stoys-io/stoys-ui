@@ -14,6 +14,9 @@ import cytoscapeFcose from 'cytoscape-fcose'
 // @ts-ignore
 import undoRedo from 'cytoscape-undo-redo'
 
+// @ts-ignore
+import dagre from 'cytoscape-dagre'
+
 const Cyt = () => {
   const ref = useRef(null)
 
@@ -27,17 +30,25 @@ const Cyt = () => {
     cytoscape.use(cytoscapeDomNode)
     cytoscape.use(cytoscapeFcose)
     cytoscape.use(expandCollapse)
+    cytoscape.use(dagre)
     cytoscape.use(undoRedo)
 
-    const testid = 'nwtN_50c55b8c-3489-4c4e-8bea-6a1c1162ac9c'
-    const div1 = document.createElement('div')
-    div1.id = 'test1'
+    const actualElements = elements.map((el: any) => {
+      if (el.group !== 'nodes') {
+        return el
+      }
+
+      const div = document.createElement('div')
+      div.id = `node-${el.data.id}`
+
+      return { ...el, data: { ...el.data, dom: div } }
+    })
+
+    console.log({ actualElements })
 
     const cy = cytoscape({
       container: ref.current,
-      elements: elements.map((el: any) =>
-        el.data.id !== testid ? el : { ...el, data: { ...el.data, dom: div1 } }
-      ),
+      elements: actualElements,
       style: [
         {
           selector: 'node',
@@ -84,8 +95,17 @@ const Cyt = () => {
       ],
 
       layout: {
-        name: 'fcose',
+        name: 'dagre',
       },
+    })
+
+    // @ts-ignore
+    cy.domNode()
+    const El = React.createElement('button', { onClick: console.log }, 'click')
+    elements.forEach((el: any) => {
+      if (el.group === 'nodes') {
+        ReactDOM.render(El, document.getElementById(`node-${el.data.id}`))
+      }
     })
 
     // @ts-ignore
@@ -94,7 +114,7 @@ const Cyt = () => {
     // @ts-ignore
     cy.expandCollapse({
       layoutBy: {
-        name: 'fcose',
+        name: 'dagre',
         animate: true,
         randomize: false,
         fit: true,
@@ -107,20 +127,24 @@ const Cyt = () => {
       ur.do('collapseRecursively', {
         nodes: cy.$(':selected'),
       })
+      cy.layout({ name: 'dagre' }).run()
     })
 
     document.getElementById('expandRecursively')?.addEventListener('click', function () {
       ur.do('expandRecursively', {
         nodes: cy.$(':selected'),
       })
+      cy.layout({ name: 'dagre' }).run()
     })
 
     document.getElementById('collapseAll')?.addEventListener('click', function () {
       ur.do('collapseAll') // cy.collapseAll(options);
+      cy.layout({ name: 'dagre' }).run()
     })
 
     document.getElementById('expandAll')?.addEventListener('click', function () {
       ur.do('expandAll')
+      cy.layout({ name: 'dagre' }).run()
     })
 
     document.addEventListener(
@@ -142,35 +166,19 @@ const Cyt = () => {
       true
     )
 
-    // @ts-ignore
-    cy.domNode()
-    const div2 = document.createElement('div')
-    div2.id = 'test2'
-
-    cy.add({
-      data: {
-        id: 'three',
-        dom: div2,
-      },
-      position: { x: 150, y: 0 },
-    })
-
-    cy.add({
-      data: {
-        source: 'three',
-        target: testid,
-        label: 'edge something',
-      },
-    })
-
-    const El = React.createElement('button', { onClick: console.log }, 'click')
-    ReactDOM.render(El, document.getElementById('test1'))
-    ReactDOM.render(El, document.getElementById('test2'))
+    cy.layout({ name: 'dagre' }).run()
   }, [ref.current])
 
   return (
     <>
-      <div ref={ref} id="cy" style={{ width: '960px', height: '800px' }}></div>
+      <div
+        ref={ref}
+        id="cy"
+        style={{
+          width: '1000px',
+          height: '1000px',
+        }}
+      ></div>
     </>
   )
 }
@@ -804,10 +812,4 @@ const elements: any = [
 
     group: 'edges',
   },
-]
-
-const elements1 = [
-  { data: { id: 'one', label: 'Node 1' }, position: { x: 0, y: 0 } },
-  { data: { id: 'two', label: 'Node 2' }, position: { x: 100, y: 0 } },
-  { data: { source: 'one', target: 'two', label: 'Edge from Node1 to Node2' } },
 ]
