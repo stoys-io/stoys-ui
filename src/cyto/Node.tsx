@@ -5,7 +5,7 @@ import List from 'antd/lib/list'
 export const Node = () => {
   const list = ['a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c']
   return (
-    <div className="nowheel">
+    <div onScroll={console.log}>
       <ScrollCard
         title={<ScrollCardTitle color="red">Test</ScrollCardTitle>}
         size="small"
@@ -13,6 +13,11 @@ export const Node = () => {
         extra={0}
         highlightColor="green"
       >
+        <ul>
+          {list.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
         <List
           size="small"
           dataSource={list}

@@ -14,8 +14,10 @@ class CytoscapeDomNode {
       nodes_dom_container.style.position = 'absolute'
       nodes_dom_container.style.zIndex = 10
 
-      let cy_canvas = cy_container.querySelector('canvas')
-      cy_canvas.parentNode.appendChild(nodes_dom_container)
+      // let cy_canvas = cy_container.querySelector('canvas')
+      // cy_canvas.parentNode.appendChild(nodes_dom_container)
+      const actualContainer = document.getElementById('domContainer')
+      actualContainer.appendChild(nodes_dom_container)
 
       this._nodes_dom_container = nodes_dom_container
     }
@@ -61,15 +63,14 @@ class CytoscapeDomNode {
 
       dom.style.display = 'inline'
       dom.style.position = 'absolute'
-      dom.style['z-index'] = 10
+      dom.style['z-index'] = 999999
     })
 
     cy.on('click', 'node', evt => {
-      const cy_node = evt.target
-      const id = cy_node.id()
-      const dom = this._node_dom[id]
-
-      dom.click()
+      // const cy_node = evt.target
+      // const id = cy_node.id()
+      // const dom = this._node_dom[id]
+      // dom.click()
     })
   }
 

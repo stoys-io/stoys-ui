@@ -148,6 +148,7 @@ const Cyt = () => {
       },
       fisheye: true,
       animate: true,
+      zIndex: 10,
     })
 
     document.getElementById('collapseRecursively')?.addEventListener('click', function () {
@@ -198,10 +199,12 @@ const Cyt = () => {
 
   return (
     <>
+      <div id="domContainer" style={{ zIndex: 8 }}></div>
       <div
         ref={ref}
         id="cy"
         style={{
+          zIndex: 9,
           width: '1400px',
           height: '1000px',
         }}
