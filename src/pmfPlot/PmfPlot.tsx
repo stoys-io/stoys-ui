@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import * as d3 from 'd3'
 
-import useD3 from './useD3'
+import { useD3 } from '../hooks'
 import { COLORS } from '../profiler/constants'
 
 const PmfPlot = ({ dataset, config }: any) => {
