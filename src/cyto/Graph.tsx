@@ -40,7 +40,7 @@ const Graph = (props: { elements: any[] }) => {
 
     const actualElements = elements.map((el: any) => {
       if (el.group !== 'nodes') {
-        return { ...el, classes: 'bezier' }
+        return { ...el }
       }
 
       const div = document.createElement('div')
@@ -92,7 +92,6 @@ const Graph = (props: { elements: any[] }) => {
             width: 3,
             'line-color': '#b1b1b7',
             'curve-style': 'unbundled-bezier',
-            'control-point-distances': [40, -40],
             'target-arrow-shape': 'triangle',
             'target-arrow-color': '#b1b1b7',
             'source-endpoint': '-50% 0',
