@@ -3,7 +3,7 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { usePagination } from '../hooks'
 import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
-import { COLORS, NORMALIZABLE_COLUMN_PREFIX } from './constants'
+import { COLORS, MIN_TABLE_ROW_HEIGHT, NORMALIZABLE_COLUMN_PREFIX } from './constants'
 import { CheckedRowsContext, ConfigContext } from './context'
 import { DataItem, DataProfilerProps, ChildDataItem, Orient, CountColumnKey } from './model'
 
@@ -13,6 +13,7 @@ import TableSettings from './components/TableSettings'
 import JsonDrawer from './components/JsonDrawer'
 
 import { NoData, TableWrapper } from './styles'
+import { getColumnNameLength } from '../aggSum/helpers'
 
 export const DataProfiler = (props: DataProfilerProps) => {
   const { datasets, config = {}, ...otherProps } = props
@@ -94,6 +95,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
           {
             columnName: column,
             key: column,
+            rowHeight: MIN_TABLE_ROW_HEIGHT,
           },
           ...dataGrouppedByTitle[column]
         )
@@ -139,8 +141,25 @@ export const DataProfiler = (props: DataProfilerProps) => {
     return visibleColumns?.filter(column => _columns.includes(column))
   }, [visibleColumns, datasets])
 
+  const maxColumnsNames = useMemo(
+    () =>
+      data.reduce((acc: { [key: string]: string }, row: any) => {
+        Object.keys(row).forEach((columnName: string) => {
+          if (
+            (typeof row[columnName] === 'string' || typeof row[columnName] === 'number') &&
+            (!acc[columnName] || getColumnNameLength(row, columnName) > acc[columnName]?.length)
+          ) {
+            acc[columnName] = String(row[columnName]) || String(columnName)
+          }
+        })
+
+        return acc
+      }, {}),
+    [data]
+  )
+
   const columns = useMemo(
-    () => getColumns(data, isNormalizeChecked, validVisibleColumns),
+    () => getColumns(data, isNormalizeChecked, validVisibleColumns, maxColumnsNames),
     [data, config, validVisibleColumns, isNormalizeChecked]
   )
 
@@ -148,14 +167,24 @@ export const DataProfiler = (props: DataProfilerProps) => {
     () => ({
       smallSize,
       showChartTableSwitcher,
-      chartTableChecked,
       setChartTableChecked,
       showLogarithmicSwitcher,
       setLogChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
       showAxesSwitcher,
       setAxesChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
     }),
-    [config, setChartTableChecked, setCheckedAxesRows, setCheckedLogRows, columnNames]
+    [
+      smallSize,
+      setChartTableChecked,
+      setCheckedAxesRows,
+      setCheckedLogRows,
+      columnNames,
+      showChartTableSwitcher,
+      showLogarithmicSwitcher,
+      setCheckedLogRows,
+      showAxesSwitcher,
+      setCheckedAxesRows,
+    ]
   )
 
   const _setIsVerticalView = useCallback(
@@ -194,7 +223,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
           setCheckedAxesRows,
           checkedTableRows,
           setCheckedTableRows,
-          dataLength: data.length,
+          dataLength: columnNames.length,
         }}
       >
         {showProfilerToolbar ? (

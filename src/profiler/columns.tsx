@@ -8,6 +8,7 @@ import {
   LEFT_ALIGN_COLUMNS,
   VISISBLE_COLUMNS,
   NORMALIZABLE_COLUMN_PREFIX,
+  MIN_CELL_WIDTH,
 } from './constants'
 import ChartAndTableHeaderCellTitle from './components/ChartAndTableHeaderCellTitle'
 import TableSubheaderRow from './components/TableSubheaderRow'
@@ -19,6 +20,7 @@ import { DataItem, ChildDataItem, Render, RenderedCellConfig } from './model'
 import { Maybe } from '../model'
 
 import { ColorBlock } from './styles'
+import { getColumnWidth } from '../quality/columns'
 
 const renderChartAndTableCell =
   (data: Array<DataItem>, displayNormalized: boolean) =>
@@ -140,17 +142,28 @@ const renderMeanMinMaxValue = (
 export const getColumns = (
   data: Array<DataItem>,
   displayNormalized: boolean,
-  visibleColumns?: Array<string>
+  visibleColumns?: Array<string>,
+  maxColumnsNames?: { [key: string]: string }
 ): ColumnsType<DataItem | ChildDataItem> => {
   const _visibleColumns = visibleColumns?.length ? visibleColumns : VISISBLE_COLUMNS
 
   const columns = _visibleColumns.map((columnName, index) => {
     const isNormalized = displayNormalized && columnName.startsWith(NORMALIZABLE_COLUMN_PREFIX)
+    const title = COLUMNS_TITLES[columnName] || columnName
+
+    const columnWidth = maxColumnsNames
+      ? getColumnWidth(
+          maxColumnsNames?.[columnName]?.length < title.length
+            ? title
+            : maxColumnsNames?.[columnName]
+        )
+      : MIN_CELL_WIDTH
 
     const _column: any = {
-      title: COLUMNS_TITLES[columnName] || columnName,
+      title,
       dataIndex: columnName,
       key: columnName,
+      width: columnWidth,
       align: LEFT_ALIGN_COLUMNS.includes(columnName) ? ('left' as 'left') : ('right' as 'right'),
       render: ITEM_VALUE_COLUMN_NAMES.includes(columnName)
         ? renderMeanMinMaxValue
@@ -174,6 +187,7 @@ export const getColumns = (
       className: 'chart-cell',
       render: renderChartAndTableCell(data, displayNormalized),
       align: 'left' as 'left',
+      width: 500,
     },
   ]
 }

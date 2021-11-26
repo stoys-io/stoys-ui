@@ -8,6 +8,8 @@ export const MIN_SMALL_CHART_CELL_HEIGHT = 80
 
 export const CELL_TABLE_HEADER_HEIGHT = 35
 
+export const MIN_CELL_WIDTH = 100
+
 export const COLORS = [
   '#e6194b',
   '#3cb44b',

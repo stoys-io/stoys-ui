@@ -5,23 +5,38 @@ import Table, { ColumnType, TableProps } from 'antd/lib/table'
 
 import { MIN_TABLE_CELL_HEIGHT } from '../quality/constants'
 import { ParentColumn } from '../aggSum/model'
+import { TABLE_ROW_HEIGHT } from '../profiler/constants'
 
 function VirtualTable<T extends object>(
   props: TableProps<T> & {
     parentsColumns?: Array<ParentColumn>
     rowHeight?: number
     scroll: { y: number }
+    columnWithMaxWidth?: string
   }
 ): JSX.Element {
-  const { columns, scroll, parentsColumns, rowHeight } = props
+  const { columns, scroll, parentsColumns, rowHeight, columnWithMaxWidth } = props
   const [tableWidth, setTableWidth] = useState(0)
 
   const columnCount = columns!.length
   const totalColumnWidth = useMemo(
-    () => columns!.reduce((acc, column) => acc + Number(column.width), 0),
+    () =>
+      columns!.reduce(
+        (acc, column) => (column.key === columnWithMaxWidth ? acc : acc + Number(column.width)),
+        0
+      ),
     [columns]
   )
   const mergedColumns: MergedColumns<T> = columns!.map(column => {
+    // TODO: make it more flexible
+    if (columnWithMaxWidth && totalColumnWidth < tableWidth) {
+      if (column.key !== columnWithMaxWidth) {
+        return { ...column, width: Number(column.width) }
+      }
+
+      return { ...column, width: tableWidth - totalColumnWidth }
+    }
+
     if (column.width && totalColumnWidth > tableWidth) {
       return { ...column, width: Number(column.width) }
     }
@@ -128,6 +143,14 @@ const renderVirtualList =
   ) => {
     const totalHeight = rawData?.length * (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)
 
+    const getRowHeight = (index: number): number => {
+      if ('rowHeight' in rawData[index]) {
+        return (rawData[index] as any).rowHeight
+      }
+
+      return rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT
+    }
+
     return (
       <Grid
         className="virtual-grid"
@@ -143,7 +166,7 @@ const renderVirtualList =
         }}
         height={scroll.y}
         rowCount={rawData?.length}
-        rowHeight={() => (rowHeight ? rowHeight : MIN_TABLE_CELL_HEIGHT)}
+        rowHeight={getRowHeight}
         width={tableWidth}
         onScroll={onScroll}
       >
@@ -168,20 +191,41 @@ const renderCell =
     const left = columnsBefore.reduce((w: number, column: any) => column.width + w, 0)
     const value = (rawData[rowIndex] as any)[column.dataIndex]
     const render = column.render
-    const _style = {
+    let _style = {
       ...style,
       width: column.width,
       left: left,
+    }
+
+    const renderedValue = render(value, rawData[rowIndex], rowIndex)
+    if (renderedValue?.children) {
+      if (renderedValue.props.rowSpan === 0 || renderedValue.props.colSpan === 0) {
+        return null
+      }
+
+      if (renderedValue.props.colSpan) {
+        _style = {
+          ..._style,
+          width: '100%', // TODO: remove hardcode
+        }
+      }
+
+      if (renderedValue.props.rowSpan) {
+        _style = {
+          ..._style,
+          height: TABLE_ROW_HEIGHT * renderedValue.props.rowSpan,
+        }
+      }
     }
 
     return (
       <div
         className={`virtual-table-cell ${
           columnIndex === mergedColumns?.length - 1 ? 'virtual-table-cell-last' : ''
-        } ${column.className ? column.className : ''}`}
+        } ${column.className ? column.className : ''} ${column.align}`}
         style={_style}
       >
-        {render(value, rawData[rowIndex])}
+        {renderedValue?.children ? renderedValue.children : renderedValue}
       </div>
     )
   }

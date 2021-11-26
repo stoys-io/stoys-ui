@@ -140,6 +140,7 @@ export interface ChildDataItem extends Omit<HydratedColumn, 'name'> {
 export interface DataItemModel {
   columnName: string
   key: string
+  rowHeight: number
 }
 
 export type DataItem = DataItemModel | ChildDataItem
