@@ -19,13 +19,7 @@ import {
   ColumnMetric,
 } from './model'
 
-import {
-  colorScheme,
-  getChromaticColor,
-  hyperbolicGradientRight,
-  hyperbolicGradientLeft,
-  shiftedFlatScale,
-} from './graph-color-scheme'
+import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './graph-color-scheme'
 import { defaultHighlights } from './graph-store/store'
 
 export const highlightSingleNode = (id: string): Highlights => ({
@@ -225,94 +219,6 @@ export const highlightMetrics = ({ metric, graph }: HMetricsArgs): Highlights =>
   }, {})
 
   return { nodes: nodeHighlights, edges: {} }
-}
-
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined
-}
-
-export function collectChildColumnAndTableIds( // TODO: re-write this one
-  tId: string,
-  cId: string,
-  edges: Array<Edge>,
-  tables?: Array<Table>
-): ColumnAndTableIds {
-  let tableQueue = [tId]
-  let columnsResult = [cId]
-  let tableResult: Array<string | undefined> = []
-  let visitedTables: string[] = []
-
-  while (tableQueue.length) {
-    const currentTableId = tableQueue.shift()
-
-    tableResult.push(currentTableId)
-
-    const currentTableColumnsDependencies = tables
-      ?.find(table => table.id === currentTableId)
-      ?.columns.filter(column => columnsResult.includes(column.id))
-      .map(column => column.dependencies)
-      .flat()
-      .filter(notEmpty)
-    columnsResult.push(...(currentTableColumnsDependencies ? currentTableColumnsDependencies : []))
-
-    edges
-      .filter(edge => edge.source === currentTableId)
-      .forEach(edge => {
-        if (!visitedTables.includes(edge.target)) {
-          visitedTables.push(edge.target)
-          tableQueue.push(edge.target)
-        }
-      })
-  }
-
-  return {
-    tableIds: tableResult.filter(id => id !== tId).filter(notEmpty),
-    columnIds: columnsResult.filter(id => id !== cId),
-  }
-}
-
-export function collectParentColumnAndTableIds( // TODO: re-write this one
-  tId: string,
-  cId: string,
-  edges: Array<Edge>,
-  tables?: Array<Table>
-): ColumnAndTableIds {
-  let tableQueue = [tId]
-  let columnsResult = [cId]
-  let tableResult: Array<string | undefined> = []
-  let visitedTables: string[] = []
-
-  while (tableQueue.length) {
-    const currentTableId = tableQueue.shift()
-
-    tableResult.push(currentTableId)
-
-    const currentTableColumnsDependencies = tables
-      ?.find(table => table.id === currentTableId)
-      ?.columns.filter(column => columnsResult.some(cr => column.dependencies?.includes(cr)))
-      .map(column => column.id)
-      .filter(notEmpty)
-    columnsResult.push(...(currentTableColumnsDependencies ? currentTableColumnsDependencies : []))
-
-    edges
-      .filter(edge => edge.target === currentTableId)
-      .forEach(edge => {
-        if (!visitedTables.includes(edge.target)) {
-          visitedTables.push(edge.source)
-          tableQueue.push(edge.source)
-        }
-      })
-  }
-
-  return {
-    tableIds: tableResult.filter(id => id !== tId).filter(notEmpty),
-    columnIds: columnsResult.filter(id => id !== cId),
-  }
-}
-
-export interface ColumnAndTableIds {
-  tableIds: Array<string>
-  columnIds: Array<string>
 }
 
 const searchFnDispatch = (highlightMode: Highlight) =>

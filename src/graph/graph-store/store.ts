@@ -10,7 +10,7 @@ export const createStore = () =>
     highlightedColumns: defaultHighlightedColumns,
 
     data: [],
-    tables: undefined,
+    tables: [],
 
     drawerTab: undefined,
     drawerNodeId: undefined,

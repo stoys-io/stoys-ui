@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-export { default as PmfPlot } from './PmfPlot'
+export { default as PmfPlot } from './pmfPlot'
 
 export { React, ReactDOM }
 export { default as AggSum, getAggSumColumns, AggSumTableProps } from './aggSum'

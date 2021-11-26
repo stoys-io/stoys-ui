@@ -1,7 +1,7 @@
 import React from 'react'
 import { Story } from '@storybook/react'
 
-import PmfPlotComponent from '../src/PmfPlot'
+import PmfPlotComponent from '../src/pmfPlot'
 import { PmfPlotData, PmfPlotThreeDatasets, PmfPlotPassengerCount } from './mocks/PmfPlot.mock'
 
 const Template: Story<any> = args => <PmfPlotComponent {...args} />

@@ -4,7 +4,7 @@ export interface GraphStore {
   dispatch: (fn: DispatchHandler) => void
 
   data: DataGraph[]
-  tables?: Table[]
+  tables: Table[]
   defaultGraph: Graph // "Current release" graph, stays constant
   graph: Graph // The graph we display, can be merged graph in release mode
 
@@ -29,7 +29,7 @@ export interface GraphStore {
 export interface InitialArgs {
   graph: Graph
   data: DataGraph[]
-  tables?: Table[]
+  tables: Table[]
 }
 
 export type DispatchHandler = DispatchFn | Partial<GraphStore>
