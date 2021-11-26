@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom'
 import cytoscape from 'cytoscape'
 
 // @ts-ignore
-/* import cytoscapeDomNode from 'cytoscape-dom-node' */
-
-// @ts-ignore
 import cytoscapeDomNode from './customNode'
 
 // @ts-ignore
@@ -20,10 +17,12 @@ import undoRedo from 'cytoscape-undo-redo'
 // @ts-ignore
 import dagre from 'cytoscape-dagre'
 
-import { elements } from './mock'
+import { elements1 } from './mock'
 import { Node } from './Node'
 
-const Cyt = () => {
+const Graph = (props: { elements: any[] }) => {
+  const { elements = elements1 } = props
+
   const ref = useRef(null)
 
   useEffect(() => {
@@ -46,19 +45,18 @@ const Cyt = () => {
 
       const div = document.createElement('div')
       div.id = `node-${el.data.id}`
-      div.onclick = e => console.log('asdf', e)
 
-      return { ...el, data: { ...el.data, dom: div, type: 'bezier' } }
+      return { ...el, data: { ...el.data, dom: div } }
     })
 
     console.log({ actualElements })
 
     const dagreOpts = {
-      direction: 'RL',
+      rankDir: 'RL',
       align: 'DL',
-      ranksep: 64,
-      nodesep: 16,
-      ranker: 'logest-path',
+      rankSep: 64,
+      nodeSep: 16,
+      ranker: 'longest-path',
     }
 
     const cy = cytoscape({
@@ -70,7 +68,9 @@ const Cyt = () => {
           style: {
             width: '220px',
             height: '136px',
+            shape: 'rectangle',
             'background-color': '#ad1a66',
+            'background-opacity': 0.04,
           },
         },
         {
@@ -90,22 +90,20 @@ const Cyt = () => {
           selector: 'edge',
           style: {
             width: 3,
-            'line-color': '#ad1a66',
-            'curve-style': 'straight',
+            'line-color': '#b1b1b7',
+            'curve-style': 'unbundled-bezier',
+            'control-point-distances': [40, -40],
+            'target-arrow-shape': 'triangle',
+            'target-arrow-color': '#b1b1b7',
+            'source-endpoint': '-50% 0',
+            'target-endpoint': '50% 0',
           },
         },
         {
           selector: 'edge.meta',
           style: {
             width: 2,
-            'line-color': 'red',
-          },
-        },
-        {
-          selector: 'edge.bezier',
-          style: {
-            'curve-style': 'bezier',
-            'control-point-step-size': 40,
+            'line-color': 'green',
           },
         },
         {
@@ -127,7 +125,7 @@ const Cyt = () => {
 
     // @ts-ignore
     cy.domNode()
-    const El = React.createElement(Node, {}, 'click')
+    const El = React.createElement(Node, { onClick: e => console.log('click', e.target) })
     elements.forEach((el: any) => {
       if (el.group === 'nodes') {
         ReactDOM.render(El, document.getElementById(`node-${el.data.id}`))
@@ -166,7 +164,7 @@ const Cyt = () => {
     })
 
     document.getElementById('collapseAll')?.addEventListener('click', function () {
-      ur.do('collapseAll') // cy.collapseAll(options);
+      ur.do('collapseAll')
       cy.layout({ name: 'dagre', ...dagreOpts }).run()
     })
 
@@ -174,25 +172,6 @@ const Cyt = () => {
       ur.do('expandAll')
       cy.layout({ name: 'dagre', ...dagreOpts }).run()
     })
-
-    document.addEventListener(
-      'keydown',
-      function (e) {
-        // @ts-ignore
-        if (e.ctrlKey && e.which == '90') {
-          // @ts-ignore
-          cy.undoRedo().undo()
-          // @ts-ignore
-        } else if (e.ctrlKey && e.which == '89') {
-          // @ts-ignore
-          cy.undoRedo().redo()
-        }
-        if (e.key == 'Delete') {
-          cy.remove(cy.$(':selected'))
-        }
-      },
-      true
-    )
 
     cy.layout({ name: 'dagre', ...dagreOpts }).run()
   }, [ref.current])
@@ -213,4 +192,4 @@ const Cyt = () => {
   )
 }
 
-export default Cyt
+export default Graph

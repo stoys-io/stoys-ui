@@ -1,4 +1,4 @@
-export const elements: any = [
+export const elements1: any = [
   {
     data: { id: 'nwtN_50c55b8c-3489-4c4e-8bea-6a1c1162ac9c' },
     position: { x: 577.5410894097904, y: 612.5647477282114 },
@@ -623,6 +623,84 @@ export const elements: any = [
       id: 'nwtE_70a31acd-428d-47be-a981-38107a83d2e1',
     },
 
+    group: 'edges',
+  },
+]
+
+export const elements2 = [
+  {
+    data: { id: '5d01f4fd-c032-4def-887e-24d8d6dfc9e4' },
+    position: { x: 0, y: 0 },
+    group: 'nodes',
+  },
+  {
+    data: { id: 'e5cc8fa9-6e3f-4279-8098-db6e3b083e5a' },
+    position: { x: 0, y: 0 },
+    group: 'nodes',
+  },
+  {
+    data: { id: 'b4c74f2f-94ad-4445-9030-e0f558a3cdd9' },
+    position: { x: 0, y: 0 },
+    group: 'nodes',
+  },
+  {
+    data: { id: 'c2f5577c-7440-422f-bf89-9119d8b6a194' },
+    position: { x: 0, y: 0 },
+    group: 'nodes',
+  },
+  {
+    data: { id: 'aa646e52-23c2-4ec4-9938-c857a8b881e1' },
+    position: { x: 0, y: 0 },
+    group: 'nodes',
+  },
+  {
+    data: { id: '298f9962-1daa-4426-925e-67e0670bf90d' },
+    position: { x: 0, y: 0 },
+    group: 'nodes',
+  },
+  {
+    data: {
+      id: 'aa646e52-23c2-4ec4-9938-c857a8b881e1-5d01f4fd-c032-4def-887e-24d8d6dfc9e4-covid_data',
+      source: 'aa646e52-23c2-4ec4-9938-c857a8b881e1',
+      target: '5d01f4fd-c032-4def-887e-24d8d6dfc9e4',
+    },
+    position: { x: 0, y: 0 },
+    group: 'edges',
+  },
+  {
+    data: {
+      id: 'aa646e52-23c2-4ec4-9938-c857a8b881e1-e5cc8fa9-6e3f-4279-8098-db6e3b083e5a-covid_data',
+      source: 'aa646e52-23c2-4ec4-9938-c857a8b881e1',
+      target: 'e5cc8fa9-6e3f-4279-8098-db6e3b083e5a',
+    },
+    position: { x: 0, y: 0 },
+    group: 'edges',
+  },
+  {
+    data: {
+      id: 'aa646e52-23c2-4ec4-9938-c857a8b881e1-c2f5577c-7440-422f-bf89-9119d8b6a194-covid_data',
+      source: 'aa646e52-23c2-4ec4-9938-c857a8b881e1',
+      target: 'c2f5577c-7440-422f-bf89-9119d8b6a194',
+    },
+    position: { x: 0, y: 0 },
+    group: 'edges',
+  },
+  {
+    data: {
+      id: '298f9962-1daa-4426-925e-67e0670bf90d-aa646e52-23c2-4ec4-9938-c857a8b881e1-covid_stats',
+      source: '298f9962-1daa-4426-925e-67e0670bf90d',
+      target: 'aa646e52-23c2-4ec4-9938-c857a8b881e1',
+    },
+    position: { x: 0, y: 0 },
+    group: 'edges',
+  },
+  {
+    data: {
+      id: '298f9962-1daa-4426-925e-67e0670bf90d-b4c74f2f-94ad-4445-9030-e0f558a3cdd9-covid_stats',
+      source: '298f9962-1daa-4426-925e-67e0670bf90d',
+      target: 'b4c74f2f-94ad-4445-9030-e0f558a3cdd9',
+    },
+    position: { x: 0, y: 0 },
     group: 'edges',
   },
 ]

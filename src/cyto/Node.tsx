@@ -2,46 +2,44 @@ import React from 'react'
 import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../graph/styles'
 import List from 'antd/lib/list'
 
-export const Node = () => {
+export const Node = ({ onClick }: Props) => {
   const list = ['a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'c']
   return (
-    <div onScroll={console.log}>
-      <ScrollCard
-        title={<ScrollCardTitle color="red">Test</ScrollCardTitle>}
+    <ScrollCard
+      title={<ScrollCardTitle color="red">Test</ScrollCardTitle>}
+      size="small"
+      type="inner"
+      extra={0}
+      highlightColor="green"
+      onClick={onClick}
+    >
+      <List
         size="small"
-        type="inner"
-        extra={0}
-        highlightColor="green"
-      >
-        <ul>
-          {list.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
-        <List
-          size="small"
-          dataSource={list}
-          renderItem={(listItem: string) => {
-            return (
-              <List.Item>
-                <ItemContent title={listItem}>
-                  <ItemText
-                    hoverable={true}
-                    color="magenta"
-                    onClick={(evt: React.MouseEvent<HTMLElement>) => {
-                      evt.stopPropagation()
-                      console.log('clack')
-                    }}
-                  >
-                    {listItem}
-                  </ItemText>
-                  <ItemExtra>{listItem}</ItemExtra>
-                </ItemContent>
-              </List.Item>
-            )
-          }}
-        />
-      </ScrollCard>
-    </div>
+        dataSource={list}
+        renderItem={(listItem: string) => {
+          return (
+            <List.Item>
+              <ItemContent title={listItem}>
+                <ItemText
+                  hoverable={true}
+                  color="magenta"
+                  onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                    evt.stopPropagation()
+                    console.log('clack', listItem)
+                  }}
+                >
+                  {listItem}
+                </ItemText>
+                <ItemExtra>{listItem}</ItemExtra>
+              </ItemContent>
+            </List.Item>
+          )
+        }}
+      />
+    </ScrollCard>
   )
+}
+
+interface Props {
+  onClick: React.MouseEventHandler
 }
