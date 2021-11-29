@@ -47,6 +47,50 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
       const xScale = d3.scaleBand(xDomain, xRange).padding(0.025)
       const yScale = yType(yDomain, yRange)
 
+      if (showAxes) {
+        const xAxis = d3
+          .axisBottom(xScale)
+          .ticks(width / 100)
+          .tickSizeOuter(0)
+        const yAxis = d3.axisLeft(yScale).ticks(height / 100)
+
+        svg
+          .append('g')
+          .attr('transform', `translate(${margin.left},0)`)
+          .attr('class', 'y-axis')
+          .call(yAxis)
+          .call((g: any) => g.select('.domain').remove())
+          .call((g: any) =>
+            g
+              .selectAll('.tick line')
+              .clone()
+              .attr('x2', width - margin.left - margin.right)
+              .attr('stroke-opacity', 0.1)
+          )
+          .call((g: any) =>
+            g
+              .append('text')
+              .attr('x', -margin.left)
+              .attr('y', 10)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'start')
+          )
+
+        svg
+          .append('g')
+          .attr('transform', `translate(0,${height - margin.bottom})`)
+          .attr('class', 'x-axis')
+          .call(xAxis)
+          .call((g: any) =>
+            g
+              .append('text')
+              .attr('x', width - margin.right)
+              .attr('y', 27)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'end')
+          )
+      }
+
       const bar = svg
         .append('g')
         .selectAll('rect')
