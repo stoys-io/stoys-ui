@@ -54,8 +54,11 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
       const tooltip = body.append('div').style('pointer-events', 'none')
 
       svg
+        .call(zoom)
         .on('pointerenter pointermove', pointermoved)
         .on('pointerleave', () => tooltip.style('display', 'none').selectChildren().remove())
+
+      let xAxis: any
 
       if (showAxes) {
         const xAxis = d3
@@ -166,6 +169,29 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
           }
 
           tooltip.style('top', `${y}px`).style('left', `${x}px`)
+        }
+      }
+
+      function zoom(_svg: any) {
+        const extent: [[number, number], [number, number]] = [
+          [margin.left, margin.top],
+          [width - margin.right, height - margin.top],
+        ]
+
+        _svg.call(
+          d3.zoom().scaleExtent([1, 8]).translateExtent(extent).extent(extent).on('zoom', zoomed)
+        )
+
+        function zoomed(event: any) {
+          xScale.range([margin.left, width - margin.right].map(d => event.transform.applyX(d)))
+          _svg
+            .selectAll('rect')
+            .attr('x', (i: number) => xScale(X[i]))
+            .attr('width', xScale.bandwidth())
+
+          if (xAxis) {
+            _svg.selectAll('.x-axis').call(xAxis)
+          }
         }
       }
     },
