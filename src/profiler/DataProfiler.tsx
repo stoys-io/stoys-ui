@@ -184,8 +184,6 @@ export const DataProfiler = (props: DataProfilerProps) => {
     })
   }, [config])
 
-  console.log(data)
-
   return (
     <ConfigContext.Provider value={_config}>
       <CheckedRowsContext.Provider
