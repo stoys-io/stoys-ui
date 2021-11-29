@@ -19,7 +19,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
   )
 
   const chartData: Array<ChartDataItem> = dataset
-    .map((data: any, index: number) => {
+    .map((data: Array<DiscreteItem>, index: number) => {
       return data.map((dataItem: DiscreteItem) => ({
         ...dataItem,
         color: (Array.isArray(color) ? color[index] : color) || COLORS[index],
@@ -28,11 +28,11 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
     .flat()
 
   const ref = useD3(
-    (svg: any) => {
+    svg => {
       const windowWidth = window.innerWidth
       const windowHeight = window.innerHeight
 
-      const { width } = svg.node().getBoundingClientRect()
+      const { width } = svg.node()!.getBoundingClientRect()
 
       const yType = showLogScale ? d3.scaleLog : d3.scaleLinear
 
@@ -58,7 +58,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
         .on('pointerenter pointermove', pointermoved)
         .on('pointerleave', () => tooltip.style('display', 'none').selectChildren().remove())
 
-      let xAxis: any
+      let xAxis: d3.Axis<string>
 
       if (showAxes) {
         const xAxis = d3
@@ -72,15 +72,15 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
           .attr('transform', `translate(${margin.left},0)`)
           .attr('class', 'y-axis')
           .call(yAxis)
-          .call((g: any) => g.select('.domain').remove())
-          .call((g: any) =>
+          .call(g => g.select('.domain').remove())
+          .call(g =>
             g
               .selectAll('.tick line')
               .clone()
               .attr('x2', width - margin.left - margin.right)
               .attr('stroke-opacity', 0.1)
           )
-          .call((g: any) =>
+          .call(g =>
             g
               .append('text')
               .attr('x', -margin.left)
@@ -94,7 +94,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
           .attr('transform', `translate(0,${height - margin.bottom})`)
           .attr('class', 'x-axis')
           .call(xAxis)
-          .call((g: any) =>
+          .call(g =>
             g
               .append('text')
               .attr('x', width - margin.right)
@@ -111,18 +111,18 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
         .selectAll('rect')
         .data(I)
         .join('rect')
-        .attr('x', (i: any) => xScale(X[i]))
-        .attr('y', (i: any) => yScale(Y[i]))
-        .attr('height', (i: any) => _height - yScale(Y[i]))
+        .attr('x', i => xScale(X[i])!)
+        .attr('y', i => yScale(Y[i]))
+        .attr('height', i => _height - yScale(Y[i]))
         .attr('width', xScale.bandwidth())
-        .attr('fill', (i: any) => chartData[i].color)
+        .attr('fill', i => chartData[i].color)
 
       function pointermoved(event: any) {
         const [xCoordinate, yCoordinate] = d3.pointer(event) // [x, y]
         const scale = d3.scaleQuantize(xDomain).domain(xRange)
         const xValue = scale(xCoordinate)
 
-        const tooltipValues = chartData.filter((value: any) => value.item === xValue)
+        const tooltipValues = chartData.filter(value => value.item === xValue)
 
         const colorBadge = (color: string) => `
             <span style="

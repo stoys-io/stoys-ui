@@ -1,14 +1,21 @@
 import React, { useEffect } from 'react'
 import * as d3 from 'd3'
 
-const useD3 = (renderChartFn: any, dependencies: any) => {
-  const ref = React.useRef()
+const useD3 = (
+  renderChartFn: (node: d3.Selection<HTMLElement, null, null, undefined>) => void,
+  dependencies: Array<any>
+) => {
+  const ref = React.useRef<HTMLElement>(null)
 
   useEffect(() => {
-    renderChartFn(d3.select(ref.current as any))
+    if (ref.current) {
+      renderChartFn(d3.select(ref.current))
+    }
 
     return () => {
-      ;(ref.current as any).innerHTML = ''
+      if (ref.current) {
+        ref.current.innerHTML = ''
+      }
     }
   }, dependencies)
   return ref
