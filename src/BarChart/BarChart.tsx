@@ -31,7 +31,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
     (svg: any) => {
       const { width } = svg.node().getBoundingClientRect()
 
-      const yType = d3.scaleLinear
+      const yType = showLogScale ? d3.scaleLog : d3.scaleLinear
 
       const xRange = [margin.left, width - margin.right]
       const yRange = [height - margin.bottom, margin.top]
@@ -40,7 +40,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
       const Y = d3.map(chartData, d => d.count)
 
       const xDomain = new d3.InternSet(X)
-      const yDomain = [0, d3.max(Y) as number]
+      const yDomain = [showLogScale ? 1 : 0, d3.max(Y) as number]
 
       const I = d3.range(X.length).filter(i => xDomain.has(X[i]))
 
@@ -91,6 +91,8 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
           )
       }
 
+      const _height = showLogScale ? yScale(1) : yScale(0)
+
       const bar = svg
         .append('g')
         .selectAll('rect')
@@ -98,7 +100,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
         .join('rect')
         .attr('x', (i: any) => xScale(X[i]))
         .attr('y', (i: any) => yScale(Y[i]))
-        .attr('height', (i: any) => yScale(0) - yScale(Y[i]))
+        .attr('height', (i: any) => _height - yScale(Y[i]))
         .attr('width', xScale.bandwidth())
         .attr('fill', (i: any) => chartData[i].color)
     },
