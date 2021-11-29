@@ -4,6 +4,9 @@ import Table from 'antd/lib/table'
 import 'antd/lib/table/style/css'
 
 import { TableProps } from '../model'
+import VirtualTable from '../../common/VirtualTable'
+import { TABLE_HEIGHT } from '../../quality/constants'
+import { TABLE_ROW_HEIGHT } from '../constants'
 
 const HorizontalTable = (props: TableProps) => {
   const {
@@ -32,32 +35,33 @@ const HorizontalTable = (props: TableProps) => {
     },
     [pageSize, setPageSize, setCurrentPage]
   )
-  const keys = useMemo(() => data.map(item => item.key), [data])
+
   const tableProps = {
-    sticky: true,
-    expandable: { expandIcon: () => null, expandedRowKeys: keys },
-    scroll: {
-      x: true as true,
-      y: withoutPagination && height ? height : '100%',
-    },
     ...otherProps,
     dataSource: data,
     columns: columns as any,
   }
 
-  return (
-    <Table
-      {...tableProps}
-      pagination={
-        withoutPagination
-          ? false
-          : {
-              current: currentPage,
-              pageSize,
-              showSizeChanger: true,
-              ...pagination,
-            }
+  return withoutPagination ? (
+    <VirtualTable
+      scroll={
+        {
+          y: typeof height === 'number' ? height : TABLE_HEIGHT,
+        } as any
       }
+      columnWithMaxWidth="chart"
+      rowHeight={TABLE_ROW_HEIGHT}
+      {...tableProps}
+    />
+  ) : (
+    <Table
+      sticky
+      scroll={{
+        x: true as true,
+        y: withoutPagination && height ? height : '100%',
+      }}
+      {...tableProps}
+      pagination={{ current: currentPage, pageSize, showSizeChanger: true, ...pagination }}
       onChange={handleChangePagination}
     />
   )
