@@ -14,7 +14,6 @@ import {
   TABLE_ROW_HEIGHT,
 } from '../constants'
 import { StyledEmpty } from '../styles'
-import { ChartWrapper } from '../../pmfPlot/styles'
 
 const ChartAndTable = ({
   data,
@@ -52,7 +51,7 @@ const ChartAndTable = ({
     }
 
     return (
-      <ChartWrapper data-testid="bar-chart">
+      <div data-testid="bar-chart">
         <BarChart
           dataset={barsData}
           config={{
@@ -62,7 +61,7 @@ const ChartAndTable = ({
             color,
           }}
         />
-      </ChartWrapper>
+      </div>
     )
   }
 

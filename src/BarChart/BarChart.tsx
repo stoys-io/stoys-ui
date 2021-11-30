@@ -116,6 +116,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
         .attr('height', i => _height - yScale(Y[i]))
         .attr('width', xScale.bandwidth())
         .attr('fill', i => chartData[i].color)
+        .style('mix-blend-mode', 'multiply')
 
       function pointermoved(event: any) {
         const [xCoordinate, yCoordinate] = d3.pointer(event) // [x, y]
