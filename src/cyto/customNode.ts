@@ -62,18 +62,31 @@ class CytoscapeDomNode {
       dom.style['z-index'] = 999999
     })
 
-    // cy.on('click', 'node', evt => {
-    //   const cy_node = evt.target
-    //   const id = cy_node.id()
-    //   const dom = this._node_dom[id]
-    //   dom.click()
-    // })
+    cy.nodes().on('expandcollapse.beforecollapse', ev => {
+      const id = ev.target.data.id
+
+      if (this._params.destroyRecur) {
+        this._params.destroyRecur(id)
+      }
+    })
+  }
+
+  _remove_node(n) {
+    const data = n.data()
+    if (!data.dom) {
+      return
+    }
+
+    this._nodes_dom_container.removeChild(data.dom)
+    this._node_dom[n.id()] = undefined
   }
 
   _add_node(n) {
     let data = n.data()
 
-    if (!data.dom) return
+    if (!data.dom) {
+      return
+    }
 
     this._nodes_dom_container.appendChild(data.dom)
     data.dom.__cy_id = n.id()
@@ -89,15 +102,13 @@ class CytoscapeDomNode {
 }
 
 function register(cy) {
-  if (!cy) return
+  if (!cy) {
+    return undefined
+  }
 
   cy('core', 'domNode', function (params, opts) {
     return new CytoscapeDomNode(this, params, opts)
   })
-}
-
-if (typeof cytoscape !== 'undefined') {
-  register(cytoscape)
 }
 
 export default register

@@ -643,6 +643,12 @@ export const elements2 = [
     position: { x: 0, y: 0 },
     group: 'nodes',
   },
+
+  {
+    data: { id: '2', parent: 'b4c74f2f-94ad-4445-9030-e0f558a3cdd9' },
+    position: { x: 0, y: 0 },
+    group: 'nodes',
+  },
   {
     data: { id: 'c2f5577c-7440-422f-bf89-9119d8b6a194' },
     position: { x: 0, y: 0 },
@@ -699,6 +705,16 @@ export const elements2 = [
       id: '298f9962-1daa-4426-925e-67e0670bf90d-b4c74f2f-94ad-4445-9030-e0f558a3cdd9-covid_stats',
       source: '298f9962-1daa-4426-925e-67e0670bf90d',
       target: 'b4c74f2f-94ad-4445-9030-e0f558a3cdd9',
+    },
+    position: { x: 0, y: 0 },
+    group: 'edges',
+  },
+
+  {
+    data: {
+      id: 'inner_edge',
+      source: '298f9962-1daa-4426-925e-67e0670bf90d',
+      target: '2',
     },
     position: { x: 0, y: 0 },
     group: 'edges',

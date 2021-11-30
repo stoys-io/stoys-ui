@@ -38,9 +38,23 @@ const Graph = (props: { elements: any[] }) => {
     cytoscape.use(undoRedo)
     cytoscape.use(cytoscapeDomNode)
 
+    const parentNodes = elements.reduce((acc: string[], el: any) => {
+      if (!el.data.parent) {
+        return acc
+      }
+
+      return !acc.includes(el.data.parent) ? [...acc, el.data.parent] : acc
+    }, [])
+
+    console.log({ parentNodes })
+
     const actualElements = elements.map((el: any) => {
       if (el.group !== 'nodes') {
-        return { ...el }
+        return el
+      }
+
+      if (parentNodes.includes(el.data.id)) {
+        return el
       }
 
       const div = document.createElement('div')
@@ -123,13 +137,28 @@ const Graph = (props: { elements: any[] }) => {
     })
 
     // @ts-ignore
-    cy.domNode()
-    const El = React.createElement(Node, { onClick: e => console.log('click', e.target) })
-    elements.forEach((el: any) => {
-      if (el.group === 'nodes') {
-        ReactDOM.render(El, document.getElementById(`node-${el.data.id}`))
-      }
-    })
+    const createNodes = () => {
+      const El = React.createElement(Node, { onClick: e => console.log('click', e.target) })
+      actualElements.forEach((el: any) => {
+        if (el.group === 'nodes' && el.data.dom) {
+          ReactDOM.render(El, document.getElementById(`node-${el.data.id}`))
+        }
+      })
+    }
+
+    // @ts-ignore
+    const destroyRecur = id => {
+      console.log(id)
+      const toDestroy = actualElements.filter((el: any) => el.data.parent === id)
+      console.log(toDestroy)
+      toDestroy.forEach((el: any) => {
+        // @ts-ignore
+        // ReactDOM.unmountComponentAtNode(document.getElementById(`node-${el.data.id}`))
+      })
+    }
+
+    // @ts-ignore
+    cy.domNode({ destroyRecur })
 
     // @ts-ignore
     const ur = cy.undoRedo()
@@ -138,41 +167,35 @@ const Graph = (props: { elements: any[] }) => {
     cy.expandCollapse({
       layoutBy: {
         name: 'dagre',
-        animate: true,
+        animate: false,
         randomize: false,
-        fit: true,
+        fit: false,
         ...dagreOpts,
       },
-      fisheye: true,
-      animate: true,
+      fisheye: false,
+      animate: false,
       zIndex: 10,
     })
+
+    // @ts-ignore
+    const api = cy.expandCollapse('get')
 
     document.getElementById('collapseRecursively')?.addEventListener('click', function () {
       ur.do('collapseRecursively', {
         nodes: cy.$(':selected'),
       })
-      cy.layout({ name: 'dagre', ...dagreOpts }).run()
+      /* cy.layout({ name: 'dagre', ...dagreOpts }).run() */
     })
 
     document.getElementById('expandRecursively')?.addEventListener('click', function () {
       ur.do('expandRecursively', {
         nodes: cy.$(':selected'),
       })
-      cy.layout({ name: 'dagre', ...dagreOpts }).run()
-    })
-
-    document.getElementById('collapseAll')?.addEventListener('click', function () {
-      ur.do('collapseAll')
-      cy.layout({ name: 'dagre', ...dagreOpts }).run()
-    })
-
-    document.getElementById('expandAll')?.addEventListener('click', function () {
-      ur.do('expandAll')
-      cy.layout({ name: 'dagre', ...dagreOpts }).run()
+      /* cy.layout({ name: 'dagre', ...dagreOpts }).run() */
     })
 
     cy.layout({ name: 'dagre', ...dagreOpts }).run()
+    createNodes()
   }, [ref.current])
 
   return (
