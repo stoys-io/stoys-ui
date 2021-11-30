@@ -3,19 +3,12 @@ import * as d3 from 'd3'
 
 import { useD3 } from '../hooks'
 import { COLORS } from '../profiler/constants'
+import { getMargin } from '../common/chartHelpers'
 
 const PmfPlot = ({ dataset, config }: any) => {
   const { height, color, showAxes, showLogScale } = config
 
-  const margin = useMemo(
-    () => ({
-      left: showAxes ? 25 : 2,
-      right: showAxes ? 25 : 2,
-      top: showAxes ? 25 : 2,
-      bottom: showAxes ? 25 : 2,
-    }),
-    [showAxes]
-  )
+  const margin = getMargin(showAxes)
 
   const plotData: Array<any> = dataset
     .map((data: any, index: number) => {

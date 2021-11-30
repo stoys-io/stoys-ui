@@ -1,22 +1,15 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import * as d3 from 'd3'
 
 import { useD3 } from '../hooks'
 import { DiscreteItem } from '../profiler/model'
 import { COLORS } from '../profiler/constants'
+import { getMargin } from '../common/chartHelpers'
 
 const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
   const { height, color, showAxes, showLogScale } = config
 
-  const margin = useMemo(
-    () => ({
-      left: showAxes ? 25 : 2,
-      right: showAxes ? 25 : 2,
-      top: showAxes ? 25 : 2,
-      bottom: showAxes ? 25 : 2,
-    }),
-    [showAxes]
-  )
+  const margin = getMargin(showAxes)
 
   const chartData: Array<ChartDataItem> = dataset
     .map((data: Array<DiscreteItem>, index: number) => {
