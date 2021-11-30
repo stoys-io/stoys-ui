@@ -4,8 +4,8 @@ import Empty from 'antd/lib/empty'
 import PmfPlot from '../../pmfPlot'
 import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'
-import BarChart from './BarChart'
-import { ChartAndTableProps } from '../model'
+import BarChart from '../../BarChart'
+import { ChartAndTableProps, DiscreteItem } from '../model'
 import { Maybe } from '../../model'
 import {
   MIN_CHART_CELL_HEIGHT,
@@ -14,7 +14,6 @@ import {
   TABLE_ROW_HEIGHT,
 } from '../constants'
 import { StyledEmpty } from '../styles'
-import { ChartWrapper } from '../../pmfPlot/styles'
 
 const ChartAndTable = ({
   data,
@@ -40,45 +39,29 @@ const ChartAndTable = ({
     return <Table data={data} height={height} displayNormalized={displayNormalized} />
   }
 
+  const color = data.map(dataItem => dataItem.color)
+
   if (data[0].type === 'string') {
-    const barsData = data.map(item => item?.items)
-    const items = barsData?.map(bars => bars?.map(item => item.item))
-    const flattenItems = items.reduce((accumulator: Array<string>, value) => {
-      if (!value) {
-        return accumulator
-      }
+    const barsData: Array<Array<DiscreteItem>> = data
+      .map(item => item.items || [])
+      .filter(item => item.length)
 
-      return accumulator.concat(value)
-    }, [])
-    const uniqueItems = [...new Set(flattenItems)]
-
-    if (!uniqueItems.length) {
+    if (!barsData.length) {
       return <StyledEmpty image={Empty.PRESENTED_IMAGE_SIMPLE} data-testid="bars-empty" />
     }
 
-    const series = barsData.map((bars, index) => ({
-      data: uniqueItems.map(item => {
-        return bars?.find(bar => bar.item === item)?.count
-      }),
-      type: 'bar',
-      name: data[index].name,
-      barGap: '-100%',
-      barMinWidth: 10,
-      itemStyle: {
-        color: data[index].color,
-      },
-    }))
-
     return (
-      <ChartWrapper data-testid="bar-chart">
+      <div data-testid="bar-chart">
         <BarChart
-          series={series}
-          height={height}
-          xData={uniqueItems}
-          isLogScale={enabledLogScale}
-          haveAxes={enabledAxes}
+          dataset={barsData}
+          config={{
+            height: height,
+            showLogScale: enabledLogScale,
+            showAxes: enabledAxes,
+            color,
+          }}
         />
-      </ChartWrapper>
+      </div>
     )
   }
 
@@ -90,14 +73,11 @@ const ChartAndTable = ({
   if (!flattenPmfPlotData.length) {
     return <StyledEmpty image={Empty.PRESENTED_IMAGE_SIMPLE} data-testid="pmf-empty" />
   }
-
-  const color = data.map(dataItem => dataItem.color)
   const pmfPlotDataData = data.map(dataItem => dataItem?.pmf || [])
 
   return (
     <PmfPlot
       dataset={pmfPlotDataData}
-      data={pmfPlotDataData}
       config={{
         height,
         dataType: data[0].type,
