@@ -46,8 +46,6 @@ const Graph = (props: { elements: any[] }) => {
       return !acc.includes(el.data.parent) ? [...acc, el.data.parent] : acc
     }, [])
 
-    console.log({ parentNodes })
-
     const actualElements = elements.map((el: any) => {
       if (el.group !== 'nodes') {
         return el
@@ -63,9 +61,8 @@ const Graph = (props: { elements: any[] }) => {
       return { ...el, data: { ...el.data, dom: div } }
     })
 
-    console.log({ actualElements })
-
     const dagreOpts = {
+      name: 'dagre',
       rankDir: 'RL',
       align: 'DL',
       rankSep: 64,
@@ -76,6 +73,7 @@ const Graph = (props: { elements: any[] }) => {
     const cy = cytoscape({
       container: ref.current,
       elements: actualElements,
+      autoungrabify: true,
       style: [
         {
           selector: 'node',
@@ -148,12 +146,15 @@ const Graph = (props: { elements: any[] }) => {
 
     // @ts-ignore
     const destroyRecur = id => {
-      console.log(id)
       const toDestroy = actualElements.filter((el: any) => el.data.parent === id)
-      console.log(toDestroy)
+      console.log({ id, toDestroy })
+
       toDestroy.forEach((el: any) => {
+        const domEl = document.getElementById(`node-${el.data.id}`)
+
         // @ts-ignore
-        // ReactDOM.unmountComponentAtNode(document.getElementById(`node-${el.data.id}`))
+        /* domEl && ReactDOM.unmountComponentAtNode(domEl) */
+        domEl && domEl.remove()
       })
     }
 
@@ -165,36 +166,30 @@ const Graph = (props: { elements: any[] }) => {
 
     // @ts-ignore
     cy.expandCollapse({
-      layoutBy: {
-        name: 'dagre',
-        animate: false,
-        randomize: false,
-        fit: false,
-        ...dagreOpts,
-      },
+      layoutBy: null,
       fisheye: false,
       animate: false,
       zIndex: 10,
     })
 
     // @ts-ignore
-    const api = cy.expandCollapse('get')
+    /* const api = cy.expandCollapse('get') */
 
     document.getElementById('collapseRecursively')?.addEventListener('click', function () {
       ur.do('collapseRecursively', {
         nodes: cy.$(':selected'),
       })
-      /* cy.layout({ name: 'dagre', ...dagreOpts }).run() */
+      cy.layout(dagreOpts).run()
     })
 
     document.getElementById('expandRecursively')?.addEventListener('click', function () {
       ur.do('expandRecursively', {
         nodes: cy.$(':selected'),
       })
-      /* cy.layout({ name: 'dagre', ...dagreOpts }).run() */
+      cy.layout(dagreOpts).run()
     })
 
-    cy.layout({ name: 'dagre', ...dagreOpts }).run()
+    cy.layout(dagreOpts).run()
     createNodes()
   }, [ref.current])
 

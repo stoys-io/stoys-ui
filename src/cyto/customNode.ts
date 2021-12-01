@@ -63,7 +63,8 @@ class CytoscapeDomNode {
     })
 
     cy.nodes().on('expandcollapse.beforecollapse', ev => {
-      const id = ev.target.data.id
+      const n = ev.target
+      const id = n.data().id
 
       if (this._params.destroyRecur) {
         this._params.destroyRecur(id)

@@ -25,7 +25,6 @@ export const Node = ({ onClick }: Props) => {
                   color="magenta"
                   onClick={(evt: React.MouseEvent<HTMLElement>) => {
                     evt.stopPropagation()
-                    console.log('clack', listItem)
                   }}
                 >
                   {listItem}
