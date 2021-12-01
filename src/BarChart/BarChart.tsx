@@ -44,7 +44,10 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
       const yScale = yType(yDomain, yRange)
 
       const body = d3.select('body')
-      const tooltip = body.append('div').style('pointer-events', 'none')
+      // TODO: fix tooltip type
+      const tooltip: any = d3.select('.plot-tooltip').node()
+        ? d3.select('.plot-tooltip')
+        : body.append('div').style('pointer-events', 'none').attr('class', 'plot-tooltip')
 
       svg
         .call(zoom)
@@ -148,7 +151,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
             })
 
           const { width: tooltipWidth, height: tooltipHeight } = tooltip
-            .node()!
+            .node()
             .getBoundingClientRect()
 
           let y = event.y + 15
