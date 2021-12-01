@@ -141,7 +141,10 @@ const PmfPlot = ({ dataset, config }: any) => {
       }
 
       const body = d3.select('body')
-      const tooltip = body.append('div').style('pointer-events', 'none')
+      // TODO: fix tooltip as any
+      const tooltip: any = d3.select('.plot-tooltip').node()
+        ? d3.select('.plot-tooltip')
+        : body.append('div').style('pointer-events', 'none').attr('class', 'plot-tooltip')
 
       function pointermoved(event: any) {
         const [xCoordinate, yCoordinate] = d3.pointer(event) // [x, y]
@@ -164,11 +167,10 @@ const PmfPlot = ({ dataset, config }: any) => {
         `
 
         if (tooltipValues.length) {
-          tooltip
+          ;(tooltip as any)
             .style('display', 'block')
-            .attr('class', 'plot-tooltip')
             .style('padding', '2px')
-            .style('position', 'fixed')
+            .style('position', 'absolute')
             .style('background-color', '#fff')
             .style('border', '1px solid #000')
             .html(() => {
@@ -183,11 +185,11 @@ const PmfPlot = ({ dataset, config }: any) => {
             })
 
           const { width: tooltipWidth, height: tooltipHeight } = tooltip
-            .node()!
+            .node()
             .getBoundingClientRect()
 
-          let y = event.y + 15
-          let x = event.x + 15
+          let y = event.pageY + 15
+          let x = event.pageX + 15
 
           if (x + tooltipWidth > windowWidth) {
             x = x - tooltipWidth - 15
