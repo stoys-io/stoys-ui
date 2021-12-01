@@ -13,9 +13,19 @@ function VirtualTable<T extends object>(
     rowHeight?: number
     scroll: { y: number }
     columnWithMaxWidth?: string
+    overscanColumnCount?: number
+    overscanRowCount?: number
   }
 ): JSX.Element {
-  const { columns, scroll, parentsColumns, rowHeight, columnWithMaxWidth } = props
+  const {
+    columns,
+    scroll,
+    parentsColumns,
+    rowHeight,
+    columnWithMaxWidth,
+    overscanRowCount,
+    overscanColumnCount,
+  } = props
   const [tableWidth, setTableWidth] = useState(0)
 
   const columnCount = columns!.length
@@ -67,6 +77,8 @@ function VirtualTable<T extends object>(
               scroll,
               tableWidth,
               rowHeight,
+              overscanRowCount,
+              overscanColumnCount,
             }),
           } as any
         }
@@ -129,7 +141,15 @@ const renderVirtualList =
       tableWidth,
       rowHeight,
       scroll,
-    }: { tableWidth: number; rowHeight?: number; scroll: { y: number } }
+      overscanRowCount,
+      overscanColumnCount,
+    }: {
+      tableWidth: number
+      rowHeight?: number
+      scroll: { y: number }
+      overscanRowCount?: number
+      overscanColumnCount?: number
+    }
   ) =>
   (
     rawData: Array<T>,
@@ -169,6 +189,8 @@ const renderVirtualList =
         rowHeight={getRowHeight}
         width={tableWidth}
         onScroll={onScroll}
+        overscanRowCount={overscanRowCount || 1}
+        overscanColumnCount={overscanColumnCount || 1}
       >
         {renderCell(mergedColumns, rawData)}
       </Grid>

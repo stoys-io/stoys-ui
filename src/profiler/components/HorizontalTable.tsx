@@ -51,6 +51,8 @@ const HorizontalTable = (props: TableProps) => {
       }
       columnWithMaxWidth="chart"
       rowHeight={TABLE_ROW_HEIGHT}
+      overscanRowCount={2}
+      overscanColumnCount={2}
       {...tableProps}
     />
   ) : (
