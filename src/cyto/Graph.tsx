@@ -9,7 +9,7 @@ import cytoscapeDomNode from './customNode'
 import expandCollapse from 'cytoscape-expand-collapse'
 
 // @ts-ignore
-import cytoscapeFcose from 'cytoscape-fcose'
+/* import cytoscapeFcose from 'cytoscape-fcose' */
 
 // @ts-ignore
 import undoRedo from 'cytoscape-undo-redo'
@@ -32,7 +32,6 @@ const Graph = (props: { elements: any[] }) => {
 
     cytoscape.warnings(true)
 
-    cytoscape.use(cytoscapeFcose)
     cytoscape.use(expandCollapse)
     cytoscape.use(dagre)
     cytoscape.use(undoRedo)
@@ -55,10 +54,10 @@ const Graph = (props: { elements: any[] }) => {
         return el
       }
 
-      const div = document.createElement('div')
-      div.id = `node-${el.data.id}`
+      const dom = document.createElement('div')
+      dom.id = `node-${el.data.id}`
 
-      return { ...el, data: { ...el.data, dom: div } }
+      return { ...el, data: { ...el.data, dom } }
     })
 
     const dagreOpts = {
@@ -129,8 +128,7 @@ const Graph = (props: { elements: any[] }) => {
 
       layout: {
         // @ts-ignore
-        name: 'dagre',
-        ...dagreOpts,
+        dagreOpts,
       },
     })
 
@@ -144,16 +142,23 @@ const Graph = (props: { elements: any[] }) => {
       })
     }
 
+    const destoyNodes = () => {
+      actualElements.forEach((el: any) => {
+        if (el.group === 'nodes' && el.data.dom) {
+          const domEl = document.getElementById(`node-${el.data.id}`)
+          domEl && ReactDOM.unmountComponentAtNode(domEl)
+        }
+      })
+    }
+
     // @ts-ignore
     const destroyRecur = id => {
       const toDestroy = actualElements.filter((el: any) => el.data.parent === id)
-      console.log({ id, toDestroy })
-
       toDestroy.forEach((el: any) => {
         const domEl = document.getElementById(`node-${el.data.id}`)
 
         // @ts-ignore
-        /* domEl && ReactDOM.unmountComponentAtNode(domEl) */
+        domEl && ReactDOM.unmountComponentAtNode(domEl)
         domEl && domEl.remove()
       })
     }
@@ -162,35 +167,26 @@ const Graph = (props: { elements: any[] }) => {
     cy.domNode({ destroyRecur })
 
     // @ts-ignore
-    const ur = cy.undoRedo()
-
-    // @ts-ignore
     cy.expandCollapse({
       layoutBy: null,
       fisheye: false,
-      animate: false,
+      animate: true,
       zIndex: 10,
+      ready: () => console.log('ready'),
     })
 
     // @ts-ignore
     /* const api = cy.expandCollapse('get') */
 
-    document.getElementById('collapseRecursively')?.addEventListener('click', function () {
-      ur.do('collapseRecursively', {
-        nodes: cy.$(':selected'),
-      })
-      cy.layout(dagreOpts).run()
-    })
-
-    document.getElementById('expandRecursively')?.addEventListener('click', function () {
-      ur.do('expandRecursively', {
-        nodes: cy.$(':selected'),
-      })
-      cy.layout(dagreOpts).run()
-    })
-
     cy.layout(dagreOpts).run()
     createNodes()
+
+    return () => {
+      destoyNodes()
+      cytoscape.use = () => {} // https://github.com/cytoscape/cytoscape.js-cxtmenu/issues/62
+      cy.destroy()
+      console.log('cy destroyed')
+    }
   }, [ref.current])
 
   return (
@@ -201,8 +197,8 @@ const Graph = (props: { elements: any[] }) => {
         id="cy"
         style={{
           zIndex: 9,
-          width: '1400px',
-          height: '1000px',
+          width: '100vw',
+          height: '100vh',
         }}
       ></div>
     </>

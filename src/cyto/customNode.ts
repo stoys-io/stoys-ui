@@ -31,7 +31,9 @@ class CytoscapeDomNode {
       this._add_node(ev.target)
     })
 
-    for (let n of cy.nodes()) this._add_node(n)
+    for (let n of cy.nodes()) {
+      this._add_node(n)
+    }
 
     cy.on('pan zoom', ev => {
       let pan = cy.pan()
@@ -65,7 +67,6 @@ class CytoscapeDomNode {
     cy.nodes().on('expandcollapse.beforecollapse', ev => {
       const n = ev.target
       const id = n.data().id
-
       if (this._params.destroyRecur) {
         this._params.destroyRecur(id)
       }
