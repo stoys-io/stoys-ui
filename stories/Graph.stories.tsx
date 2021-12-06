@@ -1,6 +1,7 @@
 import React from 'react'
 import { Story } from '@storybook/react'
 import Graph, { Props } from '../src/graph'
+import NestedNodes from '../src/graph/NestedNodes'
 import { DataGraph } from '../src/graph/model'
 
 import _dataMock from './mocks/graph/dag_inlined.json'
@@ -65,9 +66,16 @@ BigGraph.args = {
   data: [grpcData],
 }
 
+export const Nested = () => (
+  <div style={{ width: '100vw', height: '100vh' }}>
+    <NestedNodes />
+  </div>
+)
+Nested.storyName = 'nested'
+
 export default {
   title: 'Chart/Graph',
-  component: [SampleGraph, DiffGraph, Multiple, BigGraph],
+  component: [SampleGraph, DiffGraph, Multiple, BigGraph, Nested],
   argTypes: {
     data: {
       type: { required: true },

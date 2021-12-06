@@ -24712,11 +24712,25 @@
       },
       "dependencies": [
         "aa646e52-23c2-4ec4-9938-c857a8b881e1",
-        "b4c74f2f-94ad-4445-9030-e0f558a3cdd9"
+        "b4c74f2f-94ad-4445-9030-e0f558a3cdd9",
+        "covid_stats_hidden",
+        "covid_stats_hidden2"
       ],
+      "isRoot": true,
       "metadata": {
         "foo": "bar"
       }
+    },
+    {
+      "id": "covid_stats_hidden",
+      "name": "covid_stats_hidden",
+      "parent": "298f9962-1daa-4426-925e-67e0670bf90d",
+      "dependencies": ["aa646e52-23c2-4ec4-9938-c857a8b881e1"]
+    },
+    {
+      "id": "covid_stats_hidden2",
+      "name": "covid_stats_hidden2",
+      "parent": "298f9962-1daa-4426-925e-67e0670bf90d"
     }
   ]
 }

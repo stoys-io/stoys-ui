@@ -383,7 +383,23 @@ export const mapInitialNodes = (tables: Table[]): Node[] =>
         columns: columnsWithExtraData(table),
       },
       position: initialPosition,
-      type: 'dagNode',
+      // type: 'dagNode',
+      //
+      ...(table.isRoot === true
+        ? {
+            style: {
+              backgroundColor: 'rgba(255, 0, 0, 0.7)',
+              width: 300,
+              height: 300,
+            },
+          }
+        : {}),
+      ...(table.parent
+        ? {
+            parentNode: table.parent,
+            extent: 'parent',
+          }
+        : {}),
     })
   )
 
@@ -397,7 +413,7 @@ export const mapInitialEdges = (tables: Table[]): Edge[] =>
           source: table.id,
           target: dep,
           data: { rank: 1 },
-          type: 'dagEdge',
+          // type: 'dagEdge',
         })
       )
 

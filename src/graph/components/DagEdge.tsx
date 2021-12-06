@@ -11,9 +11,9 @@ export const DagEdge = ({
   targetY,
   sourcePosition,
   targetPosition,
-  arrowHeadType,
-  markerEndId,
-}: EdgeProps<EdgeDataPayload>) => {
+}: /* arrowHeadType, */
+/* markerEndId, */
+EdgeProps<EdgeDataPayload>) => {
   const style = useGraphStore(useCallback(state => state.highlights.edges[id], [id]))
 
   const edgePath = getBezierPath({
@@ -24,15 +24,7 @@ export const DagEdge = ({
     targetY,
     targetPosition,
   })
-  const markerEnd = getMarkerEnd(arrowHeadType, markerEndId)
+  /* const markerEnd = getMarkerEnd(arrowHeadType, markerEndId) */
 
-  return (
-    <path
-      id={id}
-      style={style}
-      className="react-flow__edge-path"
-      d={edgePath}
-      markerEnd={markerEnd}
-    />
-  )
+  return <path id={id} style={style} className="react-flow__edge-path" d={edgePath} />
 }

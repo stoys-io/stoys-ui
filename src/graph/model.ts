@@ -89,6 +89,7 @@ export interface Table {
     violations?: number
   }
   dependencies?: string[]
+  parent?: string
   dp_result?: ProfilerData
   dq_result?: QualityData
   dq_join_results?: JoinRatesData[]
@@ -96,7 +97,7 @@ export interface Table {
   metadata?: {
     [key: string]: string | number
   }
-  style?: { color: string }
+  isRoot?: boolean
 }
 
 export interface Column {

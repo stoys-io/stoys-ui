@@ -32,7 +32,6 @@ import { Container, GraphContainer } from './styles'
 import { DataGraph, ChromaticScale, Orientation } from './model'
 
 import { mapInitialNodes, mapInitialEdges } from './graph-ops'
-import { usePreventDoubleClick } from './usePreventDoubleClick'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -80,13 +79,12 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
     state => state.graph,
     (oldGraph, newGraph) => oldGraph.release === newGraph.release
   )
-  const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
 
-  const elementClick = usePreventDoubleClick((_: any, element: Node0 | Edge0) => {
-    if (isNode(element)) {
-      return dispatch(nodeClick(element.id, config.chromaticScale))
-    }
-  })
+  const g = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
+  const edges = g.edges
+  const nodes = g.nodes
+
+  const onNodeClick = (_: any, node: Node0) => dispatch(nodeClick(node.id, config.chromaticScale))
 
   const nodeDoubleClick = (_: any, node: Node0) => {
     dispatch(openDrawer(node.id))
@@ -125,15 +123,16 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
       <GraphContainer>
         <ReactFlowProvider>
           <ReactFlow
+            edges={edges}
+            nodes={nodes}
             nodesDraggable={false}
-            onElementClick={elementClick}
+            onNodeClick={onNodeClick}
             onNodeDoubleClick={nodeDoubleClick}
             onPaneClick={onPaneClick}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
-            elements={elements}
             onLoad={() => setIsLoading(false)}
-            onlyRenderVisibleElements={true}
+            onlyRenderVisibleElements={false}
             nodesConnectable={false}
             minZoom={0.12}
           >
