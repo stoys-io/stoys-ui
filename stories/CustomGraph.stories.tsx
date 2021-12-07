@@ -1,14 +1,14 @@
 import React from 'react'
 import { Story } from '@storybook/react'
-import NodeExpand, { Props } from '../src/nodeExpand'
+import CustomGraphComponent, { Props } from '../src/customGraph'
 
-const Template: Story<Props> = (args: Props) => <NodeExpand {...args} />
+const Template: Story<Props> = (args: Props) => <CustomGraphComponent {...args} />
 export const Example = Template.bind({})
 Example.storyName = 'example'
 Example.args = {}
 
 export default {
-  title: 'Chart/Custom svg',
+  title: 'Chart/Custom graph',
   component: [Example],
   argTypes: {},
 }

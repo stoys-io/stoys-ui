@@ -1,75 +1,19 @@
 import React, { CSSProperties, useState } from 'react'
-
-const myGraph: CustomGraph = {
-  nodes: {
-    'test 1': {
-      id: 'test 1',
-      x: 10,
-      y: 100,
-      data: { label: 'test 1' },
-    },
-    'test 2': {
-      id: 'test 2',
-      x: 150,
-      y: 10,
-      data: { label: 'test 2' },
-    },
-    'test 3': {
-      id: 'test 3',
-      x: 230,
-      y: 70,
-      data: { label: 'test 3' },
-    },
-    'test 4': {
-      id: 'test 4',
-      x: 500,
-      y: 300,
-      data: { label: 'test 4' },
-      isRoot: true,
-      groupId: 'common',
-    },
-    'test 5': {
-      id: 'test 5',
-      x: 400,
-      y: 440,
-      data: { label: 'test 5' },
-
-      rootId: 'test 4',
-      groupId: 'common',
-    },
-    'test 6': {
-      id: 'test 6',
-      x: 280,
-      y: 330,
-      data: { label: 'test 6' },
-      rootId: 'test 4',
-      groupId: 'common',
-    },
-  },
-  edges: [
-    { source: 'test 2', target: 'test 1' },
-    { source: 'test 3', target: 'test 1' },
-    { source: 'test 4', target: 'test 3' },
-
-    { source: 'test 4', target: 'test 5' },
-    { source: 'test 4', target: 'test 6' },
-    { source: 'test 5', target: 'test 3' },
-  ],
-}
+import { mockGraph } from './mocks'
 
 const timeout = '350ms'
 const styleEdgeTransition = {
   transition: `all ${timeout} ease-in-out`,
 }
 
-const NodeExpand = (props: Props) => {
+const CustomGraphComponent = ({ graph = mockGraph }: Props) => {
   const [isOpen, setIsOpen] = useState(true)
   const toggle = () => setIsOpen(isOpen => !isOpen)
 
   const strokeTransition = isOpen ? 'black' : 'white'
   const strokeWidthTransition = isOpen ? '1' : '0'
 
-  const myNodes = Object.values(myGraph.nodes)
+  const myNodes = Object.values(graph.nodes)
   const plainNodes = myNodes.filter(node => node.groupId === undefined)
 
   const subGroups = myNodes.reduce(
@@ -81,13 +25,19 @@ const NodeExpand = (props: Props) => {
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
       <svg style={{ position: 'absolute', width: '100%', height: '100%' }}>
-        {myGraph.edges.map(edge => {
-          const { x: x1, y: y1, rootId: rootSource } = myGraph.nodes[edge.source]
-          const { x: x2, y: y2, rootId: rootTarget } = myGraph.nodes[edge.target]
+        {graph.edges.map(edge => {
+          const {
+            position: { x: x1, y: y1 },
+            rootId: rootSource,
+          } = graph.nodes[edge.source]
+          const {
+            position: { x: x2, y: y2 },
+            rootId: rootTarget,
+          } = graph.nodes[edge.target]
 
           const rootId = rootSource || rootTarget
           if (rootId) {
-            const { x: xRoot, y: yRoot } = myGraph.nodes[rootId]
+            const { x: xRoot, y: yRoot } = graph.nodes[rootId].position
 
             let dPath = ''
             if (rootTarget) {
@@ -123,7 +73,7 @@ const NodeExpand = (props: Props) => {
       </svg>
 
       {plainNodes.map(node => (
-        <MyNode x={node.x} y={node.y} label={node.data.label} />
+        <MyNode x={node.position.x} y={node.position.y} label={node.data.label} />
       ))}
 
       {subGroups.map(group => {
@@ -141,8 +91,15 @@ const Subgraph = ({ nodes, isOpen, onToggle }: ISubgraph) => {
   let nodes2 = nodes
 
   if (!isOpen) {
-    const rootNode = nodes.find(node => node.isRoot) || nodes[0]
-    nodes2 = nodes.map(node => (!node.isRoot ? { ...node, x: rootNode.x, y: rootNode.y } : node))
+    const rootNode = nodes.find(node => !node.rootId) || nodes[0]
+    nodes2 = nodes.map(node =>
+      node.rootId
+        ? {
+            ...node,
+            position: { x: rootNode.position.x, y: rootNode.position.y },
+          }
+        : node
+    )
   }
 
   return (
@@ -151,8 +108,8 @@ const Subgraph = ({ nodes, isOpen, onToggle }: ISubgraph) => {
       {nodes2.map((node, idx) => (
         <MyNode
           key={idx}
-          x={node.x}
-          y={node.y}
+          x={node.position.x}
+          y={node.position.y}
           label={node.data.label}
           fade={!isOpen && idx !== 0}
         />
@@ -167,8 +124,8 @@ interface ISubgraph extends ISubgraphBox {
 }
 
 const SubgraphBox = ({ nodes, isOpen, onToggle }: ISubgraph) => {
-  const xs = nodes.map(n => n.x)
-  const ys = nodes.map(n => n.y)
+  const xs = nodes.map(n => n.position.x)
+  const ys = nodes.map(n => n.position.y)
 
   const gapX = 16
   const gapY = 16
@@ -270,8 +227,10 @@ interface P {
   y2: number
 }
 
-export default NodeExpand
-export interface Props {}
+export default CustomGraphComponent
+export interface Props {
+  graph: CustomGraph
+}
 
 const handleCoords = (x2: number, y2: number, x1: number, y1: number) => ({
   x1: x1 + nodeWidth,
@@ -284,20 +243,23 @@ interface Payload {
   label: string
 }
 
-interface CustomGraph {
+export interface CustomGraph {
   nodes: { [key: string]: CustomGraphNode<Payload> }
   edges: CustomGraphEdge[]
 }
 
 interface CustomGraphNode<T> {
   id: string
-  x: number
-  y: number
+  position: CustomGraphPosition
   data: T
 
-  isRoot?: boolean
   groupId?: string
   rootId?: string
+}
+
+interface CustomGraphPosition {
+  x: number
+  y: number
 }
 
 interface CustomGraphEdge {
