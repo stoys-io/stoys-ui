@@ -1,116 +1,135 @@
 import React, { CSSProperties, useState } from 'react'
 
-const x1 = 10
-const y1 = 100
+const myGraph: CustomGraph = {
+  nodes: {
+    'test 1': {
+      id: 'test 1',
+      x: 10,
+      y: 100,
+      data: { label: 'test 1' },
+    },
+    'test 2': {
+      id: 'test 2',
+      x: 150,
+      y: 10,
+      data: { label: 'test 2' },
+    },
+    'test 3': {
+      id: 'test 3',
+      x: 230,
+      y: 70,
+      data: { label: 'test 3' },
+    },
+    'test 4': {
+      id: 'test 4',
+      x: 500,
+      y: 300,
+      data: { label: 'test 4' },
+      isRoot: true,
+      groupId: 'common',
+    },
+    'test 5': {
+      id: 'test 5',
+      x: 400,
+      y: 440,
+      data: { label: 'test 5' },
 
-const x2 = 150
-const y2 = 10
+      rootId: 'test 4',
+      groupId: 'common',
+    },
+    'test 6': {
+      id: 'test 6',
+      x: 280,
+      y: 330,
+      data: { label: 'test 6' },
+      rootId: 'test 4',
+      groupId: 'common',
+    },
+  },
+  edges: [
+    { source: 'test 2', target: 'test 1' },
+    { source: 'test 3', target: 'test 1' },
+    { source: 'test 4', target: 'test 3' },
 
-const x3 = 230
-const y3 = 70
-
-const x4 = 500
-const y4 = 300
-
-const x5 = 400
-const y5 = 440
-
-const x6 = 280
-const y6 = 330
+    { source: 'test 4', target: 'test 5' },
+    { source: 'test 4', target: 'test 6' },
+    { source: 'test 5', target: 'test 3' },
+  ],
+}
 
 const timeout = '350ms'
+const styleEdgeTransition = {
+  transition: `all ${timeout} ease-in-out`,
+}
 
 const NodeExpand = (props: Props) => {
-  const subGr = [
-    {
-      x: x4,
-      y: y4,
-      label: 'test 4',
-    },
-    {
-      x: x5,
-      y: y5,
-      label: 'test 5',
-    },
-    {
-      x: x6,
-      y: y6,
-      label: 'test 6',
-    },
-  ]
-
   const [isOpen, setIsOpen] = useState(true)
   const toggle = () => setIsOpen(isOpen => !isOpen)
 
-  const {
-    x5: x5e,
-    y5: y5e,
-    x6: x6e,
-    y6: y6e,
-  } = isOpen
-    ? { x5, y5, x6, y6 }
-    : {
-        x5: x4,
-        y5: y4,
-        x6: x4,
-        y6: y4,
-      }
-
-  const styleEdgeTransition = {
-    transition: `all ${timeout} ease-in-out`,
-  }
   const strokeTransition = isOpen ? 'black' : 'white'
   const strokeWidthTransition = isOpen ? '1' : '0'
+
+  const myNodes = Object.values(myGraph.nodes)
+  const plainNodes = myNodes.filter(node => node.groupId === undefined)
+
+  const subGroups = myNodes.reduce(
+    (acc: string[], node: CustomGraphNode<Payload>) =>
+      node.groupId ? [...acc, node.groupId] : acc,
+    []
+  )
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
       <svg style={{ position: 'absolute', width: '100%', height: '100%' }}>
-        <path
-          d={getPath(handleCoords(x1, y1, x2, y2))}
-          stroke="black"
-          strokeWidth="1"
-          fill="transparent"
-        />
-        <path
-          d={getPath(handleCoords(x1, y1, x3, y3))}
-          stroke="black"
-          strokeWidth="1"
-          fill="transparent"
-        />
-        <path
-          d={getPath(handleCoords(x3, y3, x4, y4))}
-          stroke="black"
-          strokeWidth="1"
-          fill="transparent"
-        />
+        {myGraph.edges.map(edge => {
+          const { x: x1, y: y1, rootId: rootSource } = myGraph.nodes[edge.source]
+          const { x: x2, y: y2, rootId: rootTarget } = myGraph.nodes[edge.target]
 
-        <path
-          d={getPath(handleCoords(x5e, y5e, x4, y4))}
-          stroke={strokeTransition}
-          strokeWidth={strokeWidthTransition}
-          fill="transparent"
-          style={styleEdgeTransition}
-        />
-        <path
-          d={getPath(handleCoords(x6e, y6e, x4, y4))}
-          stroke={strokeTransition}
-          strokeWidth={strokeWidthTransition}
-          fill="transparent"
-          style={styleEdgeTransition}
-        />
-        <path
-          d={getPath(handleCoords(x3, y3, x5e, y5e))}
-          stroke={strokeTransition}
-          strokeWidth={strokeWidthTransition}
-          fill="transparent"
-          style={styleEdgeTransition}
-        />
+          const rootId = rootSource || rootTarget
+          if (rootId) {
+            const { x: xRoot, y: yRoot } = myGraph.nodes[rootId]
+
+            let dPath = ''
+            if (rootTarget) {
+              const [x2anim, y2anim] = isOpen ? [x2, y2] : [xRoot, yRoot]
+              dPath = getPath(handleCoords(x1, y1, x2anim, y2anim))
+            }
+
+            if (rootSource) {
+              const [x1anim, y1anim] = isOpen ? [x1, y1] : [xRoot, yRoot]
+              dPath = getPath(handleCoords(x1anim, y1anim, x2, y2))
+            }
+
+            return (
+              <path
+                d={dPath}
+                fill="transparent"
+                stroke={strokeTransition}
+                strokeWidth={strokeWidthTransition}
+                style={styleEdgeTransition}
+              />
+            )
+          }
+
+          return (
+            <path
+              d={getPath(handleCoords(x1, y1, x2, y2))}
+              stroke="black"
+              strokeWidth="1"
+              fill="transparent"
+            />
+          )
+        })}
       </svg>
-      <MyNode x={x1} y={y1} label="test 1" />
-      <MyNode x={x2} y={y2} label="test 2" />
-      <MyNode x={x3} y={y3} label="test 3" />
 
-      <Subgraph nodes={subGr} isOpen={isOpen} onToggle={toggle} />
+      {plainNodes.map(node => (
+        <MyNode x={node.x} y={node.y} label={node.data.label} />
+      ))}
+
+      {subGroups.map(group => {
+        const subgraph = myNodes.filter(node => node.groupId === group)
+        return <Subgraph nodes={subgraph} isOpen={isOpen} onToggle={toggle} />
+      })}
     </div>
   )
 }
@@ -118,26 +137,25 @@ const NodeExpand = (props: Props) => {
 const nodeWidth = 60
 const nodeHeight = 40
 
-const handleCoords = (x1: number, y1: number, x2: number, y2: number) => ({
-  x1: x1 + nodeWidth,
-  y1: y1 + nodeHeight / 2,
-  x2,
-  y2: y2 + nodeHeight / 2,
-})
-
 const Subgraph = ({ nodes, isOpen, onToggle }: ISubgraph) => {
   let nodes2 = nodes
 
   if (!isOpen) {
-    const [n0, ...rest] = nodes
-    nodes2 = [n0, ...rest.map(n => ({ ...n, x: n0.x, y: n0.y }))]
+    const rootNode = nodes.find(node => node.isRoot) || nodes[0]
+    nodes2 = nodes.map(node => (!node.isRoot ? { ...node, x: rootNode.x, y: rootNode.y } : node))
   }
 
   return (
     <>
       <SubgraphBox nodes={nodes2} isOpen={isOpen} onToggle={onToggle} />
       {nodes2.map((node, idx) => (
-        <MyNode key={idx} x={node.x} y={node.y} label={node.label} fade={!isOpen && idx !== 0} />
+        <MyNode
+          key={idx}
+          x={node.x}
+          y={node.y}
+          label={node.data.label}
+          fade={!isOpen && idx !== 0}
+        />
       ))}
     </>
   )
@@ -149,11 +167,11 @@ interface ISubgraph extends ISubgraphBox {
 }
 
 const SubgraphBox = ({ nodes, isOpen, onToggle }: ISubgraph) => {
-  const xs = nodes.map((n: INode) => n.x)
-  const ys = nodes.map((n: INode) => n.y)
+  const xs = nodes.map(n => n.x)
+  const ys = nodes.map(n => n.y)
 
-  const gapX = isOpen ? 16 : 10
-  const gapY = isOpen ? 16 : 10
+  const gapX = 16
+  const gapY = 16
 
   const sx = Math.min(...xs)
   const sy = Math.min(...ys)
@@ -193,7 +211,7 @@ const SubgraphBox = ({ nodes, isOpen, onToggle }: ISubgraph) => {
 }
 
 interface ISubgraphBox {
-  nodes: INode[]
+  nodes: CustomGraphNode<Payload>[]
 }
 
 const MyNode = ({
@@ -253,5 +271,36 @@ interface P {
 }
 
 export default NodeExpand
-
 export interface Props {}
+
+const handleCoords = (x2: number, y2: number, x1: number, y1: number) => ({
+  x1: x1 + nodeWidth,
+  y1: y1 + nodeHeight / 2,
+  x2,
+  y2: y2 + nodeHeight / 2,
+})
+
+interface Payload {
+  label: string
+}
+
+interface CustomGraph {
+  nodes: { [key: string]: CustomGraphNode<Payload> }
+  edges: CustomGraphEdge[]
+}
+
+interface CustomGraphNode<T> {
+  id: string
+  x: number
+  y: number
+  data: T
+
+  isRoot?: boolean
+  groupId?: string
+  rootId?: string
+}
+
+interface CustomGraphEdge {
+  source: string
+  target: string
+}
