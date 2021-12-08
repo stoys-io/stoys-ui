@@ -1,16 +1,25 @@
-import React, { CSSProperties, useState } from 'react'
+import React, { CSSProperties, ReactNode, useState } from 'react'
 import { mockGraph } from './mocks'
 
 const timeout = '350ms'
 const styleEdgeTransition = {
   transition: `all ${timeout} ease-in-out`,
 }
+const STROKE = '#b1b1b7'
 
-const CustomGraphComponent = ({ graph = mockGraph }: Props) => {
+const CustomGraphComponent = ({
+  graph = mockGraph,
+  nodeComponent = undefined,
+  nodeHeight = 40,
+  nodeWidth = 60,
+  onPaneClick = () => {},
+}: Props) => {
   const [isOpen, setIsOpen] = useState(true)
+  const [scale, setScale] = useState(1)
+
   const toggle = () => setIsOpen(isOpen => !isOpen)
 
-  const strokeTransition = isOpen ? 'black' : 'white'
+  const strokeTransition = isOpen ? STROKE : 'white'
   const strokeWidthTransition = isOpen ? '1' : '0'
 
   const myNodes = Object.values(graph.nodes)
@@ -22,9 +31,24 @@ const CustomGraphComponent = ({ graph = mockGraph }: Props) => {
     []
   )
 
+  const dummyZoom = (evt: React.WheelEvent) => {
+    const nextScale = scale + evt.deltaY * -0.01
+    const actualScale = Math.min(Math.max(0.125, nextScale), 4)
+    setScale(actualScale)
+  }
+
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
-      <svg style={{ position: 'absolute', width: '100%', height: '100%' }}>
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        transform: `scale(${scale})`,
+      }}
+      onWheel={dummyZoom}
+      onClick={onPaneClick}
+    >
+      <svg style={styleSvgContainer}>
         {graph.edges.map(edge => {
           const {
             position: { x: x1, y: y1 },
@@ -42,12 +66,12 @@ const CustomGraphComponent = ({ graph = mockGraph }: Props) => {
             let dPath = ''
             if (rootTarget) {
               const [x2anim, y2anim] = isOpen ? [x2, y2] : [xRoot, yRoot]
-              dPath = getPath(handleCoords(x1, y1, x2anim, y2anim))
+              dPath = getPath(handleCoords(x1, y1, x2anim, y2anim, nodeWidth, nodeHeight))
             }
 
             if (rootSource) {
               const [x1anim, y1anim] = isOpen ? [x1, y1] : [xRoot, yRoot]
-              dPath = getPath(handleCoords(x1anim, y1anim, x2, y2))
+              dPath = getPath(handleCoords(x1anim, y1anim, x2, y2, nodeWidth, nodeHeight))
             }
 
             return (
@@ -65,8 +89,8 @@ const CustomGraphComponent = ({ graph = mockGraph }: Props) => {
           return (
             <path
               key={`${edge.source}${edge.target}`}
-              d={getPath(handleCoords(x1, y1, x2, y2))}
-              stroke="black"
+              d={getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))}
+              stroke={STROKE}
               strokeWidth="1"
               fill="transparent"
             />
@@ -75,21 +99,42 @@ const CustomGraphComponent = ({ graph = mockGraph }: Props) => {
       </svg>
 
       {plainNodes.map(node => (
-        <MyNode x={node.position.x} y={node.position.y} label={node.data.label} />
+        <MyNode
+          id={node.id}
+          x={node.position.x}
+          y={node.position.y}
+          label={node.data.label}
+          width={nodeWidth}
+          height={nodeHeight}
+        >
+          {nodeComponent && nodeComponent({ id: node.id, data: node.data })}
+        </MyNode>
       ))}
 
       {subGroups.map(group => {
         const subgraph = myNodes.filter(node => node.groupId === group)
-        return <Subgraph nodes={subgraph} isOpen={isOpen} onToggle={toggle} />
+        return (
+          <Subgraph
+            nodes={subgraph}
+            isOpen={isOpen}
+            onToggle={toggle}
+            component={nodeComponent}
+            nodeWidth={nodeWidth}
+            nodeHeight={nodeHeight}
+          />
+        )
       })}
     </div>
   )
 }
 
-const nodeWidth = 60
-const nodeHeight = 40
+const styleSvgContainer: CSSProperties = {
+  position: 'absolute',
+  width: '100%',
+  height: '100%',
+}
 
-const Subgraph = ({ nodes, isOpen, onToggle }: ISubgraph) => {
+const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }: ISubgraph) => {
   let nodes2 = nodes
 
   if (!isOpen) {
@@ -106,15 +151,26 @@ const Subgraph = ({ nodes, isOpen, onToggle }: ISubgraph) => {
 
   return (
     <>
-      <SubgraphBox nodes={nodes2} isOpen={isOpen} onToggle={onToggle} />
+      <SubgraphBox
+        nodes={nodes2}
+        isOpen={isOpen}
+        onToggle={onToggle}
+        nodeHeight={nodeHeight}
+        nodeWidth={nodeWidth}
+      />
       {nodes2.map((node, idx) => (
         <MyNode
           key={idx}
+          id={node.id}
           x={node.position.x}
           y={node.position.y}
           label={node.data.label}
           fade={!isOpen && idx !== 0}
-        />
+          width={nodeWidth}
+          height={nodeHeight}
+        >
+          {component && component({ id: node.id, data: node.data })}
+        </MyNode>
       ))}
     </>
   )
@@ -123,9 +179,12 @@ const Subgraph = ({ nodes, isOpen, onToggle }: ISubgraph) => {
 interface ISubgraph extends ISubgraphBox {
   isOpen: boolean
   onToggle: () => void
+  nodeWidth: number
+  nodeHeight: number
+  component?: (_: any) => ReactNode
 }
 
-const SubgraphBox = ({ nodes, isOpen, onToggle }: ISubgraph) => {
+const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgraph) => {
   const xs = nodes.map(n => n.position.x)
   const ys = nodes.map(n => n.position.y)
 
@@ -173,14 +232,7 @@ interface ISubgraphBox {
   nodes: CustomGraphNode<Payload>[]
 }
 
-const MyNode = ({
-  x,
-  y,
-  width = nodeWidth,
-  height = nodeHeight,
-  label = 'myNode',
-  fade = false,
-}: INode) => {
+const MyNode = ({ x, y, width, height, label = 'myNode', fade = false, children }: INode) => {
   const opacity = fade
     ? {
         opacity: 0,
@@ -188,6 +240,24 @@ const MyNode = ({
     : {
         opacity: 1,
       }
+
+  if (children) {
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          top: y,
+          left: x,
+          width,
+          height,
+          transition: `all ${timeout} ease-in-out`,
+          ...opacity,
+        }}
+      >
+        {children}
+      </div>
+    )
+  }
 
   return (
     <div
@@ -206,6 +276,7 @@ const MyNode = ({
     </div>
   )
 }
+
 const getPath = ({ x1, y1, x2, y2 }: P): string => {
   const cx = x1 + (x2 - x1) / 2
   const path = `M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}`
@@ -214,12 +285,14 @@ const getPath = ({ x1, y1, x2, y2 }: P): string => {
 }
 
 interface INode {
+  id: string
   x: number
   y: number
   label: string
-  width?: number
-  height?: number
+  width: number
+  height: number
   fade?: boolean
+  children: ReactNode
 }
 
 interface P {
@@ -232,13 +305,24 @@ interface P {
 export default CustomGraphComponent
 export interface Props {
   graph: CustomGraph
+  nodeComponent?: (_: any) => ReactNode
+  nodeHeight?: number
+  nodeWidth?: number
+  onPaneClick?: () => void
 }
 
-const handleCoords = (x2: number, y2: number, x1: number, y1: number) => ({
-  x1: x1 + nodeWidth,
-  y1: y1 + nodeHeight / 2,
+const handleCoords = (
+  x2: number,
+  y2: number,
+  x1: number,
+  y1: number,
+  width: number,
+  height: number
+) => ({
+  x1: x1 + width,
+  y1: y1 + height / 2,
   x2,
-  y2: y2 + nodeHeight / 2,
+  y2: y2 + height / 2,
 })
 
 interface Payload {

@@ -9,7 +9,11 @@ import grpcData from './mocks/graph/graph.bazel/grpc/dag.json'
 import { DataGraph } from '../src/graph/model'
 const dataMock: DataGraph = JSON.parse(JSON.stringify(_dataMock))
 
-const Template: Story<Props> = (args: Props) => <CustomGraphComponent {...args} />
+const Template: Story<Props> = (args: Props) => (
+  <div style={{ width: '100vw', height: '100vh' }}>
+    <CustomGraphComponent {...args} />
+  </div>
+)
 export const Example = Template.bind({})
 Example.storyName = 'example'
 Example.args = {}

@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 
 import { Sidebar } from '../graph/components/Sidebar'
 import { SearchArgs } from '../graph/components/SidebarSearch'
-import { DagNode } from '../graph/components/DagNode'
-import { DagEdge } from '../graph/components/DagEdge'
+import { DagNode } from './DagNode'
 
 import { ConnectedDrawer } from '../graph/components/ConnectedDrawer'
 import { DrawerTabs } from '../graph/components/DrawerTabs'
@@ -25,8 +24,8 @@ import { Container, GraphContainer } from '../graph/styles'
 import { DataGraph, ChromaticScale, Orientation } from '../graph/model'
 
 import { mapInitialNodes, mapInitialEdges } from '../graph/graph-ops'
-import { usePreventDoubleClick } from '../graph/usePreventDoubleClick'
 import CustomGraphComponent from './CustomGraphComponent'
+import { NODE_HEIGHT, NODE_WIDTH } from '../graph/constants'
 
 const GraphComponent = ({ data, config: cfg }: Props) => {
   const validCurrentRelease =
@@ -74,23 +73,19 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
 
   const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
-
   const gNodes = elements
     .filter(el => isNode(el))
     .reduce((acc, node) => ({ ...acc, [node.id]: node }), {})
 
   const gEdges = elements.filter(el => !isNode(el)) as Edge0[]
+  const customGraphData = { nodes: gNodes, edges: gEdges }
 
-  const g = { nodes: gNodes, edges: gEdges }
+  const onNodeClick = (id: string) => {
+    dispatch(nodeClick(id, config.chromaticScale))
+  }
 
-  const elementClick = usePreventDoubleClick((_: any, element: Node0 | Edge0) => {
-    if (isNode(element)) {
-      return dispatch(nodeClick(element.id, config.chromaticScale))
-    }
-  })
-
-  const nodeDoubleClick = (_: any, node: Node0) => {
-    dispatch(openDrawer(node.id))
+  const onNodeDoubleClick = (id: string) => {
+    dispatch(openDrawer(id))
   }
 
   const onPaneClick = () => {
@@ -124,7 +119,15 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
         chromaticScale={config.chromaticScale}
       />
       <GraphContainer>
-        <CustomGraphComponent graph={g} />
+        <CustomGraphComponent
+          graph={customGraphData}
+          nodeComponent={(props: any) => (
+            <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
+          )}
+          onPaneClick={onPaneClick}
+          nodeHeight={NODE_HEIGHT}
+          nodeWidth={NODE_WIDTH}
+        />
       </GraphContainer>
       <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer}>
         <DrawerTabs />
@@ -154,12 +157,4 @@ const defaultConfig: Required<Omit<Config, 'currentRelease'>> = {
   orientation: 'horizontal',
   chromaticScale: 'interpolatePuOr',
   openDrawer: false,
-}
-
-const nodeTypes = {
-  dagNode: DagNode,
-}
-
-const edgeTypes = {
-  dagEdge: DagEdge,
 }
