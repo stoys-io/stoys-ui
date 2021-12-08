@@ -97,6 +97,9 @@ export interface Table {
     [key: string]: string | number
   }
   style?: { color: string }
+
+  groupId?: string
+  rootId?: string
 }
 
 export interface Column {
