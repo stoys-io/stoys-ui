@@ -52,6 +52,7 @@ const CustomGraphComponent = ({ graph = mockGraph }: Props) => {
 
             return (
               <path
+                key={`${edge.source}${edge.target}`}
                 d={dPath}
                 fill="transparent"
                 stroke={strokeTransition}
@@ -63,6 +64,7 @@ const CustomGraphComponent = ({ graph = mockGraph }: Props) => {
 
           return (
             <path
+              key={`${edge.source}${edge.target}`}
               d={getPath(handleCoords(x1, y1, x2, y2))}
               stroke="black"
               strokeWidth="1"
