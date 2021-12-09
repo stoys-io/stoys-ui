@@ -139,9 +139,11 @@ const styleSvgContainer: CSSProperties = {
 
 const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }: ISubgraph) => {
   let nodes2 = nodes
+  let rootId: string | undefined = undefined
 
   if (!isOpen) {
     const rootNode = nodes.find(node => !node.rootId) || nodes[0]
+    rootId = rootNode.id
     nodes2 = nodes.map(node =>
       node.rootId
         ? {
@@ -161,13 +163,13 @@ const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }:
         nodeHeight={nodeHeight}
         nodeWidth={nodeWidth}
       />
-      {nodes2.map((node, idx) => (
+      {nodes2.map(node => (
         <MyNode
           key={node.id}
           id={node.id}
           x={node.position.x}
           y={node.position.y}
-          fade={!isOpen && idx !== 0}
+          fade={!isOpen && node.id !== rootId}
           width={nodeWidth}
           height={nodeHeight}
         >
