@@ -100,6 +100,7 @@ const CustomGraphComponent = ({
 
       {plainNodes.map(node => (
         <MyNode
+          key={node.id}
           id={node.id}
           x={node.position.x}
           y={node.position.y}
@@ -111,10 +112,11 @@ const CustomGraphComponent = ({
         </MyNode>
       ))}
 
-      {subGroups.map(group => {
+      {subGroups.map((group, idx) => {
         const subgraph = myNodes.filter(node => node.groupId === group)
         return (
           <Subgraph
+            key={`${group}-${idx}`}
             nodes={subgraph}
             isOpen={isOpen}
             onToggle={toggle}
@@ -160,7 +162,7 @@ const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }:
       />
       {nodes2.map((node, idx) => (
         <MyNode
-          key={idx}
+          key={node.id}
           id={node.id}
           x={node.position.x}
           y={node.position.y}
