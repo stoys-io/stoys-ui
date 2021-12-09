@@ -104,11 +104,12 @@ const CustomGraphComponent = ({
           id={node.id}
           x={node.position.x}
           y={node.position.y}
-          label={node.data.label}
           width={nodeWidth}
           height={nodeHeight}
         >
-          {nodeComponent && nodeComponent({ id: node.id, data: node.data })}
+          {nodeComponent
+            ? nodeComponent({ id: node.id, data: node.data })
+            : defaultNode({ label: node.data.label })}
         </MyNode>
       ))}
 
@@ -166,12 +167,13 @@ const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }:
           id={node.id}
           x={node.position.x}
           y={node.position.y}
-          label={node.data.label}
           fade={!isOpen && idx !== 0}
           width={nodeWidth}
           height={nodeHeight}
         >
-          {component && component({ id: node.id, data: node.data })}
+          {component
+            ? component({ id: node.id, data: node.data })
+            : defaultNode({ label: node.data.label })}
         </MyNode>
       ))}
     </>
@@ -234,7 +236,11 @@ interface ISubgraphBox {
   nodes: CustomGraphNode<Payload>[]
 }
 
-const MyNode = ({ x, y, width, height, label = 'myNode', fade = false, children }: INode) => {
+const defaultNode = ({ label }: { label: string }) => (
+  <div style={{ border: '1px solid magenta', width: '100%', height: '100%' }}>{label}</div>
+)
+
+const MyNode = ({ x, y, width, height, fade = false, children = defaultNode }: INode) => {
   const opacity = fade
     ? {
         opacity: 0,
@@ -242,24 +248,6 @@ const MyNode = ({ x, y, width, height, label = 'myNode', fade = false, children 
     : {
         opacity: 1,
       }
-
-  if (children) {
-    return (
-      <div
-        style={{
-          position: 'absolute',
-          top: y,
-          left: x,
-          width,
-          height,
-          transition: `all ${timeout} ease-in-out`,
-          ...opacity,
-        }}
-      >
-        {children}
-      </div>
-    )
-  }
 
   return (
     <div
@@ -269,12 +257,11 @@ const MyNode = ({ x, y, width, height, label = 'myNode', fade = false, children 
         left: x,
         width,
         height,
-        border: '1px solid magenta',
         transition: `all ${timeout} ease-in-out`,
         ...opacity,
       }}
     >
-      {label}
+      {children}
     </div>
   )
 }
@@ -290,7 +277,6 @@ interface INode {
   id: string
   x: number
   y: number
-  label: string
   width: number
   height: number
   fade?: boolean
