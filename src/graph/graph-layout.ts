@@ -11,7 +11,7 @@ const startX = 48
 const startY = 32
 
 export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientation) => {
-  const dagreGraph = new dagre.graphlib.Graph()
+  const dagreGraph = new dagre.graphlib.Graph({ compound: true, directed: true, multigraph: false })
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 
   const direction = orientation === 'horizontal' ? 'RL' : 'BT'
@@ -27,6 +27,25 @@ export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientati
   elements.forEach(el => {
     if (isNode(el)) {
       dagreGraph.setNode(el.id, { width: NODE_WIDTH, height: NODE_HEIGHT })
+
+      // @ts-ignore // TODO: Fix interfaces
+      if (el.groupId && el.rootId === undefined) {
+        /*
+         * Create fake root group element, because we are not allowed to set edges on group elements
+         * related issues:
+         * - https://github.com/dagrejs/dagre-d3/issues/319
+         * - https://github.com/dagrejs/dagre/issues/236
+         */
+        dagreGraph.setNode(`${el.id}-fake-root`, {
+          label: `${el.id}-fake-root`,
+        })
+      }
+
+      // @ts-ignore // TODO: Fix interfaces
+      if (el.rootId) {
+        // @ts-ignore
+        dagreGraph.setParent(el.id, `${el.id}-fake-root`)
+      }
     } else {
       dagreGraph.setEdge(el.source, el.target)
     }
