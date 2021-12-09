@@ -1,4 +1,6 @@
 import React, { CSSProperties, ReactNode, useState } from 'react'
+import create from 'zustand'
+
 import { mockGraph } from './mocks'
 
 const timeout = '350ms'
@@ -7,6 +9,20 @@ const styleEdgeTransition = {
 }
 const STROKE = '#b1b1b7'
 
+interface NestedState {
+  groups: { [key: string]: boolean }
+  toggleGroup: (_: string) => void
+}
+
+const useStore = create<NestedState>(set => ({
+  groups: {},
+  toggleGroup: (group: string) =>
+    set(state => {
+      const groupState = state.groups[group]
+      return { groups: { ...state.groups, [group]: !groupState } }
+    }),
+}))
+
 const CustomGraphComponent = ({
   graph = mockGraph,
   nodeComponent = undefined,
@@ -14,13 +30,12 @@ const CustomGraphComponent = ({
   nodeWidth = 60,
   onPaneClick = () => {},
 }: Props) => {
-  const [isOpen, setIsOpen] = useState(true)
   const [scale, setScale] = useState(1)
+  const groups = useStore(state => state.groups)
+  const toggleGroup = useStore(state => state.toggleGroup)
 
-  const toggle = () => setIsOpen(isOpen => !isOpen)
-
-  const strokeTransition = isOpen ? STROKE : 'white'
-  const strokeWidthTransition = isOpen ? '1' : '0'
+  const strokeTransition = (isOpen: boolean) => (isOpen ? STROKE : 'white')
+  const strokeWidthTransition = (isOpen: boolean) => (isOpen ? '1' : '0')
 
   const myNodes = Object.values(graph.nodes)
   const plainNodes = myNodes.filter(node => node.groupId === undefined)
@@ -62,6 +77,8 @@ const CustomGraphComponent = ({
           const rootId = rootSource || rootTarget
           if (rootId) {
             const { x: xRoot, y: yRoot } = graph.nodes[rootId].position
+            const curGroup = graph.nodes[rootId].groupId!
+            const isOpen = groups[curGroup]
 
             let dPath = ''
             if (rootTarget) {
@@ -79,8 +96,8 @@ const CustomGraphComponent = ({
                 key={`${edge.source}${edge.target}`}
                 d={dPath}
                 fill="transparent"
-                stroke={strokeTransition}
-                strokeWidth={strokeWidthTransition}
+                stroke={strokeTransition(isOpen)}
+                strokeWidth={strokeWidthTransition(isOpen)}
                 style={styleEdgeTransition}
               />
             )
@@ -119,8 +136,8 @@ const CustomGraphComponent = ({
           <Subgraph
             key={`${group}-${idx}`}
             nodes={subgraph}
-            isOpen={isOpen}
-            onToggle={toggle}
+            isOpen={groups[group]}
+            onToggle={() => toggleGroup(group)}
             component={nodeComponent}
             nodeWidth={nodeWidth}
             nodeHeight={nodeHeight}
@@ -223,7 +240,7 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
         top,
         width,
         height,
-        border: '1px solid cyan',
+        border: `2px solid cyan`,
         transition: `all ${timeout} ease-in-out`,
       }}
     >

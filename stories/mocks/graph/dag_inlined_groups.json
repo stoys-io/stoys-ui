@@ -98,7 +98,9 @@
       ],
       "measures": {
         "rows": 5650
-      }
+      },
+      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+      "groupId": "covid_data"
     },
     {
       "id": "e5cc8fa9-6e3f-4279-8098-db6e3b083e5a",
@@ -147,13 +149,13 @@
       ],
       "measures": {
         "rows": 109546
-      }
+      },
+      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+      "groupId": "covid_data"
     },
     {
       "id": "b4c74f2f-94ad-4445-9030-e0f558a3cdd9",
       "name": "locations_csv",
-      "groupId": "group",
-      "rootId": "298f9962-1daa-4426-925e-67e0670bf90d",
       "columns": [
         {
           "id": "0f59b79f-4c4d-47bf-b0c7-94db70f4e4b2",
@@ -178,7 +180,9 @@
       ],
       "measures": {
         "rows": 195
-      }
+      },
+      "groupId": "group",
+      "rootId": "298f9962-1daa-4426-925e-67e0670bf90d"
     },
     {
       "id": "c2f5577c-7440-422f-bf89-9119d8b6a194",
@@ -243,7 +247,9 @@
       ],
       "measures": {
         "rows": 45865
-      }
+      },
+      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+      "groupId": "covid_data"
     },
     {
       "id": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
@@ -297,12 +303,12 @@
       "metadata": {
         "any string key": "any string value",
         "really": "whatever"
-      }
+      },
+      "groupId": "covid_data"
     },
     {
       "id": "298f9962-1daa-4426-925e-67e0670bf90d",
       "name": "covid_stats",
-      "groupId": "group",
       "columns": [
         {
           "id": "133a1a9f-2ecb-4a5d-9b38-55fa7e4a81ad",
@@ -341,14 +347,15 @@
         "aa646e52-23c2-4ec4-9938-c857a8b881e1",
         "b4c74f2f-94ad-4445-9030-e0f558a3cdd9",
         "locations2_csv"
-      ]
+      ],
+      "groupId": "group"
     },
     {
       "id": "locations2_csv",
       "name": "locations2_csv",
+      "dependencies": ["c2f5577c-7440-422f-bf89-9119d8b6a194"],
       "groupId": "group",
-      "rootId": "298f9962-1daa-4426-925e-67e0670bf90d",
-      "dependencies": ["c2f5577c-7440-422f-bf89-9119d8b6a194"]
+      "rootId": "298f9962-1daa-4426-925e-67e0670bf90d"
     }
   ]
 }
