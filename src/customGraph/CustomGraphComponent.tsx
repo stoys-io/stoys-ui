@@ -29,6 +29,8 @@ const CustomGraphComponent = ({
   nodeComponent = undefined,
   nodeHeight = 40,
   nodeWidth = 60,
+  minScale = 0.12,
+  maxScale = 2,
   onPaneClick = () => {},
 }: Props) => {
   const groups = useStore(state => state.groups)
@@ -51,33 +53,37 @@ const CustomGraphComponent = ({
   const svgViewportWidth = Math.max(...nodeXS) + 2 * nodeWidth
   const svgViewportHeight = Math.max(...nodeYS) + 2 * nodeHeight
 
-  const rootRef = useRef<HTMLDivElement>(null)
   const zoomContainerRef = useRef<HTMLDivElement>(null)
-
+  const rootContainer = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (!zoomContainerRef.current || !rootRef.current) {
+    if (!zoomContainerRef.current || !rootContainer.current) {
       return
     }
 
     const panzoom = Panzoom(zoomContainerRef.current, {
-      minScale: 0.12,
-      maxScale: 2,
+      minScale,
+      maxScale,
       cursor: 'default',
       step: 0.2,
+      canvas: true,
       animate: true,
-      excludeClass: '.preventZoom',
-      // @ts-ignore
-      setTransform: (_: any, { scale, x, y }) => {
-        panzoom.setStyle('transform', `scale(${scale}) translate(${x}px, ${y}px)`)
-      },
+      excludeClass: 'preventZoom',
     })
 
-    rootRef.current.addEventListener('wheel', panzoom.zoomWithWheel, { passive: false })
+    const onWheel = (evt: WheelEvent) => {
+      const shoudlPreventZoom = (evt.target as Element).closest('.preventZoom')
+      if (shoudlPreventZoom) {
+        return
+      }
 
-    return () => {
-      rootRef.current?.removeEventListener('wheel', panzoom.zoomWithWheel)
+      panzoom.zoomWithWheel(evt)
     }
-  }, [zoomContainerRef.current, rootRef.current])
+
+    rootContainer.current.addEventListener('wheel', onWheel, { passive: false })
+    return () => {
+      rootContainer.current?.removeEventListener('wheel', onWheel)
+    }
+  }, [zoomContainerRef.current, rootContainer.current])
 
   return (
     <div
@@ -86,17 +92,10 @@ const CustomGraphComponent = ({
         width: '100%',
         height: '100%',
       }}
-      ref={rootRef}
+      ref={rootContainer}
+      onClick={onPaneClick}
     >
-      <div
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-        }}
-        onClick={onPaneClick}
-        ref={zoomContainerRef}
-      >
+      <div ref={zoomContainerRef}>
         <svg
           style={{
             position: 'absolute',
@@ -355,6 +354,8 @@ export interface Props {
   nodeComponent?: (_: any) => ReactNode
   nodeHeight?: number
   nodeWidth?: number
+  minScale?: number
+  maxScale?: number
   onPaneClick?: () => void
 }
 
