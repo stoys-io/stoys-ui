@@ -1,5 +1,6 @@
-import React, { CSSProperties, ReactNode, useState } from 'react'
+import React, { CSSProperties, ReactNode, useRef, useEffect } from 'react'
 import create from 'zustand'
+import Panzoom from '@panzoom/panzoom'
 
 import { mockGraph } from './mocks'
 
@@ -30,7 +31,6 @@ const CustomGraphComponent = ({
   nodeWidth = 60,
   onPaneClick = () => {},
 }: Props) => {
-  const [scale, setScale] = useState(1)
   const groups = useStore(state => state.groups)
   const toggleGroup = useStore(state => state.toggleGroup)
 
@@ -46,11 +46,38 @@ const CustomGraphComponent = ({
     []
   )
 
-  const dummyZoom = (evt: React.WheelEvent) => {
-    const nextScale = scale + evt.deltaY * -0.01
-    const actualScale = Math.min(Math.max(0.125, nextScale), 4)
-    setScale(actualScale)
-  }
+  const nodeXS = myNodes.map(node => node.position.x)
+  const nodeYS = myNodes.map(node => node.position.y)
+  const svgViewportWidth = Math.max(...nodeXS) + 2 * nodeWidth
+  const svgViewportHeight = Math.max(...nodeYS) + 2 * nodeHeight
+
+  const rootRef = useRef<HTMLDivElement>(null)
+  const zoomContainerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!zoomContainerRef.current || !rootRef.current) {
+      return
+    }
+
+    const panzoom = Panzoom(zoomContainerRef.current, {
+      minScale: 0.12,
+      maxScale: 2,
+      cursor: 'default',
+      step: 0.2,
+      animate: true,
+      excludeClass: '.preventZoom',
+      // @ts-ignore
+      setTransform: (_: any, { scale, x, y }) => {
+        panzoom.setStyle('transform', `scale(${scale}) translate(${x}px, ${y}px)`)
+      },
+    })
+
+    rootRef.current.addEventListener('wheel', panzoom.zoomWithWheel, { passive: false })
+
+    return () => {
+      rootRef.current?.removeEventListener('wheel', panzoom.zoomWithWheel)
+    }
+  }, [zoomContainerRef.current, rootRef.current])
 
   return (
     <div
@@ -58,100 +85,112 @@ const CustomGraphComponent = ({
         position: 'relative',
         width: '100%',
         height: '100%',
-        transform: `scale(${scale})`,
       }}
-      onWheel={dummyZoom}
-      onClick={onPaneClick}
+      ref={rootRef}
     >
-      <svg style={styleSvgContainer}>
-        {graph.edges.map(edge => {
-          const {
-            position: { x: x1, y: y1 },
-            rootId: rootSource,
-          } = graph.nodes[edge.source]
-          const {
-            position: { x: x2, y: y2 },
-            rootId: rootTarget,
-          } = graph.nodes[edge.target]
+      <div
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+        }}
+        onClick={onPaneClick}
+        ref={zoomContainerRef}
+      >
+        <svg
+          style={{
+            position: 'absolute',
+            width: svgViewportWidth,
+            height: svgViewportHeight,
+          }}
+        >
+          <g>
+            {graph.edges.map(edge => {
+              const {
+                position: { x: x1, y: y1 },
+                rootId: rootSource,
+              } = graph.nodes[edge.source]
+              const {
+                position: { x: x2, y: y2 },
+                rootId: rootTarget,
+              } = graph.nodes[edge.target]
 
-          const rootId = rootSource || rootTarget
-          if (rootId) {
-            const { x: xRoot, y: yRoot } = graph.nodes[rootId].position
-            const curGroup = graph.nodes[rootId].groupId!
-            const isOpen = groups[curGroup]
+              const rootId = rootSource || rootTarget
+              if (rootId) {
+                const { x: xRoot, y: yRoot } = graph.nodes[rootId].position
+                const curGroup = graph.nodes[rootId].groupId!
+                const isOpen = groups[curGroup]
 
-            let dPath = ''
-            if (rootTarget) {
-              const [x2anim, y2anim] = isOpen ? [x2, y2] : [xRoot, yRoot]
-              dPath = getPath(handleCoords(x1, y1, x2anim, y2anim, nodeWidth, nodeHeight))
-            }
+                let dPath = ''
+                if (rootTarget) {
+                  const [x2anim, y2anim] = isOpen ? [x2, y2] : [xRoot, yRoot]
+                  dPath = getPath(handleCoords(x1, y1, x2anim, y2anim, nodeWidth, nodeHeight))
+                }
 
-            if (rootSource) {
-              const [x1anim, y1anim] = isOpen ? [x1, y1] : [xRoot, yRoot]
-              dPath = getPath(handleCoords(x1anim, y1anim, x2, y2, nodeWidth, nodeHeight))
-            }
+                if (rootSource) {
+                  const [x1anim, y1anim] = isOpen ? [x1, y1] : [xRoot, yRoot]
+                  dPath = getPath(handleCoords(x1anim, y1anim, x2, y2, nodeWidth, nodeHeight))
+                }
 
+                return (
+                  <path
+                    key={`${edge.source}${edge.target}`}
+                    d={dPath}
+                    fill="transparent"
+                    stroke={strokeTransition(isOpen)}
+                    strokeWidth={strokeWidthTransition(isOpen)}
+                    style={styleEdgeTransition}
+                  />
+                )
+              }
+
+              return (
+                <path
+                  key={`${edge.source}${edge.target}`}
+                  d={getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))}
+                  stroke={STROKE}
+                  strokeWidth="1"
+                  fill="transparent"
+                />
+              )
+            })}
+          </g>
+        </svg>
+
+        <div>
+          {plainNodes.map(node => (
+            <MyNode
+              key={node.id}
+              id={node.id}
+              x={node.position.x}
+              y={node.position.y}
+              width={nodeWidth}
+              height={nodeHeight}
+            >
+              {nodeComponent
+                ? nodeComponent({ id: node.id, data: node.data })
+                : defaultNode({ label: node.data.label })}
+            </MyNode>
+          ))}
+
+          {subGroups.map((group, idx) => {
+            const subgraph = myNodes.filter(node => node.groupId === group)
             return (
-              <path
-                key={`${edge.source}${edge.target}`}
-                d={dPath}
-                fill="transparent"
-                stroke={strokeTransition(isOpen)}
-                strokeWidth={strokeWidthTransition(isOpen)}
-                style={styleEdgeTransition}
+              <Subgraph
+                key={`${group}-${idx}`}
+                nodes={subgraph}
+                isOpen={groups[group]}
+                onToggle={() => toggleGroup(group)}
+                component={nodeComponent}
+                nodeWidth={nodeWidth}
+                nodeHeight={nodeHeight}
               />
             )
-          }
-
-          return (
-            <path
-              key={`${edge.source}${edge.target}`}
-              d={getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))}
-              stroke={STROKE}
-              strokeWidth="1"
-              fill="transparent"
-            />
-          )
-        })}
-      </svg>
-
-      {plainNodes.map(node => (
-        <MyNode
-          key={node.id}
-          id={node.id}
-          x={node.position.x}
-          y={node.position.y}
-          width={nodeWidth}
-          height={nodeHeight}
-        >
-          {nodeComponent
-            ? nodeComponent({ id: node.id, data: node.data })
-            : defaultNode({ label: node.data.label })}
-        </MyNode>
-      ))}
-
-      {subGroups.map((group, idx) => {
-        const subgraph = myNodes.filter(node => node.groupId === group)
-        return (
-          <Subgraph
-            key={`${group}-${idx}`}
-            nodes={subgraph}
-            isOpen={groups[group]}
-            onToggle={() => toggleGroup(group)}
-            component={nodeComponent}
-            nodeWidth={nodeWidth}
-            nodeHeight={nodeHeight}
-          />
-        )
-      })}
+          })}
+        </div>
+      </div>
     </div>
   )
-}
-
-const styleSvgContainer: CSSProperties = {
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
 }
 
 const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }: ISubgraph) => {
@@ -270,6 +309,7 @@ const MyNode = ({ x, y, width, height, fade = false, children = defaultNode }: I
 
   return (
     <div
+      className="preventZoom"
       style={{
         position: 'absolute',
         top: y,
