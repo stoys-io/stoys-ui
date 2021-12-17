@@ -1,1 +1,1 @@
-export { default, Props } from './CustomGraphComponent'
+export { default, Props } from './Graph'

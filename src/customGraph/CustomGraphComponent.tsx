@@ -71,8 +71,8 @@ const CustomGraphComponent = ({
     })
 
     const onWheel = (evt: WheelEvent) => {
-      const shoudlPreventZoom = (evt.target as Element).closest('.preventZoom')
-      if (shoudlPreventZoom) {
+      const shouldPreventZoom = (evt.target as Element).closest('.preventZoom')
+      if (shouldPreventZoom) {
         return
       }
 
@@ -350,7 +350,7 @@ interface P {
 
 export default CustomGraphComponent
 export interface Props {
-  graph: CustomGraph
+  graph?: CustomGraph
   nodeComponent?: (_: any) => ReactNode
   nodeHeight?: number
   nodeWidth?: number
