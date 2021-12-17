@@ -16,7 +16,10 @@ interface DataNode<T> extends Node0<T> {
   data: T
 }
 
-export type Node = DataNode<NodeDataPayload>
+export interface Node extends DataNode<NodeDataPayload> {
+  groupId?: string
+  rootId?: string
+}
 
 export interface EdgeDataPayload {
   rank: number
@@ -97,6 +100,9 @@ export interface Table {
     [key: string]: string | number
   }
   style?: { color: string }
+
+  groupId?: string
+  rootId?: string
 }
 
 export interface Column {

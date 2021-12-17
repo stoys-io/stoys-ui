@@ -382,6 +382,8 @@ export const mapInitialNodes = (tables: Table[]): Node[] =>
         violations: table.measures?.violations ?? 0,
         columns: columnsWithExtraData(table),
       },
+      ...(table.groupId ? { groupId: table.groupId } : {}),
+      ...(table.rootId ? { rootId: table.rootId } : {}),
       position: initialPosition,
       type: 'dagNode',
     })

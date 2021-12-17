@@ -40,6 +40,7 @@
     "@emotion/core": "^10.0.10",
     "@emotion/css": "^10.0.9",
     "@emotion/styled": "^10.0.10",
+    "@panzoom/panzoom": "^4.4.3",
     "@types/d3": "^7.1.0",
     "antd": "^4.6.4",
     "big-json-viewer": "^0.1.7",

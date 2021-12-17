@@ -1,0 +1,361 @@
+{
+  "id": "fd2a6ed1-8a14-4eb2-9699-ccf26c4655a6",
+  "name": "covid_stoys",
+  "version": "20210914_133612_783509",
+  "tables": [
+    {
+      "id": "5d01f4fd-c032-4def-887e-24d8d6dfc9e4",
+      "name": "excess_mortality_csv",
+      "columns": [
+        {
+          "id": "a65f4b03-9ce1-4692-a92b-5125428e503a",
+          "name": "location"
+        },
+        {
+          "id": "1da70ca7-3d71-415d-a681-aab7691f473a",
+          "name": "date"
+        },
+        {
+          "id": "64fa6386-11ad-4754-a3a1-07dab777bd4f",
+          "name": "p_scores_all_ages"
+        },
+        {
+          "id": "689a81f8-0c6c-42ba-bb4d-5b7f726b171e",
+          "name": "p_scores_15_64"
+        },
+        {
+          "id": "3bf75f6f-442f-4d20-b8b4-a51bfe7939e5",
+          "name": "p_scores_65_74"
+        },
+        {
+          "id": "438065d1-8ba0-45b7-b720-94d1f3fcd6d9",
+          "name": "p_scores_75_84"
+        },
+        {
+          "id": "c27e64f9-1b59-484d-bab3-2691272ad6a7",
+          "name": "p_scores_85plus"
+        },
+        {
+          "id": "150f4826-f9f4-4088-aae9-08691c035092",
+          "name": "deaths_2020_all_ages"
+        },
+        {
+          "id": "f8505ff0-a5f5-4f86-b5b6-ddd36e41cfd0",
+          "name": "average_deaths_2015_2019_all_ages"
+        },
+        {
+          "id": "23c0fdfe-afdf-4132-9c34-1ed92cefabc3",
+          "name": "deaths_2015_all_ages"
+        },
+        {
+          "id": "371ac8b5-6197-45af-b112-dcb95dec44e2",
+          "name": "deaths_2016_all_ages"
+        },
+        {
+          "id": "30d55b8a-a877-4dfd-a0d3-773b4579ec05",
+          "name": "deaths_2017_all_ages"
+        },
+        {
+          "id": "6550298f-5fdf-4227-8513-3e2e27da3902",
+          "name": "deaths_2018_all_ages"
+        },
+        {
+          "id": "a395cd9b-4b4b-4be0-b763-9097261f4260",
+          "name": "deaths_2019_all_ages"
+        },
+        {
+          "id": "5d3349ae-bbd4-4bc2-befe-ed86eb438a42",
+          "name": "deaths_2010_all_ages"
+        },
+        {
+          "id": "a0752e26-30bf-450f-84e4-ce0c588c6174",
+          "name": "deaths_2011_all_ages"
+        },
+        {
+          "id": "361d1087-679e-4cb6-a503-e75549b6c0a3",
+          "name": "deaths_2012_all_ages"
+        },
+        {
+          "id": "71a4fced-b287-4717-9588-aef7d0fb4062",
+          "name": "deaths_2013_all_ages"
+        },
+        {
+          "id": "df6a4685-3244-4490-acf8-7d59ba12be92",
+          "name": "deaths_2014_all_ages"
+        },
+        {
+          "id": "1e4408bd-c815-4307-871b-405396efe07d",
+          "name": "deaths_2021_all_ages"
+        },
+        {
+          "id": "a7d7b8ea-f8fa-4179-9a1f-a7d4eb29a2a6",
+          "name": "time"
+        },
+        {
+          "id": "7bcc31ad-7e1b-416e-9469-0417c19ff5e0",
+          "name": "time_unit"
+        }
+      ],
+      "measures": {
+        "rows": 5650
+      },
+      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+      "groupId": "covid_data"
+    },
+    {
+      "id": "e5cc8fa9-6e3f-4279-8098-db6e3b083e5a",
+      "name": "jhu_csv",
+      "columns": [
+        {
+          "id": "29450e07-26af-4f2a-8101-4fda86ca0292",
+          "name": "date"
+        },
+        {
+          "id": "d7d2fa66-1c9b-4811-8997-4c195117add1",
+          "name": "location"
+        },
+        {
+          "id": "91ccf7fe-c8be-4a5a-ba62-7af747daa3ce",
+          "name": "new_cases"
+        },
+        {
+          "id": "f4e9ed11-bb92-416e-9e33-5a66dd5792dd",
+          "name": "new_deaths"
+        },
+        {
+          "id": "3076aed8-157a-4e13-b88c-97c9c373ef90",
+          "name": "total_cases"
+        },
+        {
+          "id": "866e6a95-32a5-4ec6-8501-ef04ab2b5be0",
+          "name": "total_deaths"
+        },
+        {
+          "id": "46cddab7-0a8e-4bff-acd3-1e5b87390c67",
+          "name": "weekly_cases"
+        },
+        {
+          "id": "037274d6-4e3e-417a-99c2-be2430c10388",
+          "name": "weekly_deaths"
+        },
+        {
+          "id": "426a058d-3a6f-4b8b-9f7a-cc716cfb4581",
+          "name": "biweekly_cases"
+        },
+        {
+          "id": "f53438c1-5c27-4752-80a7-d5377cc48e1f",
+          "name": "biweekly_deaths"
+        }
+      ],
+      "measures": {
+        "rows": 109546
+      },
+      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+      "groupId": "covid_data"
+    },
+    {
+      "id": "b4c74f2f-94ad-4445-9030-e0f558a3cdd9",
+      "name": "locations_csv",
+      "columns": [
+        {
+          "id": "0f59b79f-4c4d-47bf-b0c7-94db70f4e4b2",
+          "name": "Country/Region"
+        },
+        {
+          "id": "445c9b8e-c40f-4200-aec5-200c47b26cc9",
+          "name": "location"
+        },
+        {
+          "id": "4cd360fa-778b-4698-a988-9d3d110796ad",
+          "name": "continent"
+        },
+        {
+          "id": "690941da-8649-43a4-91ee-0ac8a67a76e7",
+          "name": "population_year"
+        },
+        {
+          "id": "e3c721e5-5841-41a2-b84a-6c5db16db758",
+          "name": "population"
+        }
+      ],
+      "measures": {
+        "rows": 195
+      },
+      "groupId": "group",
+      "rootId": "298f9962-1daa-4426-925e-67e0670bf90d"
+    },
+    {
+      "id": "c2f5577c-7440-422f-bf89-9119d8b6a194",
+      "name": "vaccinations_csv",
+      "columns": [
+        {
+          "id": "e50bc8da-6bee-4444-b5f3-a722cf11282c",
+          "name": "location"
+        },
+        {
+          "id": "badba886-b6cd-45f0-8b89-f29fa7afe6cf",
+          "name": "iso_code"
+        },
+        {
+          "id": "3a8349d6-ab07-4c90-a90e-c2d68af744b8",
+          "name": "date"
+        },
+        {
+          "id": "0171d1db-f8cc-4802-a7ac-cd17f1863301",
+          "name": "total_vaccinations"
+        },
+        {
+          "id": "ea261f74-1454-4d1b-9838-788005ff5fc4",
+          "name": "people_vaccinated"
+        },
+        {
+          "id": "401a9296-89cf-48d7-ac57-9e2ac2a4f06e",
+          "name": "people_fully_vaccinated"
+        },
+        {
+          "id": "738b8024-c413-425d-b07d-c62d5c056b07",
+          "name": "total_boosters"
+        },
+        {
+          "id": "8eb0fb79-f4cc-4cfc-afb1-20fd4490ed12",
+          "name": "daily_vaccinations_raw"
+        },
+        {
+          "id": "1ec32af4-9885-4f98-85b3-1d43730f1462",
+          "name": "daily_vaccinations"
+        },
+        {
+          "id": "1210fc06-7240-469a-956c-e7371fd66a52",
+          "name": "total_vaccinations_per_hundred"
+        },
+        {
+          "id": "28d77780-d6b4-47d6-8e6f-53342c1432f6",
+          "name": "people_vaccinated_per_hundred"
+        },
+        {
+          "id": "32a2e169-087d-47e8-9394-a4a0dc3a90fd",
+          "name": "people_fully_vaccinated_per_hundred"
+        },
+        {
+          "id": "ecf0e657-b91f-4a6d-b5c2-1248a0a847c9",
+          "name": "total_boosters_per_hundred"
+        },
+        {
+          "id": "a21e758c-482b-4c1f-a3d6-ed4e936e9b48",
+          "name": "daily_vaccinations_per_million"
+        }
+      ],
+      "measures": {
+        "rows": 45865
+      },
+      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+      "groupId": "covid_data"
+    },
+    {
+      "id": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+      "name": "covid_data",
+      "columns": [
+        {
+          "id": "dd0e93de-9689-410c-be00-48745a771d56",
+          "name": "location",
+          "dependencies": ["e50bc8da-6bee-4444-b5f3-a722cf11282c"]
+        },
+        {
+          "id": "c3936b4a-e2cc-4df1-926b-eacf1a5a3ee5",
+          "name": "date",
+          "dependencies": ["3a8349d6-ab07-4c90-a90e-c2d68af744b8"]
+        },
+        {
+          "id": "83d59aee-8d17-4966-9174-8a5b9e6f29c6",
+          "name": "cases",
+          "dependencies": ["91ccf7fe-c8be-4a5a-ba62-7af747daa3ce"]
+        },
+        {
+          "id": "99a6b7f6-a759-4fd2-b1ed-6904bdb08449",
+          "name": "deaths",
+          "dependencies": ["f4e9ed11-bb92-416e-9e33-5a66dd5792dd"]
+        },
+        {
+          "id": "8c0abd3a-5d91-49e4-8421-94ada57ab51a",
+          "name": "excess_deaths",
+          "dependencies": ["150f4826-f9f4-4088-aae9-08691c035092"]
+        },
+        {
+          "id": "c2c13fab-1b85-4c33-9158-4823af544799",
+          "name": "average_deaths",
+          "dependencies": ["f8505ff0-a5f5-4f86-b5b6-ddd36e41cfd0"]
+        },
+        {
+          "id": "fb9b4e85-7891-4871-91c5-6f0e861710dd",
+          "name": "vaccinations",
+          "dependencies": ["1ec32af4-9885-4f98-85b3-1d43730f1462"]
+        }
+      ],
+      "measures": {
+        "rows": 120096,
+        "violations": 74285
+      },
+      "dependencies": [
+        "5d01f4fd-c032-4def-887e-24d8d6dfc9e4",
+        "e5cc8fa9-6e3f-4279-8098-db6e3b083e5a",
+        "c2f5577c-7440-422f-bf89-9119d8b6a194"
+      ],
+      "metadata": {
+        "any string key": "any string value",
+        "really": "whatever"
+      },
+      "groupId": "covid_data"
+    },
+    {
+      "id": "298f9962-1daa-4426-925e-67e0670bf90d",
+      "name": "covid_stats",
+      "columns": [
+        {
+          "id": "133a1a9f-2ecb-4a5d-9b38-55fa7e4a81ad",
+          "name": "location",
+          "dependencies": ["dd0e93de-9689-410c-be00-48745a771d56"]
+        },
+        {
+          "id": "858bb974-60af-427d-8182-6f083a4490aa",
+          "name": "case_rate",
+          "dependencies": [
+            "83d59aee-8d17-4966-9174-8a5b9e6f29c6",
+            "e3c721e5-5841-41a2-b84a-6c5db16db758"
+          ]
+        },
+        {
+          "id": "878e818e-b6dd-439e-b360-af9e39c6cc53",
+          "name": "death_rate",
+          "dependencies": [
+            "99a6b7f6-a759-4fd2-b1ed-6904bdb08449",
+            "e3c721e5-5841-41a2-b84a-6c5db16db758"
+          ]
+        },
+        {
+          "id": "d041a796-460c-400f-8f34-204799f9d3f0",
+          "name": "vaccination_rate",
+          "dependencies": [
+            "fb9b4e85-7891-4871-91c5-6f0e861710dd",
+            "e3c721e5-5841-41a2-b84a-6c5db16db758"
+          ]
+        }
+      ],
+      "measures": {
+        "rows": 178
+      },
+      "dependencies": [
+        "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+        "b4c74f2f-94ad-4445-9030-e0f558a3cdd9",
+        "locations2_csv"
+      ],
+      "groupId": "group"
+    },
+    {
+      "id": "locations2_csv",
+      "name": "locations2_csv",
+      "dependencies": ["c2f5577c-7440-422f-bf89-9119d8b6a194"],
+      "groupId": "group",
+      "rootId": "298f9962-1daa-4426-925e-67e0670bf90d"
+    }
+  ]
+}
