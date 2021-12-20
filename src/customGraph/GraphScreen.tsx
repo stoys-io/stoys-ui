@@ -4,6 +4,7 @@ import { isNode, Edge as Edge0 } from 'react-flow-renderer'
 import { Sidebar } from '../graph/components/Sidebar'
 import { SearchArgs } from '../graph/components/SidebarSearch'
 import { DagNode } from './DagNode'
+import { DagEdge } from './DagEdge'
 
 import { ConnectedDrawer } from '../graph/components/ConnectedDrawer'
 import { DrawerTabs } from '../graph/components/DrawerTabs'
@@ -21,7 +22,7 @@ import {
 } from '../graph/graph-store'
 
 import { Container, GraphContainer } from '../graph/styles'
-import { DataGraph, ChromaticScale, Orientation } from '../graph/model'
+import { DataGraph, ChromaticScale, Orientation, NodeDataPayload } from '../graph/model'
 
 import { mapInitialNodes, mapInitialEdges } from '../graph/graph-ops'
 import CustomGraphComponent from './CustomGraphComponent'
@@ -124,6 +125,7 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
           nodeComponent={(props: any) => (
             <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
           )}
+          edgeComponent={DagEdge}
           onPaneClick={onPaneClick}
           nodeHeight={NODE_HEIGHT}
           nodeWidth={NODE_WIDTH}

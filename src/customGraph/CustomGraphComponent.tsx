@@ -4,10 +4,8 @@ import Panzoom from '@panzoom/panzoom'
 
 import { mockGraph } from './mocks'
 
-const timeout = '350ms'
-const styleEdgeTransition = {
-  transition: `all ${timeout} ease-in-out`,
-}
+const timeout = '3500ms'
+
 const STROKE = '#b1b1b7'
 
 interface NestedState {
@@ -27,6 +25,7 @@ const useStore = create<NestedState>(set => ({
 const CustomGraphComponent = ({
   graph = mockGraph,
   nodeComponent = undefined,
+  edgeComponent = undefined,
   nodeHeight = 40,
   nodeWidth = 60,
   minScale = 0.12,
@@ -36,9 +35,6 @@ const CustomGraphComponent = ({
   const groups = useStore(state => state.groups)
   const toggleGroup = useStore(state => state.toggleGroup)
 
-  const strokeTransition = (isOpen: boolean) => (isOpen ? STROKE : 'white')
-  const strokeWidthTransition = (isOpen: boolean) => (isOpen ? '1' : '0')
-
   const myNodes = Object.values(graph.nodes)
   const plainNodes = myNodes.filter(node => node.groupId === undefined)
 
@@ -47,6 +43,8 @@ const CustomGraphComponent = ({
       node.groupId ? [...acc, node.groupId] : acc,
     []
   )
+
+  const CustomEdge = edgeComponent ? edgeComponent : Edge
 
   const nodeXS = myNodes.map(node => node.position.x)
   const nodeYS = myNodes.map(node => node.position.y)
@@ -132,24 +130,23 @@ const CustomGraphComponent = ({
                 }
 
                 return (
-                  <path
-                    key={`${edge.source}${edge.target}`}
-                    d={dPath}
-                    fill="transparent"
-                    stroke={strokeTransition(isOpen)}
-                    strokeWidth={strokeWidthTransition(isOpen)}
-                    style={styleEdgeTransition}
+                  <CustomEdge
+                    key={edge.id}
+                    id={edge.id}
+                    path={dPath}
+                    isVisible={isOpen}
+                    color={STROKE}
                   />
                 )
               }
 
               return (
-                <path
-                  key={`${edge.source}${edge.target}`}
-                  d={getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))}
-                  stroke={STROKE}
-                  strokeWidth="1"
-                  fill="transparent"
+                <CustomEdge
+                  key={edge.id}
+                  id={edge.id}
+                  path={getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))}
+                  isVisible={true}
+                  color={STROKE}
                 />
               )
             })}
@@ -189,6 +186,31 @@ const CustomGraphComponent = ({
         </div>
       </div>
     </div>
+  )
+}
+
+export interface EdgeProps {
+  id: string
+  path: string
+  color: string
+  isVisible: boolean
+}
+
+const edgeStyle = { transition: `all ${timeout} ease-in-out` }
+export const Edge = ({ path: d, id, color, isVisible }: EdgeProps) => {
+  const strokeOpacity = isVisible ? '1' : '0'
+  const strokeWidth = isVisible ? '1' : '0' // TODO: Actually we don't need this. strokeOpacity is enough
+
+  return (
+    <path
+      key={id}
+      d={d}
+      style={edgeStyle}
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeOpacity={strokeOpacity}
+      fill="transparent"
+    />
   )
 }
 
@@ -297,7 +319,7 @@ const defaultNode = ({ label }: { label: string }) => (
   <div style={{ border: '1px solid magenta', width: '100%', height: '100%' }}>{label}</div>
 )
 
-const MyNode = ({ x, y, width, height, fade = false, children = defaultNode }: INode) => {
+const MyNode = ({ x, y, width, height, fade = false, children = defaultNode }: NodeProps) => {
   const opacity = fade
     ? {
         opacity: 0,
@@ -331,14 +353,14 @@ const getPath = ({ x1, y1, x2, y2 }: P): string => {
   return path
 }
 
-interface INode {
+export interface NodeProps {
   id: string
   x: number
   y: number
   width: number
   height: number
-  fade?: boolean
   children: ReactNode
+  fade?: boolean
 }
 
 interface P {
@@ -351,7 +373,8 @@ interface P {
 export default CustomGraphComponent
 export interface Props {
   graph?: CustomGraph
-  nodeComponent?: (_: any) => ReactNode
+  nodeComponent?: (_: any) => JSX.Element
+  edgeComponent?: (props: EdgeProps) => JSX.Element
   nodeHeight?: number
   nodeWidth?: number
   minScale?: number
@@ -397,6 +420,7 @@ interface CustomGraphPosition {
 }
 
 interface CustomGraphEdge {
+  id: string
   source: string
   target: string
 }
