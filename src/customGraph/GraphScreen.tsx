@@ -22,7 +22,7 @@ import {
 } from '../graph/graph-store'
 
 import { Container, GraphContainer } from '../graph/styles'
-import { DataGraph, ChromaticScale, Orientation, NodeDataPayload } from '../graph/model'
+import { DataGraph, ChromaticScale, Orientation } from '../graph/model'
 
 import { mapInitialNodes, mapInitialEdges } from '../graph/graph-ops'
 import CustomGraphComponent from './CustomGraphComponent'

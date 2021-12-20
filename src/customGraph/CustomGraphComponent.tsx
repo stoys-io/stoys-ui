@@ -1,6 +1,7 @@
 import React, { CSSProperties, ReactNode, useRef, useEffect } from 'react'
 import create from 'zustand'
 import Panzoom from '@panzoom/panzoom'
+import debounce from 'lodash.debounce'
 
 import { mockGraph } from './mocks'
 
@@ -51,6 +52,7 @@ const CustomGraphComponent = ({
 
   const zoomContainerRef = useRef<HTMLDivElement>(null)
   const rootContainer = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (!zoomContainerRef.current || !rootContainer.current) {
       return
@@ -75,8 +77,28 @@ const CustomGraphComponent = ({
       panzoom.zoomWithWheel(evt)
     }
 
+    let prevPosition = { x: 0, y: 0 }
+    // This is to distinguish between clicks and drag when panning
+    const onPanEnd = debounce(
+      (evt: any) => {
+        const { x, y } = evt.detail
+        if (prevPosition.x !== x || prevPosition.y !== y) {
+          prevPosition = { x, y }
+          return
+        }
+
+        prevPosition = { x, y }
+        onPaneClick()
+        return
+      },
+      250,
+      { leading: true, trailing: false }
+    )
+
+    zoomContainerRef.current.addEventListener('panzoomend', onPanEnd)
     rootContainer.current.addEventListener('wheel', onWheel, { passive: false })
     return () => {
+      zoomContainerRef.current?.removeEventListener('panzoomend', onPanEnd)
       rootContainer.current?.removeEventListener('wheel', onWheel)
     }
   }, [zoomContainerRef.current, rootContainer.current])
@@ -89,7 +111,6 @@ const CustomGraphComponent = ({
         height: '100%',
       }}
       ref={rootContainer}
-      onClick={onPaneClick}
     >
       <div ref={zoomContainerRef}>
         <svg
