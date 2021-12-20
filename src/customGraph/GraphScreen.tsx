@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react'
-import { isNode, Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
+import { isNode, Edge as Edge0 } from 'react-flow-renderer'
 
 import { Sidebar } from '../graph/components/Sidebar'
 import { SearchArgs } from '../graph/components/SidebarSearch'
 import { DagNode } from './DagNode'
+import { DagEdge } from './DagEdge'
 
 import { ConnectedDrawer } from '../graph/components/ConnectedDrawer'
 import { DrawerTabs } from '../graph/components/DrawerTabs'
@@ -21,13 +22,13 @@ import {
 } from '../graph/graph-store'
 
 import { Container, GraphContainer } from '../graph/styles'
-import { DataGraph, ChromaticScale, Orientation } from '../graph/model'
+import { DataGraph, ChromaticScale, Orientation, NodeDataPayload } from '../graph/model'
 
 import { mapInitialNodes, mapInitialEdges } from '../graph/graph-ops'
 import CustomGraphComponent from './CustomGraphComponent'
 import { NODE_HEIGHT, NODE_WIDTH } from '../graph/constants'
 
-const GraphComponent = ({ data, config: cfg }: Props) => {
+const GraphScreen = ({ data, config: cfg }: Props) => {
   const validCurrentRelease =
     // check if the release specified in config is present in the data
     cfg?.currentRelease && !!data.find(dataItem => dataItem.version === cfg.currentRelease)
@@ -124,6 +125,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
           nodeComponent={(props: any) => (
             <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
           )}
+          edgeComponent={DagEdge}
           onPaneClick={onPaneClick}
           nodeHeight={NODE_HEIGHT}
           nodeWidth={NODE_WIDTH}
@@ -136,7 +138,7 @@ const GraphComponent = ({ data, config: cfg }: Props) => {
   )
 }
 
-export default GraphComponent
+export default GraphScreen
 
 export interface Props {
   data: DataGraph[]

@@ -49,7 +49,7 @@ export const DrawerNodeLabel = styled.div`
 export const ResizeArea = styled.div`
   background: #e2e2e2;
   height: ${RESIZE_AREA_HEIGHT}px;
-  width: 100%;
+  width: 100vw;
   cursor: ns-resize;
   z-index: 10;
 

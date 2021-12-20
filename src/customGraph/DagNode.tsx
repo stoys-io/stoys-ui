@@ -1,6 +1,6 @@
 // TODO: Remove type guards. Metric types should be well defined
 
-import React, { memo, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import List from 'antd/lib/list'
 
 import {
@@ -30,167 +30,174 @@ interface Props {
   onDoubleClick: (id: string) => void
 }
 
-export const DagNode = memo(
-  ({
-    id,
-    data: { label, columns, violations, partitions },
-    onClick,
-    onDoubleClick,
-  }: Props): JSX.Element => {
-    const dispatch = useGraphDispatch()
+export const DagNode = ({
+  id,
+  data: { label, columns, violations, partitions },
+  onClick,
+  onDoubleClick,
+}: Props): JSX.Element => {
+  const dispatch = useGraphDispatch()
 
-    const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
-    const columnMetricMaxValue = useGraphStore(state => state.columnMetricMaxValue)
-    const countNormalize = useGraphStore(state => state.countNormalize)
+  const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
+  const columnMetricMaxValue = useGraphStore(state => state.columnMetricMaxValue)
+  const countNormalize = useGraphStore(state => state.countNormalize)
 
-    const selectedTableId = useGraphStore(selectTableId)
-    const selectedColumnId = useGraphStore(selectColumnId)
-    const relatedColumnsIds = useGraphStore(selectRelColumnIds)
-    const highlightMode = useGraphStore(selectHighlightMode)
+  const selectedTableId = useGraphStore(selectTableId)
+  const selectedColumnId = useGraphStore(selectColumnId)
+  const relatedColumnsIds = useGraphStore(selectRelColumnIds)
+  const highlightMode = useGraphStore(selectHighlightMode)
 
-    const columnMetric = useGraphStore(selectColumnMetric)
-    const tableMetric = useGraphStore(selectTableMetric)
-    const tableMetricValFormatted =
-      tableMetric === 'none'
-        ? null
-        : tableMetric === 'violations'
-        ? formatTableMetric(violations)
-        : formatTableMetric(partitions)
+  const columnMetric = useGraphStore(selectColumnMetric)
+  const tableMetric = useGraphStore(selectTableMetric)
+  const tableMetricValFormatted =
+    tableMetric === 'none'
+      ? null
+      : tableMetric === 'violations'
+      ? formatTableMetric(violations)
+      : formatTableMetric(partitions)
 
-    const _columns =
-      selectedTableId && id !== selectedTableId
-        ? columns.filter((column: Column) => relatedColumnsIds.includes(column.id))
-        : columns
+  const _columns =
+    selectedTableId && id !== selectedTableId
+      ? columns.filter((column: Column) => relatedColumnsIds.includes(column.id))
+      : columns
 
-    const columnMaxCount = (metric: ColumnMetric) => {
-      if (!metric.startsWith('count_') || metric === 'none' || metric === 'data_type') {
-        return 1
-      }
-
-      const allValues = _columns.map(column => {
-        const tmp = column.metrics?.[metric] ?? 1
-        const v = typeof tmp !== 'string' ? tmp : !isNaN(+tmp) ? +tmp : 1
-
-        return v
-      })
-      return Math.max(...allValues, 1)
+  const columnMaxCount = (metric: ColumnMetric) => {
+    if (!metric.startsWith('count_') || metric === 'none' || metric === 'data_type') {
+      return 1
     }
 
-    const columnColorCountNormalizedMetrics = (column: Column): string => {
-      if (columnMetricMaxValue === 0) {
-        return RESET_COLOR
-      }
+    const allValues = _columns.map(column => {
+      const tmp = column.metrics?.[metric] ?? 1
+      const v = typeof tmp !== 'string' ? tmp : !isNaN(+tmp) ? +tmp : 1
 
-      if (columnMetric === 'none' || columnMetric === 'data_type') {
-        return RESET_COLOR
-      }
+      return v
+    })
+    return Math.max(...allValues, 1)
+  }
 
-      const tmp = column.metrics?.[columnMetric] ?? 0
-      const count = typeof tmp !== 'string' ? tmp : !isNaN(+tmp) ? +tmp : 0
-
-      const totalCount = columnMaxCount(columnMetric)
-      const normalized = count / totalCount
-
-      return getMetricsColumnColor(normalized)
-    }
-
-    const columnColorMetrics = (column: Column): string => {
-      if (columnMetricMaxValue === 0) {
-        return RESET_COLOR
-      }
-
-      if (columnMetric === 'none' || columnMetric === 'data_type') {
-        return RESET_COLOR
-      }
-
-      const colMetricVal = column.metrics?.[columnMetric] ?? 0
-      const colMetricVal2 =
-        typeof colMetricVal !== 'string' ? colMetricVal : !isNaN(+colMetricVal) ? +colMetricVal : 0
-
-      const normalizedColMVal = colMetricVal2 / columnMetricMaxValue
-
-      return getMetricsColumnColor(normalizedColMVal)
-    }
-
-    const columnColorOnFocus = (column: Column): string => {
-      if (id === selectedTableId && column.id === selectedColumnId) {
-        return NODE_TEXT_COLOR
-      }
-
-      if (id === selectedTableId) {
-        return TRANSPARENT_NODE_TEXT_COLOR
-      }
-
-      if (
-        style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
-        style?.color === DELETED_NODE_HIGHLIHT_COLOR
-      ) {
-        return style.color
-      }
-
-      if (column?.style?.color) {
-        return column.style.color
-      }
-
+  const columnColorCountNormalizedMetrics = (column: Column): string => {
+    if (columnMetricMaxValue === 0) {
       return RESET_COLOR
     }
 
-    // TODO: Move to `ColumnHighlights` ?
-    const columnColor =
-      highlightMode !== 'metrics'
-        ? columnColorOnFocus
-        : columnMetric.startsWith('count_') && countNormalize
-        ? columnColorCountNormalizedMetrics
-        : columnColorMetrics
+    if (columnMetric === 'none' || columnMetric === 'data_type') {
+      return RESET_COLOR
+    }
 
-    const cardHighlightedColor = style?.color ? style.color : GREY_ACCENT
-    const titleHighlightColor =
-      style && [ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR].includes(style.color)
-        ? style.color
-        : RESET_COLOR
+    const tmp = column.metrics?.[columnMetric] ?? 0
+    const count = typeof tmp !== 'string' ? tmp : !isNaN(+tmp) ? +tmp : 0
 
-    const isHoverableColumn = !['none', 'diffing'].includes(highlightMode)
+    const totalCount = columnMaxCount(columnMetric)
+    const normalized = count / totalCount
 
-    return (
-      <div onClick={() => onClick(id)} onDoubleClick={() => onDoubleClick(id)}>
-        <ScrollCard
-          title={<ScrollCardTitle color={titleHighlightColor}>{label}</ScrollCardTitle>}
-          size="small"
-          type="inner"
-          extra={tableMetricValFormatted}
-          highlightColor={cardHighlightedColor}
-        >
-          <List
-            size="small"
-            dataSource={_columns}
-            renderItem={(column: Column) => {
-              const columnExtra = formatColumnExtra(column, columnMetric, countNormalize)
-              const tooltip = `${column.name}: ${columnExtra}`
-
-              return (
-                <List.Item>
-                  <ItemContent title={tooltip}>
-                    <ItemText
-                      hoverable={isHoverableColumn}
-                      color={columnColor(column)}
-                      onClick={(evt: React.MouseEvent<HTMLElement>) => {
-                        evt.stopPropagation()
-                        dispatch(setHighlightedColumns(column.id, id))
-                      }}
-                    >
-                      {column.name}
-                    </ItemText>
-                    <ItemExtra>{columnExtra}</ItemExtra>
-                  </ItemContent>
-                </List.Item>
-              )
-            }}
-          />
-        </ScrollCard>
-      </div>
-    )
+    return getMetricsColumnColor(normalized)
   }
-)
+
+  const columnColorMetrics = (column: Column): string => {
+    if (columnMetricMaxValue === 0) {
+      return RESET_COLOR
+    }
+
+    if (columnMetric === 'none' || columnMetric === 'data_type') {
+      return RESET_COLOR
+    }
+
+    const colMetricVal = column.metrics?.[columnMetric] ?? 0
+    const colMetricVal2 =
+      typeof colMetricVal !== 'string' ? colMetricVal : !isNaN(+colMetricVal) ? +colMetricVal : 0
+
+    const normalizedColMVal = colMetricVal2 / columnMetricMaxValue
+
+    return getMetricsColumnColor(normalizedColMVal)
+  }
+
+  const columnColorOnFocus = (column: Column): string => {
+    if (id === selectedTableId && column.id === selectedColumnId) {
+      return NODE_TEXT_COLOR
+    }
+
+    if (id === selectedTableId) {
+      return TRANSPARENT_NODE_TEXT_COLOR
+    }
+
+    if (
+      style?.color === ADDED_NODE_HIGHLIGHT_COLOR ||
+      style?.color === DELETED_NODE_HIGHLIHT_COLOR
+    ) {
+      return style.color
+    }
+
+    if (column?.style?.color) {
+      return column.style.color
+    }
+
+    return RESET_COLOR
+  }
+
+  // TODO: Move to `ColumnHighlights` ?
+  const columnColor =
+    highlightMode !== 'metrics'
+      ? columnColorOnFocus
+      : columnMetric.startsWith('count_') && countNormalize
+      ? columnColorCountNormalizedMetrics
+      : columnColorMetrics
+
+  const cardHighlightedColor = style?.color ? style.color : GREY_ACCENT
+  const titleHighlightColor =
+    style && [ADDED_NODE_HIGHLIGHT_COLOR, DELETED_NODE_HIGHLIHT_COLOR].includes(style.color)
+      ? style.color
+      : RESET_COLOR
+
+  const isHoverableColumn = !['none', 'diffing'].includes(highlightMode)
+
+  return (
+    <div
+      onClick={(evt: React.MouseEvent<HTMLElement>) => {
+        evt.stopPropagation()
+        onClick(id)
+      }}
+      onDoubleClick={(evt: React.MouseEvent<HTMLElement>) => {
+        evt.stopPropagation()
+        onDoubleClick(id)
+      }}
+    >
+      <ScrollCard
+        title={<ScrollCardTitle color={titleHighlightColor}>{label}</ScrollCardTitle>}
+        size="small"
+        type="inner"
+        extra={tableMetricValFormatted}
+        highlightColor={cardHighlightedColor}
+      >
+        <List
+          size="small"
+          dataSource={_columns}
+          renderItem={(column: Column) => {
+            const columnExtra = formatColumnExtra(column, columnMetric, countNormalize)
+            const tooltip = `${column.name}: ${columnExtra}`
+
+            return (
+              <List.Item>
+                <ItemContent title={tooltip}>
+                  <ItemText
+                    hoverable={isHoverableColumn}
+                    color={columnColor(column)}
+                    onClick={(evt: React.MouseEvent<HTMLElement>) => {
+                      evt.stopPropagation()
+                      dispatch(setHighlightedColumns(column.id, id))
+                    }}
+                  >
+                    {column.name}
+                  </ItemText>
+                  <ItemExtra>{columnExtra}</ItemExtra>
+                </ItemContent>
+              </List.Item>
+            )
+          }}
+        />
+      </ScrollCard>
+    </div>
+  )
+}
 
 const selectTableMetric = (state: GraphStore) => state.tableMetric
 const selectColumnMetric = (state: GraphStore) => state.columnMetric

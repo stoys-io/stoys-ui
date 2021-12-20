@@ -67,7 +67,6 @@ const Drawer = ({ children, visible, containerRef }: Props) => {
       mask={false}
       visible={visible}
       height={drawerHeight}
-      style={style}
       headerStyle={headerStyle}
       bodyStyle={bodyStyle}
     >
@@ -86,6 +85,5 @@ interface Props {
 
 const threshold = RESIZE_AREA_HEIGHT + 150
 
-const style: CSSProperties = { position: 'absolute' }
 const bodyStyle = { padding: 0 }
 const headerStyle = { padding: 0 }
