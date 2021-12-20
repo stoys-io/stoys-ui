@@ -1,6 +1,4 @@
-import { CustomGraph } from './CustomGraphComponent'
-
-export const mockGraph: CustomGraph = {
+const mock = {
   nodes: {
     'test 1': {
       id: 'test 1',
@@ -67,3 +65,5 @@ export const mockGraph: CustomGraph = {
     { id: '5-3', source: 'test 5', target: 'test 3' },
   ],
 }
+
+export default mock

@@ -1,11 +1,12 @@
 import React, { CSSProperties, ReactNode, useRef } from 'react'
 import create from 'zustand'
+
+import Edge, { Props as EdgeProps } from './Edge'
+import Node, { defaultNode } from './Node'
+import { ANIMATION_TIMEOUT, DEFAULT_EDGE_COLOR } from './constants'
+
 import { usePanZoom } from './usePanZoom'
 
-import { mockGraph } from './mocks'
-
-const timeout = '350ms'
-const STROKE = '#b1b1b7'
 interface NestedState {
   groups: { [key: string]: boolean }
   toggleGroup: (_: string) => void
@@ -21,7 +22,7 @@ const useStore = create<NestedState>(set => ({
 }))
 
 const CustomGraphComponent = ({
-  graph = mockGraph,
+  graph,
   nodeComponent = undefined,
   edgeComponent = undefined,
   nodeHeight = 40,
@@ -42,7 +43,7 @@ const CustomGraphComponent = ({
     []
   )
 
-  const CustomEdge = edgeComponent ? edgeComponent : Edge
+  const ActualEdge = edgeComponent ? edgeComponent : Edge
 
   const nodeXS = myNodes.map(node => node.position.x)
   const nodeYS = myNodes.map(node => node.position.y)
@@ -100,23 +101,23 @@ const CustomGraphComponent = ({
                 }
 
                 return (
-                  <CustomEdge
+                  <ActualEdge
                     key={edge.id}
                     id={edge.id}
                     path={dPath}
                     isVisible={isOpen}
-                    color={STROKE}
+                    color={DEFAULT_EDGE_COLOR}
                   />
                 )
               }
 
               return (
-                <CustomEdge
+                <ActualEdge
                   key={edge.id}
                   id={edge.id}
                   path={getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))}
                   isVisible={true}
-                  color={STROKE}
+                  color={DEFAULT_EDGE_COLOR}
                 />
               )
             })}
@@ -125,7 +126,7 @@ const CustomGraphComponent = ({
 
         <div>
           {plainNodes.map(node => (
-            <MyNode
+            <Node
               key={node.id}
               id={node.id}
               x={node.position.x}
@@ -136,7 +137,7 @@ const CustomGraphComponent = ({
               {nodeComponent
                 ? nodeComponent({ id: node.id, data: node.data })
                 : defaultNode({ label: node.data.label })}
-            </MyNode>
+            </Node>
           ))}
 
           {subGroups.map((group, idx) => {
@@ -156,31 +157,6 @@ const CustomGraphComponent = ({
         </div>
       </div>
     </div>
-  )
-}
-
-export interface EdgeProps {
-  id: string
-  path: string
-  color: string
-  isVisible: boolean
-}
-
-const edgeStyle = { transition: `all ${timeout} ease-in-out` }
-export const Edge = ({ path: d, id, color, isVisible }: EdgeProps) => {
-  const strokeOpacity = isVisible ? '1' : '0'
-  const strokeWidth = isVisible ? '1' : '0' // TODO: Actually we don't need this. strokeOpacity is enough
-
-  return (
-    <path
-      key={id}
-      d={d}
-      style={edgeStyle}
-      stroke={color}
-      strokeWidth={strokeWidth}
-      strokeOpacity={strokeOpacity}
-      fill="transparent"
-    />
   )
 }
 
@@ -211,7 +187,7 @@ const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }:
         nodeWidth={nodeWidth}
       />
       {nodes2.map(node => (
-        <MyNode
+        <Node
           key={node.id}
           id={node.id}
           x={node.position.x}
@@ -223,7 +199,7 @@ const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }:
           {component
             ? component({ id: node.id, data: node.data })
             : defaultNode({ label: node.data.label })}
-        </MyNode>
+        </Node>
       ))}
     </>
   )
@@ -271,7 +247,7 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
         width,
         height,
         border: `2px solid cyan`,
-        transition: `all ${timeout} ease-in-out`,
+        transition: `all ${ANIMATION_TIMEOUT} ease-in-out`,
       }}
     >
       <div style={openerStyle} onClick={onToggle}>
@@ -285,52 +261,11 @@ interface ISubgraphBox {
   nodes: CustomGraphNode<Payload>[]
 }
 
-const defaultNode = ({ label }: { label: string }) => (
-  <div style={{ border: '1px solid magenta', width: '100%', height: '100%' }}>{label}</div>
-)
-
-const MyNode = ({ x, y, width, height, fade = false, children = defaultNode }: NodeProps) => {
-  const opacity = fade
-    ? {
-        opacity: 0,
-      }
-    : {
-        opacity: 1,
-      }
-
-  return (
-    <div
-      className="preventZoom"
-      style={{
-        position: 'absolute',
-        top: y,
-        left: x,
-        width,
-        height,
-        transition: `all ${timeout} ease-in-out`,
-        ...opacity,
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
 const getPath = ({ x1, y1, x2, y2 }: P): string => {
   const cx = x1 + (x2 - x1) / 2
   const path = `M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}`
 
   return path
-}
-
-export interface NodeProps {
-  id: string
-  x: number
-  y: number
-  width: number
-  height: number
-  children: ReactNode
-  fade?: boolean
 }
 
 interface P {
@@ -342,7 +277,7 @@ interface P {
 
 export default CustomGraphComponent
 export interface Props {
-  graph?: CustomGraph
+  graph: CustomGraph
   nodeComponent?: (_: any) => JSX.Element
   edgeComponent?: (props: EdgeProps) => JSX.Element
   nodeHeight?: number

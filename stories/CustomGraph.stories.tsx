@@ -2,6 +2,7 @@ import React from 'react'
 import { Story } from '@storybook/react'
 import Graph, { Props } from '../src/customGraph'
 import CustomGraphComponent, { Props as P } from '../src/customGraph/CustomGraphComponent'
+import dummyMock from './mocks/CustomGraph.mock'
 
 import _dataMock from './mocks/graph/dag_inlined.json'
 import _dataMockGroups from './mocks/graph/dag_inlined_groups.json'
@@ -18,7 +19,7 @@ const Template: Story<P> = (args: P) => (
 )
 export const Example = Template.bind({})
 Example.storyName = 'example'
-Example.args = {}
+Example.args = { graph: dummyMock }
 
 const Template2: Story<Props> = (args: Props) => <Graph {...args} />
 export const Example2 = Template2.bind({})
