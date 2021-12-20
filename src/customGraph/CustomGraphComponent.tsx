@@ -4,10 +4,8 @@ import Panzoom from '@panzoom/panzoom'
 
 import { mockGraph } from './mocks'
 
-const timeout = '3500ms'
-
+const timeout = '350ms'
 const STROKE = '#b1b1b7'
-
 interface NestedState {
   groups: { [key: string]: boolean }
   toggleGroup: (_: string) => void
