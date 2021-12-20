@@ -1,7 +1,6 @@
-import React, { CSSProperties, ReactNode, useRef, useEffect } from 'react'
+import React, { CSSProperties, ReactNode, useRef } from 'react'
 import create from 'zustand'
-import Panzoom from '@panzoom/panzoom'
-import debounce from 'lodash.debounce'
+import { usePanZoom } from './usePanZoom'
 
 import { mockGraph } from './mocks'
 
@@ -50,58 +49,10 @@ const CustomGraphComponent = ({
   const svgViewportWidth = Math.max(...nodeXS) + 2 * nodeWidth
   const svgViewportHeight = Math.max(...nodeYS) + 2 * nodeHeight
 
+  const canvasContainerRef = useRef<HTMLDivElement>(null)
   const zoomContainerRef = useRef<HTMLDivElement>(null)
-  const rootContainer = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!zoomContainerRef.current || !rootContainer.current) {
-      return
-    }
-
-    const panzoom = Panzoom(zoomContainerRef.current, {
-      minScale,
-      maxScale,
-      cursor: 'default',
-      step: 0.2,
-      canvas: true,
-      animate: true,
-      excludeClass: 'preventZoom',
-    })
-
-    const onWheel = (evt: WheelEvent) => {
-      const shouldPreventZoom = (evt.target as Element).closest('.preventZoom')
-      if (shouldPreventZoom) {
-        return
-      }
-
-      panzoom.zoomWithWheel(evt)
-    }
-
-    let prevPosition = { x: 0, y: 0 }
-    // This is to distinguish between clicks and drag when panning
-    const onPanEnd = debounce(
-      (evt: any) => {
-        const { x, y } = evt.detail
-        if (prevPosition.x !== x || prevPosition.y !== y) {
-          prevPosition = { x, y }
-          return
-        }
-
-        prevPosition = { x, y }
-        onPaneClick()
-        return
-      },
-      250,
-      { leading: true, trailing: false }
-    )
-
-    zoomContainerRef.current.addEventListener('panzoomend', onPanEnd)
-    rootContainer.current.addEventListener('wheel', onWheel, { passive: false })
-    return () => {
-      zoomContainerRef.current?.removeEventListener('panzoomend', onPanEnd)
-      rootContainer.current?.removeEventListener('wheel', onWheel)
-    }
-  }, [zoomContainerRef.current, rootContainer.current])
+  usePanZoom({ canvasContainerRef, zoomContainerRef, minScale, maxScale, onPaneClick })
 
   return (
     <div
@@ -110,7 +61,7 @@ const CustomGraphComponent = ({
         width: '100%',
         height: '100%',
       }}
-      ref={rootContainer}
+      ref={canvasContainerRef}
     >
       <div ref={zoomContainerRef}>
         <svg

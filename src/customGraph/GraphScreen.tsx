@@ -129,6 +129,8 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
           onPaneClick={onPaneClick}
           nodeHeight={NODE_HEIGHT}
           nodeWidth={NODE_WIDTH}
+          minScale={0.12}
+          maxScale={2}
         />
       </GraphContainer>
       <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer}>
