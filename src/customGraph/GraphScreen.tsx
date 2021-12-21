@@ -22,7 +22,7 @@ import {
 } from '../graph/graph-store'
 
 import { Container, GraphContainer } from '../graph/styles'
-import { DataGraph, ChromaticScale, Orientation, NodeDataPayload } from '../graph/model'
+import { DataGraph, ChromaticScale, Orientation } from '../graph/model'
 
 import { mapInitialNodes, mapInitialEdges } from '../graph/graph-ops'
 import CustomGraphComponent from './CustomGraphComponent'
@@ -129,6 +129,8 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
           onPaneClick={onPaneClick}
           nodeHeight={NODE_HEIGHT}
           nodeWidth={NODE_WIDTH}
+          minScale={0.12}
+          maxScale={2}
         />
       </GraphContainer>
       <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer}>
