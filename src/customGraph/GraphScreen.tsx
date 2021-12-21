@@ -69,7 +69,8 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
 
   const graph = useGraphStore(
-    state => state.graph,
+    // We use init flag to track that store did init and prevent race condition
+    state => (state.init ? state.graph : currentGraph),
     (oldGraph, newGraph) => oldGraph.release === newGraph.release
   )
 
