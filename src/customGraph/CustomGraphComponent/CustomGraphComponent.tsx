@@ -135,7 +135,7 @@ const CustomGraphComponent = ({
                 return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade />
               }
 
-              // TODO: This could have been simplier
+              // TODO: This could have been simpler
               // Outbound edge:
               const thisRootId = sourceRootId ? sourceRootId : targetRootId
               const otherRootId = sourceRootId ? targetRootId : sourceRootId
