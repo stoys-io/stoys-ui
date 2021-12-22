@@ -97,194 +97,193 @@ const CustomGraphComponent = ({
             {graph.edges.map(edge => {
               const {
                 position: { x: x1, y: y1 },
-                rootId: rootSource,
-                groupId: sourceGroup,
+                rootId: sourceRootId,
+                groupId: sourceGroupId,
               } = graph.nodes[edge.source]
               const {
                 position: { x: x2, y: y2 },
-                rootId: rootTarget,
-                groupId: targetGroup,
+                rootId: targetRootId,
+                groupId: targetGroupId,
               } = graph.nodes[edge.target]
 
-              const rootId = rootSource || rootTarget
-              if (rootId) {
-                const { x: xRoot, y: yRoot } = graph.nodes[rootId].position
-                const curGroup = graph.nodes[rootId].groupId!
-                const isOpen = groups[curGroup]
-                // TODO: Simplify
+              // TODO: Simplify
 
-                if (rootSource) {
-                  const isEdgeOutbound = sourceGroup !== targetGroup
-                  if (!isEdgeOutbound) {
-                    // Inbound edge
-                    const [x1anim, y1anim] = isOpen ? [x1, y1] : [xRoot, yRoot]
-                    const dPath = getPath(
-                      handleCoords(x1anim, y1anim, x2, y2, nodeWidth, nodeHeight)
-                    )
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={isOpen}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
-
-                  const isTargetVisible =
-                    isEdgeOutbound &&
-                    (targetGroup === undefined || (targetGroup && groups[targetGroup]))
-
-                  const outBoundCase1 = isTargetVisible && !isOpen
-                  const outBoundCase2 = !isTargetVisible && !isOpen
-                  const outBoundCase3 = isTargetVisible && isOpen
-                  const outBoundCase4 = !isTargetVisible && isOpen
-
-                  if (outBoundCase1) {
-                    const dPath = getPath(handleCoords(xRoot, yRoot, x2, y2, nodeWidth, nodeHeight))
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={true}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
-
-                  if (outBoundCase2) {
-                    const { x: xRootOther, y: yRootOther } = graph.nodes[rootTarget!].position
-                    const dPath = getPath(
-                      handleCoords(xRoot, yRoot, xRootOther, yRootOther, nodeWidth, nodeHeight)
-                    )
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={true}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
-
-                  if (outBoundCase3) {
-                    const dPath = getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={true}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
-
-                  if (outBoundCase4) {
-                    const { x: xRootOther, y: yRootOther } = graph.nodes[rootTarget!].position
-                    const dPath = getPath(
-                      handleCoords(x1, y1, xRootOther, yRootOther, nodeWidth, nodeHeight)
-                    )
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={true}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
+              if (sourceRootId) {
+                const { x: xRoot, y: yRoot } = graph.nodes[sourceRootId].position
+                const isOpen = groups[sourceGroupId!]
+                const isEdgeOutbound = sourceGroupId !== targetGroupId
+                if (!isEdgeOutbound) {
+                  // Inbound edge
+                  const [x1anim, y1anim] = isOpen ? [x1, y1] : [xRoot, yRoot]
+                  const dPath = getPath(handleCoords(x1anim, y1anim, x2, y2, nodeWidth, nodeHeight))
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={isOpen}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
                 }
 
-                if (rootTarget) {
-                  const isEdgeOutbound = targetGroup !== sourceGroup
-                  if (!isEdgeOutbound) {
-                    // Inbound edge
-                    const [x2anim, y2anim] = isOpen ? [x2, y2] : [xRoot, yRoot]
-                    const dPath = getPath(
-                      handleCoords(x1, y1, x2anim, y2anim, nodeWidth, nodeHeight)
-                    )
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={isOpen}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
+                const isTargetVisible =
+                  isEdgeOutbound &&
+                  (targetGroupId === undefined || (targetGroupId && groups[targetGroupId]))
 
-                  const isSourceVisible =
-                    isEdgeOutbound &&
-                    (sourceGroup === undefined || (sourceGroup && groups[sourceGroup]))
+                const outBoundCase1 = isTargetVisible && !isOpen
+                const outBoundCase2 = !isTargetVisible && !isOpen
+                const outBoundCase3 = isTargetVisible && isOpen
+                const outBoundCase4 = !isTargetVisible && isOpen
 
-                  const outBoundCase1 = isSourceVisible && !isOpen
-                  const outBoundCase2 = !isSourceVisible && !isOpen
-                  const outBoundCase3 = isSourceVisible && isOpen
-                  const outBoundCase4 = !isSourceVisible && isOpen
+                if (outBoundCase1) {
+                  const dPath = getPath(handleCoords(xRoot, yRoot, x2, y2, nodeWidth, nodeHeight))
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={true}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
+                }
 
-                  if (outBoundCase1) {
-                    const dPath = getPath(handleCoords(x1, y1, xRoot, yRoot, nodeWidth, nodeHeight))
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={true}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
+                if (outBoundCase2) {
+                  const { x: xRootOther, y: yRootOther } = graph.nodes[targetRootId!].position
+                  const dPath = getPath(
+                    handleCoords(xRoot, yRoot, xRootOther, yRootOther, nodeWidth, nodeHeight)
+                  )
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={true}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
+                }
 
-                  if (outBoundCase2) {
-                    const { x: xRootOther, y: yRootOther } = graph.nodes[rootSource!].position
-                    const dPath = getPath(
-                      handleCoords(xRootOther, yRootOther, xRoot, yRoot, nodeWidth, nodeHeight)
-                    )
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={true}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
+                if (outBoundCase3) {
+                  const dPath = getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={true}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
+                }
 
-                  if (outBoundCase3) {
-                    const dPath = getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={true}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
+                if (outBoundCase4) {
+                  const { x: xRootOther, y: yRootOther } = graph.nodes[targetRootId!].position
+                  const dPath = getPath(
+                    handleCoords(x1, y1, xRootOther, yRootOther, nodeWidth, nodeHeight)
+                  )
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={true}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
+                }
+              }
 
-                  if (outBoundCase4) {
-                    const { x: xRootOther, y: yRootOther } = graph.nodes[rootSource!].position
-                    const dPath = getPath(
-                      handleCoords(xRootOther, yRootOther, x2, y2, nodeWidth, nodeHeight)
-                    )
-                    return (
-                      <ActualEdge
-                        key={edge.id}
-                        id={edge.id}
-                        path={dPath}
-                        isVisible={true}
-                        color={DEFAULT_EDGE_COLOR}
-                      />
-                    )
-                  }
+              if (targetRootId) {
+                const { x: xRoot, y: yRoot } = graph.nodes[targetRootId].position
+                const isOpen = groups[targetGroupId!]
+                const isEdgeOutbound = targetGroupId !== sourceGroupId
+                if (!isEdgeOutbound) {
+                  // Inbound edge
+                  const [x2anim, y2anim] = isOpen ? [x2, y2] : [xRoot, yRoot]
+                  const dPath = getPath(handleCoords(x1, y1, x2anim, y2anim, nodeWidth, nodeHeight))
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={isOpen}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
+                }
+
+                const isSourceVisible =
+                  isEdgeOutbound &&
+                  (sourceGroupId === undefined || (sourceGroupId && groups[sourceGroupId]))
+
+                console.log(
+                  graph.nodes[edge.source].data.label,
+                  graph.nodes[edge.target].data.label
+                )
+
+                const outBoundCase1 = isSourceVisible && !isOpen
+                const outBoundCase2 = !isSourceVisible && !isOpen
+                const outBoundCase3 = isSourceVisible && isOpen
+                const outBoundCase4 = !isSourceVisible && isOpen
+
+                if (outBoundCase1) {
+                  const dPath = getPath(handleCoords(x1, y1, xRoot, yRoot, nodeWidth, nodeHeight))
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={true}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
+                }
+
+                if (outBoundCase2) {
+                  const { x: xRootOther, y: yRootOther } = graph.nodes[sourceRootId!].position
+                  const dPath = getPath(
+                    handleCoords(xRootOther, yRootOther, xRoot, yRoot, nodeWidth, nodeHeight)
+                  )
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={true}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
+                }
+
+                if (outBoundCase3) {
+                  const dPath = getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={true}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
+                }
+
+                if (outBoundCase4) {
+                  const { x: xRootOther, y: yRootOther } = graph.nodes[sourceRootId!].position
+                  const dPath = getPath(
+                    handleCoords(xRootOther, yRootOther, x2, y2, nodeWidth, nodeHeight)
+                  )
+                  return (
+                    <ActualEdge
+                      key={edge.id}
+                      id={edge.id}
+                      path={dPath}
+                      isVisible={true}
+                      color={DEFAULT_EDGE_COLOR}
+                    />
+                  )
                 }
               }
 
