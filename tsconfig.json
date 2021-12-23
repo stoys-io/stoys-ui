@@ -15,7 +15,8 @@
     "esModuleInterop": true,
     "declarationDir": "dist",
     "types": ["node", "jest"],
-    "outDir": "dist"
+    "outDir": "dist",
+    "allowJs": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx", "**/*.mock.ts"]

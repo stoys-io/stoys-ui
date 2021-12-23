@@ -81,6 +81,11 @@ export interface DataGraph {
   name: string
   version: string
   tables: Table[]
+  bubbleSets?: BubbleSets
+}
+
+interface BubbleSets {
+  [key: string]: string[]
 }
 
 export interface Table {

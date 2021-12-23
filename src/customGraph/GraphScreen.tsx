@@ -47,6 +47,7 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
     .map(release => ({ value: release, label: release }))
 
   const tables = data.find(dataItem => dataItem.version === config.currentRelease)!.tables
+  const bubbleSets = data.find(dataItem => dataItem.version === config.currentRelease)!.bubbleSets
 
   const currentGraph = {
     nodes: mapInitialNodes(tables),
@@ -123,6 +124,7 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
       <GraphContainer>
         <CustomGraphComponent
           graph={customGraphData}
+          bubbleSets={bubbleSets}
           nodeComponent={(props: any) => (
             <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
           )}
