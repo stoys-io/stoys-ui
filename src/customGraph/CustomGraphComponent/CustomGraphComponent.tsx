@@ -79,8 +79,6 @@ const CustomGraphComponent = ({
         return getBubbleSetPath(bubbleNodes, bubbleOtherNodes)
       })
 
-  console.log({ bubbleSetsList })
-
   const initialGroupState = subGroups.reduce((acc, item) => ({ ...acc, [item]: false }), {})
   const groups = useStore(state => (state.init ? state.groups : initialGroupState))
   const setInitialGroups = useStore(state => state.setInitialGroups)
