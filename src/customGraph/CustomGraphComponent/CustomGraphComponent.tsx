@@ -8,6 +8,8 @@ import { ANIMATION_TIMEOUT } from './constants'
 
 import { usePanZoom } from './usePanZoom'
 import { createEdgePath } from './createEdgePath'
+import { getBubbleSetPath } from './bubbleset'
+import { colors } from './colors'
 
 interface NodeGroupState {
   init: boolean
@@ -39,6 +41,7 @@ const createStore = () =>
 
 const CustomGraphComponent = ({
   graph,
+  bubbleSets = undefined,
   nodeComponent = undefined,
   edgeComponent = undefined,
   nodeHeight = 40,
@@ -55,6 +58,28 @@ const CustomGraphComponent = ({
       node.groupId ? [...acc, node.groupId] : acc,
     []
   )
+
+  const bubbleKeys = !bubbleSets ? [] : Object.keys(bubbleSets)
+  const bubbleSetsList = !bubbleSets
+    ? []
+    : bubbleKeys.map(key => {
+        const setNodes = bubbleSets[key]
+        const bubbleNodes = setNodes.map(item => {
+          const position = graph.nodes[item].position
+          return { ...position, width: nodeWidth, height: nodeHeight }
+        })
+
+        const bubbleOtherNodes = myNodes
+          .filter(node => !setNodes.includes(node.id))
+          .map(node => {
+            const position = node.position
+            return { ...position, width: nodeWidth, height: nodeHeight }
+          })
+
+        return getBubbleSetPath(bubbleNodes, bubbleOtherNodes)
+      })
+
+  console.log({ bubbleSetsList })
 
   const initialGroupState = subGroups.reduce((acc, item) => ({ ...acc, [item]: false }), {})
   const groups = useStore(state => (state.init ? state.groups : initialGroupState))
@@ -180,6 +205,13 @@ const CustomGraphComponent = ({
               return <ActualEdge key={edge.id} id={edge.id} path={dPath} />
             })}
           </g>
+          {bubbleSetsList.length !== 0 && (
+            <g>
+              {bubbleSetsList.map((dPath, idx) => (
+                <path d={dPath} opacity={0.3} fill={colors[idx]} stroke="black" />
+              ))}
+            </g>
+          )}
         </svg>
 
         <div>
@@ -329,6 +361,7 @@ export default WrappedCustomGraph
 
 export interface Props {
   graph: CustomGraph
+  bubbleSets?: BubbleSets
   nodeComponent?: (_: any) => JSX.Element
   edgeComponent?: (props: EdgeProps) => JSX.Element
   nodeHeight?: number
@@ -336,6 +369,10 @@ export interface Props {
   minScale?: number
   maxScale?: number
   onPaneClick?: () => void
+}
+
+interface BubbleSets {
+  [key: string]: string[]
 }
 
 interface Payload {

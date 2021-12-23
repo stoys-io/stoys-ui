@@ -2,6 +2,21 @@
   "id": "fd2a6ed1-8a14-4eb2-9699-ccf26c4655a6",
   "name": "covid_stoys",
   "version": "20210914_133612_783509",
+  "bubbleSets": {
+    "csvFiles": [
+      "5d01f4fd-c032-4def-887e-24d8d6dfc9e4",
+      "e5cc8fa9-6e3f-4279-8098-db6e3b083e5a",
+      "b4c74f2f-94ad-4445-9030-e0f558a3cdd9",
+      "c2f5577c-7440-422f-bf89-9119d8b6a194",
+      "locations2_csv"
+    ],
+    "whatever": ["298f9962-1daa-4426-925e-67e0670bf90d", "locations2_csv"],
+    "other": [
+      "aa646e52-23c2-4ec4-9938-c857a8b881e1",
+      "298f9962-1daa-4426-925e-67e0670bf90d",
+      "c2f5577c-7440-422f-bf89-9119d8b6a194"
+    ]
+  },
   "tables": [
     {
       "id": "5d01f4fd-c032-4def-887e-24d8d6dfc9e4",
