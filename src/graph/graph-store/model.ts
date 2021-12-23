@@ -3,6 +3,7 @@ import { Graph, DataGraph, Highlight, Table, TableMetric, ColumnMetric } from '.
 export interface GraphStore {
   dispatch: (fn: DispatchHandler) => void
 
+  init: boolean
   data: DataGraph[]
   tables: Table[]
   defaultGraph: Graph // "Current release" graph, stays constant

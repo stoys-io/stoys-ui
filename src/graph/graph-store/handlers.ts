@@ -59,6 +59,7 @@ export const setColumnMetric =
   }
 
 export const setInitialStore = ({ graph, data, tables }: InitialArgs) => ({
+  init: true,
   graph,
   defaultGraph: graph,
   data,

@@ -1,25 +1,41 @@
-import React, { CSSProperties, ReactNode, useRef } from 'react'
+import React, { CSSProperties, ReactNode, useEffect, useRef } from 'react'
 import create from 'zustand'
+import createContext from 'zustand/context'
 
 import Edge, { Props as EdgeProps } from './Edge'
 import Node, { defaultNode } from './Node'
-import { ANIMATION_TIMEOUT, DEFAULT_EDGE_COLOR } from './constants'
+import { ANIMATION_TIMEOUT } from './constants'
 
 import { usePanZoom } from './usePanZoom'
+import { createEdgePath } from './createEdgePath'
 
-interface NestedState {
-  groups: { [key: string]: boolean }
+interface NodeGroupState {
+  init: boolean
+  groups: NodeGroups
+  setInitialGroups: (_: NodeGroups) => void
   toggleGroup: (_: string) => void
 }
 
-const useStore = create<NestedState>(set => ({
-  groups: {},
-  toggleGroup: (group: string) =>
-    set(state => {
-      const groupState = state.groups[group]
-      return { groups: { ...state.groups, [group]: !groupState } }
-    }),
-}))
+interface NodeGroups {
+  [key: string]: boolean
+}
+
+const { Provider, useStore } = createContext<NodeGroupState>()
+const NodeGroupsProvider = ({ children }: { children: ReactNode }) => {
+  return <Provider createStore={createStore}>{children}</Provider>
+}
+
+const createStore = () =>
+  create<NodeGroupState>(set => ({
+    init: false,
+    groups: {},
+    setInitialGroups: (groups: NodeGroups) => set({ init: true, groups }),
+    toggleGroup: (group: string) =>
+      set(state => {
+        const groupState = state.groups[group]
+        return { groups: { ...state.groups, [group]: !groupState } }
+      }),
+  }))
 
 const CustomGraphComponent = ({
   graph,
@@ -31,9 +47,6 @@ const CustomGraphComponent = ({
   maxScale = 2,
   onPaneClick = () => {},
 }: Props) => {
-  const groups = useStore(state => state.groups)
-  const toggleGroup = useStore(state => state.toggleGroup)
-
   const myNodes = Object.values(graph.nodes)
   const plainNodes = myNodes.filter(node => node.groupId === undefined)
 
@@ -42,6 +55,13 @@ const CustomGraphComponent = ({
       node.groupId ? [...acc, node.groupId] : acc,
     []
   )
+
+  const initialGroupState = subGroups.reduce((acc, item) => ({ ...acc, [item]: false }), {})
+  const groups = useStore(state => (state.init ? state.groups : initialGroupState))
+  const setInitialGroups = useStore(state => state.setInitialGroups)
+  const toggleGroup = useStore(state => state.toggleGroup)
+
+  const getPath = createEdgePath(nodeWidth, nodeHeight)
 
   const ActualEdge = edgeComponent ? edgeComponent : Edge
 
@@ -54,6 +74,10 @@ const CustomGraphComponent = ({
   const zoomContainerRef = useRef<HTMLDivElement>(null)
 
   usePanZoom({ canvasContainerRef, zoomContainerRef, minScale, maxScale, onPaneClick })
+
+  useEffect(() => {
+    setInitialGroups(initialGroupState)
+  }, [])
 
   return (
     <div
@@ -76,50 +100,84 @@ const CustomGraphComponent = ({
             {graph.edges.map(edge => {
               const {
                 position: { x: x1, y: y1 },
-                rootId: rootSource,
+                rootId: sourceRootId,
+                groupId: sourceGroupId,
               } = graph.nodes[edge.source]
               const {
                 position: { x: x2, y: y2 },
-                rootId: rootTarget,
+                rootId: targetRootId,
+                groupId: targetGroupId,
               } = graph.nodes[edge.target]
 
-              const rootId = rootSource || rootTarget
-              if (rootId) {
-                const { x: xRoot, y: yRoot } = graph.nodes[rootId].position
-                const curGroup = graph.nodes[rootId].groupId!
-                const isOpen = groups[curGroup]
+              // Group edges:
+              const isEdgeOutbound = sourceGroupId !== targetGroupId
+              const isTargetGroupOpen = targetGroupId && groups[targetGroupId]
+              const isSourceGroupOpen = sourceGroupId && groups[sourceGroupId]
 
-                let dPath = ''
-                if (rootTarget) {
-                  const [x2anim, y2anim] = isOpen ? [x2, y2] : [xRoot, yRoot]
-                  dPath = getPath(handleCoords(x1, y1, x2anim, y2anim, nodeWidth, nodeHeight))
-                }
+              const isRegularEdge = !sourceRootId && !targetRootId
+              const isGroupOpenInboundEdge =
+                !isEdgeOutbound && (isTargetGroupOpen || isSourceGroupOpen)
 
-                if (rootSource) {
-                  const [x1anim, y1anim] = isOpen ? [x1, y1] : [xRoot, yRoot]
-                  dPath = getPath(handleCoords(x1anim, y1anim, x2, y2, nodeWidth, nodeHeight))
-                }
-
-                return (
-                  <ActualEdge
-                    key={edge.id}
-                    id={edge.id}
-                    path={dPath}
-                    isVisible={isOpen}
-                    color={DEFAULT_EDGE_COLOR}
-                  />
-                )
+              if (isRegularEdge || isGroupOpenInboundEdge) {
+                return <ActualEdge key={edge.id} id={edge.id} path={getPath(x2, y2, x1, y1)} />
               }
 
-              return (
-                <ActualEdge
-                  key={edge.id}
-                  id={edge.id}
-                  path={getPath(handleCoords(x1, y1, x2, y2, nodeWidth, nodeHeight))}
-                  isVisible={true}
-                  color={DEFAULT_EDGE_COLOR}
-                />
-              )
+              if (!isEdgeOutbound && (sourceRootId || targetRootId)) {
+                // Inbound edge closed group
+                const { x: xRoot, y: yRoot } = sourceRootId
+                  ? graph.nodes[sourceRootId].position
+                  : graph.nodes[targetRootId!].position
+
+                const dPath = sourceRootId
+                  ? getPath(x2, y2, xRoot, yRoot)
+                  : getPath(xRoot, yRoot, x1, y1)
+
+                return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade />
+              }
+
+              // TODO: This could have been simpler
+              // Outbound edge:
+              const thisRootId = sourceRootId ? sourceRootId : targetRootId
+              const otherRootId = sourceRootId ? targetRootId : sourceRootId
+
+              const { x: xThisRoot, y: yThisRoot } = graph.nodes[thisRootId!].position
+
+              const thisGroupOpen = sourceRootId ? isSourceGroupOpen : isTargetGroupOpen
+              const otherNodeVisible = sourceRootId
+                ? targetGroupId === undefined || isTargetGroupOpen
+                : sourceGroupId === undefined || isSourceGroupOpen
+
+              const outboundCase1 = !thisGroupOpen && otherNodeVisible
+              const outboundCase2 = !thisGroupOpen && !otherNodeVisible
+              const outboundCase3 = thisGroupOpen && otherNodeVisible
+              const outboundCase4 = thisGroupOpen && !otherNodeVisible
+
+              let dPath = ''
+              if (outboundCase1) {
+                dPath = sourceRootId
+                  ? getPath(x2, y2, xThisRoot, yThisRoot)
+                  : getPath(xThisRoot, yThisRoot, x1, y1)
+              }
+
+              if (outboundCase2) {
+                const { x: xOtherRoot, y: yOtherRoot } = graph.nodes[otherRootId!].position
+                dPath = sourceRootId
+                  ? getPath(xOtherRoot, yOtherRoot, xThisRoot, yThisRoot)
+                  : getPath(xThisRoot, yThisRoot, xOtherRoot, yOtherRoot)
+              }
+
+              if (outboundCase3) {
+                dPath = getPath(x2, y2, x1, y1)
+              }
+
+              if (outboundCase4) {
+                const { x: xOtherRoot, y: yOtherRoot } = graph.nodes[otherRootId!].position
+                dPath = sourceRootId
+                  ? getPath(xOtherRoot, yOtherRoot, x1, y1)
+                  : getPath(x2, y2, xOtherRoot, yOtherRoot)
+              }
+
+              return <ActualEdge key={edge.id} id={edge.id} path={dPath} />
             })}
           </g>
         </svg>
@@ -261,21 +319,14 @@ interface ISubgraphBox {
   nodes: CustomGraphNode<Payload>[]
 }
 
-const getPath = ({ x1, y1, x2, y2 }: P): string => {
-  const cx = x1 + (x2 - x1) / 2
-  const path = `M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}`
+const WrappedCustomGraph = (props: Props) => (
+  <NodeGroupsProvider>
+    <CustomGraphComponent {...props} />
+  </NodeGroupsProvider>
+)
 
-  return path
-}
+export default WrappedCustomGraph
 
-interface P {
-  x1: number
-  y1: number
-  x2: number
-  y2: number
-}
-
-export default CustomGraphComponent
 export interface Props {
   graph: CustomGraph
   nodeComponent?: (_: any) => JSX.Element
@@ -286,20 +337,6 @@ export interface Props {
   maxScale?: number
   onPaneClick?: () => void
 }
-
-const handleCoords = (
-  x2: number,
-  y2: number,
-  x1: number,
-  y1: number,
-  width: number,
-  height: number
-) => ({
-  x1: x1 + width,
-  y1: y1 + height / 2,
-  x2,
-  y2: y2 + height / 2,
-})
 
 interface Payload {
   label: string

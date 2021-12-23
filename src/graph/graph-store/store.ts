@@ -5,6 +5,7 @@ export const createStore = () =>
   create<GraphStore>((set, get) => ({
     dispatch: (fn: DispatchHandler) => set(fn as any),
 
+    init: false,
     defaultGraph: defaultGraphValue,
     graph: defaultGraphValue,
     highlightedColumns: defaultHighlightedColumns,
