@@ -338,7 +338,7 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
         transition: `all ${ANIMATION_TIMEOUT} ease-in-out`,
       }}
     >
-      <div style={openerStyle} onClick={onToggle}>
+      <div style={openerStyle} onClick={onToggle} className="preventZoom">
         {isOpen ? '-' : '+'}
       </div>
     </div>
