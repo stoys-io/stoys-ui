@@ -21,7 +21,7 @@ const Template: Story<P> = (args: P) => (
 )
 export const Example = Template.bind({})
 Example.storyName = 'Simple'
-Example.args = { graph: dummyMock }
+Example.args = { graph: dummyMock, nodeWidth: 60, nodeHeight: 40 }
 
 const Template2: Story<Props> = (args: Props) => <Graph {...args} />
 export const Example2 = Template2.bind({})

@@ -25,17 +25,14 @@ import { getMetricsColumnColor } from '../graph/graph-ops'
 
 interface Props {
   id: string
-  data: NodeDataPayload
   onClick: (id: string) => void
   onDoubleClick: (id: string) => void
+  data?: NodeDataPayload
 }
 
-export const DagNode = ({
-  id,
-  data: { label, columns, violations, partitions },
-  onClick,
-  onDoubleClick,
-}: Props): JSX.Element => {
+export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Element => {
+  const data = d ? d : defaultData
+  const { label, columns, violations, partitions } = data
   const dispatch = useGraphDispatch()
 
   const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
@@ -236,3 +233,5 @@ const formatColumnMetric = (val: number | string) => (typeof val === 'number' ? 
 
 const formatColumnDataType = (data_type: NodeColumnDataType) =>
   `${data_type.type}${data_type.nullable ? '?' : ''}`
+
+const defaultData = { label: 'no data', columns: [], violations: 0, partitions: 0 }
