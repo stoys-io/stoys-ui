@@ -3,7 +3,10 @@ import create from 'zustand'
 import createContext from 'zustand/context'
 
 import Edge, { Props as EdgeProps } from './Edge'
-import Node, { defaultNode } from './Node'
+import NodePosition from './NodePosition'
+import { DefaultNode } from './DefaultNode'
+import { NodeProps } from './types'
+
 import { ANIMATION_TIMEOUT } from './constants'
 
 import { usePanZoom } from './usePanZoom'
@@ -41,11 +44,11 @@ const createStore = () =>
 
 const CustomGraphComponent = ({
   graph,
+  nodeHeight,
+  nodeWidth,
   bubbleSets = undefined,
   nodeComponent = undefined,
   edgeComponent = undefined,
-  nodeHeight = 40,
-  nodeWidth = 60,
   minScale = 0.12,
   maxScale = 2,
   onPaneClick = () => {},
@@ -54,8 +57,7 @@ const CustomGraphComponent = ({
   const plainNodes = myNodes.filter(node => node.groupId === undefined)
 
   const subGroups = myNodes.reduce(
-    (acc: string[], node: CustomGraphNode<Payload>) =>
-      node.groupId ? [...acc, node.groupId] : acc,
+    (acc: string[], node: NodeProps) => (node.groupId ? [...acc, node.groupId] : acc),
     []
   )
 
@@ -87,6 +89,7 @@ const CustomGraphComponent = ({
   const getPath = createEdgePath(nodeWidth, nodeHeight)
 
   const ActualEdge = edgeComponent ? edgeComponent : Edge
+  const ActualNode = nodeComponent ? nodeComponent : DefaultNode
 
   const nodeXS = myNodes.map(node => node.position.x)
   const nodeYS = myNodes.map(node => node.position.y)
@@ -214,18 +217,9 @@ const CustomGraphComponent = ({
 
         <div>
           {plainNodes.map(node => (
-            <Node
-              key={node.id}
-              id={node.id}
-              x={node.position.x}
-              y={node.position.y}
-              width={nodeWidth}
-              height={nodeHeight}
-            >
-              {nodeComponent
-                ? nodeComponent({ id: node.id, data: node.data })
-                : defaultNode({ label: node.data.label })}
-            </Node>
+            <NodePosition position={node.position} key={node.id}>
+              <ActualNode {...node} />
+            </NodePosition>
           ))}
 
           {subGroups.map((group, idx) => {
@@ -236,7 +230,7 @@ const CustomGraphComponent = ({
                 nodes={subgraph}
                 isOpen={groups[group]}
                 onToggle={() => toggleGroup(group)}
-                component={nodeComponent}
+                nodeComponent={ActualNode}
                 nodeWidth={nodeWidth}
                 nodeHeight={nodeHeight}
               />
@@ -248,7 +242,7 @@ const CustomGraphComponent = ({
   )
 }
 
-const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }: ISubgraph) => {
+const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidth }: ISubgraph) => {
   let nodes2 = nodes
   let rootId: string | undefined = undefined
 
@@ -275,33 +269,21 @@ const Subgraph = ({ nodes, isOpen, onToggle, component, nodeHeight, nodeWidth }:
         nodeWidth={nodeWidth}
       />
       {nodes2.map(node => (
-        <Node
-          key={node.id}
-          id={node.id}
-          x={node.position.x}
-          y={node.position.y}
-          fade={!isOpen && node.id !== rootId}
-          width={nodeWidth}
-          height={nodeHeight}
-        >
-          {component
-            ? component({ id: node.id, data: node.data })
-            : defaultNode({ label: node.data.label })}
-        </Node>
+        <NodePosition key={node.id} position={node.position} fade={!isOpen && node.id !== rootId}>
+          {nodeComponent({
+            ...node,
+          })}
+        </NodePosition>
       ))}
     </>
   )
 }
 
 interface ISubgraph extends ISubgraphBox {
-  isOpen: boolean
-  onToggle: () => void
-  nodeWidth: number
-  nodeHeight: number
-  component?: (_: any) => ReactNode
+  nodeComponent: (props: NodeProps) => JSX.Element
 }
 
-const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgraph) => {
+const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgraphBox) => {
   const xs = nodes.map(n => n.position.x)
   const ys = nodes.map(n => n.position.y)
 
@@ -346,7 +328,11 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
 }
 
 interface ISubgraphBox {
-  nodes: CustomGraphNode<Payload>[]
+  nodes: NodeProps[]
+  isOpen: boolean
+  onToggle: () => void
+  nodeWidth: number
+  nodeHeight: number
 }
 
 const WrappedCustomGraph = (props: Props) => (
@@ -359,11 +345,11 @@ export default WrappedCustomGraph
 
 export interface Props {
   graph: CustomGraph
+  nodeHeight: number
+  nodeWidth: number
   bubbleSets?: BubbleSets
-  nodeComponent?: (_: any) => JSX.Element
+  nodeComponent?: (props: NodeProps) => JSX.Element
   edgeComponent?: (props: EdgeProps) => JSX.Element
-  nodeHeight?: number
-  nodeWidth?: number
   minScale?: number
   maxScale?: number
   onPaneClick?: () => void
@@ -373,27 +359,9 @@ interface BubbleSets {
   [key: string]: string[]
 }
 
-interface Payload {
-  label: string
-}
-
 export interface CustomGraph {
-  nodes: { [key: string]: CustomGraphNode<Payload> }
+  nodes: { [key: string]: NodeProps }
   edges: CustomGraphEdge[]
-}
-
-interface CustomGraphNode<T> {
-  id: string
-  position: CustomGraphPosition
-  data: T
-
-  groupId?: string
-  rootId?: string
-}
-
-interface CustomGraphPosition {
-  x: number
-  y: number
 }
 
 interface CustomGraphEdge {

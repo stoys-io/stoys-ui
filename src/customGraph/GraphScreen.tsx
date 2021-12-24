@@ -22,10 +22,10 @@ import {
 } from '../graph/graph-store'
 
 import { Container, GraphContainer } from '../graph/styles'
-import { DataGraph, ChromaticScale, Orientation } from '../graph/model'
+import { DataGraph, ChromaticScale, Orientation, NodeDataPayload } from '../graph/model'
 
 import { mapInitialNodes, mapInitialEdges } from '../graph/graph-ops'
-import CustomGraphComponent from './CustomGraphComponent'
+import CustomGraphComponent, { NodeProps } from './CustomGraphComponent'
 import { NODE_HEIGHT, NODE_WIDTH } from '../graph/constants'
 
 const GraphScreen = ({ data, config: cfg }: Props) => {
@@ -125,7 +125,7 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
         <CustomGraphComponent
           graph={customGraphData}
           bubbleSets={bubbleSets}
-          nodeComponent={(props: any) => (
+          nodeComponent={props => (
             <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
           )}
           edgeComponent={DagEdge}
