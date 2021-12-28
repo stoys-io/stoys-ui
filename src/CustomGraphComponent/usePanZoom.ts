@@ -5,6 +5,7 @@ import debounce from 'lodash.debounce'
 export const usePanZoom = ({
   canvasContainerRef,
   zoomContainerRef,
+  excludeClass,
   minScale,
   maxScale,
   onPaneClick,
@@ -21,11 +22,11 @@ export const usePanZoom = ({
       step: 0.2,
       canvas: true,
       animate: true,
-      excludeClass: 'preventZoom',
+      excludeClass,
     })
 
     const onWheel = (evt: WheelEvent) => {
-      const shouldPreventZoom = (evt.target as Element).closest('.preventZoom')
+      const shouldPreventZoom = (evt.target as Element).closest(`.${excludeClass}`)
       if (shouldPreventZoom) {
         return
       }
@@ -52,17 +53,18 @@ export const usePanZoom = ({
     )
 
     zoomContainerRef.current.addEventListener('panzoomend', onPanEnd)
-    canvasContainerRef.current.addEventListener('wheel', onWheel, { passive: false })
+    canvasContainerRef.current.addEventListener('wheel', onWheel)
     return () => {
       zoomContainerRef.current?.removeEventListener('panzoomend', onPanEnd)
       canvasContainerRef.current?.removeEventListener('wheel', onWheel)
     }
-  }, [zoomContainerRef.current, canvasContainerRef.current])
+  }, [])
 }
 
 interface IUsePanZoom {
   canvasContainerRef: React.RefObject<HTMLDivElement>
   zoomContainerRef: React.RefObject<HTMLDivElement>
+  excludeClass: string
   maxScale: number
   minScale: number
   onPaneClick: () => void

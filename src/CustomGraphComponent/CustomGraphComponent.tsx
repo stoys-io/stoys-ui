@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode, useEffect, useRef } from 'react'
+import React, { CSSProperties, ReactNode, useCallback, useRef } from 'react'
 import create from 'zustand'
 import createContext from 'zustand/context'
 
@@ -14,10 +14,8 @@ import { createEdgePath } from './createEdgePath'
 import { getBubbleSetPath } from './bubbleset'
 import { colors } from './colors'
 
-interface NodeGroupState {
-  init: boolean
+interface GroupState {
   groups: NodeGroups
-  setInitialGroups: (_: NodeGroups) => void
   toggleGroup: (_: string) => void
 }
 
@@ -25,22 +23,25 @@ interface NodeGroups {
   [key: string]: boolean
 }
 
-const { Provider, useStore } = createContext<NodeGroupState>()
-const NodeGroupsProvider = ({ children }: { children: ReactNode }) => {
-  return <Provider createStore={createStore}>{children}</Provider>
+interface IGroupStateProvider {
+  children: ReactNode
+  initialGroups: NodeGroups
 }
 
-const createStore = () =>
-  create<NodeGroupState>(set => ({
-    init: false,
-    groups: {},
-    setInitialGroups: (groups: NodeGroups) => set({ init: true, groups }),
-    toggleGroup: (group: string) =>
-      set(state => {
-        const groupState = state.groups[group]
-        return { groups: { ...state.groups, [group]: !groupState } }
-      }),
-  }))
+const { Provider, useStore } = createContext<GroupState>()
+const GroupStateProvider = ({ initialGroups, children }: IGroupStateProvider) => {
+  const createStore = () =>
+    create<GroupState>(set => ({
+      groups: initialGroups,
+      toggleGroup: (group: string) =>
+        set(state => {
+          const groupState = state.groups[group]
+          return { groups: { ...state.groups, [group]: !groupState } }
+        }),
+    }))
+
+  return <Provider createStore={createStore}>{children}</Provider>
+}
 
 const CustomGraphComponent = ({
   graph,
@@ -65,14 +66,14 @@ const CustomGraphComponent = ({
   const bubbleSetsList = !bubbleSets
     ? []
     : bubbleKeys.map(key => {
-        const setNodes = bubbleSets[key]
-        const bubbleNodes = setNodes.map(item => {
+        const nodeSetList = bubbleSets[key]
+        const bubbleNodes = nodeSetList.map(item => {
           const position = graph.nodes[item].position
           return { ...position, width: nodeWidth, height: nodeHeight }
         })
 
         const bubbleOtherNodes = myNodes
-          .filter(node => !setNodes.includes(node.id))
+          .filter(node => !nodeSetList.includes(node.id))
           .map(node => {
             const position = node.position
             return { ...position, width: nodeWidth, height: nodeHeight }
@@ -81,9 +82,7 @@ const CustomGraphComponent = ({
         return getBubbleSetPath(bubbleNodes, bubbleOtherNodes)
       })
 
-  const initialGroupState = subGroups.reduce((acc, item) => ({ ...acc, [item]: false }), {})
-  const groups = useStore(state => (state.init ? state.groups : initialGroupState))
-  const setInitialGroups = useStore(state => state.setInitialGroups)
+  const groups = useStore(state => state.groups)
   const toggleGroup = useStore(state => state.toggleGroup)
 
   const getPath = createEdgePath(nodeWidth, nodeHeight)
@@ -99,11 +98,14 @@ const CustomGraphComponent = ({
   const canvasContainerRef = useRef<HTMLDivElement>(null)
   const zoomContainerRef = useRef<HTMLDivElement>(null)
 
-  usePanZoom({ canvasContainerRef, zoomContainerRef, minScale, maxScale, onPaneClick })
-
-  useEffect(() => {
-    setInitialGroups(initialGroupState)
-  }, [])
+  usePanZoom({
+    canvasContainerRef,
+    zoomContainerRef,
+    excludeClass: 'preventZoom',
+    minScale,
+    maxScale,
+    onPaneClick,
+  })
 
   return (
     <div
@@ -335,11 +337,20 @@ interface ISubgraphBox {
   nodeHeight: number
 }
 
-const WrappedCustomGraph = (props: Props) => (
-  <NodeGroupsProvider>
-    <CustomGraphComponent {...props} />
-  </NodeGroupsProvider>
-)
+const WrappedCustomGraph = (props: Props) => {
+  const myNodes = Object.values(props.graph.nodes)
+  const subGroups = myNodes.reduce(
+    (acc: string[], node: NodeProps) => (node.groupId ? [...acc, node.groupId] : acc),
+    []
+  )
+  const initialGroups = subGroups.reduce((acc, item) => ({ ...acc, [item]: true }), {})
+
+  return (
+    <GroupStateProvider initialGroups={initialGroups}>
+      <CustomGraphComponent {...props} />
+    </GroupStateProvider>
+  )
+}
 
 export default WrappedCustomGraph
 
