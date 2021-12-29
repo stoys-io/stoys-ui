@@ -1,11 +1,7 @@
 import React from 'react'
+
 import PmfPlot from '../pmfPlot'
-
-import { Column } from '../profiler/model'
-
-function getPercentageValue(value: number) {
-  return Math.round(100 * value)
-}
+import { ProfilerSummaryProps } from './model'
 
 const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): JSX.Element => {
   const { data_type: type, name, count, count_nulls, pmf } = data
@@ -57,9 +53,8 @@ const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): 
   )
 }
 
-interface ProfilerSummaryProps {
-  data: Column
-  config: { rows: number; height?: number }
+function getPercentageValue(value: number) {
+  return Math.round(100 * value)
 }
 
 export default ProfilerSummary
