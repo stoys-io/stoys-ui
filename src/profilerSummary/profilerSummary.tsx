@@ -2,8 +2,9 @@ import React from 'react'
 
 import { Column } from '../profiler/model'
 
-const ProfilerSummary = ({ data }: { data: Column }): JSX.Element => {
+const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): JSX.Element => {
   const { data_type: type, name, count, count_nulls: nulls } = data
+  const { rows } = config
 
   if (type === 'string') {
     const { items } = data
@@ -14,15 +15,18 @@ const ProfilerSummary = ({ data }: { data: Column }): JSX.Element => {
       }) || []
     percentageItems.sort((a, b) => b.count - a.count)
 
-    const [value0, value1, value2, ...otherValues] = percentageItems
+    const visibleRows = percentageItems.slice(0, rows)
+    const otherRows = percentageItems.slice(rows)
 
     return (
       <div>
         {name} {type} <br />
-        {value0.item}: {value0.percentage}% <br />
-        {value1.item}: {value1.percentage}% <br />
-        {value2.item}: {value2.percentage}% <br />
-        {otherValues.length ? `${otherValues.length} other values` : ''}
+        {visibleRows.map(row => (
+          <>
+            {row.item}: {row.percentage}% <br />
+          </>
+        ))}
+        {otherRows.length ? `${otherRows.length} other values` : ''}
       </div>
     )
   }
@@ -32,6 +36,11 @@ const ProfilerSummary = ({ data }: { data: Column }): JSX.Element => {
       {name} {type}
     </>
   )
+}
+
+interface ProfilerSummaryProps {
+  data: Column
+  config: { rows: number; height?: number }
 }
 
 export default ProfilerSummary
