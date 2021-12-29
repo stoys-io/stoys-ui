@@ -3,7 +3,11 @@ import { Story } from '@storybook/react'
 
 import ProfilerSummaryComponent from '../src/profilerSummary'
 
-const Template: Story<any> = args => <ProfilerSummaryComponent {...args} />
+const Template: Story<any> = args => (
+  <div style={{ margin: '10px', padding: 0, border: '1px solid #000', width: '150px' }}>
+    <ProfilerSummaryComponent {...args} />
+  </div>
+)
 
 export const StringProfilerSummary = Template.bind({})
 StringProfilerSummary.args = {
@@ -431,6 +435,54 @@ StringProfilerSummary.args = {
   },
 }
 StringProfilerSummary.storyName = 'string'
+
+export const NumberProfilerSummary = Template.bind({})
+NumberProfilerSummary.args = {
+  data: {
+    name: 'VendorID',
+    data_type: 'long',
+    nullable: true,
+    enum_values: [],
+    format: null,
+    count: 6299354,
+    count_empty: null,
+    count_nulls: 48834,
+    count_unique: 2,
+    count_zeros: 0,
+    max_length: 1,
+    min: '1',
+    max: '2',
+    mean: 2.0,
+    pmf: [
+      {
+        low: 0.5,
+        high: 1.5,
+        count: 2056411,
+      },
+      {
+        low: 1.5,
+        high: 2.5,
+        count: 4194109,
+      },
+    ],
+    items: [
+      {
+        item: '1',
+        count: 2056411,
+      },
+      {
+        item: '2',
+        count: 4194109,
+      },
+    ],
+    extras: {
+      is_exact: 'true',
+      quantiles: '{"0.05": "1.0","0.25": "1.0","0.5": "2.0","0.75": "2.0","0.95": "2.0"}',
+      max_length_in_bits: '2',
+    },
+  },
+}
+NumberProfilerSummary.storyName = 'number'
 
 export default {
   title: 'Components/ProfilerSummary',
