@@ -17,7 +17,7 @@ import {
   setBaseRelease,
   setHighlightMode,
   setCountNormalize,
-} from '../graph-store'
+} from '../store'
 
 export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => {
   const dispatch = useGraphDispatch()

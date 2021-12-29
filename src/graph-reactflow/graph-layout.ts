@@ -51,11 +51,9 @@ export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientati
     }
   })
 
-  const t0 = performance.now()
   dagre.layout(dagreGraph)
-  const t1 = performance.now()
 
-  const els = elements.map(el => {
+  return elements.map(el => {
     if (!isNode(el)) {
       return el
     }
@@ -71,8 +69,4 @@ export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientati
 
     return el
   })
-
-  const time = (t1 - t0).toFixed(2)
-  console.log(`Layout calculation took ${time} milliseconds.`)
-  return els
 }

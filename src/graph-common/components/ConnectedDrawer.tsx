@@ -1,6 +1,6 @@
 import React, { ReactNode, RefObject } from 'react'
 import Drawer from './Drawer'
-import { useGraphStore } from '../graph-store'
+import { useGraphStore } from '../store'
 
 export const ConnectedDrawer = ({ children, isOpenDrawer, containerRef }: Props) => {
   const visible = useGraphStore(state => state.drawerNodeId !== undefined) || isOpenDrawer

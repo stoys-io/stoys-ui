@@ -11,12 +11,23 @@ import {
   NODE_TEXT_COLOR,
   TRANSPARENT_NODE_TEXT_COLOR,
   GREY_ACCENT,
-} from '../constants'
-import { formatPercentage, renderNumericValue } from '../../helpers'
-import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../model'
-import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../styles'
-import { useGraphStore, GraphStore, setHighlightedColumns, useGraphDispatch } from '../graph-store'
-import { getMetricsColumnColor } from '../graph-ops'
+} from '../graph-common/constants'
+import { formatPercentage, renderNumericValue } from '../helpers'
+import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../graph-common/model'
+import {
+  ItemContent,
+  ItemText,
+  ItemExtra,
+  ScrollCard,
+  ScrollCardTitle,
+} from '../graph-common/styles'
+import {
+  useGraphStore,
+  GraphStore,
+  setHighlightedColumns,
+  useGraphDispatch,
+} from '../graph-common/store'
+import { getMetricsColumnColor } from '../graph-common/ops'
 
 export const DagNode = memo(
   ({

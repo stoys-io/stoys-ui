@@ -19,8 +19,8 @@ import {
   ColumnMetric,
 } from './model'
 
-import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './graph-color-scheme'
-import { defaultHighlights } from './graph-store/store'
+import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './color-scheme'
+import { defaultHighlights } from './store'
 
 export const highlightSingleNode = (id: string): Highlights => ({
   edges: {},

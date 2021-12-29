@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { EdgeProps, getBezierPath, getMarkerEnd } from 'react-flow-renderer'
-import { useGraphStore } from '../graph-store'
-import { EdgeDataPayload } from '../model'
+import { useGraphStore } from '../graph-common/store'
+import { EdgeDataPayload } from '../graph-common/model'
 
 export const DagEdge = ({
   id,
