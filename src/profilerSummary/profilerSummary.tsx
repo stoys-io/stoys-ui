@@ -1,35 +1,24 @@
 import React from 'react'
 
-const ProfilerSummary = ({
-  title,
-  type,
-  data,
-}: {
-  title: string
-  type: 'string' | any
-  data: Array<string>
-}): JSX.Element => {
+import { Column } from '../profiler/model'
+
+const ProfilerSummary = ({ data }: { data: Column }): JSX.Element => {
+  const { data_type: type, name, count, count_nulls: nulls } = data
+
   if (type === 'string') {
-    const dataLength = data.length
-    const uniqueData = [...new Set(data)]
+    const { items } = data
 
-    if (dataLength === uniqueData.length) {
-      return <div>{`${dataLength} unique values`}</div>
-    }
+    const percentageItems =
+      items?.map(item => {
+        return { ...item, percentage: Math.round((100 * item.count) / count) }
+      }) || []
+    percentageItems.sort((a, b) => b.count - a.count)
 
-    const percentageData: Array<{ item: string; percentage: number }> = uniqueData.map(dataItem => {
-      const itemArr = data.filter(d => d === dataItem)
-
-      return { item: dataItem, percentage: Math.round((100 * itemArr.length) / dataLength) }
-    })
-
-    percentageData.sort((a, b) => b.percentage - a.percentage)
-
-    const [value0, value1, value2, ...otherValues] = percentageData
+    const [value0, value1, value2, ...otherValues] = percentageItems
 
     return (
       <div>
-        {title} {type} <br />
+        {name} {type} <br />
         {value0.item}: {value0.percentage}% <br />
         {value1.item}: {value1.percentage}% <br />
         {value2.item}: {value2.percentage}% <br />
@@ -40,7 +29,7 @@ const ProfilerSummary = ({
 
   return (
     <>
-      {title} {type}
+      {name} {type}
     </>
   )
 }
