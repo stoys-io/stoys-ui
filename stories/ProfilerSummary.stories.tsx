@@ -433,6 +433,9 @@ StringProfilerSummary.args = {
       is_exact: 'false',
     },
   },
+  config: {
+    height: 200,
+  },
 }
 StringProfilerSummary.storyName = 'string'
 
@@ -481,10 +484,13 @@ NumberProfilerSummary.args = {
       max_length_in_bits: '2',
     },
   },
+  config: {
+    height: 200,
+  },
 }
 NumberProfilerSummary.storyName = 'number'
 
 export default {
   title: 'Components/ProfilerSummary',
-  component: [StringProfilerSummary],
+  component: [StringProfilerSummary, NumberProfilerSummary],
 }
