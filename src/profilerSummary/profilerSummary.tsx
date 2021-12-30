@@ -2,6 +2,12 @@ import React from 'react'
 
 import PmfPlot from '../pmfPlot'
 import { ProfilerSummaryProps } from './model'
+import {
+  ProfilerSummaryItems,
+  ProfilerSummaryTitle,
+  ProfilerSummaryType,
+  ProfilerSummaryWrapper,
+} from './styles'
 
 const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): JSX.Element => {
   const { data_type: type, name, count, count_nulls, pmf } = data
@@ -26,30 +32,34 @@ const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): 
     const otherRows = percentageItems.slice(rows)
 
     return (
-      <div>
-        {name} {type} <br />
-        {visibleRows.map(row => (
-          <>
-            {row.item}: {row.percentage}% <br />
-          </>
-        ))}
-        {otherRows.length ? `${otherRows.length} other values` : ''}
-      </div>
+      <ProfilerSummaryWrapper>
+        <ProfilerSummaryTitle>
+          {name} <ProfilerSummaryType>{type}</ProfilerSummaryType>
+        </ProfilerSummaryTitle>
+        <ProfilerSummaryItems>
+          {visibleRows.map(row => (
+            <li key={row.item}>
+              {row.item}: {row.percentage}% <br />
+            </li>
+          ))}
+          <li>{otherRows.length ? `${otherRows.length} other values` : ''}</li>
+        </ProfilerSummaryItems>
+      </ProfilerSummaryWrapper>
     )
   }
 
   if (pmf?.length) {
     return (
-      <div>
+      <ProfilerSummaryWrapper>
         <PmfPlot dataset={[pmf]} config={{ height: 200 }} />
-      </div>
+      </ProfilerSummaryWrapper>
     )
   }
 
   return (
-    <>
+    <ProfilerSummaryWrapper>
       {name} {type}
-    </>
+    </ProfilerSummaryWrapper>
   )
 }
 
