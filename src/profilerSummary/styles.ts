@@ -1,7 +1,9 @@
 import styled from '@emotion/styled'
 
-export const ProfilerSummaryWrapper = styled.div`
+export const ProfilerSummaryWrapper = styled.div<{ height: string }>`
+  height: ${props => (props.height ? props.height : 'inherit')};
   padding: 2px;
+  overflow: auto;
 `
 
 export const ProfilerSummaryTitle = styled.h1`
