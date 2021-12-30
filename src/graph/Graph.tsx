@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import { DagNode } from './DagNode'
 import { DagEdge } from './DagEdge'
 import { graphLayout } from './graph-layout'
-import { isNode } from './isNode'
 
 import { Sidebar } from '../graph-common/components/Sidebar'
 import { SearchArgs } from '../graph-common/components/SidebarSearch'
@@ -75,11 +74,11 @@ const Graph = ({ data, config: cfg }: Props) => {
     (oldGraph, newGraph) => oldGraph.release === newGraph.release
   )
 
-  const elements = graphLayout([...graph.nodes, ...graph.edges])
-  const gNodes = elements.filter(isNode).reduce((acc, node) => ({ ...acc, [node.id]: node }), {})
-
-  const gEdges = elements.filter(el => !isNode(el)) as Edge[]
-  const customGraphData = { nodes: gNodes, edges: gEdges }
+  const graphWithLayout = graphLayout(graph)
+  const graphDrawable = {
+    nodes: graphWithLayout.nodes.reduce((acc, node) => ({ ...acc, [node.id]: node }), {}),
+    edges: graphWithLayout.edges,
+  }
 
   const onNodeClick = (id: string) => {
     dispatch(nodeClick(id, config.chromaticScale))
@@ -121,7 +120,7 @@ const Graph = ({ data, config: cfg }: Props) => {
       />
       <GraphContainer>
         <CustomGraph
-          graph={customGraphData}
+          graph={graphDrawable}
           bubbleSets={bubbleSets}
           nodeComponent={props => (
             <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
