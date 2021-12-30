@@ -3,10 +3,7 @@ import { DagNode } from './DagNode'
 import { DagEdge } from './DagEdge'
 import { graphLayout } from './graph-layout'
 
-import { Sidebar } from '../graph-common/components/Sidebar'
-import { SearchArgs } from '../graph-common/components/SidebarSearch'
-import { ConnectedDrawer } from '../graph-common/components/ConnectedDrawer'
-import { DrawerTabs } from '../graph-common/components/DrawerTabs'
+import { Sidebar, SearchArgs, ConnectedDrawer } from '../graph-common/components'
 
 import {
   useGraphStore,
@@ -133,9 +130,7 @@ const Graph = ({ data, config: cfg }: Props) => {
           maxScale={2}
         />
       </GraphContainer>
-      <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer}>
-        <DrawerTabs />
-      </ConnectedDrawer>
+      <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer} />
     </Container>
   )
 }

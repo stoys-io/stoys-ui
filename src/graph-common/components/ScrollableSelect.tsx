@@ -54,7 +54,7 @@ const ScrollableSelect = <T extends SelectValue>({
   )
 }
 
-export { ScrollableSelect }
+export default ScrollableSelect
 
 // Slow down the scrollwheel
 // Fire `fn`` only after `threshold` number of calls. `resetCondFn` to check they are the same

@@ -1,18 +1,21 @@
-import React, { ReactNode, RefObject } from 'react'
+import React, { RefObject } from 'react'
 import Drawer from './Drawer'
+import DrawerTabs from './DrawerTabs'
 import { useGraphStore } from '../store'
 
-export const ConnectedDrawer = ({ children, isOpenDrawer, containerRef }: Props) => {
+const ConnectedDrawer = ({ isOpenDrawer, containerRef }: Props) => {
   const visible = useGraphStore(state => state.drawerNodeId !== undefined) || isOpenDrawer
 
   return (
     <Drawer visible={visible} containerRef={containerRef}>
-      {visible && children}
+      {visible && <DrawerTabs />}
     </Drawer>
   )
 }
+
+export default ConnectedDrawer
+
 interface Props {
-  children: ReactNode
   isOpenDrawer: boolean
   containerRef?: RefObject<HTMLDivElement>
 }

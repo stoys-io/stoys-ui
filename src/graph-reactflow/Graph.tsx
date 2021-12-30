@@ -7,14 +7,10 @@ import ReactFlow, {
   Edge as Edge0,
 } from 'react-flow-renderer'
 
-import { Sidebar } from '../graph-common/components/Sidebar'
-import { SearchArgs } from '../graph-common/components/SidebarSearch'
+import { Sidebar, SearchArgs, ConnectedDrawer, Spinner } from '../graph-common/components'
+
 import { DagNode } from './DagNode'
 import { DagEdge } from './DagEdge'
-
-import { ConnectedDrawer } from '../graph-common/components/ConnectedDrawer'
-import { DrawerTabs } from '../graph-common/components/DrawerTabs'
-import { Spinner } from '../graph-common/components/Spinner'
 
 import { graphLayout } from './graph-layout'
 import {
@@ -143,9 +139,7 @@ const Graph = ({ data, config: cfg }: Props) => {
           </ReactFlow>
         </ReactFlowProvider>
       </GraphContainer>
-      <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer}>
-        <DrawerTabs />
-      </ConnectedDrawer>
+      <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer} />
     </Container>
   )
 }
