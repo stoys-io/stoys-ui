@@ -80,7 +80,6 @@ const ChartAndTable = ({
       dataset={pmfPlotDataData}
       config={{
         height,
-        dataType: data[0].type,
         showAxes: enabledAxes,
         showLogScale: enabledLogScale,
         color,
