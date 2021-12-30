@@ -1,7 +1,7 @@
-import { Edge, isNode, Node, Position } from 'react-flow-renderer'
 import dagre from 'dagre'
 import { NODE_HEIGHT, NODE_WIDTH } from '../graph-common/constants'
-import { Orientation } from '../graph-common/model'
+import { Edge, Node } from '../graph-common/model'
+import { isNode } from './isNode'
 
 const nodeWidth = NODE_WIDTH
 const nodeHeight = NODE_HEIGHT
@@ -10,14 +10,12 @@ const nodesep = 16
 const startX = 48
 const startY = 32
 
-export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientation) => {
+export const graphLayout = (elements: Array<Node | Edge>) => {
   const dagreGraph = new dagre.graphlib.Graph({ compound: true, directed: true, multigraph: false })
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 
-  const direction = orientation === 'horizontal' ? 'RL' : 'BT'
-  const isHorizontal = orientation === 'horizontal'
   dagreGraph.setGraph({
-    rankdir: direction,
+    rankdir: 'RL',
     align: 'DL',
     ranksep,
     nodesep,
@@ -27,8 +25,6 @@ export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientati
   elements.forEach(el => {
     if (isNode(el)) {
       dagreGraph.setNode(el.id, { width: NODE_WIDTH, height: NODE_HEIGHT })
-
-      // @ts-ignore // TODO: Fix interfaces
       if (el.groupId && el.rootId === undefined) {
         /*
          * Create fake root group element, because we are not allowed to set edges on group elements
@@ -41,7 +37,6 @@ export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientati
         })
       }
 
-      // @ts-ignore // TODO: Fix interfaces
       if (el.rootId) {
         // @ts-ignore
         dagreGraph.setParent(el.id, `${el.id}-fake-root`)
@@ -61,9 +56,6 @@ export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientati
     }
 
     const nodeWithPosition = dagreGraph.node(el.id)
-    el.sourcePosition = (isHorizontal ? 'left' : 'top') as Position
-    el.targetPosition = (isHorizontal ? 'right' : 'bottom') as Position
-
     el.position = {
       x: nodeWithPosition.x - nodeWidth / 2 + startX,
       y: nodeWithPosition.y - nodeHeight / 2 + startY,

@@ -7,7 +7,7 @@ export interface Node {
   id: string
   position: Position
   data: NodeDataPayload
-  type?: string
+  type: 'dagNode'
   groupId?: string
   rootId?: string
 }
@@ -29,7 +29,7 @@ export interface Edge {
   data: EdgeDataPayload
   source: string
   target: string
-  type?: string
+  type: 'dagEdge'
 }
 
 export interface EdgeDataPayload {
