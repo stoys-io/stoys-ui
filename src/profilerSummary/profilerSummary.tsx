@@ -2,12 +2,8 @@ import React from 'react'
 
 import PmfPlot from '../pmfPlot'
 import { ProfilerSummaryProps } from './model'
-import {
-  ProfilerSummaryItems,
-  ProfilerSummaryTitle,
-  ProfilerSummaryType,
-  ProfilerSummaryWrapper,
-} from './styles'
+import CardTitle from './CardTitle'
+import { ProfilerSummaryItems, ProfilerSummaryWrapper } from './styles'
 
 const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): JSX.Element => {
   const { data_type: type, name, count, count_nulls, pmf } = data
@@ -33,9 +29,7 @@ const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): 
 
     return (
       <ProfilerSummaryWrapper>
-        <ProfilerSummaryTitle>
-          {name} <ProfilerSummaryType>{type}</ProfilerSummaryType>
-        </ProfilerSummaryTitle>
+        <CardTitle name={name} type={type} />
         <ProfilerSummaryItems>
           {visibleRows.map(row => (
             <li key={row.item}>
@@ -51,6 +45,7 @@ const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): 
   if (pmf?.length) {
     return (
       <ProfilerSummaryWrapper>
+        <CardTitle name={name} type={type} />
         <PmfPlot dataset={[pmf]} config={{ height: 200 }} />
       </ProfilerSummaryWrapper>
     )
@@ -58,7 +53,7 @@ const ProfilerSummary = ({ data, config = { rows: 3 } }: ProfilerSummaryProps): 
 
   return (
     <ProfilerSummaryWrapper>
-      {name} {type}
+      <CardTitle name={name} type={type} />
     </ProfilerSummaryWrapper>
   )
 }
