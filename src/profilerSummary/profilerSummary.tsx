@@ -48,7 +48,7 @@ const ProfilerSummary = ({ data, config = {} }: ProfilerSummaryProps): JSX.Eleme
       return (
         <>
           <CardTitle name={name} type={type} />
-          <PmfPlot dataset={[pmf]} config={{ height: '100%' }} />
+          <PmfPlot dataset={[pmf]} config={{ height: '100%', showXAxis: true }} />
         </>
       )
     }
@@ -56,11 +56,7 @@ const ProfilerSummary = ({ data, config = {} }: ProfilerSummaryProps): JSX.Eleme
     return <CardTitle name={name} type={type} />
   }
 
-  return (
-    <ProfilerSummaryWrapper height={typeof height === 'number' ? `${height}px` : height}>
-      {renderCard()}
-    </ProfilerSummaryWrapper>
-  )
+  return <ProfilerSummaryWrapper height="auto">{renderCard()}</ProfilerSummaryWrapper>
 }
 
 function getPercentageValue(value: number) {

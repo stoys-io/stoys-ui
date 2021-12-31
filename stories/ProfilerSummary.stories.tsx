@@ -434,7 +434,7 @@ StringProfilerSummary.args = {
     },
   },
   config: {
-    height: 200,
+    height: 80,
   },
 }
 StringProfilerSummary.storyName = 'string'
