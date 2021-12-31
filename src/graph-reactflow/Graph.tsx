@@ -1,15 +1,18 @@
-import React, { useEffect, useRef } from 'react'
-import { isNode, Edge as Edge0 } from 'react-flow-renderer'
+import React, { useState, useEffect, useRef } from 'react'
+import ReactFlow, {
+  ReactFlowProvider,
+  Background,
+  isNode,
+  Node as Node0,
+  Edge as Edge0,
+} from 'react-flow-renderer'
 
-import { Sidebar } from '../graph/components/Sidebar'
-import { SearchArgs } from '../graph/components/SidebarSearch'
+import { Sidebar, SearchArgs, ConnectedDrawer, Spinner } from '../graph-common/components'
+
 import { DagNode } from './DagNode'
 import { DagEdge } from './DagEdge'
 
-import { ConnectedDrawer } from '../graph/components/ConnectedDrawer'
-import { DrawerTabs } from '../graph/components/DrawerTabs'
-
-import { graphLayout } from '../graph/graph-layout'
+import { graphLayout } from './graph-layout'
 import {
   useGraphStore,
   setInitialStore,
@@ -19,16 +22,18 @@ import {
   highlightIds,
   useGraphDispatch,
   openDrawer,
-} from '../graph/graph-store'
+  StoreProvider,
+} from '../graph-common/store'
 
-import { Container, GraphContainer } from '../graph/styles'
-import { DataGraph, ChromaticScale, Orientation } from '../graph/model'
+import { Container, GraphContainer } from '../graph-common/styles'
+import { DataGraph, ChromaticScale, Orientation } from '../graph-common/model'
 
-import { mapInitialNodes, mapInitialEdges } from '../graph/graph-ops'
-import CustomGraphComponent from '../CustomGraphComponent'
-import { NODE_HEIGHT, NODE_WIDTH } from '../graph/constants'
+import { mapInitialNodes, mapInitialEdges } from '../graph-common/ops'
+import { usePreventDoubleClick } from '../graph-common/usePreventDoubleClick'
 
-const GraphScreen = ({ data, config: cfg }: Props) => {
+const Graph = ({ data, config: cfg }: Props) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+
   const validCurrentRelease =
     // check if the release specified in config is present in the data
     cfg?.currentRelease && !!data.find(dataItem => dataItem.version === cfg.currentRelease)
@@ -47,7 +52,6 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
     .map(release => ({ value: release, label: release }))
 
   const tables = data.find(dataItem => dataItem.version === config.currentRelease)!.tables
-  const bubbleSets = data.find(dataItem => dataItem.version === config.currentRelease)!.bubbleSets
 
   const currentGraph = {
     nodes: mapInitialNodes(tables),
@@ -70,25 +74,19 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
 
   const graph = useGraphStore(
-    // We use init flag to track that store did init and prevent race condition
-    state => (state.init ? state.graph : currentGraph),
+    state => state.graph,
     (oldGraph, newGraph) => oldGraph.release === newGraph.release
   )
-
   const elements = graphLayout([...graph.nodes, ...graph.edges], config.orientation)
-  const gNodes = elements
-    .filter(el => isNode(el))
-    .reduce((acc, node) => ({ ...acc, [node.id]: node }), {})
 
-  const gEdges = elements.filter(el => !isNode(el)) as Edge0[]
-  const customGraphData = { nodes: gNodes, edges: gEdges }
+  const elementClick = usePreventDoubleClick((_: any, element: Node0 | Edge0) => {
+    if (isNode(element)) {
+      return dispatch(nodeClick(element.id, config.chromaticScale))
+    }
+  })
 
-  const onNodeClick = (id: string) => {
-    dispatch(nodeClick(id, config.chromaticScale))
-  }
-
-  const onNodeDoubleClick = (id: string) => {
-    dispatch(openDrawer(id))
+  const nodeDoubleClick = (_: any, node: Node0) => {
+    dispatch(openDrawer(node.id))
   }
 
   const onPaneClick = () => {
@@ -122,28 +120,37 @@ const GraphScreen = ({ data, config: cfg }: Props) => {
         chromaticScale={config.chromaticScale}
       />
       <GraphContainer>
-        <CustomGraphComponent
-          graph={customGraphData}
-          bubbleSets={bubbleSets}
-          nodeComponent={props => (
-            <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
-          )}
-          edgeComponent={DagEdge}
-          onPaneClick={onPaneClick}
-          nodeHeight={NODE_HEIGHT}
-          nodeWidth={NODE_WIDTH}
-          minScale={0.12}
-          maxScale={2}
-        />
+        <ReactFlowProvider>
+          <ReactFlow
+            nodesDraggable={false}
+            onElementClick={elementClick}
+            onNodeDoubleClick={nodeDoubleClick}
+            onPaneClick={onPaneClick}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            elements={elements}
+            onLoad={() => setIsLoading(false)}
+            onlyRenderVisibleElements={true}
+            nodesConnectable={false}
+            minZoom={0.12}
+          >
+            <Spinner spinning={isLoading} />
+            <Background />
+          </ReactFlow>
+        </ReactFlowProvider>
       </GraphContainer>
-      <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer}>
-        <DrawerTabs />
-      </ConnectedDrawer>
+      <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer} />
     </Container>
   )
 }
 
-export default GraphScreen
+const WrappedGraph = (props: Props) => (
+  <StoreProvider>
+    <Graph {...props} />
+  </StoreProvider>
+)
+
+export default WrappedGraph
 
 export interface Props {
   data: DataGraph[]
@@ -164,4 +171,12 @@ const defaultConfig: Required<Omit<Config, 'currentRelease'>> = {
   orientation: 'horizontal',
   chromaticScale: 'interpolatePuOr',
   openDrawer: false,
+}
+
+const nodeTypes = {
+  dagNode: DagNode,
+}
+
+const edgeTypes = {
+  dagEdge: DagEdge,
 }

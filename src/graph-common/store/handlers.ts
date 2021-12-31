@@ -9,9 +9,9 @@ import {
   highlightSingleNode,
   highlightMetrics,
   highlightColumnMetrics,
-} from '../graph-ops'
+} from '../ops'
 
-import { traverseGraph, Traversable } from '../graph-traversal'
+import { traverseGraph, Traversable } from '../traversal'
 
 import {
   Graph,

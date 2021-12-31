@@ -1,9 +1,11 @@
 import React, { CSSProperties } from 'react'
 import Spin from 'antd/lib/spin'
 
-export const Spinner = ({ spinning }: Props) => (
+const Spinner = ({ spinning }: Props) => (
   <Spin style={style} size="large" tip="Loading..." spinning={spinning} />
 )
+
+export default Spinner
 
 interface Props {
   spinning: boolean

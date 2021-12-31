@@ -6,11 +6,11 @@ import { DrawerNodeLabel } from '../styles'
 import { NoData } from '../../profiler/styles'
 import { RawAggSumData } from '../../aggSum/model'
 import { JoinRates, AggSum, Profiler, Quality } from '../..'
-import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../graph-store'
+import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../store'
 
 const { TabPane } = Tabs
 
-export const DrawerTabs = () => {
+const DrawerTabs = () => {
   const dispatch = useGraphDispatch()
 
   const drawerNodeId = useGraphStore(state => state.drawerNodeId)
@@ -146,6 +146,8 @@ export const DrawerTabs = () => {
     </Tabs>
   )
 }
+
+export default DrawerTabs
 
 const JOIN_RATES_KEY = 'join_rates'
 const AGG_SUM_KEY = 'aggSum'

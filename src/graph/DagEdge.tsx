@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
-import { useGraphStore } from '../graph/graph-store'
-import { Edge, EdgeProps } from '../CustomGraphComponent'
+import { useGraphStore } from '../graph-common/store'
+import { Edge, EdgeProps } from '../CustomGraph'
 
 const defaultStroke = '#b1b1b7'
 const DagEdge = (props: EdgeProps) => {

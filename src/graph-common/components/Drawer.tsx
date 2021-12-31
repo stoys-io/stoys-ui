@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode, useCallback, useState, RefObject, useEffect } from 'react'
+import React, { ReactNode, useCallback, useState, RefObject, useEffect } from 'react'
 
 import AntDrawer from 'antd/lib/drawer'
 import { RESIZE_AREA_HEIGHT } from '../constants'
