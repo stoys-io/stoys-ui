@@ -10,7 +10,7 @@ export const PmfPlot = Template.bind({})
 PmfPlot.args = {
   dataset: [PmfPlotData],
   config: {
-    height: '50vh',
+    height: '100vh',
   },
 }
 PmfPlot.storyName = 'One dataset'

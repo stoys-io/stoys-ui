@@ -7,9 +7,9 @@ import { getMargin } from '../common/chartHelpers'
 import { PmfPlotItem } from '../profiler/model'
 
 const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
-  const { height, color, showAxes, showLogScale } = config
+  const { height, color, showAxes, showXAxis, showYAxis, showLogScale } = config
 
-  const margin = getMargin(!!showAxes)
+  const margin = getMargin(!!showAxes, !!showXAxis, !!showYAxis)
 
   const plotData: Array<PlotData> = dataset
     .map((data: Array<PmfPlotItem>, index: number) => {
@@ -23,7 +23,6 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
   const ref = useD3(
     (svg: any) => {
       const { width, height: _height } = svg.node().getBoundingClientRect()
-      console.log(_height)
 
       const lowValues = d3.map(plotData, (item: PlotData) => item.low)
       const minValue = d3.min(lowValues)
@@ -60,11 +59,28 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
 
       let xAxis: any
 
-      if (showAxes) {
+      if (showAxes || showXAxis) {
         xAxis = d3
           .axisBottom(xScale)
           .ticks(width / 100)
           .tickSizeOuter(0)
+
+        svg
+          .append('g')
+          .attr('transform', `translate(0,${_height - margin.bottom})`)
+          .attr('class', 'x-axis')
+          .call(xAxis)
+          .call((g: any) =>
+            g
+              .append('text')
+              .attr('x', width - margin.right)
+              .attr('y', 27)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'end')
+          )
+      }
+
+      if (showAxes || showYAxis) {
         const yAxis = d3.axisLeft(yScale).ticks(_height / 100)
 
         svg
@@ -87,20 +103,6 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
               .attr('y', 10)
               .attr('fill', 'currentColor')
               .attr('text-anchor', 'start')
-          )
-
-        svg
-          .append('g')
-          .attr('transform', `translate(0,${_height - margin.bottom})`)
-          .attr('class', 'x-axis')
-          .call(xAxis)
-          .call((g: any) =>
-            g
-              .append('text')
-              .attr('x', width - margin.right)
-              .attr('y', 27)
-              .attr('fill', 'currentColor')
-              .attr('text-anchor', 'end')
           )
       }
 
@@ -225,6 +227,8 @@ interface PmfPlotProps {
     height?: number | string
     color?: string | Array<string>
     showAxes?: boolean
+    showXAxis?: boolean
+    showYAxis?: boolean
     showLogScale?: boolean
   }
 }
