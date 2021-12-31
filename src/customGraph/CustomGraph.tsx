@@ -8,11 +8,12 @@ import { ANIMATION_TIMEOUT } from './constants'
 import { colors } from './colors'
 import { createEdgePath } from './createEdgePath'
 import { GraphData, NodeData, EdgeProps } from './types'
+import { graphLayout } from './graph-layout'
 
 import { usePanZoom } from './usePanZoom'
 
 const CustomGraph = ({
-  graph,
+  graph: g,
   nodeHeight,
   nodeWidth,
   bubbleSets = undefined,
@@ -21,7 +22,9 @@ const CustomGraph = ({
   minScale = 0.12,
   maxScale = 2,
   onPaneClick = () => {},
+  withDagreLayout = false,
 }: Props) => {
+  const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight) : g
   const nodeIndex: NodeIndex = graph.nodes.reduce(
     (acc, node) => ({
       ...acc,
@@ -335,6 +338,7 @@ export interface Props {
   minScale?: number
   maxScale?: number
   onPaneClick?: () => void
+  withDagreLayout?: boolean
 }
 
 interface BubbleSets {

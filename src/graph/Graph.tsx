@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { DagNode } from './DagNode'
 import { DagEdge } from './DagEdge'
-import { graphLayout } from './graph-layout'
 
 import { Sidebar, SearchArgs, ConnectedDrawer } from '../graph-common/components'
 
@@ -71,7 +70,6 @@ const Graph = ({ data, config: cfg }: Props) => {
     (oldGraph, newGraph) => oldGraph.release === newGraph.release
   )
 
-  const graphWithLayout = graphLayout(graph)
   const onNodeClick = (id: string) => {
     dispatch(nodeClick(id, config.chromaticScale))
   }
@@ -112,7 +110,7 @@ const Graph = ({ data, config: cfg }: Props) => {
       />
       <GraphContainer>
         <CustomGraph
-          graph={graphWithLayout}
+          graph={graph}
           bubbleSets={bubbleSets}
           nodeComponent={props => (
             <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
