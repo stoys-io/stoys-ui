@@ -5,7 +5,7 @@ import createContext from 'zustand/context'
 import Edge, { Props as EdgeProps } from './Edge'
 import NodePosition from './NodePosition'
 import { DefaultNode } from './DefaultNode'
-import { NodeProps } from './types'
+import { GraphData, NodeData } from './types'
 
 import { ANIMATION_TIMEOUT } from './constants'
 
@@ -13,20 +13,6 @@ import { usePanZoom } from './usePanZoom'
 import { createEdgePath } from './createEdgePath'
 import { getBubbleSetPath } from './bubbleset'
 import { colors } from './colors'
-
-interface GroupState {
-  groups: NodeGroups
-  toggleGroup: (_: string) => void
-}
-
-interface NodeGroups {
-  [key: string]: boolean
-}
-
-interface IGroupStateProvider {
-  children: ReactNode
-  initialGroups: NodeGroups
-}
 
 const { Provider, useStore } = createContext<GroupState>()
 const GroupStateProvider = ({ initialGroups, children }: IGroupStateProvider) => {
@@ -43,7 +29,21 @@ const GroupStateProvider = ({ initialGroups, children }: IGroupStateProvider) =>
   return <Provider createStore={createStore}>{children}</Provider>
 }
 
-const CustomGraphComponent = ({
+interface GroupState {
+  groups: NodeGroups
+  toggleGroup: (_: string) => void
+}
+
+interface NodeGroups {
+  [key: string]: boolean
+}
+
+interface IGroupStateProvider {
+  children: ReactNode
+  initialGroups: NodeGroups
+}
+
+const CustomGraph = ({
   graph,
   nodeHeight,
   nodeWidth,
@@ -54,11 +54,17 @@ const CustomGraphComponent = ({
   maxScale = 2,
   onPaneClick = () => {},
 }: Props) => {
-  const myNodes = Object.values(graph.nodes)
-  const plainNodes = myNodes.filter(node => node.groupId === undefined)
+  const nodeIndex: NodeIndex = graph.nodes.reduce(
+    (acc, node) => ({
+      ...acc,
+      [node.id]: node,
+    }),
+    {}
+  )
 
-  const subGroups = myNodes.reduce(
-    (acc: string[], node: NodeProps) => (node.groupId ? [...acc, node.groupId] : acc),
+  const plainNodes = graph.nodes.filter(node => node.groupId === undefined)
+  const subGroups = graph.nodes.reduce(
+    (acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc),
     []
   )
 
@@ -68,11 +74,11 @@ const CustomGraphComponent = ({
     : bubbleKeys.map(key => {
         const nodeSetList = bubbleSets[key]
         const bubbleNodes = nodeSetList.map(item => {
-          const position = graph.nodes[item].position
+          const position = nodeIndex[item].position
           return { ...position, width: nodeWidth, height: nodeHeight }
         })
 
-        const bubbleOtherNodes = myNodes
+        const bubbleOtherNodes = graph.nodes
           .filter(node => !nodeSetList.includes(node.id))
           .map(node => {
             const position = node.position
@@ -90,8 +96,8 @@ const CustomGraphComponent = ({
   const ActualEdge = edgeComponent ? edgeComponent : Edge
   const ActualNode = nodeComponent ? nodeComponent : DefaultNode
 
-  const nodeXS = myNodes.map(node => node.position.x)
-  const nodeYS = myNodes.map(node => node.position.y)
+  const nodeXS = graph.nodes.map(node => node.position.x)
+  const nodeYS = graph.nodes.map(node => node.position.y)
   const svgViewportWidth = Math.max(...nodeXS) + 2 * nodeWidth
   const svgViewportHeight = Math.max(...nodeYS) + 2 * nodeHeight
 
@@ -130,12 +136,12 @@ const CustomGraphComponent = ({
                 position: { x: x1, y: y1 },
                 rootId: sourceRootId,
                 groupId: sourceGroupId,
-              } = graph.nodes[edge.source]
+              } = nodeIndex[edge.source]
               const {
                 position: { x: x2, y: y2 },
                 rootId: targetRootId,
                 groupId: targetGroupId,
-              } = graph.nodes[edge.target]
+              } = nodeIndex[edge.target]
 
               // Group edges:
               const isEdgeOutbound = sourceGroupId !== targetGroupId
@@ -153,8 +159,8 @@ const CustomGraphComponent = ({
               if (!isEdgeOutbound && (sourceRootId || targetRootId)) {
                 // Inbound edge closed group
                 const { x: xRoot, y: yRoot } = sourceRootId
-                  ? graph.nodes[sourceRootId].position
-                  : graph.nodes[targetRootId!].position
+                  ? nodeIndex[sourceRootId].position
+                  : nodeIndex[targetRootId!].position
 
                 const dPath = sourceRootId
                   ? getPath(x2, y2, xRoot, yRoot)
@@ -168,7 +174,7 @@ const CustomGraphComponent = ({
               const thisRootId = sourceRootId ? sourceRootId : targetRootId
               const otherRootId = sourceRootId ? targetRootId : sourceRootId
 
-              const { x: xThisRoot, y: yThisRoot } = graph.nodes[thisRootId!].position
+              const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId!].position
 
               const thisGroupOpen = sourceRootId ? isSourceGroupOpen : isTargetGroupOpen
               const otherNodeVisible = sourceRootId
@@ -188,7 +194,7 @@ const CustomGraphComponent = ({
               }
 
               if (outboundCase2) {
-                const { x: xOtherRoot, y: yOtherRoot } = graph.nodes[otherRootId!].position
+                const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
                 dPath = sourceRootId
                   ? getPath(xOtherRoot, yOtherRoot, xThisRoot, yThisRoot)
                   : getPath(xThisRoot, yThisRoot, xOtherRoot, yOtherRoot)
@@ -199,7 +205,7 @@ const CustomGraphComponent = ({
               }
 
               if (outboundCase4) {
-                const { x: xOtherRoot, y: yOtherRoot } = graph.nodes[otherRootId!].position
+                const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
                 dPath = sourceRootId
                   ? getPath(xOtherRoot, yOtherRoot, x1, y1)
                   : getPath(x2, y2, xOtherRoot, yOtherRoot)
@@ -225,7 +231,7 @@ const CustomGraphComponent = ({
           ))}
 
           {subGroups.map((group, idx) => {
-            const subgraph = myNodes.filter(node => node.groupId === group)
+            const subgraph = graph.nodes.filter(node => node.groupId === group)
             return (
               <Subgraph
                 key={`${group}-${idx}`}
@@ -282,7 +288,7 @@ const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidt
 }
 
 interface ISubgraph extends ISubgraphBox {
-  nodeComponent: (props: NodeProps) => JSX.Element
+  nodeComponent: (props: NodeData) => JSX.Element
 }
 
 const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgraphBox) => {
@@ -330,7 +336,7 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
 }
 
 interface ISubgraphBox {
-  nodes: NodeProps[]
+  nodes: NodeData[]
   isOpen: boolean
   onToggle: () => void
   nodeWidth: number
@@ -338,16 +344,13 @@ interface ISubgraphBox {
 }
 
 const WrappedCustomGraph = (props: Props) => {
-  const myNodes = Object.values(props.graph.nodes)
-  const subGroups = myNodes.reduce(
-    (acc: string[], node: NodeProps) => (node.groupId ? [...acc, node.groupId] : acc),
-    []
-  )
-  const initialGroups = subGroups.reduce((acc, item) => ({ ...acc, [item]: true }), {})
+  const initialGroups = props.graph.nodes
+    .reduce((acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc), [])
+    .reduce((acc, item) => ({ ...acc, [item]: true }), {}) // Open by default
 
   return (
     <GroupStateProvider initialGroups={initialGroups}>
-      <CustomGraphComponent {...props} />
+      <CustomGraph {...props} />
     </GroupStateProvider>
   )
 }
@@ -355,11 +358,11 @@ const WrappedCustomGraph = (props: Props) => {
 export default WrappedCustomGraph
 
 export interface Props {
-  graph: CustomGraph
+  graph: GraphData
   nodeHeight: number
   nodeWidth: number
   bubbleSets?: BubbleSets
-  nodeComponent?: (props: NodeProps) => JSX.Element
+  nodeComponent?: (props: NodeData) => JSX.Element
   edgeComponent?: (props: EdgeProps) => JSX.Element
   minScale?: number
   maxScale?: number
@@ -370,13 +373,6 @@ interface BubbleSets {
   [key: string]: string[]
 }
 
-export interface CustomGraph {
-  nodes: { [key: string]: NodeProps }
-  edges: CustomGraphEdge[]
-}
-
-interface CustomGraphEdge {
-  id: string
-  source: string
-  target: string
+interface NodeIndex {
+  [key: string]: NodeData
 }

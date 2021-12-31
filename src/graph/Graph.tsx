@@ -72,11 +72,6 @@ const Graph = ({ data, config: cfg }: Props) => {
   )
 
   const graphWithLayout = graphLayout(graph)
-  const graphDrawable = {
-    nodes: graphWithLayout.nodes.reduce((acc, node) => ({ ...acc, [node.id]: node }), {}),
-    edges: graphWithLayout.edges,
-  }
-
   const onNodeClick = (id: string) => {
     dispatch(nodeClick(id, config.chromaticScale))
   }
@@ -117,7 +112,7 @@ const Graph = ({ data, config: cfg }: Props) => {
       />
       <GraphContainer>
         <CustomGraph
-          graph={graphDrawable}
+          graph={graphWithLayout}
           bubbleSets={bubbleSets}
           nodeComponent={props => (
             <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />

@@ -1,7 +1,7 @@
 import React from 'react'
-import { NodeProps } from './types'
+import { NodeData } from './types'
 
-export const DefaultNode = (props: NodeProps<any>) => (
+export const DefaultNode = (props: NodeData) => (
   <div
     style={{
       border: '1px solid magenta',
