@@ -4,10 +4,11 @@ import * as d3 from 'd3'
 import { useD3 } from '../hooks'
 import { COLORS } from '../profiler/constants'
 import { getMargin } from '../common/chartHelpers'
-import { PmfPlotItem } from '../profiler/model'
+import { ColumnType, PmfPlotItem } from '../profiler/model'
+import { transformSecondsToDate } from '../helpers'
 
 const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
-  const { height, color, showAxes, showXAxis, showYAxis, showLogScale } = config
+  const { height, color, showAxes, showXAxis, showYAxis, showLogScale, dataType } = config
 
   const margin = getMargin(!!showAxes, !!showXAxis, !!showYAxis)
 
@@ -64,6 +65,14 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
           .axisBottom(xScale)
           .ticks(width / 100)
           .tickSizeOuter(0)
+          .tickFormat(tick => {
+            if (dataType === 'timestamp') {
+              return `${transformSecondsToDate(tick as number, 'date')}`
+            }
+
+            return `${tick}`
+          })
+        console.log(xScale.domain())
 
         svg
           .append('g')
@@ -230,6 +239,7 @@ interface PmfPlotProps {
     showXAxis?: boolean
     showYAxis?: boolean
     showLogScale?: boolean
+    dataType?: ColumnType
   }
 }
 

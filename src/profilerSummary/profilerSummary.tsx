@@ -9,7 +9,6 @@ const ProfilerSummary = ({ data, config = {} }: ProfilerSummaryProps): JSX.Eleme
   const { data_type: type, name, count, count_nulls, pmf } = data
   const nulls = count_nulls || 0
   const rows = config.rows && config.rows > 2 ? config.rows : 3
-  const height = config.height ? config.height : '200px'
 
   const renderCard = () => {
     if (type === 'string') {
@@ -48,7 +47,7 @@ const ProfilerSummary = ({ data, config = {} }: ProfilerSummaryProps): JSX.Eleme
       return (
         <>
           <CardTitle name={name} type={type} />
-          <PmfPlot dataset={[pmf]} config={{ height: '100%', showXAxis: true }} />
+          <PmfPlot dataset={[pmf]} config={{ height: '100%', showXAxis: true, dataType: type }} />
         </>
       )
     }
