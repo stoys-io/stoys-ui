@@ -1,3 +1,3 @@
 export { default, Props } from './CustomGraph'
-export { default as Edge } from './Edge'
+export { Edge } from './components'
 export * from './types'

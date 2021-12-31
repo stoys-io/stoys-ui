@@ -1,18 +1,15 @@
 import React, { CSSProperties, useRef } from 'react'
 
-import Edge from './Edge'
-import NodePosition from './NodePosition'
-import DefaultNode from './DefaultNode'
-
 import GroupStateProvider, { useStore } from './GroupStateProvider'
+import { getBubbleSetPath } from './bubbleset'
 
-import { GraphData, NodeData, EdgeProps } from './types'
+import { Edge, NodePosition, DefaultNode } from './components'
 import { ANIMATION_TIMEOUT } from './constants'
+import { colors } from './colors'
+import { createEdgePath } from './createEdgePath'
+import { GraphData, NodeData, EdgeProps } from './types'
 
 import { usePanZoom } from './usePanZoom'
-import { createEdgePath } from './createEdgePath'
-import { getBubbleSetPath } from './bubbleset'
-import { colors } from './colors'
 
 const CustomGraph = ({
   graph,

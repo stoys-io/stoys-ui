@@ -1,7 +1,6 @@
 import React from 'react'
-import { NodeData } from './types'
 
-const DefaultNode = (props: NodeData) => (
+const DefaultNode = (props: Props) => (
   <div
     style={{
       border: '1px solid magenta',
@@ -14,3 +13,6 @@ const DefaultNode = (props: NodeData) => (
 )
 
 export default DefaultNode
+interface Props {
+  data?: { label: string }
+}

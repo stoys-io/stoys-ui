@@ -22,4 +22,4 @@ interface Position {
   y: number
 }
 
-export { Props as EdgeProps } from './Edge'
+export { EdgeProps } from './components'
