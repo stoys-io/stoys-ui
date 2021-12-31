@@ -1,7 +1,7 @@
 import React from 'react'
 import { NodeData } from './types'
 
-export const DefaultNode = (props: NodeData) => (
+const DefaultNode = (props: NodeData) => (
   <div
     style={{
       border: '1px solid magenta',
@@ -12,3 +12,5 @@ export const DefaultNode = (props: NodeData) => (
     {props.data?.label}
   </div>
 )
+
+export default DefaultNode

@@ -1,47 +1,18 @@
-import React, { CSSProperties, ReactNode, useRef } from 'react'
-import create from 'zustand'
-import createContext from 'zustand/context'
+import React, { CSSProperties, useRef } from 'react'
 
-import Edge, { Props as EdgeProps } from './Edge'
+import Edge from './Edge'
 import NodePosition from './NodePosition'
-import { DefaultNode } from './DefaultNode'
-import { GraphData, NodeData } from './types'
+import DefaultNode from './DefaultNode'
 
+import GroupStateProvider, { useStore } from './GroupStateProvider'
+
+import { GraphData, NodeData, EdgeProps } from './types'
 import { ANIMATION_TIMEOUT } from './constants'
 
 import { usePanZoom } from './usePanZoom'
 import { createEdgePath } from './createEdgePath'
 import { getBubbleSetPath } from './bubbleset'
 import { colors } from './colors'
-
-const { Provider, useStore } = createContext<GroupState>()
-const GroupStateProvider = ({ initialGroups, children }: IGroupStateProvider) => {
-  const createStore = () =>
-    create<GroupState>(set => ({
-      groups: initialGroups,
-      toggleGroup: (group: string) =>
-        set(state => {
-          const groupState = state.groups[group]
-          return { groups: { ...state.groups, [group]: !groupState } }
-        }),
-    }))
-
-  return <Provider createStore={createStore}>{children}</Provider>
-}
-
-interface GroupState {
-  groups: NodeGroups
-  toggleGroup: (_: string) => void
-}
-
-interface NodeGroups {
-  [key: string]: boolean
-}
-
-interface IGroupStateProvider {
-  children: ReactNode
-  initialGroups: NodeGroups
-}
 
 const CustomGraph = ({
   graph,
@@ -346,7 +317,7 @@ interface ISubgraphBox {
 const WrappedCustomGraph = (props: Props) => {
   const initialGroups = props.graph.nodes
     .reduce((acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc), [])
-    .reduce((acc, item) => ({ ...acc, [item]: true }), {}) // Open by default
+    .reduce((acc, item) => ({ ...acc, [item]: true }), {}) // Expand groups by default
 
   return (
     <GroupStateProvider initialGroups={initialGroups}>
