@@ -1,12 +1,17 @@
 import dagre from 'dagre'
-import { GraphData } from './types'
+import { GraphData, NodeGroups } from './types'
 
 const ranksep = 64
 const nodesep = 16
 const startX = 48
 const startY = 32
 
-export const graphLayout = (graph: GraphData, nodeWidth: number, nodeHeight: number): GraphData => {
+export const graphLayout = (
+  graph: GraphData,
+  nodeWidth: number,
+  nodeHeight: number,
+  groups: NodeGroups
+): GraphData => {
   const dagreGraph = new dagre.graphlib.Graph({ compound: true, directed: true, multigraph: false })
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 
@@ -19,8 +24,7 @@ export const graphLayout = (graph: GraphData, nodeWidth: number, nodeHeight: num
   })
 
   graph.nodes.forEach(node => {
-    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
-    if (node.groupId && node.rootId === undefined) {
+    if (node.groupId && groups[node.groupId] && node.rootId === undefined) {
       /*
        * Create fake root group element, because we are not allowed to set edges on group elements
        * related issues:
@@ -32,10 +36,12 @@ export const graphLayout = (graph: GraphData, nodeWidth: number, nodeHeight: num
       })
     }
 
-    if (node.rootId) {
+    if (node.groupId && groups[node.groupId] && node.rootId) {
       // @ts-ignore
       dagreGraph.setParent(node.id, `${node.id}-fake-root`)
     }
+
+    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
   })
 
   graph.edges.forEach(edge => {
@@ -47,13 +53,25 @@ export const graphLayout = (graph: GraphData, nodeWidth: number, nodeHeight: num
   const t1 = performance.now()
   console.info(`Layout calculation took ${(t1 - t0).toFixed(2)} milliseconds.`)
 
+  const xs = graph.nodes.map(node => {
+    const n = dagreGraph.node(node.id)
+    return n.x
+  })
+  const ys = graph.nodes.map(node => {
+    const n = dagreGraph.node(node.id)
+    return n.y
+  })
+
+  const topLeftX = Math.min(...xs) - nodeWidth / 2
+  const topLeftY = Math.min(...ys) - nodeHeight / 2
+
   const newNodes = graph.nodes.map(node => {
     const nodeWithPosition = dagreGraph.node(node.id)
     return {
       ...node,
       position: {
-        x: nodeWithPosition.x - nodeWidth / 2 + startX,
-        y: nodeWithPosition.y - nodeHeight / 2 + startY,
+        x: nodeWithPosition.x - nodeWidth / 2 + startX - topLeftX,
+        y: nodeWithPosition.y - nodeHeight / 2 + startY - topLeftY,
       },
     }
   })

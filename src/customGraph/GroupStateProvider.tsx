@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import create from 'zustand'
 import createContext from 'zustand/context'
+import { NodeGroups } from './types'
 
 const { Provider, useStore } = createContext<GroupState>()
 const GroupStateProvider = ({ initialGroups, children }: Props) => {
@@ -27,8 +28,4 @@ export { useStore }
 interface GroupState {
   groups: NodeGroups
   toggleGroup: (_: string) => void
-}
-
-interface NodeGroups {
-  [key: string]: boolean
 }
