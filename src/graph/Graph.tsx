@@ -121,6 +121,7 @@ const Graph = ({ data, config: cfg }: Props) => {
           nodeWidth={NODE_WIDTH}
           minScale={0.12}
           maxScale={2}
+          withDagreLayout
         />
       </GraphContainer>
       <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer} />

@@ -22,7 +22,7 @@ const CustomGraph = ({
   minScale = 0.12,
   maxScale = 2,
   onPaneClick = () => {},
-  withDagreLayout = false,
+  withDagreLayout = true,
 }: Props) => {
   const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight) : g
   const nodeIndex: NodeIndex = graph.nodes.reduce(
@@ -188,7 +188,7 @@ const CustomGraph = ({
           {bubbleSetsList.length !== 0 && (
             <g>
               {bubbleSetsList.map((dPath, idx) => (
-                <path d={dPath} opacity={0.3} fill={colors[idx]} stroke="black" />
+                <path key={idx} d={dPath} opacity={0.3} fill={colors[idx]} stroke="black" />
               ))}
             </g>
           )}
