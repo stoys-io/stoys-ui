@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { DagNode } from './DagNode'
 import { DagEdge } from './DagEdge'
-import { graphLayout } from './graph-layout'
 
 import { Sidebar, SearchArgs, ConnectedDrawer } from '../graph-common/components'
 
@@ -71,12 +70,6 @@ const Graph = ({ data, config: cfg }: Props) => {
     (oldGraph, newGraph) => oldGraph.release === newGraph.release
   )
 
-  const graphWithLayout = graphLayout(graph)
-  const graphDrawable = {
-    nodes: graphWithLayout.nodes.reduce((acc, node) => ({ ...acc, [node.id]: node }), {}),
-    edges: graphWithLayout.edges,
-  }
-
   const onNodeClick = (id: string) => {
     dispatch(nodeClick(id, config.chromaticScale))
   }
@@ -117,7 +110,7 @@ const Graph = ({ data, config: cfg }: Props) => {
       />
       <GraphContainer>
         <CustomGraph
-          graph={graphDrawable}
+          graph={graph}
           bubbleSets={bubbleSets}
           nodeComponent={props => (
             <DagNode {...props} onClick={onNodeClick} onDoubleClick={onNodeDoubleClick} />
@@ -128,6 +121,7 @@ const Graph = ({ data, config: cfg }: Props) => {
           nodeWidth={NODE_WIDTH}
           minScale={0.12}
           maxScale={2}
+          withDagreLayout
         />
       </GraphContainer>
       <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer} />

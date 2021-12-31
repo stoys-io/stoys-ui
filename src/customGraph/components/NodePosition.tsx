@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { ANIMATION_TIMEOUT } from './constants'
+import { ANIMATION_TIMEOUT } from '../constants'
 
 const NodePosition = ({ position, fade = false, children }: Props) => {
   const opacity = fade ? '0' : '1'
@@ -20,7 +20,6 @@ const NodePosition = ({ position, fade = false, children }: Props) => {
 }
 
 export default NodePosition
-
 interface Props {
   position: { x: number; y: number }
   children: ReactNode

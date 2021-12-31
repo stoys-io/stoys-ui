@@ -1,15 +1,12 @@
 import dagre from 'dagre'
-import { NODE_HEIGHT, NODE_WIDTH } from '../graph-common/constants'
-import { Graph } from '../graph-common/model'
+import { GraphData } from './types'
 
-const nodeWidth = NODE_WIDTH
-const nodeHeight = NODE_HEIGHT
 const ranksep = 64
 const nodesep = 16
 const startX = 48
 const startY = 32
 
-export const graphLayout = (graph: Graph): Graph => {
+export const graphLayout = (graph: GraphData, nodeWidth: number, nodeHeight: number): GraphData => {
   const dagreGraph = new dagre.graphlib.Graph({ compound: true, directed: true, multigraph: false })
   dagreGraph.setDefaultEdgeLabel(() => ({}))
 
@@ -22,7 +19,7 @@ export const graphLayout = (graph: Graph): Graph => {
   })
 
   graph.nodes.forEach(node => {
-    dagreGraph.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT })
+    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
     if (node.groupId && node.rootId === undefined) {
       /*
        * Create fake root group element, because we are not allowed to set edges on group elements

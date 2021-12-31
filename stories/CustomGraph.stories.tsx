@@ -10,7 +10,7 @@ const Template: Story<Props> = (args: Props) => (
 )
 export const Example = Template.bind({})
 Example.storyName = 'Custom graph'
-Example.args = { graph: dummyMock, nodeWidth: 60, nodeHeight: 40 }
+Example.args = { graph: dummyMock, nodeWidth: 60, nodeHeight: 40, withDagreLayout: false }
 
 export default {
   title: 'Components/Custom graph',
