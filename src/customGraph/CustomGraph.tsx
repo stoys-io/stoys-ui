@@ -13,6 +13,10 @@ import { graphLayout } from './graph-layout'
 import { usePanZoom } from './usePanZoom'
 import TableListNode from '../graph/TableListNode'
 
+interface GroupIndex {
+  [key: string]: string[]
+}
+
 const CustomGraph = ({
   graph: g,
   nodeHeight,
@@ -42,6 +46,18 @@ const CustomGraph = ({
     (acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc),
     []
   )
+
+  const groupIndex = graph.nodes.reduce((acc: GroupIndex, node: NodeData): GroupIndex => {
+    if (!node.groupId) {
+      return acc
+    }
+
+    if (!acc[node.groupId]) {
+      return { ...acc, [node.groupId]: [node.id] }
+    }
+
+    return { ...acc, [node.groupId]: [...acc[node.groupId], node.id] }
+  }, {})
 
   const bubbleKeys = !bubbleSets ? [] : Object.keys(bubbleSets)
   const bubbleSetsList = !bubbleSets
@@ -145,7 +161,22 @@ const CustomGraph = ({
               const thisRootId = sourceRootId ? sourceRootId : targetRootId
               const otherRootId = sourceRootId ? targetRootId : sourceRootId
 
+              const thisGroupId = sourceGroupId ? sourceGroupId : targetGroupId
+              const otherGroupId = sourceGroupId ? targetGroupId : sourceGroupId
+
+              const thisTable = sourceGroupId ? edge.source : edge.target
+              const otherTable = sourceGroupId ? edge.target : edge.target
+
               const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId!].position
+
+              const step = 23
+              const something = 5
+              const headerSpace = 36 + something
+              const thisHandleIndex = groupIndex[thisGroupId!].indexOf(thisTable)
+
+              const xThisHandle = xThisRoot
+              const yThisHandle =
+                yThisRoot - nodeHeight / 2 + headerSpace + step * (thisHandleIndex + 0.5)
 
               const thisGroupOpen = sourceRootId ? isSourceGroupOpen : isTargetGroupOpen
               const otherNodeVisible = sourceRootId
@@ -160,15 +191,20 @@ const CustomGraph = ({
               let dPath = ''
               if (outboundCase1) {
                 dPath = sourceRootId
-                  ? getPath(x2, y2, xThisRoot, yThisRoot)
-                  : getPath(xThisRoot, yThisRoot, x1, y1)
+                  ? getPath(x2, y2, xThisHandle, yThisHandle)
+                  : getPath(xThisHandle, yThisHandle, x1, y1)
               }
 
               if (outboundCase2) {
                 const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
+                const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
+                const xOtherHandle = xOtherRoot
+                const yOtherHandle =
+                  yOtherRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
+
                 dPath = sourceRootId
-                  ? getPath(xOtherRoot, yOtherRoot, xThisRoot, yThisRoot)
-                  : getPath(xThisRoot, yThisRoot, xOtherRoot, yOtherRoot)
+                  ? getPath(xOtherHandle, yOtherHandle, xThisHandle, yThisHandle)
+                  : getPath(xThisHandle, yThisHandle, xOtherHandle, yOtherHandle)
               }
 
               if (outboundCase3) {
@@ -177,9 +213,14 @@ const CustomGraph = ({
 
               if (outboundCase4) {
                 const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
+                const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
+                const xOtherHandle = xOtherRoot
+                const yOtherHandle =
+                  yOtherRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
+
                 dPath = sourceRootId
-                  ? getPath(xOtherRoot, yOtherRoot, x1, y1)
-                  : getPath(x2, y2, xOtherRoot, yOtherRoot)
+                  ? getPath(xOtherHandle, yOtherHandle, x1, y1)
+                  : getPath(x2, y2, xOtherHandle, yOtherHandle)
               }
 
               return <ActualEdge key={edge.id} id={edge.id} path={dPath} />
