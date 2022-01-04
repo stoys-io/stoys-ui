@@ -53,25 +53,13 @@ export const graphLayout = (
   const t1 = performance.now()
   console.info(`Layout calculation took ${(t1 - t0).toFixed(2)} milliseconds.`)
 
-  const xs = graph.nodes.map(node => {
-    const n = dagreGraph.node(node.id)
-    return n.x
-  })
-  const ys = graph.nodes.map(node => {
-    const n = dagreGraph.node(node.id)
-    return n.y
-  })
-
-  const topLeftX = Math.min(...xs) - nodeWidth / 2
-  const topLeftY = Math.min(...ys) - nodeHeight / 2
-
   const newNodes = graph.nodes.map(node => {
     const nodeWithPosition = dagreGraph.node(node.id)
     return {
       ...node,
       position: {
-        x: nodeWithPosition.x - nodeWidth / 2 + startX - topLeftX,
-        y: nodeWithPosition.y - nodeHeight / 2 + startY - topLeftY,
+        x: nodeWithPosition.x - nodeWidth / 2 + startX,
+        y: nodeWithPosition.y - nodeHeight / 2 + startY,
       },
     }
   })
