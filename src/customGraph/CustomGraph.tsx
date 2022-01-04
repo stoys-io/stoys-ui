@@ -24,7 +24,10 @@ const CustomGraph = ({
   onPaneClick = () => {},
   withDagreLayout = true,
 }: Props) => {
-  const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight) : g
+  const groups = useStore(state => state.groups)
+  const toggleGroup = useStore(state => state.toggleGroup)
+
+  const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight, groups) : g
   const nodeIndex: NodeIndex = graph.nodes.reduce(
     (acc, node) => ({
       ...acc,
@@ -58,10 +61,6 @@ const CustomGraph = ({
 
         return getBubbleSetPath(bubbleNodes, bubbleOtherNodes)
       })
-
-  const groups = useStore(state => state.groups)
-  const toggleGroup = useStore(state => state.toggleGroup)
-
   const getPath = createEdgePath(nodeWidth, nodeHeight)
 
   const ActualEdge = edgeComponent ? edgeComponent : Edge

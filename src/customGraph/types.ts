@@ -22,4 +22,8 @@ interface Position {
   y: number
 }
 
+export interface NodeGroups {
+  [key: string]: boolean
+}
+
 export { EdgeProps } from './components'
