@@ -2,6 +2,8 @@ import React from 'react'
 import { Story } from '@storybook/react'
 import Graph, { Props } from '../src/graph'
 
+import TableListNode, { Props as P } from '../src/graph/TableListNode'
+
 import _dataMock from './mocks/graph/dag_inlined.json'
 import _dataMockGroups from './mocks/graph/dag_inlined_groups.json'
 import _dataMockBubbles from './mocks/graph/dag_inlined_bubbles.json'
@@ -37,8 +39,13 @@ Example4.args = {
   data: [grpcData],
 }
 
+const TableNode: Story<P> = (args: P) => <TableListNode {...args} />
+export const TableListNodeExample = TableNode.bind({})
+TableListNodeExample.storyName = 'Table list node'
+TableListNodeExample.args = {}
+
 export default {
   title: 'Chart/Custom graph',
-  component: [Example1, Example2, Example3, Example4],
+  component: [Example1, TableListNodeExample, Example2, Example3, Example4],
   argTypes: {},
 }

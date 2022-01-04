@@ -11,6 +11,7 @@ import { GraphData, NodeData, EdgeProps } from './types'
 import { graphLayout } from './graph-layout'
 
 import { usePanZoom } from './usePanZoom'
+import TableListNode from '../graph/TableListNode'
 
 const CustomGraph = ({
   graph: g,
@@ -222,11 +223,9 @@ const CustomGraph = ({
 
 const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidth }: ISubgraph) => {
   let nodes2 = nodes
-  let rootId: string | undefined = undefined
 
   if (!isOpen) {
     const rootNode = nodes.find(node => !node.rootId) || nodes[0]
-    rootId = rootNode.id
     nodes2 = nodes.map(node =>
       node.rootId
         ? {
@@ -237,33 +236,8 @@ const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidt
     )
   }
 
-  return (
-    <>
-      <SubgraphBox
-        nodes={nodes2}
-        isOpen={isOpen}
-        onToggle={onToggle}
-        nodeHeight={nodeHeight}
-        nodeWidth={nodeWidth}
-      />
-      {nodes2.map(node => (
-        <NodePosition key={node.id} position={node.position} fade={!isOpen && node.id !== rootId}>
-          {nodeComponent({
-            ...node,
-          })}
-        </NodePosition>
-      ))}
-    </>
-  )
-}
-
-interface ISubgraph extends ISubgraphBox {
-  nodeComponent: (props: NodeData) => JSX.Element
-}
-
-const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgraphBox) => {
-  const xs = nodes.map(n => n.position.x)
-  const ys = nodes.map(n => n.position.y)
+  const xs = nodes2.map(n => n.position.x)
+  const ys = nodes2.map(n => n.position.y)
 
   const gapX = 16
   const gapY = 16
@@ -278,6 +252,48 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
   const width = ex - sx + 2 * gapX
   const height = ey - sy + 2 * gapY
 
+  return (
+    <>
+      <SubgraphBox
+        left={left}
+        top={top}
+        width={width}
+        height={height}
+        isOpen={isOpen}
+        onToggle={onToggle}
+      />
+      {nodes2.map(node =>
+        !node.rootId && !isOpen ? (
+          <NodePosition key={node.id} position={node.position}>
+            <TableListNode
+              label={nodes2[0].groupId || ''}
+              tableList={nodes2.map(n => n.data?.label)}
+            />
+          </NodePosition>
+        ) : (
+          <NodePosition key={node.id} position={node.position} fade={!isOpen}>
+            {nodeComponent({
+              ...node,
+            })}
+          </NodePosition>
+        )
+      )}
+    </>
+  )
+}
+
+interface ISubgraph {
+  nodes: NodeData[]
+
+  isOpen: boolean
+  onToggle: () => void
+
+  nodeWidth: number
+  nodeHeight: number
+  nodeComponent: (props: NodeData) => JSX.Element
+}
+
+const SubgraphBox = ({ left, top, width, height, isOpen, onToggle }: ISubgraphBox) => {
   const openerStyle: CSSProperties = {
     position: 'absolute',
     right: 3,
@@ -306,11 +322,12 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
 }
 
 interface ISubgraphBox {
-  nodes: NodeData[]
+  left: number
+  top: number
+  width: number
+  height: number
   isOpen: boolean
   onToggle: () => void
-  nodeWidth: number
-  nodeHeight: number
 }
 
 const WrappedCustomGraph = (props: Props) => {
