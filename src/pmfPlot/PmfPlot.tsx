@@ -72,7 +72,6 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
 
             return `${tick}`
           })
-        console.log(xScale.domain())
 
         svg
           .append('g')
