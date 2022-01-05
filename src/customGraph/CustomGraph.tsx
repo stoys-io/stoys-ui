@@ -5,15 +5,12 @@ import GroupStateProvider, { useStore } from './GroupStateProvider'
 import { Edge, NodePosition, DefaultNode, BubbleSet } from './components'
 import { ANIMATION_TIMEOUT } from './constants'
 import { createEdgePath } from './createEdgePath'
-import { GraphData, NodeData, EdgeProps } from './types'
+import { GraphData, NodeData, EdgeProps, NodeIndex, GroupIndex } from './types'
 import { graphLayout } from './graph-layout'
 
 import { usePanZoom } from './usePanZoom'
 import TableListNode from '../graph/TableListNode'
-
-interface GroupIndex {
-  [key: string]: string[]
-}
+import { edgePosition } from './edge-position'
 
 const CustomGraph = ({
   graph: g,
@@ -116,153 +113,10 @@ const CustomGraph = ({
         >
           <g>
             {graph.edges.map(edge => {
-              const {
-                position: { x: x1, y: y1 },
-                rootId: sourceRootId,
-                groupId: sourceGroupId,
-              } = nodeIndex[edge.source]
-              const {
-                position: { x: x2, y: y2 },
-                rootId: targetRootId,
-                groupId: targetGroupId,
-              } = nodeIndex[edge.target]
+              const { position, isHidden } = edgePosition(edge, nodeIndex, groups, groupIndex)
+              const dPath = getPath(...position)
 
-              // Group edges:
-              const isEdgeOutbound = sourceGroupId !== targetGroupId
-              const isTargetGroupOpen = targetGroupId && groups[targetGroupId]
-              const isSourceGroupOpen = sourceGroupId && groups[sourceGroupId]
-
-              const isRegularEdge = !sourceGroupId && !targetGroupId
-              const isGroupOpenInboundEdge =
-                !isEdgeOutbound && (isTargetGroupOpen || isSourceGroupOpen)
-
-              const isGroupClosedInboundEdge =
-                !isEdgeOutbound && (!isTargetGroupOpen || !isSourceGroupOpen)
-
-              if (isRegularEdge || isGroupOpenInboundEdge) {
-                return <ActualEdge key={edge.id} id={edge.id} path={getPath(x2, y2, x1, y1)} />
-              }
-
-              if (isGroupClosedInboundEdge) {
-                // Inbound edge closed group
-                const { x: xRoot, y: yRoot } = sourceRootId
-                  ? nodeIndex[sourceRootId].position
-                  : nodeIndex[targetRootId!].position
-
-                const dPath = sourceRootId
-                  ? getPath(x2, y2, xRoot, yRoot)
-                  : getPath(xRoot, yRoot, x1, y1)
-
-                return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade />
-              }
-
-              // TODO: This could have been simpler
-              // Outbound edge:
-              const thisRootId = sourceRootId
-                ? sourceRootId ?? edge.source
-                : targetRootId ?? edge.target
-
-              const otherRootId = sourceRootId
-                ? targetRootId ?? edge.target
-                : sourceRootId ?? edge.source
-
-              const thisGroupId = sourceGroupId ? sourceGroupId : targetGroupId
-              const otherGroupId = sourceGroupId ? targetGroupId : sourceGroupId
-
-              const thisTable = sourceGroupId ? edge.source : edge.target
-              const otherTable = sourceGroupId ? edge.target : edge.target
-
-              const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId].position
-
-              const step = 23
-              const something = 5
-              const headerSpace = 36 + something
-              const thisHandleIndex = groupIndex[thisGroupId!].indexOf(thisTable)
-
-              const xThisHandle = xThisRoot
-              const yThisHandle =
-                yThisRoot - nodeHeight / 2 + headerSpace + step * (thisHandleIndex + 0.5)
-
-              const thisGroupOpen = sourceRootId ? isSourceGroupOpen : isTargetGroupOpen
-              const otherNodeVisible = sourceRootId
-                ? targetGroupId === undefined || isTargetGroupOpen
-                : sourceGroupId === undefined || isSourceGroupOpen
-
-              const outboundCase1 = !thisGroupOpen && otherNodeVisible
-              const outboundCase2 = !thisGroupOpen && !otherNodeVisible
-              const outboundCase3 = thisGroupOpen && otherNodeVisible
-              const outboundCase4 = thisGroupOpen && !otherNodeVisible
-
-              let dPath = ''
-              if (outboundCase1) {
-                dPath = sourceRootId
-                  ? getPath(x2, y2, xThisHandle, yThisHandle)
-                  : getPath(xThisHandle, yThisHandle, x1, y1)
-
-                // TODO: Re-write
-                // Table list corner cases:
-                if (thisRootId === edge.target) {
-                  const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
-                  const x = xThisRoot
-                  const y =
-                    yThisRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
-                  dPath = getPath(x, y, x1, y1)
-                }
-              }
-
-              if (outboundCase2) {
-                const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
-                const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
-                const xOtherHandle = xOtherRoot
-                const yOtherHandle =
-                  yOtherRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
-
-                dPath = sourceRootId
-                  ? getPath(xOtherHandle, yOtherHandle, xThisHandle, yThisHandle)
-                  : getPath(xThisHandle, yThisHandle, xOtherHandle, yOtherHandle)
-
-                // TODO: Re-write
-                // Table list corner cases:
-                if (thisRootId === edge.target) {
-                  const x_handle2 = xThisRoot
-                  const y_handle2 =
-                    yThisRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
-
-                  const x_handle1 = xOtherRoot
-                  const y_handle1 =
-                    yOtherRoot - nodeHeight / 2 + headerSpace + step * (thisHandleIndex + 0.5)
-
-                  dPath = getPath(x_handle2, y_handle2, x_handle1, y_handle1)
-                }
-              }
-
-              if (outboundCase3) {
-                dPath = getPath(x2, y2, x1, y1)
-              }
-
-              if (outboundCase4) {
-                const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
-                const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
-
-                const xOtherHandle = xOtherRoot
-                const yOtherHandle =
-                  yOtherRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
-
-                dPath = sourceRootId
-                  ? getPath(xOtherHandle, yOtherHandle, x1, y1)
-                  : getPath(x2, y2, xOtherHandle, yOtherHandle)
-
-                // TODO: Re-write
-                // Table list corner cases:
-                if (thisRootId === edge.target) {
-                  const x = xOtherRoot
-                  const y =
-                    yOtherRoot - nodeHeight / 2 + headerSpace + step * (thisHandleIndex + 0.5)
-                  dPath = getPath(x2, y2, x, y)
-                }
-              }
-
-              return <ActualEdge key={edge.id} id={edge.id} path={dPath} />
+              return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade={isHidden} />
             })}
           </g>
           <BubbleSet bubbleSetList={bubbleSetList} />
@@ -433,8 +287,4 @@ export interface Props {
 
 interface BubbleSets {
   [key: string]: string[]
-}
-
-interface NodeIndex {
-  [key: string]: NodeData
 }
