@@ -8,11 +8,12 @@ const DagEdge = (props: EdgeProps) => {
     useCallback(state => state.highlights.edges[props.id], [props.id])
   ) ?? {
     stroke: defaultStroke,
-    strokeWidth: '1',
+    strokeWidth: '2px',
   }
 
   const color = style.stroke
-  const newProps = { ...props, color }
+  const fade = style.strokeWidth === '0' ? true : false
+  const newProps = { ...props, color, fade }
 
   return <Edge {...newProps} />
 }
