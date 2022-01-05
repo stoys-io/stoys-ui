@@ -136,11 +136,14 @@ const CustomGraph = ({
               const isGroupOpenInboundEdge =
                 !isEdgeOutbound && (isTargetGroupOpen || isSourceGroupOpen)
 
+              const isGroupClosedInboundEdge =
+                !isEdgeOutbound && (!isTargetGroupOpen || !isSourceGroupOpen)
+
               if (isRegularEdge || isGroupOpenInboundEdge) {
                 return <ActualEdge key={edge.id} id={edge.id} path={getPath(x2, y2, x1, y1)} />
               }
 
-              if (!isEdgeOutbound && (sourceRootId || targetRootId)) {
+              if (isGroupClosedInboundEdge) {
                 // Inbound edge closed group
                 const { x: xRoot, y: yRoot } = sourceRootId
                   ? nodeIndex[sourceRootId].position
