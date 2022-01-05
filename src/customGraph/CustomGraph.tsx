@@ -132,7 +132,7 @@ const CustomGraph = ({
               const isTargetGroupOpen = targetGroupId && groups[targetGroupId]
               const isSourceGroupOpen = sourceGroupId && groups[sourceGroupId]
 
-              const isRegularEdge = !sourceRootId && !targetRootId
+              const isRegularEdge = !sourceGroupId && !targetGroupId
               const isGroupOpenInboundEdge =
                 !isEdgeOutbound && (isTargetGroupOpen || isSourceGroupOpen)
 
@@ -155,8 +155,13 @@ const CustomGraph = ({
 
               // TODO: This could have been simpler
               // Outbound edge:
-              const thisRootId = sourceRootId ? sourceRootId : targetRootId
-              const otherRootId = sourceRootId ? targetRootId : sourceRootId
+              const thisRootId = sourceRootId
+                ? sourceRootId ?? edge.source
+                : targetRootId ?? edge.target
+
+              const otherRootId = sourceRootId
+                ? targetRootId ?? edge.target
+                : sourceRootId ?? edge.source
 
               const thisGroupId = sourceGroupId ? sourceGroupId : targetGroupId
               const otherGroupId = sourceGroupId ? targetGroupId : sourceGroupId
@@ -164,7 +169,7 @@ const CustomGraph = ({
               const thisTable = sourceGroupId ? edge.source : edge.target
               const otherTable = sourceGroupId ? edge.target : edge.target
 
-              const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId!].position
+              const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId].position
 
               const step = 23
               const something = 5
@@ -190,6 +195,16 @@ const CustomGraph = ({
                 dPath = sourceRootId
                   ? getPath(x2, y2, xThisHandle, yThisHandle)
                   : getPath(xThisHandle, yThisHandle, x1, y1)
+
+                // TODO: Re-write
+                // Table list corner cases:
+                if (thisRootId === edge.target) {
+                  const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
+                  const x = xThisRoot
+                  const y =
+                    yThisRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
+                  dPath = getPath(x, y, x1, y1)
+                }
               }
 
               if (outboundCase2) {
@@ -202,6 +217,20 @@ const CustomGraph = ({
                 dPath = sourceRootId
                   ? getPath(xOtherHandle, yOtherHandle, xThisHandle, yThisHandle)
                   : getPath(xThisHandle, yThisHandle, xOtherHandle, yOtherHandle)
+
+                // TODO: Re-write
+                // Table list corner cases:
+                if (thisRootId === edge.target) {
+                  const x_handle2 = xThisRoot
+                  const y_handle2 =
+                    yThisRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
+
+                  const x_handle1 = xOtherRoot
+                  const y_handle1 =
+                    yOtherRoot - nodeHeight / 2 + headerSpace + step * (thisHandleIndex + 0.5)
+
+                  dPath = getPath(x_handle2, y_handle2, x_handle1, y_handle1)
+                }
               }
 
               if (outboundCase3) {
@@ -211,6 +240,7 @@ const CustomGraph = ({
               if (outboundCase4) {
                 const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
                 const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
+
                 const xOtherHandle = xOtherRoot
                 const yOtherHandle =
                   yOtherRoot - nodeHeight / 2 + headerSpace + step * (otherHandleIndex + 0.5)
@@ -218,6 +248,15 @@ const CustomGraph = ({
                 dPath = sourceRootId
                   ? getPath(xOtherHandle, yOtherHandle, x1, y1)
                   : getPath(x2, y2, xOtherHandle, yOtherHandle)
+
+                // TODO: Re-write
+                // Table list corner cases:
+                if (thisRootId === edge.target) {
+                  const x = xOtherRoot
+                  const y =
+                    yOtherRoot - nodeHeight / 2 + headerSpace + step * (thisHandleIndex + 0.5)
+                  dPath = getPath(x2, y2, x, y)
+                }
               }
 
               return <ActualEdge key={edge.id} id={edge.id} path={dPath} />
