@@ -28,7 +28,7 @@ export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientati
     if (isNode(el)) {
       dagreGraph.setNode(el.id, { width: NODE_WIDTH, height: NODE_HEIGHT })
 
-      // @ts-ignore // TODO: Fix interfaces
+      // @ts-ignore
       if (el.groupId && el.rootId === undefined) {
         /*
          * Create fake root group element, because we are not allowed to set edges on group elements
@@ -41,7 +41,7 @@ export const graphLayout = (elements: Array<Node | Edge>, orientation: Orientati
         })
       }
 
-      // @ts-ignore // TODO: Fix interfaces
+      // @ts-ignore
       if (el.rootId) {
         // @ts-ignore
         dagreGraph.setParent(el.id, `${el.id}-fake-root`)

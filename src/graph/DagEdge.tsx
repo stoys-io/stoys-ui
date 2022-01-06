@@ -1,18 +1,19 @@
 import React, { useCallback } from 'react'
 import { useGraphStore } from '../graph-common/store'
 import { Edge, EdgeProps } from '../CustomGraph'
+import { DEFAULT_STROKE } from '../graph-common/constants'
 
-const defaultStroke = '#b1b1b7'
 const DagEdge = (props: EdgeProps) => {
   const style = useGraphStore(
     useCallback(state => state.highlights.edges[props.id], [props.id])
   ) ?? {
-    stroke: defaultStroke,
-    strokeWidth: '1',
+    stroke: DEFAULT_STROKE,
+    strokeWidth: '2px',
   }
 
   const color = style.stroke
-  const newProps = { ...props, color }
+  const fade = style.strokeWidth === '0' ? true : false
+  const newProps = { ...props, color, fade }
 
   return <Edge {...newProps} />
 }

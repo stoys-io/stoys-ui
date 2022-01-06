@@ -1,16 +1,16 @@
 import React, { CSSProperties, useRef } from 'react'
 
 import GroupStateProvider, { useStore } from './GroupStateProvider'
-import { getBubbleSetPath } from './bubbleset'
 
-import { Edge, NodePosition, DefaultNode } from './components'
+import { Edge, NodePosition, DefaultNode, BubbleSet } from './components'
 import { ANIMATION_TIMEOUT } from './constants'
-import { colors } from './colors'
 import { createEdgePath } from './createEdgePath'
-import { GraphData, NodeData, EdgeProps } from './types'
+import { GraphData, NodeData, EdgeProps, NodeIndex, GroupIndex } from './types'
 import { graphLayout } from './graph-layout'
 
 import { usePanZoom } from './usePanZoom'
+import TableListNode from '../graph/TableListNode'
+import { edgePosition } from './edge-position'
 
 const CustomGraph = ({
   graph: g,
@@ -42,25 +42,36 @@ const CustomGraph = ({
     []
   )
 
-  const bubbleKeys = !bubbleSets ? [] : Object.keys(bubbleSets)
-  const bubbleSetsList = !bubbleSets
+  const groupIndex = graph.nodes.reduce((acc: GroupIndex, node: NodeData): GroupIndex => {
+    if (!node.groupId) {
+      return acc
+    }
+
+    if (!acc[node.groupId]) {
+      return { ...acc, [node.groupId]: [node.id] }
+    }
+
+    return { ...acc, [node.groupId]: [...acc[node.groupId], node.id] }
+  }, {})
+
+  const bubbleSetList = !bubbleSets
     ? []
-    : bubbleKeys.map(key => {
-        const nodeSetList = bubbleSets[key]
-        const bubbleNodes = nodeSetList.map(item => {
+    : Object.values(bubbleSets).map(nodeList => {
+        const bubbleNodes = nodeList.map(item => {
           const position = nodeIndex[item].position
           return { ...position, width: nodeWidth, height: nodeHeight }
         })
 
         const bubbleOtherNodes = graph.nodes
-          .filter(node => !nodeSetList.includes(node.id))
+          .filter(node => !nodeList.includes(node.id))
           .map(node => {
             const position = node.position
             return { ...position, width: nodeWidth, height: nodeHeight }
           })
 
-        return getBubbleSetPath(bubbleNodes, bubbleOtherNodes)
+        return { nodes: bubbleNodes, otherNodes: bubbleOtherNodes }
       })
+
   const getPath = createEdgePath(nodeWidth, nodeHeight)
 
   const ActualEdge = edgeComponent ? edgeComponent : Edge
@@ -102,95 +113,13 @@ const CustomGraph = ({
         >
           <g>
             {graph.edges.map(edge => {
-              const {
-                position: { x: x1, y: y1 },
-                rootId: sourceRootId,
-                groupId: sourceGroupId,
-              } = nodeIndex[edge.source]
-              const {
-                position: { x: x2, y: y2 },
-                rootId: targetRootId,
-                groupId: targetGroupId,
-              } = nodeIndex[edge.target]
+              const { position, isHidden } = edgePosition(edge, nodeIndex, groups, groupIndex)
+              const dPath = getPath(...position)
 
-              // Group edges:
-              const isEdgeOutbound = sourceGroupId !== targetGroupId
-              const isTargetGroupOpen = targetGroupId && groups[targetGroupId]
-              const isSourceGroupOpen = sourceGroupId && groups[sourceGroupId]
-
-              const isRegularEdge = !sourceRootId && !targetRootId
-              const isGroupOpenInboundEdge =
-                !isEdgeOutbound && (isTargetGroupOpen || isSourceGroupOpen)
-
-              if (isRegularEdge || isGroupOpenInboundEdge) {
-                return <ActualEdge key={edge.id} id={edge.id} path={getPath(x2, y2, x1, y1)} />
-              }
-
-              if (!isEdgeOutbound && (sourceRootId || targetRootId)) {
-                // Inbound edge closed group
-                const { x: xRoot, y: yRoot } = sourceRootId
-                  ? nodeIndex[sourceRootId].position
-                  : nodeIndex[targetRootId!].position
-
-                const dPath = sourceRootId
-                  ? getPath(x2, y2, xRoot, yRoot)
-                  : getPath(xRoot, yRoot, x1, y1)
-
-                return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade />
-              }
-
-              // TODO: This could have been simpler
-              // Outbound edge:
-              const thisRootId = sourceRootId ? sourceRootId : targetRootId
-              const otherRootId = sourceRootId ? targetRootId : sourceRootId
-
-              const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId!].position
-
-              const thisGroupOpen = sourceRootId ? isSourceGroupOpen : isTargetGroupOpen
-              const otherNodeVisible = sourceRootId
-                ? targetGroupId === undefined || isTargetGroupOpen
-                : sourceGroupId === undefined || isSourceGroupOpen
-
-              const outboundCase1 = !thisGroupOpen && otherNodeVisible
-              const outboundCase2 = !thisGroupOpen && !otherNodeVisible
-              const outboundCase3 = thisGroupOpen && otherNodeVisible
-              const outboundCase4 = thisGroupOpen && !otherNodeVisible
-
-              let dPath = ''
-              if (outboundCase1) {
-                dPath = sourceRootId
-                  ? getPath(x2, y2, xThisRoot, yThisRoot)
-                  : getPath(xThisRoot, yThisRoot, x1, y1)
-              }
-
-              if (outboundCase2) {
-                const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
-                dPath = sourceRootId
-                  ? getPath(xOtherRoot, yOtherRoot, xThisRoot, yThisRoot)
-                  : getPath(xThisRoot, yThisRoot, xOtherRoot, yOtherRoot)
-              }
-
-              if (outboundCase3) {
-                dPath = getPath(x2, y2, x1, y1)
-              }
-
-              if (outboundCase4) {
-                const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
-                dPath = sourceRootId
-                  ? getPath(xOtherRoot, yOtherRoot, x1, y1)
-                  : getPath(x2, y2, xOtherRoot, yOtherRoot)
-              }
-
-              return <ActualEdge key={edge.id} id={edge.id} path={dPath} />
+              return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade={isHidden} />
             })}
           </g>
-          {bubbleSetsList.length !== 0 && (
-            <g>
-              {bubbleSetsList.map((dPath, idx) => (
-                <path key={idx} d={dPath} opacity={0.3} fill={colors[idx]} stroke="black" />
-              ))}
-            </g>
-          )}
+          <BubbleSet bubbleSetList={bubbleSetList} />
         </svg>
 
         <div>
@@ -222,11 +151,9 @@ const CustomGraph = ({
 
 const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidth }: ISubgraph) => {
   let nodes2 = nodes
-  let rootId: string | undefined = undefined
 
   if (!isOpen) {
     const rootNode = nodes.find(node => !node.rootId) || nodes[0]
-    rootId = rootNode.id
     nodes2 = nodes.map(node =>
       node.rootId
         ? {
@@ -237,33 +164,8 @@ const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidt
     )
   }
 
-  return (
-    <>
-      <SubgraphBox
-        nodes={nodes2}
-        isOpen={isOpen}
-        onToggle={onToggle}
-        nodeHeight={nodeHeight}
-        nodeWidth={nodeWidth}
-      />
-      {nodes2.map(node => (
-        <NodePosition key={node.id} position={node.position} fade={!isOpen && node.id !== rootId}>
-          {nodeComponent({
-            ...node,
-          })}
-        </NodePosition>
-      ))}
-    </>
-  )
-}
-
-interface ISubgraph extends ISubgraphBox {
-  nodeComponent: (props: NodeData) => JSX.Element
-}
-
-const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgraphBox) => {
-  const xs = nodes.map(n => n.position.x)
-  const ys = nodes.map(n => n.position.y)
+  const xs = nodes2.map(n => n.position.x)
+  const ys = nodes2.map(n => n.position.y)
 
   const gapX = 16
   const gapY = 16
@@ -278,6 +180,48 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
   const width = ex - sx + 2 * gapX
   const height = ey - sy + 2 * gapY
 
+  return (
+    <>
+      <SubgraphBox
+        left={left}
+        top={top}
+        width={width}
+        height={height}
+        isOpen={isOpen}
+        onToggle={onToggle}
+      />
+      {nodes2.map(node =>
+        !node.rootId && !isOpen ? (
+          <NodePosition key={node.id} position={node.position}>
+            <TableListNode
+              label={nodes2[0].groupId || ''}
+              tableList={nodes2.map(n => n.data?.label)}
+            />
+          </NodePosition>
+        ) : (
+          <NodePosition key={node.id} position={node.position} fade={!isOpen}>
+            {nodeComponent({
+              ...node,
+            })}
+          </NodePosition>
+        )
+      )}
+    </>
+  )
+}
+
+interface ISubgraph {
+  nodes: NodeData[]
+
+  isOpen: boolean
+  onToggle: () => void
+
+  nodeWidth: number
+  nodeHeight: number
+  nodeComponent: (props: NodeData) => JSX.Element
+}
+
+const SubgraphBox = ({ left, top, width, height, isOpen, onToggle }: ISubgraphBox) => {
   const openerStyle: CSSProperties = {
     position: 'absolute',
     right: 3,
@@ -306,11 +250,12 @@ const SubgraphBox = ({ nodes, isOpen, onToggle, nodeWidth, nodeHeight }: ISubgra
 }
 
 interface ISubgraphBox {
-  nodes: NodeData[]
+  left: number
+  top: number
+  width: number
+  height: number
   isOpen: boolean
   onToggle: () => void
-  nodeWidth: number
-  nodeHeight: number
 }
 
 const WrappedCustomGraph = (props: Props) => {
@@ -342,8 +287,4 @@ export interface Props {
 
 interface BubbleSets {
   [key: string]: string[]
-}
-
-interface NodeIndex {
-  [key: string]: NodeData
 }

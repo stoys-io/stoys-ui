@@ -27,3 +27,11 @@ export interface NodeGroups {
 }
 
 export { EdgeProps } from './components'
+
+export interface NodeIndex {
+  [key: string]: NodeData
+}
+
+export interface GroupIndex {
+  [key: string]: string[]
+}
