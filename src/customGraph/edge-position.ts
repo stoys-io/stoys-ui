@@ -55,14 +55,10 @@ export const edgePosition = (
   const otherTable = sourceGroupId ? edge.target : edge.target
 
   const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId].position
-
-  const step = 23
-  const something = 5
-  const headerSpace = 36 + something
   const thisHandleIndex = groupIndex[thisGroupId!].indexOf(thisTable)
 
   const xThisHandle = xThisRoot
-  const yThisHandle = yThisRoot - NODE_HEIGHT / 2 + headerSpace + step * (thisHandleIndex + 0.5)
+  const yThisHandle = shiftYHandle(yThisRoot, thisHandleIndex)
 
   const thisGroupOpen = sourceRootId ? isSourceGroupOpen : isTargetGroupOpen
   const otherNodeVisible = sourceRootId
@@ -85,7 +81,7 @@ export const edgePosition = (
     if (thisRootId === edge.target) {
       const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
       const x_handle = xThisRoot
-      const y_handle = yThisRoot - NODE_HEIGHT / 2 + headerSpace + step * (otherHandleIndex + 0.5)
+      const y_handle = shiftYHandle(yThisRoot, otherHandleIndex)
       position = [x_handle, y_handle, x1, y1]
     }
   }
@@ -94,8 +90,7 @@ export const edgePosition = (
     const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
     const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
     const xOtherHandle = xOtherRoot
-    const yOtherHandle =
-      yOtherRoot - NODE_HEIGHT / 2 + headerSpace + step * (otherHandleIndex + 0.5)
+    const yOtherHandle = shiftYHandle(yOtherRoot, otherHandleIndex)
 
     position = sourceRootId
       ? [xOtherHandle, yOtherHandle, xThisHandle, yThisHandle]
@@ -105,10 +100,10 @@ export const edgePosition = (
     // Table list corner cases:
     if (thisRootId === edge.target) {
       const x_handle2 = xThisRoot
-      const y_handle2 = yThisRoot - NODE_HEIGHT / 2 + headerSpace + step * (otherHandleIndex + 0.5)
+      const y_handle2 = shiftYHandle(yThisRoot, otherHandleIndex)
 
       const x_handle1 = xOtherRoot
-      const y_handle1 = yOtherRoot - NODE_HEIGHT / 2 + headerSpace + step * (thisHandleIndex + 0.5)
+      const y_handle1 = shiftYHandle(yOtherRoot, thisHandleIndex)
 
       position = [x_handle2, y_handle2, x_handle1, y_handle1]
     }
@@ -123,8 +118,7 @@ export const edgePosition = (
     const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
 
     const xOtherHandle = xOtherRoot
-    const yOtherHandle =
-      yOtherRoot - NODE_HEIGHT / 2 + headerSpace + step * (otherHandleIndex + 0.5)
+    const yOtherHandle = shiftYHandle(yOtherRoot, otherHandleIndex)
 
     position = sourceRootId
       ? [xOtherHandle, yOtherHandle, x1, y1]
@@ -134,7 +128,8 @@ export const edgePosition = (
     // Table list corner cases:
     if (thisRootId === edge.target) {
       const x_handle = xOtherRoot
-      const y_handle = yOtherRoot - NODE_HEIGHT / 2 + headerSpace + step * (thisHandleIndex + 0.5)
+      const y_handle = shiftYHandle(yOtherRoot, thisHandleIndex)
+
       position = [x2, y2, x_handle, y_handle]
     }
   }
@@ -148,3 +143,10 @@ interface EdgePosition {
 }
 
 type Pos = [x1: number, y1: number, x2: number, y2: number]
+
+// TODO: Remove hardcoded positions
+const step = 23
+const something = 5
+const headerSpace = 36 + something
+const shiftYHandle = (y: number, index: number) =>
+  y - NODE_HEIGHT / 2 + headerSpace + step * (index + 0.5)
