@@ -55,7 +55,11 @@ const ProfilerSummary = ({ data, config = {} }: ProfilerSummaryProps): JSX.Eleme
     return <CardTitle name={name} type={type} />
   }
 
-  return <ProfilerSummaryWrapper height="auto">{renderCard()}</ProfilerSummaryWrapper>
+  return (
+    <ProfilerSummaryWrapper height={config.height ? `${config.height}px` : 'auto'}>
+      {renderCard()}
+    </ProfilerSummaryWrapper>
+  )
 }
 
 function getPercentageValue(value: number) {

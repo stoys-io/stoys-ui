@@ -8,6 +8,7 @@ export const ProfilerSummaryWrapper = styled.div<{ height: string }>`
 
 export const ProfilerSummaryTitle = styled.h1`
   font-size: 0.9em;
+  line-height: 1;
   margin-bottom: 0;
 `
 

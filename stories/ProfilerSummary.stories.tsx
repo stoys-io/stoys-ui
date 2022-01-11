@@ -57,7 +57,7 @@ FewExamplesProfilerSummary.args = {
     {
       data: dateData,
       config: {
-        height: 200,
+        height: 100,
       },
     },
     {
