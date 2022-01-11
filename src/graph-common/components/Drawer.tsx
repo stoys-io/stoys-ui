@@ -50,6 +50,19 @@ const Drawer = ({ children, visible, containerRef }: Props) => {
     }
   }, [isResizing, drawerHeight])
 
+  const debouncedHeight = useDebounce(drawerHeight)
+
+  const childrenWithHeight = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, {
+        drawerHeight: debouncedHeight,
+        key: typeof child.type === 'string' ? child.type : child.type.name,
+      })
+    }
+
+    return child
+  })
+
   useEffect(() => {
     // Set initial height of 40% of Container
     if (containerRef?.current) {
@@ -70,7 +83,7 @@ const Drawer = ({ children, visible, containerRef }: Props) => {
       headerStyle={headerStyle}
       bodyStyle={bodyStyle}
     >
-      {children}
+      {childrenWithHeight}
     </AntDrawer>
   )
 }
@@ -87,3 +100,19 @@ const threshold = RESIZE_AREA_HEIGHT + 150
 
 const bodyStyle = { padding: 0 }
 const headerStyle = { padding: 0 }
+
+export function useDebounce<T>(value: T, delay = 300) {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value])
+
+  return debouncedValue
+}

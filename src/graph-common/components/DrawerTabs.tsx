@@ -10,7 +10,7 @@ import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../s
 
 const { TabPane } = Tabs
 
-const DrawerTabs = () => {
+const DrawerTabs = ({ drawerHeight }: { drawerHeight?: number }) => {
   const dispatch = useGraphDispatch()
 
   const drawerNodeId = useGraphStore(state => state.drawerNodeId)
@@ -125,6 +125,8 @@ const DrawerTabs = () => {
 
               showSearch: false,
               smallSize: true,
+
+              height: drawerHeight,
             }}
           />
         ) : (
@@ -146,6 +148,8 @@ const DrawerTabs = () => {
     </Tabs>
   )
 }
+
+DrawerTabs.displayName = 'DrawerTabs'
 
 export default DrawerTabs
 
