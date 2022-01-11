@@ -187,12 +187,19 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
             .style('border', '1px solid #000')
             .html(() => {
               return tooltipValues
-                .map(
-                  value =>
-                    `<div>${colorBadge(value.color)} ${value.low} - ${value.high} <b>${
-                      value.count
-                    }</b></div>`
-                )
+                .map(value => {
+                  let low: string | number = value.low
+                  let high: string | number = value.high
+
+                  if (dataType === 'timestamp') {
+                    low = transformSecondsToDate(low, 'date')
+                    high = transformSecondsToDate(high, 'date')
+                  }
+
+                  return `<div>${colorBadge(value.color)} ${low} - ${high} <b>${
+                    value.count
+                  }</b></div>`
+                })
                 .join('')
             })
 
