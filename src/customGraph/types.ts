@@ -15,9 +15,10 @@ export interface EdgeData {
   id: string
   source: string
   target: string
+  points?: Position[] // Control points
 }
 
-interface Position {
+export interface Position {
   x: number
   y: number
 }

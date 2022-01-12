@@ -1,5 +1,5 @@
 import dagre from 'dagre'
-import { GraphData, NodeGroups } from './types'
+import { EdgeData, GraphData, NodeData, NodeGroups } from './types'
 
 const ranksep = 64
 const nodesep = 16
@@ -53,16 +53,28 @@ export const graphLayout = (
   const t1 = performance.now()
   console.info(`Layout calculation took ${(t1 - t0).toFixed(2)} milliseconds.`)
 
-  const newNodes = graph.nodes.map(node => {
+  const newNodes = graph.nodes.map((node: NodeData): NodeData => {
     const nodeWithPosition = dagreGraph.node(node.id)
     return {
       ...node,
       position: {
-        x: nodeWithPosition.x - nodeWidth / 2 + startX,
-        y: nodeWithPosition.y - nodeHeight / 2 + startY,
+        x: nodeWithPosition.x + startX,
+        y: nodeWithPosition.y + startY,
       },
     }
   })
 
-  return { ...graph, nodes: newNodes }
+  const newEdges = graph.edges.map((edge: EdgeData): EdgeData => {
+    const { points: p } = dagreGraph.edge(edge.source, edge.target)
+    const points = p.map(point => ({
+      x: point.x + startX,
+      y: point.y + startY,
+    }))
+    return {
+      ...edge,
+      points,
+    }
+  })
+
+  return { ...graph, edges: newEdges, nodes: newNodes }
 }

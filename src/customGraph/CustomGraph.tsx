@@ -4,7 +4,7 @@ import GroupStateProvider, { useStore } from './GroupStateProvider'
 
 import { Edge, NodePosition, DefaultNode, BubbleSet } from './components'
 import { ANIMATION_TIMEOUT } from './constants'
-import { createEdgePath } from './createEdgePath'
+import { createEdgePath, createEdgePath2, transformControlPoint } from './createEdgePath'
 import { GraphData, NodeData, EdgeProps, NodeIndex, GroupIndex } from './types'
 import { graphLayout } from './graph-layout'
 
@@ -73,6 +73,7 @@ const CustomGraph = ({
       })
 
   const getPath = createEdgePath(nodeWidth, nodeHeight)
+  const getPath2 = createEdgePath2(nodeWidth, nodeHeight)
 
   const ActualEdge = edgeComponent ? edgeComponent : Edge
   const ActualNode = nodeComponent ? nodeComponent : DefaultNode
@@ -115,8 +116,29 @@ const CustomGraph = ({
             {graph.edges.map(edge => {
               const { position, isHidden } = edgePosition(edge, nodeIndex, groups, groupIndex)
               const dPath = getPath(...position)
+              const dPath2 = edge.points ? getPath2(...position, edge.points) : ''
 
-              return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade={isHidden} />
+              console.log({ dPath2 })
+              return (
+                <>
+                  {edge.points
+                    ?.map(point =>
+                      transformControlPoint({
+                        x: point.x,
+                        y: point.y,
+                        x1: position[0],
+                        x2: position[2],
+                        nodeWidth,
+                        nodeHeight,
+                      })
+                    )
+                    .map(point => (
+                      <circle cx={point.x} cy={point.y} r={5} fill="blue" />
+                    ))}
+                  <Edge key={`curvedEdge-${edge.id}`} id={edge.id} path={dPath2} color="red" />
+                  <ActualEdge key={edge.id} id={edge.id} path={dPath} fade={isHidden} />
+                </>
+              )
             })}
           </g>
           <BubbleSet bubbleSetList={bubbleSetList} />
