@@ -1,20 +1,19 @@
 import { NODE_HEIGHT } from '../graph-common/constants'
-import { EdgeData, GroupIndex, NodeGroups, NodeIndex } from './types'
+import { EdgeData, GroupIndex, NodeGroups, NodeIndex, Position } from './types'
 
 export const edgePosition = (
   edge: EdgeData,
   nodeIndex: NodeIndex,
   groups: NodeGroups,
-  groupIndex: GroupIndex
+  groupIndex: GroupIndex,
+  groupPosition: (groupId: string) => Position
 ): EdgePosition => {
   const {
     position: { x: x1, y: y1 },
-    rootId: sourceRootId,
     groupId: sourceGroupId,
   } = nodeIndex[edge.source]
   const {
     position: { x: x2, y: y2 },
-    rootId: targetRootId,
     groupId: targetGroupId,
   } = nodeIndex[edge.target]
 
@@ -34,34 +33,31 @@ export const edgePosition = (
 
   if (isGroupClosedInboundEdge) {
     // Inbound edge closed group
-    const { x: xRoot, y: yRoot } = sourceRootId
-      ? nodeIndex[sourceRootId].position
-      : nodeIndex[targetRootId!].position
+    const { x: xRoot, y: yRoot } = sourceGroupId
+      ? groupPosition(sourceGroupId)
+      : groupPosition(targetGroupId!)
 
-    const position: Pos = sourceRootId ? [x2, y2, xRoot, yRoot] : [xRoot, yRoot, x1, y1]
+    const position: Pos = sourceGroupId ? [x2, y2, xRoot, yRoot] : [xRoot, yRoot, x1, y1]
 
     return { position, isHidden: true }
   }
 
   // TODO: This could have been simpler
   // Outbound edge:
-  const thisRootId = sourceRootId ? sourceRootId ?? edge.source : targetRootId ?? edge.target
-  const otherRootId = sourceRootId ? targetRootId ?? edge.target : sourceRootId ?? edge.source
-
   const thisGroupId = sourceGroupId ? sourceGroupId : targetGroupId
   const otherGroupId = sourceGroupId ? targetGroupId : sourceGroupId
 
   const thisTable = sourceGroupId ? edge.source : edge.target
   const otherTable = sourceGroupId ? edge.target : edge.target
 
-  const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId].position
+  const { x: xThisRoot, y: yThisRoot } = groupPosition(thisGroupId!)
   const thisHandleIndex = groupIndex[thisGroupId!].indexOf(thisTable)
 
   const xThisHandle = xThisRoot
   const yThisHandle = shiftYHandle(yThisRoot, thisHandleIndex)
 
-  const thisGroupOpen = sourceRootId ? isSourceGroupOpen : isTargetGroupOpen
-  const otherNodeVisible = sourceRootId
+  const thisGroupOpen = sourceGroupId ? isSourceGroupOpen : isTargetGroupOpen
+  const otherNodeVisible = sourceGroupId
     ? targetGroupId === undefined || isTargetGroupOpen
     : sourceGroupId === undefined || isSourceGroupOpen
 
@@ -72,13 +68,13 @@ export const edgePosition = (
 
   let position: Pos = [0, 0, 0, 0]
   if (outboundCase1) {
-    position = sourceRootId
+    position = sourceGroupId
       ? [x2, y2, xThisHandle, yThisHandle]
       : [xThisHandle, yThisHandle, x1, y1]
 
     // TODO: Re-write
     // Table list corner cases:
-    if (thisRootId === edge.target) {
+    if (thisGroupId === targetGroupId) {
       const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
       const x_handle = xThisRoot
       const y_handle = shiftYHandle(yThisRoot, otherHandleIndex)
@@ -87,18 +83,18 @@ export const edgePosition = (
   }
 
   if (outboundCase2) {
-    const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
+    const { x: xOtherRoot, y: yOtherRoot } = groupPosition(otherGroupId!)
     const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
     const xOtherHandle = xOtherRoot
     const yOtherHandle = shiftYHandle(yOtherRoot, otherHandleIndex)
 
-    position = sourceRootId
+    position = sourceGroupId
       ? [xOtherHandle, yOtherHandle, xThisHandle, yThisHandle]
       : [xThisHandle, yThisHandle, xOtherHandle, yOtherHandle]
 
     // TODO: Re-write
     // Table list corner cases:
-    if (thisRootId === edge.target) {
+    if (thisGroupId === targetGroupId) {
       const x_handle2 = xThisRoot
       const y_handle2 = shiftYHandle(yThisRoot, otherHandleIndex)
 
@@ -114,19 +110,19 @@ export const edgePosition = (
   }
 
   if (outboundCase4) {
-    const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
+    const { x: xOtherRoot, y: yOtherRoot } = groupPosition(otherGroupId!)
     const otherHandleIndex = groupIndex[otherGroupId!].indexOf(otherTable)
 
     const xOtherHandle = xOtherRoot
     const yOtherHandle = shiftYHandle(yOtherRoot, otherHandleIndex)
 
-    position = sourceRootId
+    position = sourceGroupId
       ? [xOtherHandle, yOtherHandle, x1, y1]
       : [x2, y2, xOtherHandle, yOtherHandle]
 
     // TODO: Re-write
     // Table list corner cases:
-    if (thisRootId === edge.target) {
+    if (thisGroupId === targetGroupId) {
       const x_handle = xOtherRoot
       const y_handle = shiftYHandle(yOtherRoot, thisHandleIndex)
 

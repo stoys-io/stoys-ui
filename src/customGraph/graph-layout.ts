@@ -23,22 +23,16 @@ export const graphLayout = (
     ranker: 'longest-path',
   })
 
-  graph.nodes.forEach(node => {
-    if (node.groupId && groups[node.groupId] && node.rootId === undefined) {
-      /*
-       * Create fake root group element, because we are not allowed to set edges on group elements
-       * related issues:
-       * - https://github.com/dagrejs/dagre-d3/issues/319
-       * - https://github.com/dagrejs/dagre/issues/236
-       */
-      dagreGraph.setNode(`${node.id}-fake-root`, {
-        label: `${node.id}-fake-root`,
-      })
-    }
+  const groupList = Object.keys(groups)
+  groupList.forEach(group => {
+    dagreGraph.setNode(`group-${group}`, {
+      label: `group-${group}`,
+    })
+  })
 
-    if (node.groupId && groups[node.groupId] && node.rootId) {
-      // @ts-ignore
-      dagreGraph.setParent(node.id, `${node.id}-fake-root`)
+  graph.nodes.forEach(node => {
+    if (node.groupId && groups[node.groupId]) {
+      dagreGraph.setParent(node.id, `group-${node.groupId}`)
     }
 
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })

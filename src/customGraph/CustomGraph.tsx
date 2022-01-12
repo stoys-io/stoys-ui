@@ -27,22 +27,7 @@ const CustomGraph = ({
   const groups = useStore(state => state.groups)
   const toggleGroup = useStore(state => state.toggleGroup)
 
-  const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight, groups) : g
-  const nodeIndex: NodeIndex = graph.nodes.reduce(
-    (acc, node) => ({
-      ...acc,
-      [node.id]: node,
-    }),
-    {}
-  )
-
-  const plainNodes = graph.nodes.filter(node => node.groupId === undefined)
-  const subGroups = graph.nodes.reduce(
-    (acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc),
-    []
-  )
-
-  const groupIndex = graph.nodes.reduce((acc: GroupIndex, node: NodeData): GroupIndex => {
+  const groupIndex = g.nodes.reduce((acc: GroupIndex, node: NodeData): GroupIndex => {
     if (!node.groupId) {
       return acc
     }
@@ -53,6 +38,38 @@ const CustomGraph = ({
 
     return { ...acc, [node.groupId]: [...acc[node.groupId], node.id] }
   }, {})
+
+  const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight, groups) : g
+  const nodeIndex: NodeIndex = graph.nodes.reduce(
+    (acc, node) => ({
+      ...acc,
+      [node.id]: node,
+    }),
+    {}
+  )
+
+  const groupPosition = (groupId: string) => {
+    const groupNodes = groupIndex[groupId]
+
+    const xs = groupNodes.map(nodeId => nodeIndex[nodeId].position.x)
+    const ys = groupNodes.map(nodeId => nodeIndex[nodeId].position.y)
+
+    const sx = Math.min(...xs)
+    const sy = Math.min(...ys)
+    const ex = Math.max(...xs) + nodeWidth
+    const ey = Math.max(...ys) + nodeHeight
+
+    const cx = (ex - sx) / 2
+    const cy = (ey - sy) / 2
+
+    return { x: cx, y: cy }
+  }
+
+  const plainNodes = graph.nodes.filter(node => node.groupId === undefined)
+  const subGroups = graph.nodes.reduce(
+    (acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc),
+    []
+  )
 
   const bubbleSetList = !bubbleSets
     ? []
@@ -113,7 +130,13 @@ const CustomGraph = ({
         >
           <g>
             {graph.edges.map(edge => {
-              const { position, isHidden } = edgePosition(edge, nodeIndex, groups, groupIndex)
+              const { position, isHidden } = edgePosition(
+                edge,
+                nodeIndex,
+                groups,
+                groupIndex,
+                groupPosition
+              )
               const dPath = getPath(...position)
 
               return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade={isHidden} />
@@ -150,22 +173,8 @@ const CustomGraph = ({
 }
 
 const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidth }: ISubgraph) => {
-  let nodes2 = nodes
-
-  if (!isOpen) {
-    const rootNode = nodes.find(node => !node.rootId) || nodes[0]
-    nodes2 = nodes.map(node =>
-      node.rootId
-        ? {
-            ...node,
-            position: { x: rootNode.position.x, y: rootNode.position.y },
-          }
-        : node
-    )
-  }
-
-  const xs = nodes2.map(n => n.position.x)
-  const ys = nodes2.map(n => n.position.y)
+  const xs = nodes.map(n => n.position.x)
+  const ys = nodes.map(n => n.position.y)
 
   const gapX = 16
   const gapY = 16
@@ -174,6 +183,16 @@ const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidt
   const sy = Math.min(...ys)
   const ex = Math.max(...xs) + nodeWidth
   const ey = Math.max(...ys) + nodeHeight
+
+  const cx = (ex - sx) / 2
+  const cy = (ey - sy) / 2
+
+  const nodes2 = isOpen
+    ? nodes
+    : nodes.map(node => ({
+        ...node,
+        position: { x: cx, y: cy },
+      }))
 
   const left = sx - gapX
   const top = sy - gapY
@@ -190,21 +209,18 @@ const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidt
         isOpen={isOpen}
         onToggle={onToggle}
       />
-      {nodes2.map(node =>
-        !node.rootId && !isOpen ? (
-          <NodePosition key={node.id} position={node.position}>
-            <TableListNode
-              label={nodes2[0].groupId || ''}
-              tableList={nodes2.map(n => n.data?.label)}
-            />
-          </NodePosition>
-        ) : (
+      {!isOpen ? (
+        <NodePosition key={`table-list-${nodes2[0].groupId!}`} position={{ x: cx, y: cy }}>
+          <TableListNode label={nodes2[0].groupId!} tableList={nodes2.map(n => n.data?.label)} />
+        </NodePosition>
+      ) : (
+        nodes2.map(node => (
           <NodePosition key={node.id} position={node.position} fade={!isOpen}>
             {nodeComponent({
               ...node,
             })}
           </NodePosition>
-        )
+        ))
       )}
     </>
   )

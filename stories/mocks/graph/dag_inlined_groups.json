@@ -99,7 +99,6 @@
       "measures": {
         "rows": 5650
       },
-      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
       "groupId": "covid_data"
     },
     {
@@ -150,7 +149,6 @@
       "measures": {
         "rows": 109546
       },
-      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
       "groupId": "covid_data"
     },
     {
@@ -181,8 +179,7 @@
       "measures": {
         "rows": 195
       },
-      "groupId": "group",
-      "rootId": "298f9962-1daa-4426-925e-67e0670bf90d"
+      "groupId": "group"
     },
     {
       "id": "c2f5577c-7440-422f-bf89-9119d8b6a194",
@@ -248,7 +245,6 @@
       "measures": {
         "rows": 45865
       },
-      "rootId": "aa646e52-23c2-4ec4-9938-c857a8b881e1",
       "groupId": "covid_data"
     },
     {
@@ -354,8 +350,7 @@
       "id": "locations2_csv",
       "name": "locations2_csv",
       "dependencies": ["c2f5577c-7440-422f-bf89-9119d8b6a194"],
-      "groupId": "group",
-      "rootId": "298f9962-1daa-4426-925e-67e0670bf90d"
+      "groupId": "group"
     }
   ]
 }

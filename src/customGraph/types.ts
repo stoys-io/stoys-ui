@@ -8,7 +8,6 @@ export interface NodeData<T = any> {
   position: Position
   data?: T
   groupId?: string
-  rootId?: string
 }
 
 export interface EdgeData {
@@ -17,7 +16,7 @@ export interface EdgeData {
   target: string
 }
 
-interface Position {
+export interface Position {
   x: number
   y: number
 }
