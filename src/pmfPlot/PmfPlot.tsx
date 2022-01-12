@@ -82,7 +82,7 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
             g
               .append('text')
               .attr('x', width - margin.right)
-              .attr('y', 27)
+              .attr('y', 20)
               .attr('fill', 'currentColor')
               .attr('text-anchor', 'end')
           )

@@ -1,6 +1,8 @@
 import styled from '@emotion/styled'
 
 export const ProfilerSummaryWrapper = styled.div<{ height: string }>`
+  display: flex;
+  flex-direction: column;
   height: ${props => (props.height ? props.height : 'inherit')};
   padding: 2px;
   overflow: auto;
