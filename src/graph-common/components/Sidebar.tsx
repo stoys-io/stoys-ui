@@ -5,7 +5,7 @@ import Select from 'antd/lib/select'
 import Checkbox from 'antd/lib/checkbox'
 
 import SidebarSearch, { OnSearch } from './SidebarSearch'
-import { ScrollableSelect } from './ScrollableSelect'
+import ScrollableSelect from './ScrollableSelect'
 
 import { SidebarWrapper, SidebarContentWrapper, MenuTitle } from '../styles'
 import { ChromaticScale, TableMetric, Highlight, ColumnMetric } from '../model'
@@ -17,9 +17,9 @@ import {
   setBaseRelease,
   setHighlightMode,
   setCountNormalize,
-} from '../graph-store'
+} from '../store'
 
-export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => {
+const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => {
   const dispatch = useGraphDispatch()
   const tableMetric = useGraphStore(state => state.tableMetric)
   const columnMetric = useGraphStore(state => state.columnMetric)
@@ -89,6 +89,8 @@ export const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => 
     </SidebarWrapper>
   )
 }
+
+export default Sidebar
 
 interface Props {
   onSearch: OnSearch

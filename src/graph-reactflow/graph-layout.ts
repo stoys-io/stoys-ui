@@ -1,7 +1,7 @@
 import { Edge, isNode, Node, Position } from 'react-flow-renderer'
 import dagre from 'dagre'
-import { NODE_HEIGHT, NODE_WIDTH } from './constants'
-import { Orientation } from './model'
+import { NODE_HEIGHT, NODE_WIDTH } from '../graph-common/constants'
+import { Orientation } from '../graph-common/model'
 
 const nodeWidth = NODE_WIDTH
 const nodeHeight = NODE_HEIGHT

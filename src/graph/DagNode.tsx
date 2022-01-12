@@ -10,32 +10,35 @@ import {
   NODE_TEXT_COLOR,
   TRANSPARENT_NODE_TEXT_COLOR,
   GREY_ACCENT,
-} from '../graph/constants'
+} from '../graph-common/constants'
 
 import { formatPercentage, renderNumericValue } from '../helpers'
-import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../graph/model'
-import { ItemContent, ItemText, ItemExtra, ScrollCard, ScrollCardTitle } from '../graph/styles'
+import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../graph-common/model'
+import {
+  ItemContent,
+  ItemText,
+  ItemExtra,
+  ScrollCard,
+  ScrollCardTitle,
+} from '../graph-common/styles'
 import {
   useGraphStore,
   GraphStore,
   setHighlightedColumns,
   useGraphDispatch,
-} from '../graph/graph-store'
-import { getMetricsColumnColor } from '../graph/graph-ops'
+} from '../graph-common/store'
+import { getMetricsColumnColor } from '../graph-common/ops'
 
 interface Props {
   id: string
-  data: NodeDataPayload
   onClick: (id: string) => void
   onDoubleClick: (id: string) => void
+  data?: NodeDataPayload
 }
 
-export const DagNode = ({
-  id,
-  data: { label, columns, violations, partitions },
-  onClick,
-  onDoubleClick,
-}: Props): JSX.Element => {
+export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Element => {
+  const data = d ? d : defaultData
+  const { label, columns, violations, partitions } = data
   const dispatch = useGraphDispatch()
 
   const style = useGraphStore(useCallback(state => state.highlights.nodes[id], [id]))
@@ -236,3 +239,5 @@ const formatColumnMetric = (val: number | string) => (typeof val === 'number' ? 
 
 const formatColumnDataType = (data_type: NodeColumnDataType) =>
   `${data_type.type}${data_type.nullable ? '?' : ''}`
+
+const defaultData = { label: 'no data', columns: [], violations: 0, partitions: 0 }

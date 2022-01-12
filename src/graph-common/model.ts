@@ -1,8 +1,21 @@
 import { JoinRatesData } from '../joinRates/model'
 import { Dataset as ProfilerData } from '../profiler/model'
 import { QualityData } from '../quality'
-import { Node as Node0, Edge as Edge0 } from 'react-flow-renderer'
 import { RawAggSumDataItemData } from '../aggSum/model'
+
+export interface Node {
+  id: string
+  position: Position
+  data: NodeDataPayload
+  type: 'dagNode'
+  groupId?: string
+  rootId?: string
+}
+
+interface Position {
+  x: number
+  y: number
+}
 
 export interface NodeDataPayload {
   label: string
@@ -11,25 +24,17 @@ export interface NodeDataPayload {
   columns: Column[]
 }
 
-// Same as React-flow Node, but the data is required
-interface DataNode<T> extends Node0<T> {
-  data: T
-}
-
-export interface Node extends DataNode<NodeDataPayload> {
-  groupId?: string
-  rootId?: string
+export interface Edge {
+  id: string
+  data: EdgeDataPayload
+  source: string
+  target: string
+  type: 'dagEdge'
 }
 
 export interface EdgeDataPayload {
   rank: number
 }
-
-interface DataEdge<T> extends Edge0<T> {
-  data: T
-}
-
-export type Edge = DataEdge<EdgeDataPayload>
 
 export interface Graph {
   nodes: Node[]
