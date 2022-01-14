@@ -39,7 +39,11 @@ const CustomGraph = ({
     return { ...acc, [node.groupId]: [...acc[node.groupId], node.id] }
   }, {})
 
-  const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight, groups) : g
+  /* const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight, groups) : g */
+
+  const { graph, groupNodes: gn, rootNodes } = graphLayout(g, nodeWidth, nodeHeight, groups)
+  console.log(rootNodes)
+
   const nodeIndex: NodeIndex = graph.nodes.reduce(
     (acc, node) => ({
       ...acc,
@@ -152,6 +156,23 @@ const CustomGraph = ({
             </NodePosition>
           ))}
 
+          {gn.map(groupNode => (
+            <div onClick={() => toggleGroup(groupNode.group)}>
+              <NodePosition position={groupNode.position} key={groupNode.id}>
+                <DefaultNode width={groupNode.width} height={groupNode.height} />
+              </NodePosition>
+            </div>
+          ))}
+
+          {rootNodes.map(rootNode => (
+            <NodePosition position={rootNode.position} key={rootNode.id}>
+              <TableListNode
+                label={rootNode.group}
+                tableList={groupIndex[rootNode.group].map(nId => nodeIndex[nId].data?.label)}
+              />
+            </NodePosition>
+          ))}
+
           {subGroups.map((group, idx) => {
             const subgraph = graph.nodes.filter(node => node.groupId === group)
             return (
@@ -176,8 +197,9 @@ const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidt
   const xs = nodes.map(n => n.position.x)
   const ys = nodes.map(n => n.position.y)
 
-  const gapX = 16
-  const gapY = 16
+  /* const gapX = 16
+   * const gapY = 16
+   */
 
   const sx = Math.min(...xs)
   const sy = Math.min(...ys)
@@ -194,34 +216,27 @@ const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidt
         position: { x: cx, y: cy },
       }))
 
-  const left = sx - gapX
-  const top = sy - gapY
-  const width = ex - sx + 2 * gapX
-  const height = ey - sy + 2 * gapY
+  /* let left = sx - gapX
+* let top = sy - gapY
+* let width = ex - sx + 2 * gapX
+* let height = ey - sy + 2 * gapY
+
+* if (!isOpen) {
+*   left = cx - 1
+*   top = cy - gapY
+*   width = nodeWidth + 2
+*   height = nodeHeight + gapY
+* } */
 
   return (
     <>
-      <SubgraphBox
-        left={left}
-        top={top}
-        width={width}
-        height={height}
-        isOpen={isOpen}
-        onToggle={onToggle}
-      />
-      {!isOpen ? (
-        <NodePosition key={`table-list-${nodes2[0].groupId!}`} position={{ x: cx, y: cy }}>
-          <TableListNode label={nodes2[0].groupId!} tableList={nodes2.map(n => n.data?.label)} />
+      {nodes2.map(node => (
+        <NodePosition key={node.id} position={node.position} fade={!isOpen}>
+          {nodeComponent({
+            ...node,
+          })}
         </NodePosition>
-      ) : (
-        nodes2.map(node => (
-          <NodePosition key={node.id} position={node.position} fade={!isOpen}>
-            {nodeComponent({
-              ...node,
-            })}
-          </NodePosition>
-        ))
-      )}
+      ))}
     </>
   )
 }
