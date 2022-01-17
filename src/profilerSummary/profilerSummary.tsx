@@ -29,26 +29,20 @@ const ProfilerSummary = ({ data, config = {} }: ProfilerSummaryProps): JSX.Eleme
       const otherRows = percentageItems.slice(rows - 1)
 
       return (
-        <>
-          <CardTitle name={name} type={type} />
-          <ProfilerSummaryItems>
-            {visibleRows.map(row => (
-              <li key={row.item}>
-                {row.item}: {row.percentage}% <br />
-              </li>
-            ))}
-            <li>{otherRows.length ? `${otherRows.length} other values` : ''}</li>
-          </ProfilerSummaryItems>
-        </>
+        <ProfilerSummaryItems>
+          {visibleRows.map(row => (
+            <li key={row.item}>
+              {row.item}: {row.percentage}% <br />
+            </li>
+          ))}
+          <li>{otherRows.length ? `${otherRows.length} other values` : ''}</li>
+        </ProfilerSummaryItems>
       )
     }
 
     if (pmf?.length) {
       return (
-        <>
-          <CardTitle name={name} type={type} />
-          <PmfPlot dataset={[pmf]} config={{ height: '100%', showXAxis: true, dataType: type }} />
-        </>
+        <PmfPlot dataset={[pmf]} config={{ height: '100%', showXAxis: true, dataType: type }} />
       )
     }
 
@@ -57,6 +51,7 @@ const ProfilerSummary = ({ data, config = {} }: ProfilerSummaryProps): JSX.Eleme
 
   return (
     <ProfilerSummaryWrapper height={config.height ? `${config.height}px` : 'auto'}>
+      {config.showTitle ? <CardTitle name={name} type={type} /> : null}
       {renderCard()}
     </ProfilerSummaryWrapper>
   )

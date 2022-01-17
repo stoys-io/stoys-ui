@@ -40,7 +40,6 @@ const Table = ({ data, profiler }: { data: any; profiler: any }) => {
     },
     { key: 'summary' }
   )
-  console.log(_summary)
   const _data = [_summary, ...dataSource]
 
   return <AntdTable dataSource={_data} columns={columns} pagination={false} />

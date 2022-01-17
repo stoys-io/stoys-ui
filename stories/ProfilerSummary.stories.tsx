@@ -15,6 +15,7 @@ StringProfilerSummary.args = {
   data: stringData,
   config: {
     height: 80,
+    showTitle: true,
   },
 }
 StringProfilerSummary.storyName = 'string'
