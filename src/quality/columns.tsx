@@ -201,6 +201,7 @@ const getColumnOption =
     return {
       title: getColumnTitle(columnStats, column.name, column.name, rules),
       dataIndex: column.name,
+      key: column.name,
       // Antd: Cannot ellipsis table header with sorters and filters for now.
       sorter: defaultSort(column.name),
       render: (text: string, item: TableCellData) =>

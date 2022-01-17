@@ -3,7 +3,7 @@ import AntdTable from 'antd/lib/table'
 
 import ProfilerSummary from '../profilerSummary'
 
-const Table = ({ data, summary }: { data: any; summary: any }) => {
+const Table = ({ data, profiler }: { data: any; profiler: any }) => {
   const render = (value: any) => {
     if (typeof value === 'object') {
       return <ProfilerSummary data={value} config={{ height: 80 }} />
@@ -12,27 +12,27 @@ const Table = ({ data, summary }: { data: any; summary: any }) => {
     return value
   }
 
-  const columns = [
-    {
-      title: 'VendorID',
-      dataIndex: 'VendorID',
-      key: 'VendorID',
+  const columns = data.columns.map((item: { name: string }) => {
+    return {
+      title: item.name,
+      dataIndex: item.name,
+      key: item.name,
       render,
-    },
-    {
-      title: 'tpep_pickup_datetime',
-      dataIndex: 'tpep_pickup_datetime',
-      key: 'tpep_pickup_datetime',
-      render,
-    },
-    {
-      title: 'passengers',
-      dataIndex: 'passengers',
-      key: 'passengers',
-      render,
-    },
-  ]
-  const _summary = summary.reduce(
+    }
+  })
+
+  const dataSource = data.row_sample.map((item: any) => {
+    return item.row.reduce(
+      (acc: any, row: string, index: number) => {
+        acc[columns[index].key] = row
+
+        return acc
+      },
+      { key: Math.random() }
+    )
+  })
+
+  const _summary = profiler.columns.reduce(
     (s: any, item: any) => {
       s[item.name] = item
 
@@ -40,7 +40,8 @@ const Table = ({ data, summary }: { data: any; summary: any }) => {
     },
     { key: 'summary' }
   )
-  const _data = [_summary, ...data]
+  console.log(_summary)
+  const _data = [_summary, ...dataSource]
 
   return <AntdTable dataSource={_data} columns={columns} pagination={false} />
 }
