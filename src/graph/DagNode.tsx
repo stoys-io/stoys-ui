@@ -28,6 +28,7 @@ import {
   useGraphDispatch,
 } from '../graph-common/store'
 import { getMetricsColumnColor } from '../graph-common/ops'
+import TinyPmf from './TinyPmf'
 
 interface Props {
   id: string
@@ -65,7 +66,12 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
       : columns
 
   const columnMaxCount = (metric: ColumnMetric) => {
-    if (!metric.startsWith('count_') || metric === 'none' || metric === 'data_type') {
+    if (
+      !metric.startsWith('count_') ||
+      metric === 'none' ||
+      metric === 'data_type' ||
+      metric === 'pmf'
+    ) {
       return 1
     }
 
@@ -83,7 +89,7 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
       return RESET_COLOR
     }
 
-    if (columnMetric === 'none' || columnMetric === 'data_type') {
+    if (columnMetric === 'none' || columnMetric === 'data_type' || columnMetric === 'pmf') {
       return RESET_COLOR
     }
 
@@ -101,7 +107,7 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
       return RESET_COLOR
     }
 
-    if (columnMetric === 'none' || columnMetric === 'data_type') {
+    if (columnMetric === 'none' || columnMetric === 'data_type' || columnMetric === 'pmf') {
       return RESET_COLOR
     }
 
@@ -175,14 +181,26 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
           size="small"
           dataSource={_columns}
           renderItem={(column: Column) => {
-            const columnExtra = formatColumnExtra(column, columnMetric, countNormalize)
-            const columnExtraNoAverage = formatColumnExtra(
-              column,
-              columnMetric,
-              countNormalize,
-              false
-            )
-            const tooltip = `${column.name}: ${columnExtraNoAverage}`
+            let tooltip = ''
+            let columnExtra = null
+
+            if (columnMetric !== 'pmf') {
+              const columnExtraNoAverage = formatColumnExtra(
+                column,
+                columnMetric,
+                countNormalize,
+                false
+              )
+              tooltip = `${column.name}: ${columnExtraNoAverage}`
+
+              columnExtra = (
+                <ItemExtra>{formatColumnExtra(column, columnMetric, countNormalize)}</ItemExtra>
+              )
+            } else {
+              tooltip = ''
+              const pmfData = column.metrics?.['pmf'] ?? []
+              columnExtra = <TinyPmf dataset={[pmfData]} />
+            }
 
             return (
               <List.Item>
@@ -197,7 +215,7 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
                   >
                     {column.name}
                   </ItemText>
-                  <ItemExtra>{columnExtra}</ItemExtra>
+                  {columnExtra}
                 </ItemContent>
               </List.Item>
             )
