@@ -7,9 +7,10 @@ import { COLORS } from '../profiler/constants'
 import { getMargin } from '../common/chartHelpers'
 
 const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
-  const { height, color, showAxes, showLogScale } = config
+  const { height, color, showAxes, showLogScale, showXAxis, showYAxis } = config
 
-  const margin = getMargin(showAxes)
+  // TODO: add x and y axes
+  const margin = getMargin(showAxes, false, false)
 
   const chartData: Array<ChartDataItem> = dataset
     .map((data: Array<DiscreteItem>, index: number) => {
@@ -56,11 +57,28 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
 
       let xAxis: d3.Axis<string>
 
-      if (showAxes) {
+      if (showAxes || showXAxis) {
         const xAxis = d3
           .axisBottom(xScale)
           .ticks(width / 100)
           .tickSizeOuter(0)
+
+        svg
+          .append('g')
+          .attr('transform', `translate(0,${height - margin.bottom})`)
+          .attr('class', 'x-axis')
+          .call(xAxis)
+          .call(g =>
+            g
+              .append('text')
+              .attr('x', width - margin.right)
+              .attr('y', 27)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'end')
+          )
+      }
+
+      if (showAxes || showYAxis) {
         const yAxis = d3.axisLeft(yScale).ticks(height / 100)
 
         svg
@@ -83,20 +101,6 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
               .attr('y', 10)
               .attr('fill', 'currentColor')
               .attr('text-anchor', 'start')
-          )
-
-        svg
-          .append('g')
-          .attr('transform', `translate(0,${height - margin.bottom})`)
-          .attr('class', 'x-axis')
-          .call(xAxis)
-          .call(g =>
-            g
-              .append('text')
-              .attr('x', width - margin.right)
-              .attr('y', 27)
-              .attr('fill', 'currentColor')
-              .attr('text-anchor', 'end')
           )
       }
 
@@ -213,6 +217,8 @@ interface BarChartProps {
     color: Array<string>
     showAxes: boolean
     showLogScale: boolean
+    showXAxis?: boolean
+    showYAxis?: boolean
   }
 }
 

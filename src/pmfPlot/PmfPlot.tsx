@@ -1,18 +1,20 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import * as d3 from 'd3'
 
 import { useD3 } from '../hooks'
 import { COLORS } from '../profiler/constants'
 import { getMargin } from '../common/chartHelpers'
+import { ColumnType, PmfPlotItem } from '../profiler/model'
+import { transformSecondsToDate } from '../helpers'
 
-const PmfPlot = ({ dataset, config }: any) => {
-  const { height, color, showAxes, showLogScale } = config
+const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
+  const { height, color, showAxes, showXAxis, showYAxis, showLogScale, dataType } = config
 
-  const margin = getMargin(showAxes)
+  const margin = getMargin(!!showAxes, !!showXAxis, !!showYAxis)
 
-  const plotData: Array<any> = dataset
-    .map((data: any, index: number) => {
-      return data.map((dataItem: any) => ({
+  const plotData: Array<PlotData> = dataset
+    .map((data: Array<PmfPlotItem>, index: number) => {
+      return data.map((dataItem: PmfPlotItem) => ({
         ...dataItem,
         color: (Array.isArray(color) ? color[index] : color) || COLORS[index],
       }))
@@ -21,15 +23,15 @@ const PmfPlot = ({ dataset, config }: any) => {
 
   const ref = useD3(
     (svg: any) => {
-      const { width } = svg.node().getBoundingClientRect()
+      const { width, height: _height } = svg.node().getBoundingClientRect()
 
-      const lowValues = d3.map(plotData, (item: any) => item.low)
+      const lowValues = d3.map(plotData, (item: PlotData) => item.low)
       const minValue = d3.min(lowValues)
 
-      const highValues = d3.map(plotData, (item: any) => item.high)
+      const highValues = d3.map(plotData, (item: PlotData) => item.high)
       const maxValue = d3.max(highValues)
 
-      const barSimpleWidth = (width - margin.left - margin.right) / (maxValue - minValue)
+      const barSimpleWidth = (width - margin.left - margin.right) / (maxValue! - minValue!)
 
       const counts = d3.map(plotData, (item: any) => item.count)
       const maxCount = d3.max(counts)
@@ -38,15 +40,15 @@ const PmfPlot = ({ dataset, config }: any) => {
       const yType = showLogScale ? d3.scaleLog : d3.scaleLinear
 
       const xRange = [margin.left, width - margin.right] // [left, right]
-      const yRange = [height - margin.bottom, margin.top] // [bottom, top]
+      const yRange = [_height - margin.bottom, margin.top] // [bottom, top]
 
-      const xDomain = [minValue, maxValue]
+      const xDomain = [minValue!, maxValue!]
       const yDomain = [showLogScale ? 1 : 0, maxCount]
 
       const xScale = xType(xDomain, xRange)
       const yScale = yType(yDomain, yRange)
 
-      const _height = showLogScale ? yScale(1) : yScale(0)
+      const scaleHeight = showLogScale ? yScale(1) : yScale(0)
 
       const windowWidth = window.innerWidth
       const windowHeight = window.innerHeight
@@ -58,12 +60,36 @@ const PmfPlot = ({ dataset, config }: any) => {
 
       let xAxis: any
 
-      if (showAxes) {
+      if (showAxes || showXAxis) {
         xAxis = d3
           .axisBottom(xScale)
           .ticks(width / 100)
           .tickSizeOuter(0)
-        const yAxis = d3.axisLeft(yScale).ticks(height / 100)
+          .tickFormat(tick => {
+            if (dataType === 'timestamp') {
+              return `${transformSecondsToDate(tick as number, 'date')}`
+            }
+
+            return `${tick}`
+          })
+
+        svg
+          .append('g')
+          .attr('transform', `translate(0,${_height - margin.bottom})`)
+          .attr('class', 'x-axis')
+          .call(xAxis)
+          .call((g: any) =>
+            g
+              .append('text')
+              .attr('x', width - margin.right)
+              .attr('y', 20)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'end')
+          )
+      }
+
+      if (showAxes || showYAxis) {
+        const yAxis = d3.axisLeft(yScale).ticks(_height / 100)
 
         svg
           .append('g')
@@ -86,20 +112,6 @@ const PmfPlot = ({ dataset, config }: any) => {
               .attr('fill', 'currentColor')
               .attr('text-anchor', 'start')
           )
-
-        svg
-          .append('g')
-          .attr('transform', `translate(0,${height - margin.bottom})`)
-          .attr('class', 'x-axis')
-          .call(xAxis)
-          .call((g: any) =>
-            g
-              .append('text')
-              .attr('x', width - margin.right)
-              .attr('y', 27)
-              .attr('fill', 'currentColor')
-              .attr('text-anchor', 'end')
-          )
       }
 
       svg
@@ -108,7 +120,7 @@ const PmfPlot = ({ dataset, config }: any) => {
         .data(plotData)
         .join('rect')
         .attr('width', (item: any) => (item.high - item.low) * barSimpleWidth)
-        .attr('height', (item: any) => _height - yScale(item.count))
+        .attr('height', (item: any) => scaleHeight - yScale(item.count))
         .attr('x', (item: any) => xScale(item.low))
         .attr('y', (item: any) => yScale(item.count))
         .attr('fill', (d: any) => d.color)
@@ -117,7 +129,7 @@ const PmfPlot = ({ dataset, config }: any) => {
       function zoom(_svg: any) {
         const extent: [[number, number], [number, number]] = [
           [margin.left, margin.top],
-          [width - margin.right, height - margin.top],
+          [width - margin.right, _height - margin.top],
         ]
 
         const zoomX = d3.zoom().scaleExtent([1, 8]).translateExtent(extent).extent(extent)
@@ -167,7 +179,7 @@ const PmfPlot = ({ dataset, config }: any) => {
         `
 
         if (tooltipValues.length) {
-          ;(tooltip as any)
+          tooltip
             .style('display', 'block')
             .style('padding', '2px')
             .style('position', 'absolute')
@@ -175,12 +187,19 @@ const PmfPlot = ({ dataset, config }: any) => {
             .style('border', '1px solid #000')
             .html(() => {
               return tooltipValues
-                .map(
-                  value =>
-                    `<div>${colorBadge(value.color)} ${value.low} - ${value.high} <b>${
-                      value.count
-                    }</b></div>`
-                )
+                .map(value => {
+                  let low: string | number = value.low
+                  let high: string | number = value.high
+
+                  if (dataType === 'timestamp') {
+                    low = transformSecondsToDate(low, 'date')
+                    high = transformSecondsToDate(high, 'date')
+                  }
+
+                  return `<div>${colorBadge(value.color)} ${low} - ${high} <b>${
+                    value.count
+                  }</b></div>`
+                })
                 .join('')
             })
 
@@ -216,5 +235,20 @@ const PmfPlot = ({ dataset, config }: any) => {
     />
   )
 }
+
+interface PmfPlotProps {
+  dataset: Array<Array<PmfPlotItem>>
+  config?: {
+    height?: number | string
+    color?: string | Array<string>
+    showAxes?: boolean
+    showXAxis?: boolean
+    showYAxis?: boolean
+    showLogScale?: boolean
+    dataType?: ColumnType
+  }
+}
+
+type PlotData = PmfPlotItem & { color: string }
 
 export default PmfPlot
