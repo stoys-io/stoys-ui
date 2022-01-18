@@ -5,7 +5,7 @@ import PmfPlot from '../../pmfPlot'
 import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'
 import BarChart from '../../BarChart'
-import { ChartAndTableProps, DiscreteItem } from '../model'
+import { ChartAndTableProps, ColumnType, DiscreteItem } from '../model'
 import { Maybe } from '../../model'
 import {
   MIN_CHART_CELL_HEIGHT,
@@ -74,6 +74,7 @@ const ChartAndTable = ({
     return <StyledEmpty image={Empty.PRESENTED_IMAGE_SIMPLE} data-testid="pmf-empty" />
   }
   const pmfPlotDataData = data.map(dataItem => dataItem?.pmf || [])
+  const dataType = data[0].type as ColumnType
 
   return (
     <PmfPlot
@@ -83,6 +84,7 @@ const ChartAndTable = ({
         showAxes: enabledAxes,
         showLogScale: enabledLogScale,
         color,
+        dataType,
       }}
     />
   )
