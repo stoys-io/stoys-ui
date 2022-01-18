@@ -176,7 +176,13 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
           dataSource={_columns}
           renderItem={(column: Column) => {
             const columnExtra = formatColumnExtra(column, columnMetric, countNormalize)
-            const tooltip = `${column.name}: ${columnExtra}`
+            const columnExtraNoAverage = formatColumnExtra(
+              column,
+              columnMetric,
+              countNormalize,
+              false
+            )
+            const tooltip = `${column.name}: ${columnExtraNoAverage}`
 
             return (
               <List.Item>
@@ -209,10 +215,14 @@ const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTa
 const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
 const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
 
+const fmtHelper = renderNumericValue(2, true)
+const fmtHelperNoAverage = renderNumericValue(0, false)
+
 const formatColumnExtra = (
   column: Column,
   columnMetric: ColumnMetric,
-  countNormalize: boolean = false
+  countNormalize: boolean = false,
+  average: boolean = true
 ): string => {
   if (column.metrics === undefined || columnMetric === 'none') {
     return ''
@@ -230,12 +240,14 @@ const formatColumnExtra = (
     return formatPercentage(normalized)
   }
 
-  return formatColumnMetric(column.metrics[columnMetric] as string | number)
+  const val = column.metrics[columnMetric] as string | number
+  const formatColumnMetric =
+    typeof val !== 'number' ? val : !average ? fmtHelperNoAverage(val) : fmtHelper(val)
+
+  return formatColumnMetric
 }
 
-const fmt = renderNumericValue(2, true)
-const formatTableMetric = (val: number) => fmt(val)
-const formatColumnMetric = (val: number | string) => (typeof val === 'number' ? fmt(val) : val)
+const formatTableMetric = (val: number) => fmtHelper(val)
 
 const formatColumnDataType = (data_type: NodeColumnDataType) =>
   `${data_type.type}${data_type.nullable ? '?' : ''}`
