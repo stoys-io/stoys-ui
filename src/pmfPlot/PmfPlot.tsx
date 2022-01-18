@@ -5,7 +5,7 @@ import { useD3 } from '../hooks'
 import { COLORS } from '../profiler/constants'
 import { getMargin } from '../common/chartHelpers'
 import { ColumnType, PmfPlotItem } from '../profiler/model'
-import { transformSecondsToDate } from '../helpers'
+import { renderNumericValue, transformSecondsToDate } from '../helpers'
 
 const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
   const { height, color, showAxes, showXAxis, showYAxis, showLogScale, dataType } = config
@@ -181,6 +181,9 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
         if (tooltipValues.length) {
           tooltip
             .style('display', 'block')
+            // .style('display', 'flex')
+            // .style('flex-direction', 'row')
+            // .style('justify-content', 'space-between')
             .style('padding', '2px')
             .style('position', 'absolute')
             .style('background-color', '#fff')
@@ -196,9 +199,13 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
                     high = transformSecondsToDate(high, 'date')
                   }
 
-                  return `<div>${colorBadge(value.color)} ${low} - ${high} <b>${
-                    value.count
-                  }</b></div>`
+                  return `<div style="display: flex; justify-content: space-between">
+                    <span>${colorBadge(value.color)} ${low} - ${high}</span> 
+                    <span style="padding-left: 2px"><b>${renderNumericValue(
+                      2,
+                      false
+                    )(value.count)}</b></span>
+                  </div>`
                 })
                 .join('')
             })
