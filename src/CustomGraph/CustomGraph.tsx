@@ -1,11 +1,12 @@
 import React, { CSSProperties, useRef } from 'react'
+import uniq from 'lodash.uniq'
 
 import GroupStateProvider, { useStore } from './GroupStateProvider'
 
 import { Edge, NodePosition, DefaultNode, BubbleSet } from './components'
 import { ANIMATION_TIMEOUT } from './constants'
 import { createEdgePath } from './createEdgePath'
-import { GraphData, NodeData, EdgeProps, NodeIndex, GroupIndex } from './types'
+import { GraphData, NodeData, EdgeProps, NodeIndex, GroupIndex, Position } from './types'
 import { graphLayout } from './graph-layout'
 
 import { usePanZoom } from './usePanZoom'
@@ -27,22 +28,7 @@ const CustomGraph = ({
   const groups = useStore(state => state.groups)
   const toggleGroup = useStore(state => state.toggleGroup)
 
-  const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight, groups) : g
-  const nodeIndex: NodeIndex = graph.nodes.reduce(
-    (acc, node) => ({
-      ...acc,
-      [node.id]: node,
-    }),
-    {}
-  )
-
-  const plainNodes = graph.nodes.filter(node => node.groupId === undefined)
-  const subGroups = graph.nodes.reduce(
-    (acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc),
-    []
-  )
-
-  const groupIndex = graph.nodes.reduce((acc: GroupIndex, node: NodeData): GroupIndex => {
+  const groupIndex = g.nodes.reduce((acc: GroupIndex, node: NodeData): GroupIndex => {
     if (!node.groupId) {
       return acc
     }
@@ -53,6 +39,40 @@ const CustomGraph = ({
 
     return { ...acc, [node.groupId]: [...acc[node.groupId], node.id] }
   }, {})
+
+  const nodeIndexOriginal: NodeIndex = g.nodes.reduce(
+    (acc, node) => ({
+      ...acc,
+      [node.id]: node,
+    }),
+    {}
+  )
+
+  /* const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight, groups) : g */
+
+  const { graph, groupNodes: gn, rootNodes } = graphLayout(g, nodeWidth, nodeHeight, groups)
+
+  const nodeIndex: NodeIndex = graph.nodes.reduce(
+    (acc, node) => ({
+      ...acc,
+      [node.id]: node,
+    }),
+    {}
+  )
+
+  const groupNodePosition = (groupId: string) => {
+    const rn = rootNodes.find(n => n.group === groupId)?.position ?? { x: 0, y: 0 }
+
+    return { x: rn.x, y: rn.y }
+  }
+
+  const plainNodes = graph.nodes.filter(node => node.groupId === undefined)
+  const groupList = uniq(
+    graph.nodes.reduce(
+      (acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc),
+      []
+    )
+  ) as string[]
 
   const bubbleSetList = !bubbleSets
     ? []
@@ -113,7 +133,13 @@ const CustomGraph = ({
         >
           <g>
             {graph.edges.map(edge => {
-              const { position, isHidden } = edgePosition(edge, nodeIndex, groups, groupIndex)
+              const { position, isHidden } = edgePosition(
+                edge,
+                nodeIndex,
+                groups,
+                groupIndex,
+                groupNodePosition
+              )
               const dPath = getPath(...position)
 
               return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade={isHidden} />
@@ -129,17 +155,38 @@ const CustomGraph = ({
             </NodePosition>
           ))}
 
-          {subGroups.map((group, idx) => {
-            const subgraph = graph.nodes.filter(node => node.groupId === group)
+          {gn.map(groupNode => (
+            <div onClick={() => toggleGroup(groupNode.group)} key={`${groupNode.id}-groupNode`}>
+              <NodePosition position={groupNode.position}>
+                <DefaultNode width={groupNode.width} height={groupNode.height} />
+              </NodePosition>
+            </div>
+          ))}
+
+          {rootNodes.map(rootNode => (
+            <NodePosition position={rootNode.position} key={`${rootNode.id}-rootNode`}>
+              <TableListNode
+                label={rootNode.group}
+                tableList={groupIndex[rootNode.group].map(
+                  nId => nodeIndexOriginal[nId].data?.label
+                )}
+              />
+            </NodePosition>
+          ))}
+
+          {groupList.map(groupId => {
+            const subgraph = graph.nodes.filter(node => node.groupId === groupId)
             return (
               <Subgraph
-                key={`${group}-${idx}`}
+                key={`${groupId}-subgraph`}
                 nodes={subgraph}
-                isOpen={groups[group]}
-                onToggle={() => toggleGroup(group)}
+                groupId={groupId}
+                isOpen={groups[groupId]}
+                onToggle={() => toggleGroup(groupId)}
                 nodeComponent={ActualNode}
                 nodeWidth={nodeWidth}
                 nodeHeight={nodeHeight}
+                groupNodePosition={groupNodePosition}
               />
             )
           })}
@@ -149,69 +196,40 @@ const CustomGraph = ({
   )
 }
 
-const Subgraph = ({ nodes, isOpen, onToggle, nodeComponent, nodeHeight, nodeWidth }: ISubgraph) => {
-  let nodes2 = nodes
-
-  if (!isOpen) {
-    const rootNode = nodes.find(node => !node.rootId) || nodes[0]
-    nodes2 = nodes.map(node =>
-      node.rootId
-        ? {
-            ...node,
-            position: { x: rootNode.position.x, y: rootNode.position.y },
-          }
-        : node
-    )
-  }
-
-  const xs = nodes2.map(n => n.position.x)
-  const ys = nodes2.map(n => n.position.y)
-
-  const gapX = 16
-  const gapY = 16
-
-  const sx = Math.min(...xs)
-  const sy = Math.min(...ys)
-  const ex = Math.max(...xs) + nodeWidth
-  const ey = Math.max(...ys) + nodeHeight
-
-  const left = sx - gapX
-  const top = sy - gapY
-  const width = ex - sx + 2 * gapX
-  const height = ey - sy + 2 * gapY
+const Subgraph = ({
+  nodes,
+  isOpen,
+  onToggle,
+  nodeComponent,
+  nodeHeight,
+  nodeWidth,
+  groupId,
+  groupNodePosition,
+}: ISubgraph) => {
+  const nodes2 = isOpen
+    ? nodes
+    : nodes.map(node => ({
+        ...node,
+        position: groupNodePosition(groupId),
+      }))
 
   return (
     <>
-      <SubgraphBox
-        left={left}
-        top={top}
-        width={width}
-        height={height}
-        isOpen={isOpen}
-        onToggle={onToggle}
-      />
-      {nodes2.map(node =>
-        !node.rootId && !isOpen ? (
-          <NodePosition key={node.id} position={node.position}>
-            <TableListNode
-              label={nodes2[0].groupId || ''}
-              tableList={nodes2.map(n => n.data?.label)}
-            />
-          </NodePosition>
-        ) : (
-          <NodePosition key={node.id} position={node.position} fade={!isOpen}>
-            {nodeComponent({
-              ...node,
-            })}
-          </NodePosition>
-        )
-      )}
+      {nodes2.map(node => (
+        <NodePosition key={node.id} position={node.position} fade={!isOpen}>
+          {nodeComponent({
+            ...node,
+          })}
+        </NodePosition>
+      ))}
     </>
   )
 }
 
 interface ISubgraph {
   nodes: NodeData[]
+  groupId: string
+  groupNodePosition: (groupId: string) => Position
 
   isOpen: boolean
   onToggle: () => void
