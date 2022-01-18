@@ -175,7 +175,7 @@ export const getMetricsColumnColor = (t: number) =>
   getChromaticColor(hyperbolicGradientRight(t, 0.2, 1), 'interpolateReds')
 
 export const highlightColumnMetrics = ({ metric, graph }: HColumnMetricsArgs): number => {
-  if (metric === 'none' || metric === 'data_type') {
+  if (metric === 'none' || metric === 'data_type' || metric === 'pmf') {
     return 0
   }
 
@@ -430,6 +430,7 @@ const columnsWithExtraData = (table: Table): Column[] => {
       min,
       max,
       mean,
+      pmf,
     } = dpColumn
 
     const data_type = {
@@ -449,6 +450,7 @@ const columnsWithExtraData = (table: Table): Column[] => {
       ...(min ? { min } : {}),
       ...(max ? { max } : {}),
       ...(mean ? { mean } : {}),
+      ...(pmf ? { pmf } : {}),
     }
 
     return { ...column, metrics }

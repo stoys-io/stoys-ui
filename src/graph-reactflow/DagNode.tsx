@@ -63,7 +63,12 @@ export const DagNode = memo(
         : columns
 
     const columnMaxCount = (metric: ColumnMetric) => {
-      if (!metric.startsWith('count_') || metric === 'none' || metric === 'data_type') {
+      if (
+        !metric.startsWith('count_') ||
+        metric === 'none' ||
+        metric === 'data_type' ||
+        metric === 'pmf'
+      ) {
         return 1
       }
 
@@ -81,7 +86,7 @@ export const DagNode = memo(
         return RESET_COLOR
       }
 
-      if (columnMetric === 'none' || columnMetric === 'data_type') {
+      if (columnMetric === 'none' || columnMetric === 'data_type' || columnMetric === 'pmf') {
         return RESET_COLOR
       }
 
@@ -99,7 +104,7 @@ export const DagNode = memo(
         return RESET_COLOR
       }
 
-      if (columnMetric === 'none' || columnMetric === 'data_type') {
+      if (columnMetric === 'none' || columnMetric === 'data_type' || columnMetric === 'pmf') {
         return RESET_COLOR
       }
 

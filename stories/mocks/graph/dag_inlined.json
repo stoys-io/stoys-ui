@@ -24,7 +24,11 @@
             "max_length": 22,
             "min": "Albania",
             "max": "Uzbekistan",
-            "pmf": [],
+            "pmf": [
+              { "low": 0.5, "high": 1.5, "count": 100 },
+              { "low": 1.5, "high": 2.5, "count": 140 },
+              { "low": 3.5, "high": 4.5, "count": 300 }
+            ],
             "items": [
               {
                 "item": "Albania",
@@ -444,7 +448,15 @@
             "max_length": 10,
             "min": "2020-01-05",
             "max": "2021-08-31",
-            "pmf": [],
+            "pmf": [
+              { "low": -0.5, "high": 0.5, "count": 189 },
+              { "low": 0.5, "high": 1.5, "count": 6643 },
+              { "low": 1.5, "high": 2.5, "count": 1813 },
+              { "low": 2.5, "high": 3.5, "count": 469 },
+              { "low": 3.5, "high": 4.5, "count": 288 },
+              { "low": 4.5, "high": 5.5, "count": 395 },
+              { "low": 5.5, "high": 6.5, "count": 195 }
+            ],
             "items": [
               {
                 "item": "2020-01-05",
@@ -864,7 +876,12 @@
             "max_length": 6,
             "min": "-0.01",
             "max": "99.65",
-            "pmf": [],
+            "pmf": [
+              { "low": 0.5, "high": 1.5, "count": 8456 },
+              { "low": 1.5, "high": 2.5, "count": 1130 },
+              { "low": 2.5, "high": 3.5, "count": 293 },
+              { "low": 3.5, "high": 4.5, "count": 113 }
+            ],
             "items": [
               {
                 "item": "-0.5",
@@ -1192,7 +1209,13 @@
             "max_length": 6,
             "min": "-0.01",
             "max": "96.97",
-            "pmf": [],
+            "pmf": [
+              { "low": 0.25, "high": 1.25, "count": 30 },
+              { "low": 1.25, "high": 2.25, "count": 50 },
+              { "low": 2.25, "high": 3.25, "count": 10 },
+              { "low": 3.25, "high": 4.25, "count": 70 },
+              { "low": 4.25, "high": 5.25, "count": 80 }
+            ],
             "items": [
               {
                 "item": "-2.13",

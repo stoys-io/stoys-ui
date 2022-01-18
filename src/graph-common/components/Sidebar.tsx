@@ -148,6 +148,10 @@ const columnMetricOptions: ColumnMetricOption[] = [
     value: 'count_zeros',
   },
   {
+    label: 'pmf',
+    value: 'pmf',
+  },
+  {
     label: 'max_length',
     value: 'max_length',
   },

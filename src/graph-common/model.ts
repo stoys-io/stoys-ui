@@ -1,5 +1,5 @@
 import { JoinRatesData } from '../joinRates/model'
-import { Dataset as ProfilerData } from '../profiler/model'
+import { Dataset as ProfilerData, PmfPlotItem } from '../profiler/model'
 import { QualityData } from '../quality'
 import { RawAggSumDataItemData } from '../aggSum/model'
 
@@ -80,6 +80,7 @@ export type ColumnMetric =
   | 'min'
   | 'max'
   | 'mean'
+  | 'pmf'
 
 export interface DataGraph {
   id: string
@@ -134,6 +135,7 @@ interface NodeColumnsMetrics {
   min?: string
   max?: string
   mean?: number
+  pmf?: PmfPlotItem[]
 }
 
 export interface NodeColumnDataType {
