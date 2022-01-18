@@ -234,7 +234,11 @@ const formatColumnExtra = (
 
   if (columnMetric.startsWith('count_') && countNormalize) {
     const totalCount = column.metrics['count'] ?? 1
-    const count = (column.metrics[columnMetric] as number) ?? 0
+    const count = column.metrics[columnMetric] as number | undefined
+    if (count === undefined) {
+      return ''
+    }
+
     const normalized = count / totalCount
 
     return formatPercentage(normalized)
