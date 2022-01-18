@@ -175,7 +175,7 @@ const getColumnTitle = (
           <>
             {columnName}{' '}
             <HeaderErrorsQuantity>
-              ({renderNumericValue(0)(errorsQuantity)} errors)
+              ({renderNumericValue(0, true)(errorsQuantity)} errors)
             </HeaderErrorsQuantity>
           </>
         ) : (
