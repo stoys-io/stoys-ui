@@ -1,5 +1,5 @@
 import dagre from 'dagre'
-import { GraphData, NodeGroups, Position } from './types'
+import { GraphData, NodeGroups, Position, NodeData, EdgeData } from './types'
 
 const ranksep = 64
 const nodesep = 16
@@ -30,22 +30,35 @@ export const graphLayout = (
       label: idLabel,
     })
 
-    const tableListNodeId = rootNodeIdLabel(group)
-    dagreGraph.setParent(tableListNodeId, idLabel)
-    return dagreGraph.setNode(tableListNodeId, { width: nodeWidth, height: nodeHeight })
+    // closed group root node
+    if (!groups[group]) {
+      const tableListNodeId = rootNodeIdLabel(group)
+      dagreGraph.setParent(tableListNodeId, idLabel)
+      return dagreGraph.setNode(tableListNodeId, { width: nodeWidth, height: nodeHeight })
+    }
   })
 
   graph.nodes.forEach(node => {
-    if (node.groupId && groups[node.groupId]) {
-      dagreGraph.setParent(node.id, groupNodeIdLabel(node.groupId))
+    // Regular node
+    if (!node.groupId) {
       return dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
     }
 
-    return dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
+    // opened group node
+    if (groups[node.groupId]) {
+      dagreGraph.setParent(node.id, groupNodeIdLabel(node.groupId))
+      return dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight })
+    }
   })
 
   graph.edges.forEach(edge => {
-    dagreGraph.setEdge(edge.source, edge.target)
+    const sourceNode = dagreGraph.node(edge.source)
+    const targetNode = dagreGraph.node(edge.target)
+    if (!sourceNode && !targetNode) {
+      return
+    }
+
+    return dagreGraph.setEdge(edge.source, edge.target)
   })
 
   const t0 = performance.now()
@@ -56,7 +69,6 @@ export const graphLayout = (
   const groupNodes = groupList.map(group => {
     const idLabel = groupNodeIdLabel(group)
     const groupNode = dagreGraph.node(idLabel)
-    console.log(groupNode)
 
     return {
       id: idLabel,
@@ -76,9 +88,6 @@ export const graphLayout = (
       const rootNodeId = rootNodeIdLabel(group)
       const rootNode = dagreGraph.node(rootNodeId)
 
-      // const idLabel = groupNodeIdLabel(group)
-      // const groupNode = dagreGraph.node(idLabel)
-
       return {
         id: rootNodeId,
         group,
@@ -91,18 +100,42 @@ export const graphLayout = (
       }
     })
 
-  const newNodes = graph.nodes.map(node => {
+  const newNodes = graph.nodes.reduce((acc, node) => {
     const nodeWithPosition = dagreGraph.node(node.id)
-    return {
-      ...node,
-      position: {
-        x: nodeWithPosition.x - nodeWidth / 2 + startX,
-        y: nodeWithPosition.y - nodeHeight / 2 + startY,
-      },
-    }
-  })
+    if (nodeWithPosition) {
+      const newNode = {
+        ...node,
+        position: {
+          x: nodeWithPosition.x - nodeWidth / 2 + startX,
+          y: nodeWithPosition.y - nodeHeight / 2 + startY,
+        },
+      }
 
-  return { graph: { ...graph, nodes: newNodes }, groupNodes, rootNodes }
+      return [...acc, newNode]
+    }
+
+    return acc
+  }, [] as NodeData[])
+
+  const newEdges = graph.edges.reduce((acc, edge) => {
+    const sourceNode = dagreGraph.node(edge.source)
+    const targetNode = dagreGraph.node(edge.target)
+    if (sourceNode && targetNode) {
+      return [...acc, edge]
+    }
+
+    return acc
+  }, [] as EdgeData[])
+
+  return {
+    graph: {
+      ...graph,
+      nodes: newNodes,
+      edges: newEdges,
+    },
+    groupNodes,
+    rootNodes,
+  }
 }
 
 const rootNodeIdLabel = (groupId: string) => `table-list-${groupId}`
