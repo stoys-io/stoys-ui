@@ -32,7 +32,8 @@ function VirtualTable<T extends object>(
   const totalColumnWidth = useMemo(
     () =>
       columns!.reduce(
-        (acc, column) => (column.key === columnWithMaxWidth ? acc : acc + Number(column.width)),
+        (acc, column) =>
+          column.key && column.key === columnWithMaxWidth ? acc : acc + Number(column.width),
         0
       ),
     [columns]
