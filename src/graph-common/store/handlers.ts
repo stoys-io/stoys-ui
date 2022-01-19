@@ -1,3 +1,5 @@
+// TODO: It is better to reimplement this with state machine pattern
+
 import { GraphStore, InitialArgs } from './model'
 import { defaultHighlights, defaultHighlightedColumns } from './store'
 
@@ -9,47 +11,49 @@ import {
   highlightSingleNode,
   highlightMetrics,
   highlightColumnMetrics,
+  mapInitialNodes,
+  mapInitialEdges,
 } from '../ops'
 
 import { traverseGraph, Traversable } from '../traversal'
 
 import {
   Graph,
-  Table,
   ChromaticScale,
   Highlight,
   Highlights,
   TableMetric,
   ColumnMetric,
   Edge,
+  DataGraph,
 } from '../model'
 
 export const setCountNormalize = (countNormalize: boolean) => ({ countNormalize })
 
 export const setTableMetric =
   (tableMetric: TableMetric) =>
-  ({ defaultGraph, columnMetric }: GraphStore): Partial<GraphStore> => {
+  ({ selectedReleaseGraph, columnMetric }: GraphStore): Partial<GraphStore> => {
     const newHighlightMode = 'metrics'
-    const highlights = highlightMetrics({ metric: tableMetric, graph: defaultGraph })
+    const highlights = highlightMetrics({ metric: tableMetric, graph: selectedReleaseGraph })
     const columnMetricMaxValue = highlightColumnMetrics({
       metric: columnMetric,
-      graph: defaultGraph,
+      graph: selectedReleaseGraph,
     })
     return {
       tableMetric,
       highlights,
       columnMetricMaxValue,
       highlightMode: newHighlightMode,
-      graph: defaultGraph,
+      graph: selectedReleaseGraph,
     }
   }
 
 export const setColumnMetric =
   (columnMetric: ColumnMetric) =>
-  ({ defaultGraph }: GraphStore) => {
+  ({ selectedReleaseGraph }: GraphStore) => {
     const columnMetricMaxValue = highlightColumnMetrics({
       metric: columnMetric,
-      graph: defaultGraph,
+      graph: selectedReleaseGraph,
     })
 
     return {
@@ -58,35 +62,65 @@ export const setColumnMetric =
     }
   }
 
-export const setInitialStore = ({ graph, data, tables }: InitialArgs) => ({
+export const setInitialStore = ({ graph, data }: InitialArgs) => ({
   init: true,
   graph,
-  defaultGraph: graph,
   data,
-  tables,
+  selectedReleaseGraph: graph,
+  currentReleaseGraph: graph,
 })
+
+export const clearBaseRelease =
+  () =>
+  ({ currentReleaseGraph }: GraphStore): Partial<GraphStore> => ({
+    baseRelease: '',
+    selectedReleaseGraph: currentReleaseGraph,
+    graph: currentReleaseGraph,
+
+    // reset highlights
+    highlights: defaultHighlights,
+    highlightedColumns: defaultHighlightedColumns,
+    selectedNodeId: undefined,
+  })
 
 export const setBaseRelease =
   (baseRelease: string) =>
-  ({ data, tables, graph, highlightedColumns }: GraphStore): Partial<GraphStore> => {
+  ({ data, highlightMode, currentReleaseGraph }: GraphStore): Partial<GraphStore> => {
     if (baseRelease) {
-      const baseGraph = getBaseGraph(baseRelease, data, tables)
-      const { graph: mergedGraph, highlights } = baseGraph
-        ? getMergedGraph(graph, baseGraph)
-        : getMergedGraph(graph, graph)
+      const baseReleaseTables = rawGraphTables(data, baseRelease)
+      const baseReleaseGraph = {
+        nodes: mapInitialNodes(baseReleaseTables),
+        edges: mapInitialEdges(baseReleaseTables),
+        release: baseRelease,
+      }
+
+      if (highlightMode === 'diffing') {
+        const currentReleaseTables = rawGraphTables(data, currentReleaseGraph.release)
+        const baseGraph = getBaseGraph(baseRelease, data, currentReleaseTables)
+        const { graph: mergedGraph, highlights } = baseGraph
+          ? getMergedGraph(currentReleaseGraph, baseGraph)
+          : getMergedGraph(currentReleaseGraph, currentReleaseGraph)
+
+        return {
+          baseRelease,
+          selectedReleaseGraph: baseReleaseGraph,
+
+          highlightMode,
+          graph: mergedGraph,
+          highlights,
+          highlightedColumns: defaultHighlightedColumns,
+        }
+      }
 
       return {
         baseRelease,
-        highlightMode: 'diffing',
-        graph: mergedGraph,
-        ...onHighlightModeChangeColumns({
-          columnId: highlightedColumns.selectedColumnId,
-          tableId: highlightedColumns.selectedTableId,
-          graph: mergedGraph,
-          highlights,
-          highlightMode: 'diffing',
-          tables,
-        }),
+        selectedReleaseGraph: baseReleaseGraph,
+        graph: baseReleaseGraph,
+
+        // reset highlights
+        highlights: defaultHighlights,
+        highlightedColumns: defaultHighlightedColumns,
+        selectedNodeId: undefined,
       }
     }
 
@@ -101,11 +135,11 @@ export const resetHighlights = ({ highlightMode }: GraphStore) =>
 export const setHighlightedColumns =
   (columnId: string, tableId: string) =>
   ({
-    defaultGraph,
+    data,
+    selectedReleaseGraph,
     highlightMode,
     highlightedColumns,
     highlights: curHighlights,
-    tables,
   }: GraphStore) => {
     // Toggle columns
     if (columnId === highlightedColumns.selectedColumnId) {
@@ -118,16 +152,16 @@ export const setHighlightedColumns =
     return onHighlightModeChangeColumns({
       columnId,
       tableId,
-      graph: defaultGraph,
+      data,
+      graph: selectedReleaseGraph,
       highlights: curHighlights,
       highlightMode,
-      tables,
     })
   }
 
 export const nodeClick =
   (id: string, chromaticScale: ChromaticScale) =>
-  ({ highlightMode, defaultGraph }: GraphStore) => {
+  ({ highlightMode, selectedReleaseGraph }: GraphStore) => {
     // ignode node click when diffing
     if (highlightMode === 'diffing' || highlightMode === 'metrics') {
       return {
@@ -146,7 +180,7 @@ export const nodeClick =
       }
     }
 
-    const newHighlights = highlightGraph(highlightMode, defaultGraph, id, chromaticScale)
+    const newHighlights = highlightGraph(highlightMode, selectedReleaseGraph, id, chromaticScale)
     return {
       highlights: newHighlights,
       selectedNodeId: id,
@@ -165,22 +199,22 @@ export const highlightIds = (ids: string[]) => ({
 export const setHighlightMode =
   (highlightMode: Highlight, chromaticScale: ChromaticScale) =>
   ({
-    graph,
-    defaultGraph,
-    baseRelease,
     data,
+    selectedReleaseGraph,
+    currentReleaseGraph,
+    baseRelease,
     tableMetric,
-    tables,
     selectedNodeId,
     highlights: curHighlights,
     highlightedColumns,
     columnMetric,
   }: GraphStore) => {
     if (highlightMode === 'diffing') {
-      const baseGraph = getBaseGraph(baseRelease, data, tables)
+      const currentReleaseTables = rawGraphTables(data, currentReleaseGraph.release)
+      const baseGraph = getBaseGraph(baseRelease, data, currentReleaseTables)
       const { graph: mergedGraph, highlights } = baseGraph
-        ? getMergedGraph(graph, baseGraph)
-        : getMergedGraph(graph, graph)
+        ? getMergedGraph(currentReleaseGraph, baseGraph)
+        : getMergedGraph(currentReleaseGraph, currentReleaseGraph)
 
       return {
         highlightMode,
@@ -193,14 +227,14 @@ export const setHighlightMode =
     if (highlightMode === 'metrics') {
       return {
         highlightMode,
-        highlights: highlightMetrics({ metric: tableMetric, graph }),
+        highlights: highlightMetrics({ metric: tableMetric, graph: selectedReleaseGraph }),
         columnMetricMaxValue: highlightColumnMetrics({
           metric: columnMetric,
-          graph: defaultGraph,
+          graph: selectedReleaseGraph,
         }),
         selectedNodeId: undefined,
         highlightedColumns: defaultHighlightedColumns,
-        graph: defaultGraph,
+        graph: selectedReleaseGraph,
       }
     }
 
@@ -209,12 +243,12 @@ export const setHighlightMode =
       return {
         highlightMode,
         ...onHighlightModeChangeColumns({
+          data,
           columnId: highlightedColumns.selectedColumnId,
           tableId: highlightedColumns.selectedTableId,
-          graph: defaultGraph,
+          graph: selectedReleaseGraph,
           highlights: curHighlights,
           highlightMode,
-          tables,
         }),
       }
     }
@@ -225,7 +259,7 @@ export const setHighlightMode =
         highlights: defaultHighlights,
         selectedNodeId: undefined,
         highlightedColumns: defaultHighlightedColumns,
-        graph: defaultGraph,
+        graph: selectedReleaseGraph,
       }
     }
 
@@ -233,14 +267,14 @@ export const setHighlightMode =
       return {
         highlightMode,
         highlights: defaultHighlights,
-        graph: defaultGraph,
+        graph: selectedReleaseGraph,
         highlightedColumns: defaultHighlightedColumns,
       }
     }
 
     const newHighlights = highlightGraph(
       highlightMode,
-      defaultGraph,
+      selectedReleaseGraph,
       selectedNodeId,
       chromaticScale
     )
@@ -248,7 +282,7 @@ export const setHighlightMode =
     return {
       highlightMode,
       highlights: newHighlights,
-      graph: defaultGraph,
+      graph: selectedReleaseGraph,
       highlightedColumns: defaultHighlightedColumns,
       selectedNodeId,
     }
@@ -259,8 +293,8 @@ interface OnChangeModeColumnsArgs {
   tableId: string
   highlights: Highlights
   highlightMode: Highlight
+  data: DataGraph[]
   graph: Graph
-  tables: Table[]
 }
 
 const onHighlightModeChangeColumns = ({
@@ -269,7 +303,7 @@ const onHighlightModeChangeColumns = ({
   highlights,
   highlightMode,
   graph,
-  tables,
+  data,
 }: OnChangeModeColumnsArgs) => {
   if (highlightMode === 'none') {
     return {
@@ -284,6 +318,8 @@ const onHighlightModeChangeColumns = ({
       highlights,
     }
   }
+
+  const tables = rawGraphTables(data, graph.release)
 
   // TODO: Should we store indices ?
   const columnIndex: Traversable<{ tableId: string }> = tables.reduce((acc, t) => {
@@ -359,3 +395,6 @@ const onHighlightModeChangeColumns = ({
     },
   }
 }
+
+const rawGraphTables = (rawGraphData: DataGraph[], release: string) =>
+  rawGraphData.find(dataItem => dataItem.version === release)?.tables ?? []

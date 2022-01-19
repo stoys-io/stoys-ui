@@ -14,12 +14,11 @@ const DrawerTabs = () => {
   const dispatch = useGraphDispatch()
 
   const drawerNodeId = useGraphStore(state => state.drawerNodeId)
-  const curTable = useGraphStore(
-    useCallback(state => state.tables?.find(table => table.id === drawerNodeId), [drawerNodeId])
-  )
   const baseRelease = useGraphStore(state => state.baseRelease)
   const graphData = useGraphStore(state => state.data)
 
+  const tables = graphData.find(dataItem => dataItem.version === baseRelease)?.tables ?? []
+  const curTable = tables.find(table => table.id === drawerNodeId)
   const baseData = useMemo(() => {
     if (!baseRelease) {
       return undefined

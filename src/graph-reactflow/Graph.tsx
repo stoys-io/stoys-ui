@@ -64,10 +64,8 @@ const Graph = ({ data, config: cfg }: Props) => {
       setInitialStore({
         data,
         graph: currentGraph,
-        tables,
       })
     )
-    // TODO: Leave only currentGraph argument ?
   }, [])
 
   const dispatch = useGraphDispatch()
