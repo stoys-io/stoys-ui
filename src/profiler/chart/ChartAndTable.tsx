@@ -5,7 +5,7 @@ import PmfPlot from '../../pmfPlot'
 import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'
 import BarChart from '../../BarChart'
-import { ChartAndTableProps, ColumnType, DiscreteItem } from '../model'
+import { ChartAndTableProps, ColumnType, DiscreteItem, PmfPlotItem } from '../model'
 import { Maybe } from '../../model'
 import {
   MIN_CHART_CELL_HEIGHT,
@@ -14,6 +14,7 @@ import {
   TABLE_ROW_HEIGHT,
 } from '../constants'
 import { StyledEmpty } from '../styles'
+import { formatPercentage } from '../../helpers'
 
 const ChartAndTable = ({
   data,
@@ -73,7 +74,11 @@ const ChartAndTable = ({
   if (!flattenPmfPlotData.length) {
     return <StyledEmpty image={Empty.PRESENTED_IMAGE_SIMPLE} data-testid="pmf-empty" />
   }
-  const pmfPlotDataData = data.map(dataItem => dataItem?.pmf || [])
+  const pmfPlotDataData = data.map(dataItem =>
+    displayNormalized
+      ? normalizeCount(dataItem?.pmf || [], dataItem.itemsTotalCount)
+      : dataItem?.pmf || []
+  )
   const dataType = data[0].type as ColumnType
 
   return (
@@ -85,9 +90,23 @@ const ChartAndTable = ({
         showLogScale: enabledLogScale,
         color,
         dataType,
+        formatTooltipValues: displayNormalized
+          ? data => ({
+              ...data,
+              count: formatPercentage(data.count),
+            })
+          : undefined,
       }}
     />
   )
+}
+
+function normalizeCount(data: Array<PmfPlotItem>, totalCount: number): Array<PmfPlotItem> {
+  if (!data.length) {
+    return []
+  }
+
+  return data.map(item => ({ ...item, count: item.count / totalCount }))
 }
 
 export default ChartAndTable
