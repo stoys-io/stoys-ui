@@ -1,11 +1,9 @@
 import React, { CSSProperties, useRef } from 'react'
 
 import GroupStateProvider, { useStore } from './GroupStateProvider'
-import { getBubbleSetPath } from './bubbleset'
 
-import { Edge, NodePosition, DefaultNode } from './components'
+import { Edge, NodePosition, DefaultNode, BubbleSet } from './components'
 import { ANIMATION_TIMEOUT } from './constants'
-import { colors } from './colors'
 import { createEdgePath } from './createEdgePath'
 import { GraphData, NodeData, EdgeProps } from './types'
 import { graphLayout } from './graph-layout'
@@ -39,24 +37,22 @@ const CustomGraph = ({
     []
   )
 
-  const bubbleKeys = !bubbleSets ? [] : Object.keys(bubbleSets)
-  const bubbleSetsList = !bubbleSets
+  const bubbleSetList = !bubbleSets
     ? []
-    : bubbleKeys.map(key => {
-        const nodeSetList = bubbleSets[key]
-        const bubbleNodes = nodeSetList.map(item => {
+    : Object.values(bubbleSets).map(nodeList => {
+        const bubbleNodes = nodeList.map(item => {
           const position = nodeIndex[item].position
           return { ...position, width: nodeWidth, height: nodeHeight }
         })
 
         const bubbleOtherNodes = graph.nodes
-          .filter(node => !nodeSetList.includes(node.id))
+          .filter(node => !nodeList.includes(node.id))
           .map(node => {
             const position = node.position
             return { ...position, width: nodeWidth, height: nodeHeight }
           })
 
-        return getBubbleSetPath(bubbleNodes, bubbleOtherNodes)
+        return { nodes: bubbleNodes, otherNodes: bubbleOtherNodes }
       })
 
   const groups = useStore(state => state.groups)
@@ -185,13 +181,7 @@ const CustomGraph = ({
               return <ActualEdge key={edge.id} id={edge.id} path={dPath} />
             })}
           </g>
-          {bubbleSetsList.length !== 0 && (
-            <g>
-              {bubbleSetsList.map((dPath, idx) => (
-                <path key={idx} d={dPath} opacity={0.3} fill={colors[idx]} stroke="black" />
-              ))}
-            </g>
-          )}
+          <BubbleSet bubbleSetList={bubbleSetList} />
         </svg>
 
         <div>
