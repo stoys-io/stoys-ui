@@ -22,4 +22,12 @@ interface Position {
   y: number
 }
 
+export interface NodeIndex {
+  [key: string]: NodeData
+}
+
+export interface NodeGroups {
+  [key: string]: boolean
+}
+
 export { EdgeProps } from './components'

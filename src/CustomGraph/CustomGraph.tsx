@@ -5,10 +5,11 @@ import GroupStateProvider, { useStore } from './GroupStateProvider'
 import { Edge, NodePosition, DefaultNode, BubbleSet } from './components'
 import { ANIMATION_TIMEOUT } from './constants'
 import { createEdgePath } from './createEdgePath'
-import { GraphData, NodeData, EdgeProps } from './types'
+import { GraphData, NodeData, EdgeProps, NodeIndex } from './types'
 import { graphLayout } from './graph-layout'
 
 import { usePanZoom } from './usePanZoom'
+import { edgePosition } from './edge-position'
 
 const CustomGraph = ({
   graph: g,
@@ -99,86 +100,10 @@ const CustomGraph = ({
         >
           <g>
             {graph.edges.map(edge => {
-              const {
-                position: { x: x1, y: y1 },
-                rootId: sourceRootId,
-                groupId: sourceGroupId,
-              } = nodeIndex[edge.source]
-              const {
-                position: { x: x2, y: y2 },
-                rootId: targetRootId,
-                groupId: targetGroupId,
-              } = nodeIndex[edge.target]
+              const { position, isHidden } = edgePosition(edge, nodeIndex, groups)
+              const dPath = getPath(...position)
 
-              // Group edges:
-              const isEdgeOutbound = sourceGroupId !== targetGroupId
-              const isTargetGroupOpen = targetGroupId && groups[targetGroupId]
-              const isSourceGroupOpen = sourceGroupId && groups[sourceGroupId]
-
-              const isRegularEdge = !sourceRootId && !targetRootId
-              const isGroupOpenInboundEdge =
-                !isEdgeOutbound && (isTargetGroupOpen || isSourceGroupOpen)
-
-              if (isRegularEdge || isGroupOpenInboundEdge) {
-                return <ActualEdge key={edge.id} id={edge.id} path={getPath(x2, y2, x1, y1)} />
-              }
-
-              if (!isEdgeOutbound && (sourceRootId || targetRootId)) {
-                // Inbound edge closed group
-                const { x: xRoot, y: yRoot } = sourceRootId
-                  ? nodeIndex[sourceRootId].position
-                  : nodeIndex[targetRootId!].position
-
-                const dPath = sourceRootId
-                  ? getPath(x2, y2, xRoot, yRoot)
-                  : getPath(xRoot, yRoot, x1, y1)
-
-                return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade />
-              }
-
-              // TODO: This could have been simpler
-              // Outbound edge:
-              const thisRootId = sourceRootId ? sourceRootId : targetRootId
-              const otherRootId = sourceRootId ? targetRootId : sourceRootId
-
-              const { x: xThisRoot, y: yThisRoot } = nodeIndex[thisRootId!].position
-
-              const thisGroupOpen = sourceRootId ? isSourceGroupOpen : isTargetGroupOpen
-              const otherNodeVisible = sourceRootId
-                ? targetGroupId === undefined || isTargetGroupOpen
-                : sourceGroupId === undefined || isSourceGroupOpen
-
-              const outboundCase1 = !thisGroupOpen && otherNodeVisible
-              const outboundCase2 = !thisGroupOpen && !otherNodeVisible
-              const outboundCase3 = thisGroupOpen && otherNodeVisible
-              const outboundCase4 = thisGroupOpen && !otherNodeVisible
-
-              let dPath = ''
-              if (outboundCase1) {
-                dPath = sourceRootId
-                  ? getPath(x2, y2, xThisRoot, yThisRoot)
-                  : getPath(xThisRoot, yThisRoot, x1, y1)
-              }
-
-              if (outboundCase2) {
-                const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
-                dPath = sourceRootId
-                  ? getPath(xOtherRoot, yOtherRoot, xThisRoot, yThisRoot)
-                  : getPath(xThisRoot, yThisRoot, xOtherRoot, yOtherRoot)
-              }
-
-              if (outboundCase3) {
-                dPath = getPath(x2, y2, x1, y1)
-              }
-
-              if (outboundCase4) {
-                const { x: xOtherRoot, y: yOtherRoot } = nodeIndex[otherRootId!].position
-                dPath = sourceRootId
-                  ? getPath(xOtherRoot, yOtherRoot, x1, y1)
-                  : getPath(x2, y2, xOtherRoot, yOtherRoot)
-              }
-
-              return <ActualEdge key={edge.id} id={edge.id} path={dPath} />
+              return <ActualEdge key={edge.id} id={edge.id} path={dPath} fade={isHidden} />
             })}
           </g>
           <BubbleSet bubbleSetList={bubbleSetList} />
@@ -333,8 +258,4 @@ export interface Props {
 
 interface BubbleSets {
   [key: string]: string[]
-}
-
-interface NodeIndex {
-  [key: string]: NodeData
 }
