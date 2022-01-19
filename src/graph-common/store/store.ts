@@ -6,12 +6,12 @@ export const createStore = () =>
     dispatch: (fn: DispatchHandler) => set(fn as any),
 
     init: false,
-    defaultGraph: defaultGraphValue,
+    data: [],
+
+    currentReleaseGraph: defaultGraphValue,
+    selectedReleaseGraph: defaultGraphValue,
     graph: defaultGraphValue,
     highlightedColumns: defaultHighlightedColumns,
-
-    data: [],
-    tables: [],
 
     drawerTab: undefined,
     drawerNodeId: undefined,

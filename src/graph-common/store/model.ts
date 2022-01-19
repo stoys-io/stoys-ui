@@ -1,13 +1,17 @@
-import { Graph, DataGraph, Highlight, Table, TableMetric, ColumnMetric } from '../model'
+import { Graph, DataGraph, Highlight, TableMetric, ColumnMetric } from '../model'
 
 export interface GraphStore {
   dispatch: (fn: DispatchHandler) => void
 
   init: boolean
   data: DataGraph[]
-  tables: Table[]
-  defaultGraph: Graph // "Current release" graph, stays constant
-  graph: Graph // The graph we display, can be merged graph in release mode
+
+  // "Current release" graph, stays constant
+  currentReleaseGraph: Graph
+  // Either "Current release" graph or selected "previous run"
+  selectedReleaseGraph: Graph
+  // Actual visible graph. It can be a selectedReleaseGraph or a merged graph in diffing mode
+  graph: Graph
 
   highlights: Highlights
   highlightedColumns: HColumns // TODO: rename to selected columns
@@ -30,7 +34,6 @@ export interface GraphStore {
 export interface InitialArgs {
   graph: Graph
   data: DataGraph[]
-  tables: Table[]
 }
 
 export type DispatchHandler = DispatchFn | Partial<GraphStore>

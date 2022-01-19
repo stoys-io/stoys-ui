@@ -41,8 +41,9 @@ const Graph = ({ data, config: cfg }: Props) => {
     .filter(release => release !== config.currentRelease)
     .map(release => ({ value: release, label: release }))
 
-  const tables = data.find(dataItem => dataItem.version === config.currentRelease)!.tables
-  const bubbleSets = data.find(dataItem => dataItem.version === config.currentRelease)!.bubbleSets
+  const tables = data.find(dataItem => dataItem.version === config.currentRelease)?.tables ?? []
+  const bubbleSets =
+    data.find(dataItem => dataItem.version === config.currentRelease)?.bubbleSets ?? {}
 
   const currentGraph = {
     nodes: mapInitialNodes(tables),
@@ -55,10 +56,8 @@ const Graph = ({ data, config: cfg }: Props) => {
       setInitialStore({
         data,
         graph: currentGraph,
-        tables,
       })
     )
-    // TODO: Leave only currentGraph argument ?
   }, [])
 
   const dispatch = useGraphDispatch()

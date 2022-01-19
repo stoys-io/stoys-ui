@@ -15,6 +15,7 @@ import {
   setTableMetric,
   setColumnMetric,
   setBaseRelease,
+  clearBaseRelease,
   setHighlightMode,
   setCountNormalize,
 } from '../store'
@@ -40,6 +41,7 @@ const Sidebar = ({ onSearch, releaseOptions, chromaticScale }: Props) => {
               placeholder="Previous Version"
               options={releaseOptions}
               onChange={value => dispatch(setBaseRelease(value))}
+              onClear={() => dispatch(clearBaseRelease())}
               allowClear
             />
           </>

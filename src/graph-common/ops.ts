@@ -252,7 +252,7 @@ export const highlightGraph = (
 
 export const getBaseGraph = (
   baseRelease: string,
-  data?: DataGraph[],
+  data: DataGraph[],
   tables?: Table[]
 ): Graph | undefined => {
   if (!baseRelease) {
@@ -264,7 +264,7 @@ export const getBaseGraph = (
 
     return acc
   }, {})
-  const _baseTables = data?.find(dataItem => dataItem.version === baseRelease)?.tables
+  const _baseTables = data.find(dataItem => dataItem.version === baseRelease)?.tables
   const baseNameIds = _baseTables?.reduce((acc: { [key: string]: string }, dataItem) => {
     acc[dataItem.id] = dataItem.name
 
