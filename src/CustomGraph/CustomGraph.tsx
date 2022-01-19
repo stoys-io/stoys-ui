@@ -33,8 +33,9 @@ const CustomGraph = ({
   )
 
   const plainNodes = graph.nodes.filter(node => node.groupId === undefined)
-  const subGroups = graph.nodes.reduce(
-    (acc: string[], node: NodeData) => (node.groupId ? [...acc, node.groupId] : acc),
+  const groupList = graph.nodes.reduce(
+    (acc: string[], node: NodeData) =>
+      node.groupId && acc.indexOf(node.groupId) === -1 ? [...acc, node.groupId] : acc,
     []
   )
 
@@ -116,7 +117,7 @@ const CustomGraph = ({
             </NodePosition>
           ))}
 
-          {subGroups.map((group, idx) => {
+          {groupList.map((group, idx) => {
             const subgraph = graph.nodes.filter(node => node.groupId === group)
             return (
               <Subgraph
