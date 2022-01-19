@@ -59,7 +59,7 @@ const highlightHelper = ({
     if (!highlightEdge) {
       return {
         ...acc,
-        [edge.id]: { strokeWidth: 0 }, // Hide irrelevant edges
+        [edge.id]: { strokeWidth: '0' }, // Hide irrelevant edges
       }
     }
 
