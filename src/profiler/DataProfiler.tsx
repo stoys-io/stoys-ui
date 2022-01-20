@@ -217,7 +217,6 @@ export const DataProfiler = (props: DataProfilerProps) => {
       return !prevState
     })
   }, [config])
-  console.log(data)
 
   return (
     <ConfigContext.Provider value={_config}>

@@ -7,18 +7,12 @@ import Table from '../components/Table'
 import BarChart from '../../BarChart'
 import { ChartAndTableProps, ColumnType, DiscreteItem, PmfPlotItem } from '../model'
 import { Maybe } from '../../model'
-import {
-  MIN_CHART_CELL_HEIGHT,
-  MIN_SMALL_CHART_CELL_HEIGHT,
-  MIN_TABLE_ROW_HEIGHT,
-  TABLE_ROW_HEIGHT,
-} from '../constants'
+import { MIN_TABLE_ROW_HEIGHT, TABLE_ROW_HEIGHT } from '../constants'
 import { BarChartWrapper, StyledEmpty } from '../styles'
 import { formatPercentage } from '../../helpers'
 
 const ChartAndTable = ({
   data,
-  isHorizontal,
   displayNormalized = false,
 }: ChartAndTableProps): Maybe<JSX.Element> => {
   const { smallSize } = useContext(ConfigContext)
@@ -32,9 +26,7 @@ const ChartAndTable = ({
   const enabledAxes = checkedAxesRows.includes(parentName)
   const enableTableView = checkedTableRows.includes(parentName)
   const tableRowHeight = smallSize ? MIN_TABLE_ROW_HEIGHT : TABLE_ROW_HEIGHT
-  const minChartHeight = smallSize ? MIN_SMALL_CHART_CELL_HEIGHT : MIN_CHART_CELL_HEIGHT
-  const cellHeight: number = data.length * tableRowHeight
-  const height: number = cellHeight < minChartHeight || isHorizontal ? minChartHeight : cellHeight
+  const height: number = data.length * tableRowHeight
 
   if (enableTableView) {
     return <Table data={data} height={height} displayNormalized={displayNormalized} />

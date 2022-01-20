@@ -7,7 +7,6 @@ import { transformSecondsToDate, formatPercentage } from '../../helpers'
 import { renderNumericCell } from '../../common'
 import {
   ChildDataItem,
-  DataItem,
   DataItemModel,
   VerticalColumn,
   VerticalData,
@@ -56,11 +55,7 @@ const VerticalTable = (props: VerticalTableProps) => {
             children: (
               <>
                 {parent ? <ChartCellTitle row={parent} /> : null}
-                <ChartAndTable
-                  data={chartData}
-                  isHorizontal
-                  displayNormalized={displayNormalized}
-                />
+                <ChartAndTable data={chartData} displayNormalized={displayNormalized} />
               </>
             ),
           }
