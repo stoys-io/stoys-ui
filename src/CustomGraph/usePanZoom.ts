@@ -34,12 +34,15 @@ export const usePanZoom = ({
       panzoom.zoomWithWheel(evt)
     }
 
-    let prevPosition = { x: 0, y: 0 }
     // This is to distinguish between clicks and drag when panning
+    let prevPosition = { x: 0, y: 0 }
     const onPanEnd = debounce(
       (evt: any) => {
         const { x, y } = evt.detail
-        if (prevPosition.x !== x || prevPosition.y !== y) {
+        const dx = Math.abs(prevPosition.x - x)
+        const dy = Math.abs(prevPosition.y - y)
+        // Threshold to ignore accidental mouse moves when clicking on the background
+        if (dx > threshold || dy > threshold) {
           prevPosition = { x, y }
           return
         }
@@ -69,3 +72,5 @@ interface IUsePanZoom {
   minScale: number
   onPaneClick: () => void
 }
+
+const threshold = 10
