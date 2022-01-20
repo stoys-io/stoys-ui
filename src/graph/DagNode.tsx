@@ -3,6 +3,8 @@
 import React, { useCallback } from 'react'
 import List from 'antd/lib/list'
 
+import pick from 'lodash.pick'
+
 import {
   ADDED_NODE_HIGHLIGHT_COLOR,
   RESET_COLOR,
@@ -56,10 +58,22 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
   const tableMetric = useGraphStore(selectTableMetric)
   const columnMetric = useGraphStore(selectColumnMetric)
 
-  const diffMetricData = {
-    violations: -30,
-    partitions: 0,
-  }
+  const currentReleaseNodeNameIndex = useGraphStore(
+    state => state.currentReleaseNodeNameIndex,
+    (oldIndex, newIndex) => oldIndex.release === newIndex.release
+  )
+  const baseRelease = useGraphStore(state => state.baseRelease)
+  const currentReleaseNode =
+    baseRelease === ''
+      ? undefined
+      : currentReleaseNodeNameIndex.index[label]
+      ? currentReleaseNodeNameIndex.index[label]
+      : { data: { violations: 0, partitions: 0 } }
+
+  const currentReleaseTableMetricData =
+    currentReleaseNode === undefined
+      ? undefined
+      : pick(currentReleaseNode.data, ['violations', 'partitions'])
 
   const _columns =
     selectedTableId && id !== selectedTableId
@@ -178,8 +192,8 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
         extra={
           <TableMetricIndicator
             tableMetric={tableMetric}
-            metricData={{ partitions, violations }}
-            diffMetricData={diffMetricData}
+            baseMetricData={{ partitions, violations }}
+            currentMetricData={currentReleaseTableMetricData}
           />
         }
         highlightColor={cardHighlightedColor}

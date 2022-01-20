@@ -8,6 +8,7 @@ export const createStore = () =>
     init: false,
     data: [],
 
+    currentReleaseNodeNameIndex: defaultNodeNameIndex,
     currentReleaseGraph: defaultGraphValue,
     selectedReleaseGraph: defaultGraphValue,
     graph: defaultGraphValue,
@@ -25,7 +26,7 @@ export const createStore = () =>
     },
 
     baseRelease: '',
-    tableMetric: 'partitions',
+    tableMetric: 'none',
     columnMetric: 'none',
     columnMetricMaxValue: 0,
     countNormalize: false,
@@ -47,5 +48,10 @@ export const defaultColumnHighlights = {}
 const defaultGraphValue = {
   nodes: [],
   edges: [],
+  release: '',
+}
+
+const defaultNodeNameIndex = {
+  index: {},
   release: '',
 }

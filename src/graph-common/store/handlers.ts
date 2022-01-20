@@ -50,7 +50,7 @@ export const setTableMetric =
 
 export const setColumnMetric =
   (columnMetric: ColumnMetric) =>
-  ({ selectedReleaseGraph }: GraphStore) => {
+  ({ selectedReleaseGraph }: GraphStore): Partial<GraphStore> => {
     const columnMetricMaxValue = highlightColumnMetrics({
       metric: columnMetric,
       graph: selectedReleaseGraph,
@@ -62,13 +62,29 @@ export const setColumnMetric =
     }
   }
 
-export const setInitialStore = ({ graph, data }: InitialArgs) => ({
-  init: true,
-  graph,
-  data,
-  selectedReleaseGraph: graph,
-  currentReleaseGraph: graph,
-})
+export const setInitialStore = ({ graph, data }: InitialArgs): Partial<GraphStore> => {
+  const nodeIndex = graph.nodes.reduce(
+    (acc, node) => ({
+      ...acc,
+      [node.data.label]: node,
+    }),
+    {}
+  )
+
+  const currentReleaseNodeNameIndex = {
+    index: nodeIndex,
+    release: graph.release,
+  }
+
+  return {
+    init: true,
+    graph,
+    data,
+    selectedReleaseGraph: graph,
+    currentReleaseGraph: graph,
+    currentReleaseNodeNameIndex,
+  }
+}
 
 export const clearBaseRelease =
   () =>

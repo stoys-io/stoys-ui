@@ -1,10 +1,13 @@
-import { Graph, DataGraph, Highlight, TableMetric, ColumnMetric } from '../model'
+import { Graph, DataGraph, Highlight, TableMetric, ColumnMetric, Node } from '../model'
 
 export interface GraphStore {
   dispatch: (fn: DispatchHandler) => void
 
   init: boolean
   data: DataGraph[]
+
+  // To facilitate access to node data
+  currentReleaseNodeNameIndex: ReleaseNodeNameIndex
 
   // "Current release" graph, stays constant
   currentReleaseGraph: Graph
@@ -65,4 +68,13 @@ interface EdgeStyle {
 interface EdgeStyleProps {
   stroke: string
   strokeWidth: string
+}
+
+interface ReleaseNodeNameIndex {
+  index: NodeNameIndex
+  release: string
+}
+
+interface NodeNameIndex {
+  [nodeName: string]: Node
 }

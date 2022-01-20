@@ -2,14 +2,16 @@ import React, { CSSProperties } from 'react'
 import { TableMetric } from '../graph-common/model'
 import { renderNumericValue } from '../helpers'
 
-const TableMetricComponent = ({ tableMetric, metricData, diffMetricData }: Props) => {
-  const metricFormatted = tableMetric === 'none' ? null : format(metricData[tableMetric])
-  const isDiffMetric = diffMetricData && tableMetric !== 'none'
+const TableMetricComponent = ({ tableMetric, baseMetricData, currentMetricData }: Props) => {
+  const metricFormatted = tableMetric === 'none' ? null : format(baseMetricData[tableMetric])
+  const isDiffMetric = currentMetricData && tableMetric !== 'none'
 
   return (
     <div>
       <span>{metricFormatted}</span>
-      {isDiffMetric && <DiffMetric value={diffMetricData[tableMetric]} />}
+      {isDiffMetric && (
+        <DiffMetric value={currentMetricData[tableMetric] - baseMetricData[tableMetric]} />
+      )}
     </div>
   )
 }
@@ -18,10 +20,11 @@ export default TableMetricComponent
 
 export interface Props {
   tableMetric: TableMetric
-  metricData: Omit<MetricData, 'none'>
-  diffMetricData?: Omit<MetricData, 'none'>
+  baseMetricData: ValidMetricData
+  currentMetricData?: ValidMetricData
 }
 
+type ValidMetricData = Omit<MetricData, 'none'>
 type MetricData = {
   [key in TableMetric]: number
 }
