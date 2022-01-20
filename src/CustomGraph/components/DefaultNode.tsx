@@ -4,8 +4,8 @@ const DefaultNode = (props: Props) => (
   <div
     style={{
       border: '1px solid magenta',
-      width: 60,
-      height: 40,
+      width: props.width ?? 60,
+      height: props.height ?? 40,
     }}
   >
     {props.data?.label}
@@ -15,4 +15,6 @@ const DefaultNode = (props: Props) => (
 export default DefaultNode
 interface Props {
   data?: { label: string }
+  width?: number
+  height?: number
 }
