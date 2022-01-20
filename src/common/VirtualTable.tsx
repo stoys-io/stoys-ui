@@ -193,13 +193,13 @@ const renderVirtualList =
         overscanRowCount={overscanRowCount || 1}
         overscanColumnCount={overscanColumnCount || 1}
       >
-        {renderCell(mergedColumns, rawData)}
+        {renderCell(mergedColumns, rawData, rowHeight)}
       </Grid>
     )
   }
 
 const renderCell =
-  <T extends object>(mergedColumns: MergedColumns<T>, rawData: Array<T>) =>
+  <T extends object>(mergedColumns: MergedColumns<T>, rawData: Array<T>, rowHeight?: number) =>
   ({
     columnIndex,
     rowIndex,
@@ -236,7 +236,7 @@ const renderCell =
       if (renderedValue.props.rowSpan) {
         _style = {
           ..._style,
-          height: TABLE_ROW_HEIGHT * renderedValue.props.rowSpan,
+          height: (rowHeight || TABLE_ROW_HEIGHT) * renderedValue.props.rowSpan,
         }
       }
     }

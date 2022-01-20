@@ -155,6 +155,7 @@ export interface TableProps extends AntdTableProps<any> {
   withoutPagination: boolean
   pagination?: PaginationProps | false
   height?: string | number
+  rowHeight?: number
 }
 
 export interface VerticalTableProps extends TableProps {

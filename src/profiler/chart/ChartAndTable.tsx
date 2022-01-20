@@ -13,7 +13,7 @@ import {
   MIN_TABLE_ROW_HEIGHT,
   TABLE_ROW_HEIGHT,
 } from '../constants'
-import { StyledEmpty } from '../styles'
+import { BarChartWrapper, StyledEmpty } from '../styles'
 import { formatPercentage } from '../../helpers'
 
 const ChartAndTable = ({
@@ -52,7 +52,7 @@ const ChartAndTable = ({
     }
 
     return (
-      <div data-testid="bar-chart">
+      <BarChartWrapper data-testid="bar-chart">
         <BarChart
           dataset={barsData}
           config={{
@@ -62,7 +62,7 @@ const ChartAndTable = ({
             color,
           }}
         />
-      </div>
+      </BarChartWrapper>
     )
   }
 

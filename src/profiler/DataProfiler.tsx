@@ -3,7 +3,12 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { usePagination } from '../hooks'
 import { getColumns } from './columns'
 import { hydrateDataset } from './helpers'
-import { COLORS, MIN_TABLE_ROW_HEIGHT, NORMALIZABLE_COLUMN_PREFIX } from './constants'
+import {
+  COLORS,
+  MIN_TABLE_ROW_HEIGHT,
+  NORMALIZABLE_COLUMN_PREFIX,
+  TABLE_ROW_HEIGHT,
+} from './constants'
 import { CheckedRowsContext, ConfigContext } from './context'
 import { DataItem, DataProfilerProps, ChildDataItem, Orient, CountColumnKey } from './model'
 
@@ -212,6 +217,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
       return !prevState
     })
   }, [config])
+  console.log(data)
 
   return (
     <ConfigContext.Provider value={_config}>
@@ -268,6 +274,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
               withoutPagination={pagination === false}
               pagination={pagination}
               height={height}
+              rowHeight={smallSize ? MIN_TABLE_ROW_HEIGHT : TABLE_ROW_HEIGHT}
             />
           )}
           {isJsonShown ? (
