@@ -28,7 +28,9 @@ import {
   useGraphDispatch,
 } from '../graph-common/store'
 import { getMetricsColumnColor } from '../graph-common/ops'
+
 import TinyPmf from './TinyPmf'
+import TableMetricIndicator from './TableMetricIndicator'
 
 interface Props {
   id: string
@@ -51,14 +53,13 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
   const relatedColumnsIds = useGraphStore(selectRelColumnIds)
   const highlightMode = useGraphStore(selectHighlightMode)
 
-  const columnMetric = useGraphStore(selectColumnMetric)
   const tableMetric = useGraphStore(selectTableMetric)
-  const tableMetricValFormatted =
-    tableMetric === 'none'
-      ? null
-      : tableMetric === 'violations'
-      ? formatTableMetric(violations)
-      : formatTableMetric(partitions)
+  const columnMetric = useGraphStore(selectColumnMetric)
+
+  const diffMetricData = {
+    violations: -30,
+    partitions: 0,
+  }
 
   const _columns =
     selectedTableId && id !== selectedTableId
@@ -174,7 +175,13 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
         title={<ScrollCardTitle color={titleHighlightColor}>{label}</ScrollCardTitle>}
         size="small"
         type="inner"
-        extra={tableMetricValFormatted}
+        extra={
+          <TableMetricIndicator
+            tableMetric={tableMetric}
+            metricData={{ partitions, violations }}
+            diffMetricData={diffMetricData}
+          />
+        }
         highlightColor={cardHighlightedColor}
       >
         <List
@@ -268,8 +275,6 @@ const formatColumnExtra = (
 
   return formatColumnMetric
 }
-
-const formatTableMetric = (val: number) => fmtHelper(val)
 
 const formatColumnDataType = (data_type: NodeColumnDataType) =>
   `${data_type.type}${data_type.nullable ? '?' : ''}`

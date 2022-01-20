@@ -25,7 +25,7 @@ export const createStore = () =>
     },
 
     baseRelease: '',
-    tableMetric: 'none',
+    tableMetric: 'partitions',
     columnMetric: 'none',
     columnMetricMaxValue: 0,
     countNormalize: false,
