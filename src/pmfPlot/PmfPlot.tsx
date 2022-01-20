@@ -229,6 +229,7 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
     <svg
       ref={ref as any}
       style={{
+        isolation: 'isolate', // Prevent mix-blend-mode from leaking
         height,
         width: '100%',
       }}
