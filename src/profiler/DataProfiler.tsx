@@ -168,30 +168,6 @@ export const DataProfiler = (props: DataProfilerProps) => {
     [data, config, validVisibleColumns, isNormalizeChecked]
   )
 
-  const _config = useMemo(
-    () => ({
-      smallSize,
-      showChartTableSwitcher,
-      setChartTableChecked,
-      showLogarithmicSwitcher,
-      setLogChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
-      showAxesSwitcher,
-      setAxesChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
-    }),
-    [
-      smallSize,
-      setChartTableChecked,
-      setCheckedAxesRows,
-      setCheckedLogRows,
-      columnNames,
-      showChartTableSwitcher,
-      showLogarithmicSwitcher,
-      setCheckedLogRows,
-      showAxesSwitcher,
-      setCheckedAxesRows,
-    ]
-  )
-
   const _setIsVerticalView = useCallback(
     () =>
       setIsVertical((prevState: boolean) => {
@@ -218,6 +194,54 @@ export const DataProfiler = (props: DataProfilerProps) => {
     })
   }, [config])
 
+  const _config = useMemo(
+    () => ({
+      smallSize,
+      showChartTableSwitcher,
+      setChartTableChecked,
+      showLogarithmicSwitcher,
+      setLogChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
+      showAxesSwitcher,
+      setAxesChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
+      showOrientSwitcher,
+      isVertical,
+      _setIsVerticalView,
+      showSearch,
+      _onSearch,
+      showJsonSwitcher,
+      isJsonShown,
+      _setJsonShown,
+      showNormalizeSwitcher,
+      isNormalizeChecked,
+      _normalizeChange,
+      showProfilerToolbar,
+    }),
+    [
+      smallSize,
+      setChartTableChecked,
+      setCheckedAxesRows,
+      setCheckedLogRows,
+      columnNames,
+      showChartTableSwitcher,
+      showLogarithmicSwitcher,
+      setCheckedLogRows,
+      showAxesSwitcher,
+      setCheckedAxesRows,
+      showOrientSwitcher,
+      isVertical,
+      _setIsVerticalView,
+      showSearch,
+      _onSearch,
+      showJsonSwitcher,
+      isJsonShown,
+      _setJsonShown,
+      showNormalizeSwitcher,
+      isNormalizeChecked,
+      _normalizeChange,
+      showProfilerToolbar,
+    ]
+  )
+
   return (
     <ConfigContext.Provider value={_config}>
       <CheckedRowsContext.Provider
@@ -231,21 +255,6 @@ export const DataProfiler = (props: DataProfilerProps) => {
           dataLength: columnNames.length,
         }}
       >
-        {showProfilerToolbar ? (
-          <TableSettings
-            isModeSwitcherShown={showOrientSwitcher}
-            isModeSwitcherChecked={isVertical}
-            onModeChange={_setIsVerticalView}
-            isSearchShown={!!showSearch}
-            onSearchChangeHandler={_onSearch}
-            isJsonSwitcherShown={showJsonSwitcher}
-            isJsonSwitcherChecked={isJsonShown}
-            onJsonChange={_setJsonShown}
-            isNormalizeSwitcherShown={showNormalizeSwitcher}
-            isNormalizeSwitcherChecked={isNormalizeChecked}
-            onNormalizeChange={_normalizeChange}
-          />
-        ) : null}
         <TableWrapper smallSize={!!smallSize}>
           {isVertical ? (
             <VerticalTable
