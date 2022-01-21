@@ -18,6 +18,9 @@ import { Column, ColumnStatistic, Rule, TableCellData } from './model'
 import { Maybe } from '../model'
 import { CELL_PADDING, CELL_SORTER_WIDTH, MAX_CELL_WIDTH } from './constants'
 
+const renderFullNumber = renderNumericValue(0)
+const renderShortNumber = renderNumericValue(0, true)
+
 function renderRulesColumnsCell(
   text: string,
   item: { rule_name: string; description?: Maybe<string>; expression: string }
@@ -65,7 +68,7 @@ export const getRulesColumns = (isNarrowMode: boolean, getRuleNameColumnSearchPr
       title: 'Violations',
       dataIndex: 'violations',
       sorter: defaultSort('violations'),
-      render: renderNumericValue(0),
+      render: renderFullNumber,
       align: alignRight,
       ellipsis: true,
       width: 120,
@@ -149,9 +152,7 @@ const getColumnTitle = (
         <>
           <b>{columnName}</b>
           <br />
-          <HeaderErrorsQuantity>
-            ({renderNumericValue(0)(errorsQuantity)} errors)
-          </HeaderErrorsQuantity>
+          <HeaderErrorsQuantity>({renderFullNumber(errorsQuantity)} errors)</HeaderErrorsQuantity>
         </>
       ) : (
         columnName
@@ -175,7 +176,7 @@ const getColumnTitle = (
           <>
             {columnName}{' '}
             <HeaderErrorsQuantity>
-              ({renderNumericValue(0, true)(errorsQuantity)} errors)
+              ({renderShortNumber(errorsQuantity)} errors)
             </HeaderErrorsQuantity>
           </>
         ) : (
