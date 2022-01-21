@@ -349,3 +349,7 @@ export const SvgWrapper = styled.span`
   justify-content: flex-start;
   align-items: center;
 `
+
+export const BarChartWrapper = styled.div`
+  height: 100%;
+`

@@ -1,0 +1,2540 @@
+{
+  "table": {
+    "rows": 103879
+  },
+  "columns": [
+    {
+      "name": "location",
+      "data_type": "string",
+      "data_type_json": "\"string\"",
+      "nullable": true,
+      "enum_values": [],
+      "format": null,
+      "count": 103879,
+      "count_empty": 0,
+      "count_nulls": 73512,
+      "count_unique": 227,
+      "count_zeros": null,
+      "max_length": 32,
+      "min": "Afghanistan",
+      "max": "Zimbabwe",
+      "mean": null,
+      "pmf": [],
+      "items": [
+        {
+          "item": "Afghanistan",
+          "count": 200
+        },
+        {
+          "item": "Africa",
+          "count": 198
+        },
+        {
+          "item": "Albania",
+          "count": 199
+        },
+        {
+          "item": "Andorra",
+          "count": 203
+        },
+        {
+          "item": "Angola",
+          "count": 198
+        },
+        {
+          "item": "Asia",
+          "count": 208
+        },
+        {
+          "item": "Austria",
+          "count": 201
+        },
+        {
+          "item": "Azerbaijan",
+          "count": 203
+        },
+        {
+          "item": "Bahrain",
+          "count": 203
+        },
+        {
+          "item": "Bangladesh",
+          "count": 202
+        },
+        {
+          "item": "Belgium",
+          "count": 199
+        },
+        {
+          "item": "Belize",
+          "count": 198
+        },
+        {
+          "item": "Bosnia and Herzegovina",
+          "count": 199
+        },
+        {
+          "item": "Brazil",
+          "count": 198
+        },
+        {
+          "item": "Bulgaria",
+          "count": 198
+        },
+        {
+          "item": "Cambodia",
+          "count": 198
+        },
+        {
+          "item": "Canada",
+          "count": 199
+        },
+        {
+          "item": "Chile",
+          "count": 202
+        },
+        {
+          "item": "China",
+          "count": 208
+        },
+        {
+          "item": "Congo",
+          "count": 198
+        },
+        {
+          "item": "Costa Rica",
+          "count": 203
+        },
+        {
+          "item": "Cyprus",
+          "count": 201
+        },
+        {
+          "item": "Czechia",
+          "count": 201
+        },
+        {
+          "item": "Denmark",
+          "count": 205
+        },
+        {
+          "item": "Ecuador",
+          "count": 199
+        },
+        {
+          "item": "Egypt",
+          "count": 199
+        },
+        {
+          "item": "England",
+          "count": 210
+        },
+        {
+          "item": "Equatorial Guinea",
+          "count": 198
+        },
+        {
+          "item": "Estonia",
+          "count": 207
+        },
+        {
+          "item": "Europe",
+          "count": 212
+        },
+        {
+          "item": "European Union",
+          "count": 207
+        },
+        {
+          "item": "Finland",
+          "count": 199
+        },
+        {
+          "item": "France",
+          "count": 205
+        },
+        {
+          "item": "French Polynesia",
+          "count": 199
+        },
+        {
+          "item": "Germany",
+          "count": 204
+        },
+        {
+          "item": "Ghana",
+          "count": 198
+        },
+        {
+          "item": "Greece",
+          "count": 199
+        },
+        {
+          "item": "Greenland",
+          "count": 202
+        },
+        {
+          "item": "Guatemala",
+          "count": 199
+        },
+        {
+          "item": "Guinea",
+          "count": 198
+        },
+        {
+          "item": "High income",
+          "count": 214
+        },
+        {
+          "item": "Hungary",
+          "count": 199
+        },
+        {
+          "item": "Iceland",
+          "count": 198
+        },
+        {
+          "item": "India",
+          "count": 202
+        },
+        {
+          "item": "Indonesia",
+          "count": 202
+        },
+        {
+          "item": "Israel",
+          "count": 198
+        },
+        {
+          "item": "Italy",
+          "count": 207
+        },
+        {
+          "item": "Jersey",
+          "count": 199
+        },
+        {
+          "item": "Jordan",
+          "count": 199
+        },
+        {
+          "item": "Kenya",
+          "count": 199
+        },
+        {
+          "item": "Laos",
+          "count": 199
+        },
+        {
+          "item": "Latvia",
+          "count": 210
+        },
+        {
+          "item": "Liechtenstein",
+          "count": 201
+        },
+        {
+          "item": "Lithuania",
+          "count": 198
+        },
+        {
+          "item": "Low income",
+          "count": 198
+        },
+        {
+          "item": "Lower middle income",
+          "count": 198
+        },
+        {
+          "item": "Luxembourg",
+          "count": 200
+        },
+        {
+          "item": "Malaysia",
+          "count": 198
+        },
+        {
+          "item": "Mauritius",
+          "count": 198
+        },
+        {
+          "item": "Mexico",
+          "count": 204
+        },
+        {
+          "item": "Mongolia",
+          "count": 200
+        },
+        {
+          "item": "Nauru",
+          "count": 198
+        },
+        {
+          "item": "Nepal",
+          "count": 200
+        },
+        {
+          "item": "Netherlands",
+          "count": 198
+        },
+        {
+          "item": "Niger",
+          "count": 198
+        },
+        {
+          "item": "Nigeria",
+          "count": 199
+        },
+        {
+          "item": "North America",
+          "count": 205
+        },
+        {
+          "item": "North Macedonia",
+          "count": 199
+        },
+        {
+          "item": "Northern Ireland",
+          "count": 204
+        },
+        {
+          "item": "Norway",
+          "count": 210
+        },
+        {
+          "item": "Oman",
+          "count": 203
+        },
+        {
+          "item": "Panama",
+          "count": 199
+        },
+        {
+          "item": "Philippines",
+          "count": 199
+        },
+        {
+          "item": "Poland",
+          "count": 200
+        },
+        {
+          "item": "Qatar",
+          "count": 204
+        },
+        {
+          "item": "Russia",
+          "count": 212
+        },
+        {
+          "item": "San Marino",
+          "count": 198
+        },
+        {
+          "item": "Saudi Arabia",
+          "count": 198
+        },
+        {
+          "item": "Scotland",
+          "count": 204
+        },
+        {
+          "item": "Serbia",
+          "count": 200
+        },
+        {
+          "item": "Seychelles",
+          "count": 205
+        },
+        {
+          "item": "Singapore",
+          "count": 206
+        },
+        {
+          "item": "Slovenia",
+          "count": 201
+        },
+        {
+          "item": "Somalia",
+          "count": 199
+        },
+        {
+          "item": "South Africa",
+          "count": 199
+        },
+        {
+          "item": "South America",
+          "count": 198
+        },
+        {
+          "item": "South Sudan",
+          "count": 199
+        },
+        {
+          "item": "Spain",
+          "count": 199
+        },
+        {
+          "item": "Sri Lanka",
+          "count": 203
+        },
+        {
+          "item": "Sweden",
+          "count": 199
+        },
+        {
+          "item": "Switzerland",
+          "count": 199
+        },
+        {
+          "item": "Turkey",
+          "count": 202
+        },
+        {
+          "item": "United Arab Emirates",
+          "count": 201
+        },
+        {
+          "item": "United Kingdom",
+          "count": 212
+        },
+        {
+          "item": "United States",
+          "count": 207
+        },
+        {
+          "item": "Upper middle income",
+          "count": 198
+        },
+        {
+          "item": "Uruguay",
+          "count": 199
+        },
+        {
+          "item": "Wales",
+          "count": 208
+        },
+        {
+          "item": "World",
+          "count": 211
+        },
+        {
+          "item": "Zimbabwe",
+          "count": 200
+        }
+      ],
+      "extras": {
+        "is_exact": "false"
+      }
+    },
+    {
+      "name": "date",
+      "data_type": "string",
+      "data_type_json": "\"string\"",
+      "nullable": true,
+      "enum_values": [],
+      "format": null,
+      "count": 103879,
+      "count_empty": 0,
+      "count_nulls": 73512,
+      "count_unique": 211,
+      "count_zeros": null,
+      "max_length": 10,
+      "min": "2020-12-02",
+      "max": "2021-06-30",
+      "mean": null,
+      "pmf": [],
+      "items": [
+        {
+          "item": "2021-02-14",
+          "count": 206
+        },
+        {
+          "item": "2021-02-15",
+          "count": 205
+        },
+        {
+          "item": "2021-03-03",
+          "count": 205
+        },
+        {
+          "item": "2021-03-04",
+          "count": 206
+        },
+        {
+          "item": "2021-03-05",
+          "count": 206
+        },
+        {
+          "item": "2021-03-08",
+          "count": 206
+        },
+        {
+          "item": "2021-03-09",
+          "count": 206
+        },
+        {
+          "item": "2021-03-11",
+          "count": 206
+        },
+        {
+          "item": "2021-03-15",
+          "count": 205
+        },
+        {
+          "item": "2021-03-18",
+          "count": 207
+        },
+        {
+          "item": "2021-03-23",
+          "count": 204
+        },
+        {
+          "item": "2021-03-25",
+          "count": 207
+        },
+        {
+          "item": "2021-03-29",
+          "count": 211
+        },
+        {
+          "item": "2021-03-30",
+          "count": 208
+        },
+        {
+          "item": "2021-04-02",
+          "count": 209
+        },
+        {
+          "item": "2021-04-03",
+          "count": 206
+        },
+        {
+          "item": "2021-04-05",
+          "count": 212
+        },
+        {
+          "item": "2021-04-06",
+          "count": 211
+        },
+        {
+          "item": "2021-04-08",
+          "count": 204
+        },
+        {
+          "item": "2021-04-09",
+          "count": 204
+        },
+        {
+          "item": "2021-04-10",
+          "count": 213
+        },
+        {
+          "item": "2021-04-11",
+          "count": 213
+        },
+        {
+          "item": "2021-04-12",
+          "count": 210
+        },
+        {
+          "item": "2021-04-13",
+          "count": 212
+        },
+        {
+          "item": "2021-04-14",
+          "count": 212
+        },
+        {
+          "item": "2021-04-15",
+          "count": 213
+        },
+        {
+          "item": "2021-04-16",
+          "count": 209
+        },
+        {
+          "item": "2021-04-17",
+          "count": 208
+        },
+        {
+          "item": "2021-04-18",
+          "count": 213
+        },
+        {
+          "item": "2021-04-19",
+          "count": 216
+        },
+        {
+          "item": "2021-04-20",
+          "count": 215
+        },
+        {
+          "item": "2021-04-21",
+          "count": 209
+        },
+        {
+          "item": "2021-04-22",
+          "count": 211
+        },
+        {
+          "item": "2021-04-23",
+          "count": 210
+        },
+        {
+          "item": "2021-04-24",
+          "count": 217
+        },
+        {
+          "item": "2021-04-25",
+          "count": 211
+        },
+        {
+          "item": "2021-04-26",
+          "count": 209
+        },
+        {
+          "item": "2021-04-27",
+          "count": 218
+        },
+        {
+          "item": "2021-04-28",
+          "count": 210
+        },
+        {
+          "item": "2021-04-29",
+          "count": 217
+        },
+        {
+          "item": "2021-04-30",
+          "count": 214
+        },
+        {
+          "item": "2021-05-01",
+          "count": 211
+        },
+        {
+          "item": "2021-05-02",
+          "count": 210
+        },
+        {
+          "item": "2021-05-03",
+          "count": 221
+        },
+        {
+          "item": "2021-05-04",
+          "count": 213
+        },
+        {
+          "item": "2021-05-05",
+          "count": 219
+        },
+        {
+          "item": "2021-05-06",
+          "count": 210
+        },
+        {
+          "item": "2021-05-07",
+          "count": 211
+        },
+        {
+          "item": "2021-05-08",
+          "count": 216
+        },
+        {
+          "item": "2021-05-09",
+          "count": 213
+        },
+        {
+          "item": "2021-05-10",
+          "count": 213
+        },
+        {
+          "item": "2021-05-11",
+          "count": 213
+        },
+        {
+          "item": "2021-05-12",
+          "count": 219
+        },
+        {
+          "item": "2021-05-13",
+          "count": 218
+        },
+        {
+          "item": "2021-05-14",
+          "count": 219
+        },
+        {
+          "item": "2021-05-15",
+          "count": 218
+        },
+        {
+          "item": "2021-05-16",
+          "count": 225
+        },
+        {
+          "item": "2021-05-17",
+          "count": 219
+        },
+        {
+          "item": "2021-05-18",
+          "count": 220
+        },
+        {
+          "item": "2021-05-19",
+          "count": 222
+        },
+        {
+          "item": "2021-05-20",
+          "count": 219
+        },
+        {
+          "item": "2021-05-21",
+          "count": 219
+        },
+        {
+          "item": "2021-05-22",
+          "count": 222
+        },
+        {
+          "item": "2021-05-23",
+          "count": 219
+        },
+        {
+          "item": "2021-05-24",
+          "count": 218
+        },
+        {
+          "item": "2021-05-25",
+          "count": 219
+        },
+        {
+          "item": "2021-05-26",
+          "count": 219
+        },
+        {
+          "item": "2021-05-27",
+          "count": 223
+        },
+        {
+          "item": "2021-05-28",
+          "count": 225
+        },
+        {
+          "item": "2021-05-29",
+          "count": 217
+        },
+        {
+          "item": "2021-05-30",
+          "count": 223
+        },
+        {
+          "item": "2021-05-31",
+          "count": 219
+        },
+        {
+          "item": "2021-06-01",
+          "count": 219
+        },
+        {
+          "item": "2021-06-02",
+          "count": 219
+        },
+        {
+          "item": "2021-06-03",
+          "count": 221
+        },
+        {
+          "item": "2021-06-04",
+          "count": 219
+        },
+        {
+          "item": "2021-06-05",
+          "count": 229
+        },
+        {
+          "item": "2021-06-06",
+          "count": 222
+        },
+        {
+          "item": "2021-06-07",
+          "count": 216
+        },
+        {
+          "item": "2021-06-08",
+          "count": 216
+        },
+        {
+          "item": "2021-06-09",
+          "count": 217
+        },
+        {
+          "item": "2021-06-10",
+          "count": 216
+        },
+        {
+          "item": "2021-06-11",
+          "count": 215
+        },
+        {
+          "item": "2021-06-12",
+          "count": 219
+        },
+        {
+          "item": "2021-06-13",
+          "count": 215
+        },
+        {
+          "item": "2021-06-14",
+          "count": 222
+        },
+        {
+          "item": "2021-06-15",
+          "count": 215
+        },
+        {
+          "item": "2021-06-16",
+          "count": 215
+        },
+        {
+          "item": "2021-06-17",
+          "count": 222
+        },
+        {
+          "item": "2021-06-18",
+          "count": 218
+        },
+        {
+          "item": "2021-06-19",
+          "count": 213
+        },
+        {
+          "item": "2021-06-20",
+          "count": 214
+        },
+        {
+          "item": "2021-06-21",
+          "count": 214
+        },
+        {
+          "item": "2021-06-22",
+          "count": 216
+        },
+        {
+          "item": "2021-06-23",
+          "count": 218
+        },
+        {
+          "item": "2021-06-25",
+          "count": 205
+        },
+        {
+          "item": "2021-06-26",
+          "count": 206
+        },
+        {
+          "item": "2021-06-27",
+          "count": 207
+        },
+        {
+          "item": "2021-06-28",
+          "count": 205
+        },
+        {
+          "item": "2021-06-29",
+          "count": 204
+        }
+      ],
+      "extras": {
+        "is_exact": "false"
+      }
+    },
+    {
+      "name": "cases",
+      "data_type": "string",
+      "data_type_json": "\"string\"",
+      "nullable": true,
+      "enum_values": [],
+      "format": null,
+      "count": 103879,
+      "count_empty": 0,
+      "count_nulls": 8102,
+      "count_unique": 12957,
+      "count_zeros": null,
+      "max_length": 8,
+      "min": "-1.0",
+      "max": "9997.0",
+      "mean": null,
+      "pmf": [],
+      "items": [
+        {
+          "item": "0.0",
+          "count": 20140
+        },
+        {
+          "item": "1.0",
+          "count": 2665
+        },
+        {
+          "item": "10.0",
+          "count": 682
+        },
+        {
+          "item": "11.0",
+          "count": 672
+        },
+        {
+          "item": "12.0",
+          "count": 591
+        },
+        {
+          "item": "125.0",
+          "count": 336
+        },
+        {
+          "item": "13.0",
+          "count": 613
+        },
+        {
+          "item": "14.0",
+          "count": 580
+        },
+        {
+          "item": "15.0",
+          "count": 557
+        },
+        {
+          "item": "16.0",
+          "count": 514
+        },
+        {
+          "item": "17.0",
+          "count": 495
+        },
+        {
+          "item": "172.0",
+          "count": 336
+        },
+        {
+          "item": "18.0",
+          "count": 470
+        },
+        {
+          "item": "19.0",
+          "count": 474
+        },
+        {
+          "item": "2.0",
+          "count": 1735
+        },
+        {
+          "item": "20.0",
+          "count": 446
+        },
+        {
+          "item": "21.0",
+          "count": 434
+        },
+        {
+          "item": "22.0",
+          "count": 407
+        },
+        {
+          "item": "23.0",
+          "count": 400
+        },
+        {
+          "item": "24.0",
+          "count": 429
+        },
+        {
+          "item": "25.0",
+          "count": 385
+        },
+        {
+          "item": "257.0",
+          "count": 336
+        },
+        {
+          "item": "26.0",
+          "count": 388
+        },
+        {
+          "item": "27.0",
+          "count": 365
+        },
+        {
+          "item": "279.0",
+          "count": 337
+        },
+        {
+          "item": "28.0",
+          "count": 378
+        },
+        {
+          "item": "29.0",
+          "count": 340
+        },
+        {
+          "item": "3.0",
+          "count": 1391
+        },
+        {
+          "item": "30.0",
+          "count": 350
+        },
+        {
+          "item": "31.0",
+          "count": 342
+        },
+        {
+          "item": "32.0",
+          "count": 338
+        },
+        {
+          "item": "33.0",
+          "count": 338
+        },
+        {
+          "item": "35.0",
+          "count": 343
+        },
+        {
+          "item": "36.0",
+          "count": 338
+        },
+        {
+          "item": "37.0",
+          "count": 339
+        },
+        {
+          "item": "38.0",
+          "count": 343
+        },
+        {
+          "item": "382.0",
+          "count": 336
+        },
+        {
+          "item": "39.0",
+          "count": 338
+        },
+        {
+          "item": "4.0",
+          "count": 1177
+        },
+        {
+          "item": "40.0",
+          "count": 343
+        },
+        {
+          "item": "41.0",
+          "count": 354
+        },
+        {
+          "item": "43.0",
+          "count": 338
+        },
+        {
+          "item": "44.0",
+          "count": 337
+        },
+        {
+          "item": "48.0",
+          "count": 338
+        },
+        {
+          "item": "49.0",
+          "count": 337
+        },
+        {
+          "item": "5.0",
+          "count": 1027
+        },
+        {
+          "item": "51.0",
+          "count": 336
+        },
+        {
+          "item": "52.0",
+          "count": 336
+        },
+        {
+          "item": "55.0",
+          "count": 336
+        },
+        {
+          "item": "551.0",
+          "count": 336
+        },
+        {
+          "item": "57.0",
+          "count": 336
+        },
+        {
+          "item": "59.0",
+          "count": 336
+        },
+        {
+          "item": "6.0",
+          "count": 970
+        },
+        {
+          "item": "7.0",
+          "count": 839
+        },
+        {
+          "item": "71.0",
+          "count": 338
+        },
+        {
+          "item": "8.0",
+          "count": 788
+        },
+        {
+          "item": "86.0",
+          "count": 336
+        },
+        {
+          "item": "9.0",
+          "count": 711
+        },
+        {
+          "item": "93.0",
+          "count": 336
+        },
+        {
+          "item": "931.0",
+          "count": 336
+        }
+      ],
+      "extras": {
+        "is_exact": "false"
+      }
+    },
+    {
+      "name": "deaths",
+      "data_type": "string",
+      "data_type_json": "\"string\"",
+      "nullable": true,
+      "enum_values": [],
+      "format": null,
+      "count": 103879,
+      "count_empty": 0,
+      "count_nulls": 18068,
+      "count_unique": 3051,
+      "count_zeros": null,
+      "max_length": 7,
+      "min": "-1.0",
+      "max": "999.0",
+      "mean": null,
+      "pmf": [],
+      "items": [
+        {
+          "item": "-2.0",
+          "count": 100
+        },
+        {
+          "item": "0.0",
+          "count": 34434
+        },
+        {
+          "item": "1.0",
+          "count": 6825
+        },
+        {
+          "item": "10.0",
+          "count": 1030
+        },
+        {
+          "item": "100.0",
+          "count": 100
+        },
+        {
+          "item": "103.0",
+          "count": 101
+        },
+        {
+          "item": "104.0",
+          "count": 100
+        },
+        {
+          "item": "11.0",
+          "count": 854
+        },
+        {
+          "item": "12.0",
+          "count": 760
+        },
+        {
+          "item": "129.0",
+          "count": 101
+        },
+        {
+          "item": "13.0",
+          "count": 675
+        },
+        {
+          "item": "14.0",
+          "count": 636
+        },
+        {
+          "item": "15.0",
+          "count": 597
+        },
+        {
+          "item": "150.0",
+          "count": 101
+        },
+        {
+          "item": "153.0",
+          "count": 100
+        },
+        {
+          "item": "154.0",
+          "count": 100
+        },
+        {
+          "item": "1555.0",
+          "count": 100
+        },
+        {
+          "item": "16.0",
+          "count": 520
+        },
+        {
+          "item": "17.0",
+          "count": 547
+        },
+        {
+          "item": "172.0",
+          "count": 100
+        },
+        {
+          "item": "179.0",
+          "count": 101
+        },
+        {
+          "item": "18.0",
+          "count": 478
+        },
+        {
+          "item": "19.0",
+          "count": 465
+        },
+        {
+          "item": "2.0",
+          "count": 4120
+        },
+        {
+          "item": "20.0",
+          "count": 403
+        },
+        {
+          "item": "207.0",
+          "count": 100
+        },
+        {
+          "item": "21.0",
+          "count": 367
+        },
+        {
+          "item": "22.0",
+          "count": 297
+        },
+        {
+          "item": "23.0",
+          "count": 309
+        },
+        {
+          "item": "233.0",
+          "count": 100
+        },
+        {
+          "item": "24.0",
+          "count": 288
+        },
+        {
+          "item": "25.0",
+          "count": 279
+        },
+        {
+          "item": "26.0",
+          "count": 273
+        },
+        {
+          "item": "27.0",
+          "count": 275
+        },
+        {
+          "item": "2723.0",
+          "count": 100
+        },
+        {
+          "item": "28.0",
+          "count": 240
+        },
+        {
+          "item": "282.0",
+          "count": 100
+        },
+        {
+          "item": "29.0",
+          "count": 225
+        },
+        {
+          "item": "3.0",
+          "count": 3019
+        },
+        {
+          "item": "30.0",
+          "count": 246
+        },
+        {
+          "item": "31.0",
+          "count": 209
+        },
+        {
+          "item": "32.0",
+          "count": 210
+        },
+        {
+          "item": "33.0",
+          "count": 190
+        },
+        {
+          "item": "34.0",
+          "count": 225
+        },
+        {
+          "item": "342.0",
+          "count": 100
+        },
+        {
+          "item": "35.0",
+          "count": 200
+        },
+        {
+          "item": "36.0",
+          "count": 173
+        },
+        {
+          "item": "37.0",
+          "count": 180
+        },
+        {
+          "item": "38.0",
+          "count": 178
+        },
+        {
+          "item": "39.0",
+          "count": 189
+        },
+        {
+          "item": "4.0",
+          "count": 2507
+        },
+        {
+          "item": "40.0",
+          "count": 150
+        },
+        {
+          "item": "41.0",
+          "count": 178
+        },
+        {
+          "item": "42.0",
+          "count": 162
+        },
+        {
+          "item": "43.0",
+          "count": 141
+        },
+        {
+          "item": "44.0",
+          "count": 135
+        },
+        {
+          "item": "45.0",
+          "count": 152
+        },
+        {
+          "item": "46.0",
+          "count": 159
+        },
+        {
+          "item": "47.0",
+          "count": 127
+        },
+        {
+          "item": "48.0",
+          "count": 149
+        },
+        {
+          "item": "49.0",
+          "count": 158
+        },
+        {
+          "item": "5.0",
+          "count": 2037
+        },
+        {
+          "item": "50.0",
+          "count": 124
+        },
+        {
+          "item": "51.0",
+          "count": 122
+        },
+        {
+          "item": "52.0",
+          "count": 118
+        },
+        {
+          "item": "53.0",
+          "count": 136
+        },
+        {
+          "item": "54.0",
+          "count": 106
+        },
+        {
+          "item": "55.0",
+          "count": 110
+        },
+        {
+          "item": "56.0",
+          "count": 113
+        },
+        {
+          "item": "57.0",
+          "count": 103
+        },
+        {
+          "item": "58.0",
+          "count": 111
+        },
+        {
+          "item": "59.0",
+          "count": 103
+        },
+        {
+          "item": "5929.0",
+          "count": 100
+        },
+        {
+          "item": "6.0",
+          "count": 1674
+        },
+        {
+          "item": "60.0",
+          "count": 106
+        },
+        {
+          "item": "61.0",
+          "count": 102
+        },
+        {
+          "item": "62.0",
+          "count": 106
+        },
+        {
+          "item": "63.0",
+          "count": 108
+        },
+        {
+          "item": "65.0",
+          "count": 103
+        },
+        {
+          "item": "66.0",
+          "count": 107
+        },
+        {
+          "item": "69.0",
+          "count": 100
+        },
+        {
+          "item": "7.0",
+          "count": 1371
+        },
+        {
+          "item": "70.0",
+          "count": 100
+        },
+        {
+          "item": "75.0",
+          "count": 100
+        },
+        {
+          "item": "76.0",
+          "count": 103
+        },
+        {
+          "item": "8.0",
+          "count": 1292
+        },
+        {
+          "item": "81.0",
+          "count": 101
+        },
+        {
+          "item": "819.0",
+          "count": 100
+        },
+        {
+          "item": "82.0",
+          "count": 100
+        },
+        {
+          "item": "84.0",
+          "count": 100
+        },
+        {
+          "item": "85.0",
+          "count": 101
+        },
+        {
+          "item": "86.0",
+          "count": 101
+        },
+        {
+          "item": "9.0",
+          "count": 1106
+        },
+        {
+          "item": "93.0",
+          "count": 101
+        },
+        {
+          "item": "94.0",
+          "count": 104
+        },
+        {
+          "item": "97.0",
+          "count": 101
+        }
+      ],
+      "extras": {
+        "is_exact": "false"
+      }
+    },
+    {
+      "name": "excess_deaths",
+      "data_type": "string",
+      "data_type_json": "\"string\"",
+      "nullable": true,
+      "enum_values": [],
+      "format": null,
+      "count": 103879,
+      "count_empty": 0,
+      "count_nulls": 100527,
+      "count_unique": 2405,
+      "count_zeros": null,
+      "max_length": 8,
+      "min": "10.0",
+      "max": "999.0",
+      "mean": null,
+      "pmf": [],
+      "items": [
+        {
+          "item": "1006.0",
+          "count": 18
+        },
+        {
+          "item": "1013.0",
+          "count": 18
+        },
+        {
+          "item": "10534.0",
+          "count": 18
+        },
+        {
+          "item": "1137.0",
+          "count": 18
+        },
+        {
+          "item": "11580.0",
+          "count": 18
+        },
+        {
+          "item": "11775.0",
+          "count": 18
+        },
+        {
+          "item": "1178.0",
+          "count": 18
+        },
+        {
+          "item": "1180.0",
+          "count": 18
+        },
+        {
+          "item": "1205.0",
+          "count": 18
+        },
+        {
+          "item": "1212.0",
+          "count": 18
+        },
+        {
+          "item": "1258.0",
+          "count": 18
+        },
+        {
+          "item": "1273.0",
+          "count": 18
+        },
+        {
+          "item": "1284.0",
+          "count": 18
+        },
+        {
+          "item": "1297.0",
+          "count": 18
+        },
+        {
+          "item": "13035.0",
+          "count": 18
+        },
+        {
+          "item": "1343.0",
+          "count": 18
+        },
+        {
+          "item": "13801.0",
+          "count": 18
+        },
+        {
+          "item": "13942.0",
+          "count": 18
+        },
+        {
+          "item": "1395.0",
+          "count": 18
+        },
+        {
+          "item": "14.0",
+          "count": 18
+        },
+        {
+          "item": "14358.0",
+          "count": 18
+        },
+        {
+          "item": "1517.0",
+          "count": 18
+        },
+        {
+          "item": "15703.0",
+          "count": 18
+        },
+        {
+          "item": "1578.0",
+          "count": 18
+        },
+        {
+          "item": "16.0",
+          "count": 18
+        },
+        {
+          "item": "16173.0",
+          "count": 18
+        },
+        {
+          "item": "2004.0",
+          "count": 18
+        },
+        {
+          "item": "201.0",
+          "count": 18
+        },
+        {
+          "item": "2030.0",
+          "count": 18
+        },
+        {
+          "item": "2033.0",
+          "count": 18
+        },
+        {
+          "item": "2042.0",
+          "count": 18
+        },
+        {
+          "item": "2081.0",
+          "count": 18
+        },
+        {
+          "item": "2131.0",
+          "count": 18
+        },
+        {
+          "item": "2236.0",
+          "count": 18
+        },
+        {
+          "item": "2290.0",
+          "count": 18
+        },
+        {
+          "item": "2316.0",
+          "count": 18
+        },
+        {
+          "item": "2373.0",
+          "count": 18
+        },
+        {
+          "item": "243235.0",
+          "count": 18
+        },
+        {
+          "item": "2443.0",
+          "count": 18
+        },
+        {
+          "item": "25493.0",
+          "count": 18
+        },
+        {
+          "item": "2678.0",
+          "count": 18
+        },
+        {
+          "item": "2760.0",
+          "count": 18
+        },
+        {
+          "item": "2800.0",
+          "count": 18
+        },
+        {
+          "item": "29310.0",
+          "count": 18
+        },
+        {
+          "item": "2959.0",
+          "count": 18
+        },
+        {
+          "item": "3157.0",
+          "count": 18
+        },
+        {
+          "item": "3214.0",
+          "count": 18
+        },
+        {
+          "item": "3437.0",
+          "count": 18
+        },
+        {
+          "item": "350.0",
+          "count": 18
+        },
+        {
+          "item": "3527.0",
+          "count": 18
+        },
+        {
+          "item": "371.0",
+          "count": 18
+        },
+        {
+          "item": "39.0",
+          "count": 18
+        },
+        {
+          "item": "46.0",
+          "count": 18
+        },
+        {
+          "item": "51.0",
+          "count": 19
+        },
+        {
+          "item": "60.0",
+          "count": 19
+        },
+        {
+          "item": "61775.0",
+          "count": 18
+        },
+        {
+          "item": "6270.0",
+          "count": 18
+        },
+        {
+          "item": "6495.0",
+          "count": 18
+        },
+        {
+          "item": "686.0",
+          "count": 18
+        },
+        {
+          "item": "7047.0",
+          "count": 18
+        },
+        {
+          "item": "730.0",
+          "count": 18
+        },
+        {
+          "item": "74.0",
+          "count": 18
+        },
+        {
+          "item": "743.0",
+          "count": 18
+        },
+        {
+          "item": "822.0",
+          "count": 18
+        },
+        {
+          "item": "82889.0",
+          "count": 18
+        },
+        {
+          "item": "835.0",
+          "count": 18
+        },
+        {
+          "item": "84320.0",
+          "count": 18
+        },
+        {
+          "item": "863.0",
+          "count": 18
+        },
+        {
+          "item": "93.0",
+          "count": 18
+        }
+      ],
+      "extras": {
+        "is_exact": "false"
+      }
+    },
+    {
+      "name": "average_deaths",
+      "data_type": "string",
+      "data_type_json": "\"string\"",
+      "nullable": true,
+      "enum_values": [],
+      "format": null,
+      "count": 103879,
+      "count_empty": 0,
+      "count_nulls": 100507,
+      "count_unique": 2938,
+      "count_zeros": null,
+      "max_length": 8,
+      "min": "10.0",
+      "max": "999.8",
+      "mean": null,
+      "pmf": [],
+      "items": [
+        {
+          "item": "10165.8",
+          "count": 18
+        },
+        {
+          "item": "1056.0",
+          "count": 18
+        },
+        {
+          "item": "1060.6",
+          "count": 19
+        },
+        {
+          "item": "1064.2",
+          "count": 19
+        },
+        {
+          "item": "1067.2",
+          "count": 18
+        },
+        {
+          "item": "1105.4",
+          "count": 18
+        },
+        {
+          "item": "1162.4",
+          "count": 19
+        },
+        {
+          "item": "12323.8",
+          "count": 18
+        },
+        {
+          "item": "1235.8",
+          "count": 18
+        },
+        {
+          "item": "1253.8",
+          "count": 18
+        },
+        {
+          "item": "12618.6",
+          "count": 19
+        },
+        {
+          "item": "1272.0",
+          "count": 18
+        },
+        {
+          "item": "1283.0",
+          "count": 18
+        },
+        {
+          "item": "13155.6",
+          "count": 18
+        },
+        {
+          "item": "13965.8",
+          "count": 19
+        },
+        {
+          "item": "14967.2",
+          "count": 19
+        },
+        {
+          "item": "1538.8",
+          "count": 18
+        },
+        {
+          "item": "153821.8",
+          "count": 18
+        },
+        {
+          "item": "1735.2",
+          "count": 19
+        },
+        {
+          "item": "1811.5",
+          "count": 19
+        },
+        {
+          "item": "1830.8",
+          "count": 19
+        },
+        {
+          "item": "18638.5",
+          "count": 19
+        },
+        {
+          "item": "19.6",
+          "count": 18
+        },
+        {
+          "item": "20.2",
+          "count": 18
+        },
+        {
+          "item": "209.8",
+          "count": 18
+        },
+        {
+          "item": "21.8",
+          "count": 18
+        },
+        {
+          "item": "213.6",
+          "count": 19
+        },
+        {
+          "item": "2147.0",
+          "count": 18
+        },
+        {
+          "item": "2213.33",
+          "count": 18
+        },
+        {
+          "item": "2240.4",
+          "count": 18
+        },
+        {
+          "item": "2248.0",
+          "count": 19
+        },
+        {
+          "item": "2356.6",
+          "count": 18
+        },
+        {
+          "item": "2545.8",
+          "count": 19
+        },
+        {
+          "item": "2615.5",
+          "count": 18
+        },
+        {
+          "item": "2678.6",
+          "count": 18
+        },
+        {
+          "item": "2865.0",
+          "count": 18
+        },
+        {
+          "item": "314.4",
+          "count": 19
+        },
+        {
+          "item": "337.6",
+          "count": 18
+        },
+        {
+          "item": "340.0",
+          "count": 18
+        },
+        {
+          "item": "40.2",
+          "count": 18
+        },
+        {
+          "item": "410.4",
+          "count": 19
+        },
+        {
+          "item": "42.0",
+          "count": 18
+        },
+        {
+          "item": "43.4",
+          "count": 18
+        },
+        {
+          "item": "5517.2",
+          "count": 19
+        },
+        {
+          "item": "5578.0",
+          "count": 18
+        },
+        {
+          "item": "56538.2",
+          "count": 18
+        },
+        {
+          "item": "5706.0",
+          "count": 19
+        },
+        {
+          "item": "57333.6",
+          "count": 19
+        },
+        {
+          "item": "584.0",
+          "count": 19
+        },
+        {
+          "item": "589.4",
+          "count": 18
+        },
+        {
+          "item": "68.0",
+          "count": 18
+        },
+        {
+          "item": "722.4",
+          "count": 18
+        },
+        {
+          "item": "739.8",
+          "count": 18
+        },
+        {
+          "item": "746.4",
+          "count": 18
+        },
+        {
+          "item": "759.6",
+          "count": 18
+        },
+        {
+          "item": "7791.6",
+          "count": 18
+        },
+        {
+          "item": "822.4",
+          "count": 19
+        },
+        {
+          "item": "823.4",
+          "count": 18
+        },
+        {
+          "item": "825.2",
+          "count": 18
+        },
+        {
+          "item": "8273.4",
+          "count": 18
+        },
+        {
+          "item": "8280.6",
+          "count": 18
+        },
+        {
+          "item": "835.8",
+          "count": 18
+        },
+        {
+          "item": "84.2",
+          "count": 18
+        },
+        {
+          "item": "876.2",
+          "count": 19
+        },
+        {
+          "item": "9229.6",
+          "count": 19
+        },
+        {
+          "item": "933.6",
+          "count": 18
+        },
+        {
+          "item": "934.8",
+          "count": 18
+        },
+        {
+          "item": "974.2",
+          "count": 19
+        }
+      ],
+      "extras": {
+        "is_exact": "false"
+      }
+    },
+    {
+      "name": "vaccinations",
+      "data_type": "string",
+      "data_type_json": "\"string\"",
+      "nullable": true,
+      "enum_values": [],
+      "format": null,
+      "count": 103879,
+      "count_empty": 0,
+      "count_nulls": 73796,
+      "count_unique": 17783,
+      "count_zeros": null,
+      "max_length": 8,
+      "min": "0",
+      "max": "9997",
+      "mean": null,
+      "pmf": [],
+      "items": [
+        {
+          "item": "1022747",
+          "count": 156
+        },
+        {
+          "item": "10704158",
+          "count": 156
+        },
+        {
+          "item": "1080",
+          "count": 156
+        },
+        {
+          "item": "11000",
+          "count": 156
+        },
+        {
+          "item": "113",
+          "count": 157
+        },
+        {
+          "item": "11382",
+          "count": 156
+        },
+        {
+          "item": "1165631",
+          "count": 156
+        },
+        {
+          "item": "1180",
+          "count": 156
+        },
+        {
+          "item": "12455",
+          "count": 156
+        },
+        {
+          "item": "13069",
+          "count": 156
+        },
+        {
+          "item": "13543",
+          "count": 156
+        },
+        {
+          "item": "13828",
+          "count": 156
+        },
+        {
+          "item": "14350",
+          "count": 156
+        },
+        {
+          "item": "144330",
+          "count": 156
+        },
+        {
+          "item": "145",
+          "count": 156
+        },
+        {
+          "item": "1486",
+          "count": 156
+        },
+        {
+          "item": "1542",
+          "count": 156
+        },
+        {
+          "item": "161323",
+          "count": 156
+        },
+        {
+          "item": "18613",
+          "count": 156
+        },
+        {
+          "item": "18668",
+          "count": 156
+        },
+        {
+          "item": "1868",
+          "count": 156
+        },
+        {
+          "item": "1920",
+          "count": 156
+        },
+        {
+          "item": "19521",
+          "count": 156
+        },
+        {
+          "item": "198831",
+          "count": 156
+        },
+        {
+          "item": "20328",
+          "count": 156
+        },
+        {
+          "item": "2109",
+          "count": 157
+        },
+        {
+          "item": "2146",
+          "count": 156
+        },
+        {
+          "item": "22521",
+          "count": 157
+        },
+        {
+          "item": "240",
+          "count": 156
+        },
+        {
+          "item": "24387",
+          "count": 156
+        },
+        {
+          "item": "25179",
+          "count": 156
+        },
+        {
+          "item": "2545",
+          "count": 156
+        },
+        {
+          "item": "26090",
+          "count": 156
+        },
+        {
+          "item": "263",
+          "count": 157
+        },
+        {
+          "item": "26798",
+          "count": 156
+        },
+        {
+          "item": "271",
+          "count": 156
+        },
+        {
+          "item": "272972",
+          "count": 156
+        },
+        {
+          "item": "279487",
+          "count": 156
+        },
+        {
+          "item": "281",
+          "count": 156
+        },
+        {
+          "item": "28150",
+          "count": 156
+        },
+        {
+          "item": "2849",
+          "count": 156
+        },
+        {
+          "item": "2872",
+          "count": 156
+        },
+        {
+          "item": "28893",
+          "count": 157
+        },
+        {
+          "item": "2900",
+          "count": 156
+        },
+        {
+          "item": "3003",
+          "count": 156
+        },
+        {
+          "item": "30834",
+          "count": 156
+        },
+        {
+          "item": "3104",
+          "count": 156
+        },
+        {
+          "item": "3141",
+          "count": 156
+        },
+        {
+          "item": "32732",
+          "count": 156
+        },
+        {
+          "item": "332885",
+          "count": 156
+        },
+        {
+          "item": "33700",
+          "count": 156
+        },
+        {
+          "item": "3453",
+          "count": 156
+        },
+        {
+          "item": "35360",
+          "count": 156
+        },
+        {
+          "item": "37602",
+          "count": 156
+        },
+        {
+          "item": "390",
+          "count": 156
+        },
+        {
+          "item": "39935",
+          "count": 156
+        },
+        {
+          "item": "4415",
+          "count": 156
+        },
+        {
+          "item": "444809",
+          "count": 156
+        },
+        {
+          "item": "45180",
+          "count": 156
+        },
+        {
+          "item": "4600",
+          "count": 156
+        },
+        {
+          "item": "461745",
+          "count": 156
+        },
+        {
+          "item": "46668",
+          "count": 156
+        },
+        {
+          "item": "483",
+          "count": 156
+        },
+        {
+          "item": "5013",
+          "count": 156
+        },
+        {
+          "item": "503197",
+          "count": 156
+        },
+        {
+          "item": "521",
+          "count": 156
+        },
+        {
+          "item": "5216",
+          "count": 156
+        },
+        {
+          "item": "5495",
+          "count": 156
+        },
+        {
+          "item": "561",
+          "count": 156
+        },
+        {
+          "item": "5699",
+          "count": 156
+        },
+        {
+          "item": "570",
+          "count": 156
+        },
+        {
+          "item": "5772",
+          "count": 156
+        },
+        {
+          "item": "5907",
+          "count": 156
+        },
+        {
+          "item": "6202",
+          "count": 156
+        },
+        {
+          "item": "63029",
+          "count": 156
+        },
+        {
+          "item": "640",
+          "count": 156
+        },
+        {
+          "item": "6444",
+          "count": 156
+        },
+        {
+          "item": "676",
+          "count": 156
+        },
+        {
+          "item": "6874",
+          "count": 156
+        },
+        {
+          "item": "69622",
+          "count": 156
+        },
+        {
+          "item": "70789",
+          "count": 156
+        },
+        {
+          "item": "71",
+          "count": 156
+        },
+        {
+          "item": "744",
+          "count": 156
+        },
+        {
+          "item": "75002",
+          "count": 156
+        },
+        {
+          "item": "76069",
+          "count": 156
+        },
+        {
+          "item": "7712",
+          "count": 156
+        },
+        {
+          "item": "7715713",
+          "count": 156
+        },
+        {
+          "item": "806951",
+          "count": 156
+        },
+        {
+          "item": "81210",
+          "count": 156
+        },
+        {
+          "item": "823",
+          "count": 156
+        },
+        {
+          "item": "82474",
+          "count": 156
+        },
+        {
+          "item": "83530",
+          "count": 156
+        },
+        {
+          "item": "83642",
+          "count": 156
+        },
+        {
+          "item": "8858",
+          "count": 156
+        },
+        {
+          "item": "8958",
+          "count": 156
+        },
+        {
+          "item": "901",
+          "count": 156
+        },
+        {
+          "item": "911493",
+          "count": 156
+        },
+        {
+          "item": "961",
+          "count": 156
+        },
+        {
+          "item": "97",
+          "count": 156
+        },
+        {
+          "item": "9882",
+          "count": 156
+        }
+      ],
+      "extras": {
+        "is_exact": "false"
+      }
+    }
+  ]
+}

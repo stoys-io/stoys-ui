@@ -6,7 +6,6 @@ import 'antd/lib/table/style/css'
 import { TableProps } from '../model'
 import VirtualTable from '../../common/VirtualTable'
 import { TABLE_HEIGHT } from '../../quality/constants'
-import { TABLE_ROW_HEIGHT } from '../constants'
 
 const HorizontalTable = (props: TableProps) => {
   const {
@@ -50,7 +49,6 @@ const HorizontalTable = (props: TableProps) => {
         } as any
       }
       columnWithMaxWidth="chart"
-      rowHeight={TABLE_ROW_HEIGHT}
       overscanRowCount={2}
       overscanColumnCount={2}
       {...tableProps}

@@ -5,19 +5,14 @@ import PmfPlot from '../../pmfPlot'
 import { CheckedRowsContext, ConfigContext } from '../context'
 import Table from '../components/Table'
 import BarChart from '../../BarChart'
-import { ChartAndTableProps, DiscreteItem } from '../model'
+import { ChartAndTableProps, ColumnType, DiscreteItem, PmfPlotItem } from '../model'
 import { Maybe } from '../../model'
-import {
-  MIN_CHART_CELL_HEIGHT,
-  MIN_SMALL_CHART_CELL_HEIGHT,
-  MIN_TABLE_ROW_HEIGHT,
-  TABLE_ROW_HEIGHT,
-} from '../constants'
-import { StyledEmpty } from '../styles'
+import { MIN_TABLE_ROW_HEIGHT, TABLE_ROW_HEIGHT } from '../constants'
+import { BarChartWrapper, StyledEmpty } from '../styles'
+import { formatPercentage } from '../../helpers'
 
 const ChartAndTable = ({
   data,
-  isHorizontal,
   displayNormalized = false,
 }: ChartAndTableProps): Maybe<JSX.Element> => {
   const { smallSize } = useContext(ConfigContext)
@@ -31,9 +26,7 @@ const ChartAndTable = ({
   const enabledAxes = checkedAxesRows.includes(parentName)
   const enableTableView = checkedTableRows.includes(parentName)
   const tableRowHeight = smallSize ? MIN_TABLE_ROW_HEIGHT : TABLE_ROW_HEIGHT
-  const minChartHeight = smallSize ? MIN_SMALL_CHART_CELL_HEIGHT : MIN_CHART_CELL_HEIGHT
-  const cellHeight: number = data.length * tableRowHeight
-  const height: number = cellHeight < minChartHeight || isHorizontal ? minChartHeight : cellHeight
+  const height: number = data.length * tableRowHeight
 
   if (enableTableView) {
     return <Table data={data} height={height} displayNormalized={displayNormalized} />
@@ -51,7 +44,7 @@ const ChartAndTable = ({
     }
 
     return (
-      <div data-testid="bar-chart">
+      <BarChartWrapper data-testid="bar-chart">
         <BarChart
           dataset={barsData}
           config={{
@@ -61,7 +54,7 @@ const ChartAndTable = ({
             color,
           }}
         />
-      </div>
+      </BarChartWrapper>
     )
   }
 
@@ -73,7 +66,12 @@ const ChartAndTable = ({
   if (!flattenPmfPlotData.length) {
     return <StyledEmpty image={Empty.PRESENTED_IMAGE_SIMPLE} data-testid="pmf-empty" />
   }
-  const pmfPlotDataData = data.map(dataItem => dataItem?.pmf || [])
+  const pmfPlotDataData = data.map(dataItem =>
+    displayNormalized
+      ? normalizeCount(dataItem?.pmf || [], dataItem.itemsTotalCount)
+      : dataItem?.pmf || []
+  )
+  const dataType = data[0].type as ColumnType
 
   return (
     <PmfPlot
@@ -83,9 +81,24 @@ const ChartAndTable = ({
         showAxes: enabledAxes,
         showLogScale: enabledLogScale,
         color,
+        dataType,
+        formatTooltipValues: displayNormalized
+          ? data => ({
+              ...data,
+              count: formatPercentage(data.count),
+            })
+          : undefined,
       }}
     />
   )
+}
+
+function normalizeCount(data: Array<PmfPlotItem>, totalCount: number): Array<PmfPlotItem> {
+  if (!data.length) {
+    return []
+  }
+
+  return data.map(item => ({ ...item, count: item.count / totalCount }))
 }
 
 export default ChartAndTable

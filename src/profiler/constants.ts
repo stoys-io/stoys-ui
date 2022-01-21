@@ -4,8 +4,6 @@ export const MIN_TABLE_ROW_HEIGHT = 40
 
 export const MIN_CHART_CELL_HEIGHT = 150
 
-export const MIN_SMALL_CHART_CELL_HEIGHT = 80
-
 export const CELL_TABLE_HEADER_HEIGHT = 35
 
 export const MIN_CELL_WIDTH = 100

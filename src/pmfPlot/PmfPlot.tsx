@@ -5,10 +5,19 @@ import { useD3 } from '../hooks'
 import { COLORS } from '../profiler/constants'
 import { getMargin } from '../common/chartHelpers'
 import { ColumnType, PmfPlotItem } from '../profiler/model'
-import { transformSecondsToDate } from '../helpers'
+import { renderNumericValue, transformSecondsToDate } from '../helpers'
 
 const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
-  const { height, color, showAxes, showXAxis, showYAxis, showLogScale, dataType } = config
+  const {
+    height,
+    color,
+    showAxes,
+    showXAxis,
+    showYAxis,
+    showLogScale,
+    dataType,
+    formatTooltipValues,
+  } = config
 
   const margin = getMargin(!!showAxes, !!showXAxis, !!showYAxis)
 
@@ -190,15 +199,24 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
                 .map(value => {
                   let low: string | number = value.low
                   let high: string | number = value.high
+                  let count: string | number = renderNumericValue(2, false)(value.count)
 
                   if (dataType === 'timestamp') {
                     low = transformSecondsToDate(low, 'date')
                     high = transformSecondsToDate(high, 'date')
                   }
 
-                  return `<div>${colorBadge(value.color)} ${low} - ${high} <b>${
-                    value.count
-                  }</b></div>`
+                  if (formatTooltipValues) {
+                    const formattedValue = formatTooltipValues(value)
+                    low = formattedValue.low
+                    high = formattedValue.high
+                    count = formattedValue.count
+                  }
+
+                  return `<div style="display: flex; justify-content: space-between">
+                    <span>${colorBadge(value.color)} ${low} - ${high}</span> 
+                    <span style="padding-left: 2px"><b>${count}</b></span>
+                  </div>`
                 })
                 .join('')
             })
@@ -247,9 +265,18 @@ interface PmfPlotProps {
     showYAxis?: boolean
     showLogScale?: boolean
     dataType?: ColumnType
+    formatTooltipValues?: FormatTooltipValues
   }
 }
 
 type PlotData = PmfPlotItem & { color: string }
+
+interface TooltipValue {
+  low: number | string
+  high: number | string
+  count: number | string
+}
+
+type FormatTooltipValues = ({ low, high, count }: PmfPlotItem) => TooltipValue
 
 export default PmfPlot
