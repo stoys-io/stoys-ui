@@ -3,6 +3,8 @@
 import React, { useCallback } from 'react'
 import List from 'antd/lib/list'
 
+import pick from 'lodash.pick'
+
 import {
   ADDED_NODE_HIGHLIGHT_COLOR,
   RESET_COLOR,
@@ -28,7 +30,9 @@ import {
   useGraphDispatch,
 } from '../graph-common/store'
 import { getMetricsColumnColor } from '../graph-common/ops'
+
 import TinyPmf from './TinyPmf'
+import TableMetricIndicator from './TableMetricIndicator'
 
 interface Props {
   id: string
@@ -51,14 +55,25 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
   const relatedColumnsIds = useGraphStore(selectRelColumnIds)
   const highlightMode = useGraphStore(selectHighlightMode)
 
-  const columnMetric = useGraphStore(selectColumnMetric)
   const tableMetric = useGraphStore(selectTableMetric)
-  const tableMetricValFormatted =
-    tableMetric === 'none'
-      ? null
-      : tableMetric === 'violations'
-      ? formatTableMetric(violations)
-      : formatTableMetric(partitions)
+  const columnMetric = useGraphStore(selectColumnMetric)
+
+  const currentReleaseNodeNameIndex = useGraphStore(
+    state => state.currentReleaseNodeNameIndex,
+    (oldIndex, newIndex) => oldIndex.release === newIndex.release
+  )
+  const baseRelease = useGraphStore(state => state.baseRelease)
+  const currentReleaseNode =
+    baseRelease === ''
+      ? undefined
+      : currentReleaseNodeNameIndex.index[label]
+      ? currentReleaseNodeNameIndex.index[label]
+      : { data: { violations: 0, partitions: 0 } }
+
+  const currentReleaseTableMetricData =
+    currentReleaseNode === undefined
+      ? undefined
+      : pick(currentReleaseNode.data, ['violations', 'partitions'])
 
   const _columns =
     selectedTableId && id !== selectedTableId
@@ -174,7 +189,13 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
         title={<ScrollCardTitle color={titleHighlightColor}>{label}</ScrollCardTitle>}
         size="small"
         type="inner"
-        extra={tableMetricValFormatted}
+        extra={
+          <TableMetricIndicator
+            tableMetric={tableMetric}
+            baseMetricData={{ partitions, violations }}
+            currentMetricData={currentReleaseTableMetricData}
+          />
+        }
         highlightColor={cardHighlightedColor}
       >
         <List
@@ -268,8 +289,6 @@ const formatColumnExtra = (
 
   return formatColumnMetric
 }
-
-const formatTableMetric = (val: number) => fmtHelper(val)
 
 const formatColumnDataType = (data_type: NodeColumnDataType) =>
   `${data_type.type}${data_type.nullable ? '?' : ''}`
