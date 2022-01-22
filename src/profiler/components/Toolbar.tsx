@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import Tooltip from 'antd/lib/tooltip'
 import RiseOutlined from '@ant-design/icons/RiseOutlined'
 import TableOutlined from '@ant-design/icons/lib/icons/TableOutlined'
+import MenuOutlined from '@ant-design/icons/MenuOutlined'
 
 import AxesIcon from '../icons/Axes'
 import { SvgWrapper, ToolboxWrapper } from '../styles'
@@ -35,6 +36,9 @@ const Toolbox = ({
   onAxesClickHandler,
   onLogScaleClickHandler,
   onTableClickHandler,
+  isMenuShowed,
+  setIsMenuShowed,
+  activeMenu,
 }: ToolboxProps): Maybe<JSX.Element> => {
   const _onAxesClickHandler = useCallback(() => {
     if (!disableLogScale) {
@@ -52,12 +56,25 @@ const Toolbox = ({
     onTableClickHandler(!activeTable)
   }, [activeTable, onTableClickHandler])
 
+  const _menuHandler = useCallback(
+    () => setIsMenuShowed?.(!activeMenu),
+    [setIsMenuShowed, activeMenu]
+  )
+
   if (!showTableChartSwitcher && !showLogScale && !showAxes) {
     return null
   }
 
   return (
     <ToolboxWrapper>
+      {isMenuShowed ? (
+        <Tooltip title="show menu">
+          <MenuOutlined
+            className={`toolbox-icon ${activeMenu ? 'active' : ''}`}
+            onClick={_menuHandler}
+          />
+        </Tooltip>
+      ) : null}
       {showTableChartSwitcher ? (
         <Tooltip title="switch to table view">
           <TableOutlined

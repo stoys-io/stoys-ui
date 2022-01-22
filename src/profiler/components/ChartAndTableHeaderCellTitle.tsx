@@ -11,6 +11,9 @@ const ChartAndTableHeaderCellTitle = (): JSX.Element => {
     setLogChecked,
     showAxesSwitcher,
     setAxesChecked,
+    isMenuShowed,
+    setIsMenuShowed,
+    activeMenu,
   } = useContext(ConfigContext)
   const { checkedLogRows, checkedAxesRows, checkedTableRows, dataLength } =
     useContext(CheckedRowsContext)
@@ -31,6 +34,9 @@ const ChartAndTableHeaderCellTitle = (): JSX.Element => {
       onTableClickHandler={setChartTableChecked!}
       onLogScaleClickHandler={setLogChecked!}
       onAxesClickHandler={setAxesChecked!}
+      isMenuShowed={isMenuShowed}
+      setIsMenuShowed={setIsMenuShowed}
+      activeMenu={activeMenu}
     />
   )
 }

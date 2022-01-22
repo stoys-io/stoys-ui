@@ -64,6 +64,8 @@ export interface ConfigProps {
   pagination?: PaginationProps | false
   height?: string | number
 
+  isMenuShowed?: boolean
+
   showProfilerToolbar?: boolean
   showRowToolbar?: boolean
 
@@ -275,6 +277,9 @@ export interface ToolboxProps {
   onAxesClickHandler: (active: boolean) => void
   onLogScaleClickHandler: (active: boolean) => void
   onTableClickHandler: (active: boolean) => void
+  isMenuShowed?: boolean
+  activeMenu?: boolean
+  setIsMenuShowed?: (active: boolean) => void
 }
 export interface TableSettingsProps {
   isModeSwitcherShown?: boolean
