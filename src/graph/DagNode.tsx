@@ -215,6 +215,7 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
             let tooltip = ''
             let columnExtra = null
 
+            const curReleaseColumn = currentReleaseColumnMetricIndex?.[column.name]
             if (columnMetric !== 'pmf') {
               const columnExtraNoAverage = formatColumnExtra(
                 column,
@@ -223,8 +224,6 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
                 false
               )
               const columnExtraFmt = formatColumnExtra(column, columnMetric, countNormalize)
-
-              const curReleaseColumn = currentReleaseColumnMetricIndex?.[column.name]
               const columnDiffFmtNoAverage = curReleaseColumn
                 ? ` (${formatColumnDiff(
                     column,
@@ -275,7 +274,12 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
             } else {
               tooltip = ''
               const pmfData = column.metrics?.['pmf'] ?? []
-              columnExtra = <TinyPmf dataset={[pmfData]} />
+              const pmfDataCurrentRelease = curReleaseColumn?.metrics?.['pmf']
+                ? curReleaseColumn.metrics['pmf']
+                : undefined
+              const dataset = pmfDataCurrentRelease ? [pmfDataCurrentRelease, pmfData] : [pmfData]
+
+              columnExtra = <TinyPmf dataset={dataset} />
             }
 
             return (
