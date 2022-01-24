@@ -1,6 +1,7 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { TableMetric } from '../graph-common/model'
 import { renderNumericValue } from '../helpers'
+import DiffMetric from './DiffMetric'
 
 const TableMetricComponent = ({ tableMetric, baseMetricData, currentMetricData }: Props) => {
   const metricFormatted = tableMetric === 'none' ? null : format(baseMetricData[tableMetric])
@@ -10,7 +11,10 @@ const TableMetricComponent = ({ tableMetric, baseMetricData, currentMetricData }
     <div>
       <span>{metricFormatted}</span>
       {isDiffMetric && (
-        <DiffMetric value={currentMetricData[tableMetric] - baseMetricData[tableMetric]} />
+        <DiffMetric
+          value={currentMetricData[tableMetric] - baseMetricData[tableMetric]}
+          valueFormatted={format(currentMetricData[tableMetric] - baseMetricData[tableMetric])}
+        />
       )}
     </div>
   )
@@ -28,27 +32,6 @@ type ValidMetricData = Omit<MetricData, 'none'>
 type MetricData = {
   [key in TableMetric]: number
 }
-
-const DiffMetric = ({ value }: { value: number }) => {
-  const color = value === 0 ? null : value < 0 ? 'red' : 'green'
-  const sign = value <= 0 ? '' : '+'
-
-  const valueFormatted = format(value)
-  const colorStyle = color ? { color } : {}
-
-  return (
-    <span style={diffMetricStyle}>
-      (
-      <span style={colorStyle}>
-        {sign}
-        {valueFormatted}
-      </span>
-      )
-    </span>
-  )
-}
-
-const diffMetricStyle: CSSProperties = { marginLeft: '.2em' }
 
 const fmtHelper = renderNumericValue(2, true)
 const format = (val: number) => fmtHelper(val)

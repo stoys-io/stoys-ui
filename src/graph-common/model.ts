@@ -124,6 +124,10 @@ export interface Column {
   metrics?: NodeColumnsMetrics
 }
 
+export interface ColumnNameIndex {
+  [name: string]: Column
+}
+
 interface NodeColumnsMetrics {
   data_type?: NodeColumnDataType
   count?: number
