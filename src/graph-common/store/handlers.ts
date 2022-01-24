@@ -350,18 +350,22 @@ const onHighlightModeChangeColumns = ({
   let tableIds: string[] = []
   let columnDependcies: string[] = []
   let subgraphEdges: Edge[] = []
-  if (highlightMode === 'parents') {
-    columnDependcies = Object.keys(traverseGraph(depsIndex, columnId))
-    tableIds = columnDependcies.map(col => columnIndex[col].tableId)
-    subgraphEdges = graph.edges.filter(
-      edge => tableIds.includes(edge.source) || !tableIds.includes(edge.target)
+  if (highlightMode === 'traversal') {
+    const columnDependciesUpstream = Object.keys(traverseGraph(depsIndex, columnId))
+    const tableIdsUpstream = columnDependciesUpstream.map(col => columnIndex[col].tableId)
+    const subgraphEdgesUpstream = graph.edges.filter(
+      edge => tableIdsUpstream.includes(edge.source) || !tableIds.includes(edge.target)
     )
-  } else if (highlightMode === 'children') {
-    columnDependcies = Object.keys(traverseGraph(columnIndex, columnId))
-    tableIds = columnDependcies.map(col => columnIndex[col].tableId)
-    subgraphEdges = graph.edges.filter(
-      edge => !tableIds.includes(edge.source) || tableIds.includes(edge.target)
+
+    const columnDependciesDownstream = Object.keys(traverseGraph(columnIndex, columnId))
+    const tableIdsDownstream = columnDependciesDownstream.map(col => columnIndex[col].tableId)
+    const subgraphEdgesDownstream = graph.edges.filter(
+      edge => !tableIdsDownstream.includes(edge.source) || tableIdsDownstream.includes(edge.target)
     )
+
+    columnDependcies = [...columnDependciesUpstream, ...columnDependciesDownstream]
+    tableIds = [...tableIdsUpstream, ...tableIdsDownstream]
+    subgraphEdges = [...subgraphEdgesUpstream, ...subgraphEdgesDownstream]
   } else {
     columnDependcies = [
       ...(columnIndex[columnId]?.dependencies ?? []),

@@ -1,3 +1,6 @@
+import unionBy from 'lodash.unionby'
+import differenceBy from 'lodash.differenceby'
+
 import {
   ADDED_NODE_HIGHLIGHT_COLOR,
   DELETED_NODE_HIGHLIHT_COLOR,
@@ -17,6 +20,7 @@ import {
   GraphExtended,
   Column,
   ColumnMetric,
+  HighlightDirection,
 } from './model'
 
 import { colorScheme, getChromaticColor, hyperbolicGradientRight } from './color-scheme'
@@ -42,7 +46,7 @@ interface HighlightHelperArgs {
   graph: Graph
   selectedNodeId: string
   edgesToHighlight: Edge[]
-  highlightMode: Highlight
+  direction: HighlightDirection
   chromaticScale: ChromaticScale
 }
 
@@ -50,17 +54,14 @@ const highlightHelper = ({
   graph,
   selectedNodeId,
   edgesToHighlight,
-  highlightMode,
+  direction,
   chromaticScale,
 }: HighlightHelperArgs): Highlights => {
-  const getColor = colorScheme(highlightMode, chromaticScale)
+  const getColor = colorScheme(direction, chromaticScale)
   const edges = graph.edges.reduce((acc, edge: Edge) => {
     const highlightEdge = edgesToHighlight.find((hEdge: Edge) => hEdge.id === edge.id)
     if (!highlightEdge) {
-      return {
-        ...acc,
-        [edge.id]: { strokeWidth: '0' }, // Hide irrelevant edges
-      }
+      return acc
     }
 
     const edgeStyleObject = {
@@ -221,33 +222,89 @@ export const highlightMetrics = ({ metric, graph }: HMetricsArgs): Highlights =>
   return { nodes: nodeHighlights, edges: {} }
 }
 
-const searchFnDispatch = (highlightMode: Highlight) =>
-  highlightMode === 'parents'
-    ? findUpstreamEdges
-    : highlightMode === 'children'
-    ? findDownstreamEdges
-    : findNearestEdges
-
 export const highlightGraph = (
   highlightMode: Highlight,
   graph: Graph,
   id: string,
   chromaticScale: ChromaticScale = 'interpolatePuOr'
 ): Highlights => {
-  const graphSearchFn = searchFnDispatch(highlightMode)
-  const edgesToHighlight = graphSearchFn(graph, id)
+  if (highlightMode === 'traversal') {
+    const upstreamEdges = findUpstreamEdges(graph, id)
+    const downstreamEdges = findDownstreamEdges(graph, id)
 
+    if (!upstreamEdges.length && !downstreamEdges.length) {
+      return highlightSingleNode(id)
+    }
+
+    const upsteamHighlights = highlightHelper({
+      graph,
+      selectedNodeId: id,
+      edgesToHighlight: upstreamEdges,
+      direction: 'upstream',
+      chromaticScale,
+    })
+
+    const downstreamHighlights = highlightHelper({
+      graph,
+      selectedNodeId: id,
+      edgesToHighlight: downstreamEdges,
+      direction: 'downstream',
+      chromaticScale,
+    })
+
+    const commonHighlightEdges = unionBy(upstreamEdges, downstreamEdges, 'id')
+    const cleanupEdges = differenceBy(graph.edges, commonHighlightEdges, 'id')
+    const cleanupEdgesHighlights = cleanupEdges.reduce(
+      (acc, edge) => ({
+        ...acc,
+        [edge.id]: {
+          strokeWidth: '0', // Hide irrelevant edges
+        },
+      }),
+      {}
+    )
+
+    return {
+      nodes: { ...upsteamHighlights.nodes, ...downstreamHighlights.nodes },
+      edges: {
+        ...upsteamHighlights.edges,
+        ...downstreamHighlights.edges,
+        ...cleanupEdgesHighlights,
+      },
+    }
+  }
+
+  const edgesToHighlight = findNearestEdges(graph, id)
   if (!edgesToHighlight.length) {
     return highlightSingleNode(id)
   }
 
-  return highlightHelper({
+  const nearestHighlights = highlightHelper({
     graph,
     selectedNodeId: id,
     edgesToHighlight,
-    highlightMode,
+    direction: 'nearest',
     chromaticScale,
   })
+
+  const cleanupEdges = differenceBy(graph.edges, edgesToHighlight, 'id')
+  const cleanupEdgesHighlights = cleanupEdges.reduce(
+    (acc, edge) => ({
+      ...acc,
+      [edge.id]: {
+        strokeWidth: '0', // Hide irrelevant edges
+      },
+    }),
+    {}
+  )
+
+  return {
+    nodes: nearestHighlights.nodes,
+    edges: {
+      ...nearestHighlights.edges,
+      ...cleanupEdgesHighlights,
+    },
+  }
 }
 
 export const getBaseGraph = (

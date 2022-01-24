@@ -1,12 +1,12 @@
 import * as d3ScaleChromatic from 'd3-scale-chromatic'
-import { Highlight, ChromaticScale } from './model'
+import { ChromaticScale, HighlightDirection } from './model'
 
 export const colorScheme =
-  (highlightMode: Highlight, chromaticScale: ChromaticScale) => (rank: number) => {
+  (direction: HighlightDirection, chromaticScale: ChromaticScale) => (rank: number) => {
     const gradient =
-      highlightMode === 'nearest'
+      direction === 'nearest'
         ? hyperbolicNearest
-        : highlightMode === 'children'
+        : direction === 'downstream'
         ? hyperbolicGradientRight
         : hyperbolicGradientLeft
 
