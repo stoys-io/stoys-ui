@@ -80,7 +80,7 @@ const Graph = ({ data, config: cfg }: Props) => {
 
   const onSearchNode = () => {
     let prevVal = ''
-    let cnt = 0
+    let cnt = 0 // This is to track where to jump next on search click
 
     return ({ val, err, onError }: SearchArgs) => {
       if (!val) {
