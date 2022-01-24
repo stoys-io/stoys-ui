@@ -15,7 +15,14 @@ import {
 } from '../graph-common/constants'
 
 import { formatPercentage, renderNumericValue } from '../helpers'
-import { Column, NodeDataPayload, ColumnMetric, NodeColumnDataType } from '../graph-common/model'
+import {
+  Node,
+  NodeDataPayload,
+  Column,
+  ColumnMetric,
+  NodeColumnDataType,
+  ColumnNameIndex,
+} from '../graph-common/model'
 import {
   ItemContent,
   ItemText,
@@ -33,13 +40,7 @@ import { getMetricsColumnColor } from '../graph-common/ops'
 
 import TinyPmf from './TinyPmf'
 import TableMetricIndicator from './TableMetricIndicator'
-
-interface Props {
-  id: string
-  onClick: (id: string) => void
-  onDoubleClick: (id: string) => void
-  data?: NodeDataPayload
-}
+import DiffMetric from './DiffMetric'
 
 export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Element => {
   const data = d ? d : defaultData
@@ -68,12 +69,21 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
       ? undefined
       : currentReleaseNodeNameIndex.index[label]
       ? currentReleaseNodeNameIndex.index[label]
-      : { data: { violations: 0, partitions: 0 } }
+      : dummyNode
 
   const currentReleaseTableMetricData =
     currentReleaseNode === undefined
       ? undefined
       : pick(currentReleaseNode.data, ['violations', 'partitions'])
+
+  let currentReleaseColumnMetricIndex: ColumnNameIndex | undefined = undefined
+  if (currentReleaseNode !== undefined) {
+    const cols = currentReleaseNode.data.columns
+    currentReleaseColumnMetricIndex = cols.reduce(
+      (acc: ColumnNameIndex, col): ColumnNameIndex => ({ ...acc, [col.name]: col }),
+      {}
+    )
+  }
 
   const _columns =
     selectedTableId && id !== selectedTableId
@@ -212,10 +222,55 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
                 countNormalize,
                 false
               )
-              tooltip = `${column.name}: ${columnExtraNoAverage}`
+              const columnExtraFmt = formatColumnExtra(column, columnMetric, countNormalize)
 
+              const curReleaseColumn = currentReleaseColumnMetricIndex?.[column.name]
+              const columnDiffFmtNoAverage = curReleaseColumn
+                ? ` (${formatColumnDiff(
+                    column,
+                    curReleaseColumn,
+                    columnMetric,
+                    countNormalize,
+                    false
+                  )})`
+                : ''
+
+              const columnDiffFmt = curReleaseColumn
+                ? formatColumnDiff(column, curReleaseColumn, columnMetric, countNormalize)
+                : ''
+
+              const curReleaseColumnValTMP =
+                columnMetric !== 'none' &&
+                columnMetric !== 'data_type' &&
+                curReleaseColumn?.metrics !== undefined
+                  ? curReleaseColumn.metrics[columnMetric]
+                  : undefined
+
+              const curReleaseColumnVal: number | undefined =
+                curReleaseColumnValTMP && typeof curReleaseColumnValTMP === 'number'
+                  ? curReleaseColumnValTMP
+                  : undefined
+
+              const columnValTMP =
+                columnMetric !== 'none' &&
+                columnMetric !== 'data_type' &&
+                column?.metrics !== undefined
+                  ? column.metrics[columnMetric]
+                  : undefined
+              const columnVal: number | undefined =
+                columnValTMP && typeof columnValTMP === 'number' ? columnValTMP : undefined
+
+              const columnDiffValue =
+                curReleaseColumnVal && columnVal ? curReleaseColumnVal - columnVal : undefined
+
+              tooltip = `${column.name}: ${columnExtraNoAverage}${columnDiffFmtNoAverage}`
               columnExtra = (
-                <ItemExtra>{formatColumnExtra(column, columnMetric, countNormalize)}</ItemExtra>
+                <ItemExtra>
+                  {columnExtraFmt}
+                  {columnDiffValue && (
+                    <DiffMetric value={columnDiffValue} valueFormatted={columnDiffFmt} />
+                  )}
+                </ItemExtra>
               )
             } else {
               tooltip = ''
@@ -247,15 +302,55 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
   )
 }
 
-const selectTableMetric = (state: GraphStore) => state.tableMetric
-const selectColumnMetric = (state: GraphStore) => state.columnMetric
-const selectHighlightMode = (state: GraphStore) => state.highlightMode
-const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
-const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
-const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
+export interface Props {
+  id: string
+  onClick: (id: string) => void
+  onDoubleClick: (id: string) => void
+  data?: NodeDataPayload
+}
 
-const fmtHelper = renderNumericValue(2, true)
-const fmtHelperNoAverage = renderNumericValue(0, false)
+const formatColumnDiff = (
+  column: Column,
+  curReleaseColumn: Column,
+  columnMetric: ColumnMetric,
+  countNormalize: boolean = false,
+  average: boolean = true
+): string => {
+  if (
+    column.metrics === undefined ||
+    columnMetric === 'none' ||
+    curReleaseColumn.metrics === undefined
+  ) {
+    return ''
+  }
+
+  if (columnMetric === 'data_type' && column.metrics[columnMetric] !== undefined) {
+    return ''
+  }
+
+  if (columnMetric.startsWith('count_') && countNormalize) {
+    const totalCount = curReleaseColumn.metrics['count'] ?? 1
+    const count = curReleaseColumn.metrics[columnMetric] as number | undefined
+    if (count === undefined) {
+      return ''
+    }
+
+    const normalized = count / totalCount
+
+    return formatPercentage(normalized)
+  }
+
+  const val = column.metrics[columnMetric] as string | number
+  const curReleaseVal = curReleaseColumn.metrics[columnMetric] as string | number
+  const formatColumnMetric =
+    typeof val !== 'number' || typeof curReleaseVal !== 'number'
+      ? ''
+      : !average
+      ? fmtHelperNoAverage(curReleaseVal - val)
+      : fmtHelper(curReleaseVal - val)
+
+  return formatColumnMetric
+}
 
 const formatColumnExtra = (
   column: Column,
@@ -293,4 +388,26 @@ const formatColumnExtra = (
 const formatColumnDataType = (data_type: NodeColumnDataType) =>
   `${data_type.type}${data_type.nullable ? '?' : ''}`
 
-const defaultData = { label: 'no data', columns: [], violations: 0, partitions: 0 }
+const fmtHelper = renderNumericValue(2, true)
+const fmtHelperNoAverage = renderNumericValue(0, false)
+
+const selectTableMetric = (state: GraphStore) => state.tableMetric
+const selectColumnMetric = (state: GraphStore) => state.columnMetric
+const selectHighlightMode = (state: GraphStore) => state.highlightMode
+const selectTableId = (state: GraphStore) => state.highlightedColumns.selectedTableId
+const selectColumnId = (state: GraphStore) => state.highlightedColumns.selectedColumnId
+const selectRelColumnIds = (state: GraphStore) => state.highlightedColumns.relatedColumnsIds
+
+const defaultData: NodeDataPayload = {
+  label: 'no data',
+  columns: [],
+  violations: 0,
+  partitions: 0,
+}
+
+const dummyNode: Node = {
+  id: '',
+  position: { x: 0, y: 0 },
+  data: defaultData,
+  type: 'dagNode',
+}

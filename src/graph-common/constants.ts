@@ -1,5 +1,5 @@
-export const NODE_HEIGHT = 136
-export const NODE_WIDTH = 220
+export const NODE_HEIGHT = 138
+export const NODE_WIDTH = 250
 export const RESIZE_AREA_HEIGHT = 20
 
 export const HIGHLIGHT_COLOR = 'blue' // css color
