@@ -1,5 +1,3 @@
-// TODO: It is better to reimplement this with state machine pattern
-
 import { GraphStore, InitialArgs } from './model'
 import { defaultHighlights, defaultHighlightedColumns } from './store'
 
@@ -29,25 +27,7 @@ import {
 } from '../model'
 
 export const setCountNormalize = (countNormalize: boolean) => ({ countNormalize })
-
-export const setTableMetric =
-  (tableMetric: TableMetric) =>
-  ({ selectedReleaseGraph, columnMetric }: GraphStore): Partial<GraphStore> => {
-    const newHighlightMode = 'metrics'
-    const highlights = highlightMetrics({ metric: tableMetric, graph: selectedReleaseGraph })
-    const columnMetricMaxValue = highlightColumnMetrics({
-      metric: columnMetric,
-      graph: selectedReleaseGraph,
-    })
-    return {
-      tableMetric,
-      highlights,
-      columnMetricMaxValue,
-      highlightMode: newHighlightMode,
-      graph: selectedReleaseGraph,
-    }
-  }
-
+export const setTableMetric = (tableMetric: TableMetric) => ({ tableMetric })
 export const setColumnMetric =
   (columnMetric: ColumnMetric) =>
   ({ selectedReleaseGraph }: GraphStore): Partial<GraphStore> => {
@@ -212,6 +192,7 @@ export const highlightIds = (ids: string[]) => ({
   highlights: highlightNodesBatch(ids),
 })
 
+// TODO: Highlights are better to reimplement with state machine pattern
 export const setHighlightMode =
   (highlightMode: Highlight, chromaticScale: ChromaticScale) =>
   ({
