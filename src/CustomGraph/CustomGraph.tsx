@@ -2,14 +2,14 @@ import React, { CSSProperties, useRef } from 'react'
 
 import GroupStateProvider, { useStore } from './GroupStateProvider'
 import { Edge, NodePosition, DefaultNode, BubbleSet } from './components'
-import { ANIMATION_TIMEOUT, START_X, START_Y } from './constants'
+import { ANIMATION_TIMEOUT } from './constants'
 import { createEdgePath } from './createEdgePath'
 import { GraphData, NodeData, EdgeProps, NodeIndex } from './types'
 import { graphLayout } from './graph-layout'
 
 import { usePanZoom } from './usePanZoom'
 import { edgePosition } from './edge-position'
-import { PanzoomObject } from '@panzoom/panzoom'
+import { InitZoomUtilArg } from './ZoomUtilProvider'
 
 const CustomGraph = ({
   graph: g,
@@ -81,15 +81,8 @@ const CustomGraph = ({
     minScale,
     maxScale,
     onPaneClick,
-    onInit: initZoomUtil,
+    onInit: panzoom => initZoomUtil({ panzoom, nodeIndex }),
   })
-
-  /* setTimeout(() =>
-   *   panzoom.pan(-676 + START_X, -186 + START_Y, {
-   *     animate: true,
-   *     duration: 550,
-   *   })
-   * ) */
 
   return (
     <div style={rootStyle} ref={canvasContainerRef}>
@@ -256,7 +249,7 @@ export interface Props {
   minScale?: number
   maxScale?: number
   onPaneClick?: () => void
-  initZoomUtil?: (_: PanzoomObject) => void
+  initZoomUtil?: (_: InitZoomUtilArg) => void
   withDagreLayout?: boolean
 }
 

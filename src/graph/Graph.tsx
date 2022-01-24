@@ -51,15 +51,6 @@ const Graph = ({ data, config: cfg }: Props) => {
     release: config.currentRelease,
   }
 
-  useEffect(() => {
-    dispatch(
-      setInitialStore({
-        data,
-        graph: currentGraph,
-      })
-    )
-  }, [])
-
   const dispatch = useGraphDispatch()
   const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
 
@@ -71,34 +62,55 @@ const Graph = ({ data, config: cfg }: Props) => {
   const initZoomUtil = useZoomUtilStore(state => state.initZoomUtil)
   const jump = useZoomUtilStore(state => state.jump)
 
+  useEffect(() => {
+    dispatch(
+      setInitialStore({
+        data,
+        graph: currentGraph,
+      })
+    )
+  }, [])
+
   const onNodeClick = (id: string) => dispatch(nodeClick(id, config.chromaticScale))
   const onNodeDoubleClick = (id: string) => dispatch(openDrawer(id))
-
   const onPaneClick = () => {
     dispatch(resetHighlights)
     dispatch(resetHighlightedColumns)
   }
 
-  const onSearchNode = ({ val, err, onError }: SearchArgs) => {
-    if (!val) {
-      return
-    }
-    const nodeIds = searchNodeLabels(val)
+  const onSearchNode = () => {
+    let prevVal = ''
+    let cnt = 0
 
-    if (!nodeIds?.length) {
-      return onError(true)
-    }
+    return ({ val, err, onError }: SearchArgs) => {
+      if (!val) {
+        return
+      }
 
-    if (err) {
-      return onError(false)
-    }
+      if (val === prevVal) {
+        cnt += 1
+      } else {
+        prevVal = val
+        cnt = 0
+      }
 
-    dispatch(highlightIds(nodeIds))
-    const first = nodeIds[0]
-    const nd = graph.nodes.find(node => node.id === first)
-    const pos = nd?.position
-    if (pos) {
-      jump(pos)
+      const nodeIds = searchNodeLabels(val)
+      if (!nodeIds?.length) {
+        return onError(true)
+      }
+
+      if (err) {
+        return onError(false)
+      }
+
+      dispatch(highlightIds(nodeIds))
+
+      if (cnt > nodeIds.length - 1) {
+        cnt = 0
+      }
+
+      const jumpNodeId = nodeIds[cnt]
+      jump(jumpNodeId)
     }
   }
 
@@ -106,7 +118,7 @@ const Graph = ({ data, config: cfg }: Props) => {
   return (
     <Container ref={containerRef}>
       <Sidebar
-        onSearch={onSearchNode}
+        onSearch={onSearchNode()}
         releaseOptions={releaseOptions}
         chromaticScale={config.chromaticScale}
       />
