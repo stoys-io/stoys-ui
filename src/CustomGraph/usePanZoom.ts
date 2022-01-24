@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import Panzoom from '@panzoom/panzoom'
+import Panzoom, { PanzoomObject } from '@panzoom/panzoom'
 import debounce from 'lodash.debounce'
 
 export const usePanZoom = ({
@@ -8,6 +8,7 @@ export const usePanZoom = ({
   excludeClass,
   minScale,
   maxScale,
+  onInit,
   onPaneClick,
 }: IUsePanZoom) => {
   useEffect(() => {
@@ -55,6 +56,7 @@ export const usePanZoom = ({
       { leading: true, trailing: false }
     )
 
+    onInit(panzoom)
     zoomContainerRef.current.addEventListener('panzoomend', onPanEnd)
     canvasContainerRef.current.addEventListener('wheel', onWheel)
     return () => {
@@ -70,6 +72,7 @@ interface IUsePanZoom {
   excludeClass: string
   maxScale: number
   minScale: number
+  onInit: (_: PanzoomObject) => void
   onPaneClick: () => void
 }
 

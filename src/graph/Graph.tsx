@@ -16,12 +16,12 @@ import {
   StoreProvider,
 } from '../graph-common/store'
 
-import { DataGraph, ChromaticScale, Orientation, Edge } from '../graph-common/model'
+import { DataGraph, ChromaticScale, Orientation, Node } from '../graph-common/model'
 import { NODE_HEIGHT, NODE_WIDTH } from '../graph-common/constants'
 import { mapInitialNodes, mapInitialEdges } from '../graph-common/ops'
 import { Container, GraphContainer } from '../graph-common/styles'
 
-import CustomGraph from '../CustomGraph'
+import CustomGraph, { useZoomUtilStore, ZoomUtilProvider } from '../CustomGraph'
 
 const Graph = ({ data, config: cfg }: Props) => {
   const validCurrentRelease =
@@ -68,14 +68,11 @@ const Graph = ({ data, config: cfg }: Props) => {
     state => (state.init ? state.graph : currentGraph),
     (oldGraph, newGraph) => oldGraph.release === newGraph.release
   )
+  const initZoomUtil = useZoomUtilStore(state => state.initZoomUtil)
+  const jump = useZoomUtilStore(state => state.jump)
 
-  const onNodeClick = (id: string) => {
-    dispatch(nodeClick(id, config.chromaticScale))
-  }
-
-  const onNodeDoubleClick = (id: string) => {
-    dispatch(openDrawer(id))
-  }
+  const onNodeClick = (id: string) => dispatch(nodeClick(id, config.chromaticScale))
+  const onNodeDoubleClick = (id: string) => dispatch(openDrawer(id))
 
   const onPaneClick = () => {
     dispatch(resetHighlights)
@@ -97,6 +94,12 @@ const Graph = ({ data, config: cfg }: Props) => {
     }
 
     dispatch(highlightIds(nodeIds))
+    const first = nodeIds[0]
+    const nd = graph.nodes.find(node => node.id === first)
+    const pos = nd?.position
+    if (pos) {
+      jump(pos)
+    }
   }
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -121,6 +124,7 @@ const Graph = ({ data, config: cfg }: Props) => {
           minScale={0.12}
           maxScale={2}
           withDagreLayout
+          initZoomUtil={initZoomUtil}
         />
       </GraphContainer>
       <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer} />
@@ -129,9 +133,11 @@ const Graph = ({ data, config: cfg }: Props) => {
 }
 
 const WrappedGraph = (props: Props) => (
-  <StoreProvider>
-    <Graph {...props} />
-  </StoreProvider>
+  <ZoomUtilProvider>
+    <StoreProvider>
+      <Graph {...props} />
+    </StoreProvider>
+  </ZoomUtilProvider>
 )
 
 export default WrappedGraph

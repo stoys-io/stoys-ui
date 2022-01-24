@@ -1,15 +1,15 @@
 import React, { CSSProperties, useRef } from 'react'
 
 import GroupStateProvider, { useStore } from './GroupStateProvider'
-
 import { Edge, NodePosition, DefaultNode, BubbleSet } from './components'
-import { ANIMATION_TIMEOUT } from './constants'
+import { ANIMATION_TIMEOUT, START_X, START_Y } from './constants'
 import { createEdgePath } from './createEdgePath'
 import { GraphData, NodeData, EdgeProps, NodeIndex } from './types'
 import { graphLayout } from './graph-layout'
 
 import { usePanZoom } from './usePanZoom'
 import { edgePosition } from './edge-position'
+import { PanzoomObject } from '@panzoom/panzoom'
 
 const CustomGraph = ({
   graph: g,
@@ -20,8 +20,9 @@ const CustomGraph = ({
   edgeComponent = undefined,
   minScale = 0.12,
   maxScale = 2,
-  onPaneClick = () => {},
   withDagreLayout = true,
+  onPaneClick = () => {},
+  initZoomUtil = () => {},
 }: Props) => {
   const graph = withDagreLayout ? graphLayout(g, nodeWidth, nodeHeight) : g
   const nodeIndex: NodeIndex = graph.nodes.reduce(
@@ -80,17 +81,18 @@ const CustomGraph = ({
     minScale,
     maxScale,
     onPaneClick,
+    onInit: initZoomUtil,
   })
 
+  /* setTimeout(() =>
+   *   panzoom.pan(-676 + START_X, -186 + START_Y, {
+   *     animate: true,
+   *     duration: 550,
+   *   })
+   * ) */
+
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-      }}
-      ref={canvasContainerRef}
-    >
+    <div style={rootStyle} ref={canvasContainerRef}>
       <div ref={zoomContainerRef}>
         <svg
           style={{
@@ -254,9 +256,16 @@ export interface Props {
   minScale?: number
   maxScale?: number
   onPaneClick?: () => void
+  initZoomUtil?: (_: PanzoomObject) => void
   withDagreLayout?: boolean
 }
 
 interface BubbleSets {
   [key: string]: string[]
+}
+
+const rootStyle: CSSProperties = {
+  position: 'relative',
+  width: '100%',
+  height: '100%',
 }
