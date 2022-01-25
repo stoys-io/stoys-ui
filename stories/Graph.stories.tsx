@@ -49,8 +49,36 @@ Example4.args = {
   data: [grpcData],
 }
 
+export const Multiple = () => (
+  <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex' }}>
+      <div style={{ height: '480px', width: '640px', border: '1px solid cyan' }}>
+        <Template data={[dataMock]} />
+      </div>
+      <div
+        style={{ height: '480px', width: '640px', marginLeft: '20px', border: '1px solid cyan' }}
+      >
+        <Template data={[dataMock]} />
+      </div>
+    </div>
+
+    <div style={{ display: 'flex', marginTop: '20px' }}>
+      <div style={{ height: '480px', width: '640px', border: '1px solid cyan' }}>
+        <Template data={[diffDataMock1, diffDataMock2]} />
+      </div>
+
+      <div
+        style={{ height: '480px', width: '640px', marginLeft: '20px', border: '1px solid cyan' }}
+      >
+        <Template data={[diffDataMock1, diffDataMock2]} />
+      </div>
+    </div>
+  </div>
+)
+Multiple.storyName = 'Multiple instances'
+
 export default {
   title: 'Chart/Custom graph',
-  component: [Example1, Diffing, Example2, Example3, Example4],
+  component: [Example1, Diffing, Example2, Example3, Example4, Multiple],
   argTypes: {},
 }
