@@ -40,7 +40,7 @@ import { getMetricsColumnColor } from '../graph-common/ops'
 
 import TinyPmf from './TinyPmf'
 import TableMetricIndicator from './TableMetricIndicator'
-import DiffMetric from './DiffMetric'
+import MetricColorIndicator from './MetricColorIndicator'
 
 export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Element => {
   const data = d ? d : defaultData
@@ -223,51 +223,27 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
                 countNormalize,
                 false
               )
+              const curColumnExtraNoAverage = curReleaseColumn
+                ? ` (${formatColumnExtra(curReleaseColumn, columnMetric, countNormalize, false)})`
+                : ''
+              tooltip = `${column.name}: ${columnExtraNoAverage}${curColumnExtraNoAverage}`
+
               const columnExtraFmt = formatColumnExtra(column, columnMetric, countNormalize)
-              const columnDiffFmtNoAverage = curReleaseColumn
-                ? ` (${formatColumnDiff(
-                    column,
-                    curReleaseColumn,
-                    columnMetric,
-                    countNormalize,
-                    false
-                  )})`
+              const curColumnExtraFmt = curReleaseColumn
+                ? formatColumnExtra(curReleaseColumn, columnMetric, countNormalize)
                 : ''
+              const showOtherMetric =
+                curColumnExtraFmt && columnMetric !== 'data_type' && columnMetric !== 'none'
 
-              const columnDiffFmt = curReleaseColumn
-                ? formatColumnDiff(column, curReleaseColumn, columnMetric, countNormalize)
-                : ''
-
-              const curReleaseColumnValTMP =
-                columnMetric !== 'none' &&
-                columnMetric !== 'data_type' &&
-                curReleaseColumn?.metrics !== undefined
-                  ? curReleaseColumn.metrics[columnMetric]
-                  : undefined
-
-              const curReleaseColumnVal: number | undefined =
-                curReleaseColumnValTMP && typeof curReleaseColumnValTMP === 'number'
-                  ? curReleaseColumnValTMP
-                  : undefined
-
-              const columnValTMP =
-                columnMetric !== 'none' &&
-                columnMetric !== 'data_type' &&
-                column?.metrics !== undefined
-                  ? column.metrics[columnMetric]
-                  : undefined
-              const columnVal: number | undefined =
-                columnValTMP && typeof columnValTMP === 'number' ? columnValTMP : undefined
-
-              const columnDiffValue =
-                curReleaseColumnVal && columnVal ? curReleaseColumnVal - columnVal : undefined
-
-              tooltip = `${column.name}: ${columnExtraNoAverage}${columnDiffFmtNoAverage}`
               columnExtra = (
                 <ItemExtra>
                   {columnExtraFmt}
-                  {columnDiffValue && (
-                    <DiffMetric value={columnDiffValue} valueFormatted={columnDiffFmt} />
+                  {showOtherMetric && (
+                    <MetricColorIndicator
+                      value={curReleaseColumn?.metrics?.[columnMetric]}
+                      prevValue={column?.metrics?.[columnMetric]}
+                      valueFormatted={curColumnExtraFmt}
+                    />
                   )}
                 </ItemExtra>
               )
@@ -311,49 +287,6 @@ export interface Props {
   onClick: (id: string) => void
   onDoubleClick: (id: string) => void
   data?: NodeDataPayload
-}
-
-const formatColumnDiff = (
-  column: Column,
-  curReleaseColumn: Column,
-  columnMetric: ColumnMetric,
-  countNormalize: boolean = false,
-  average: boolean = true
-): string => {
-  if (
-    column.metrics === undefined ||
-    columnMetric === 'none' ||
-    curReleaseColumn.metrics === undefined
-  ) {
-    return ''
-  }
-
-  if (columnMetric === 'data_type' && column.metrics[columnMetric] !== undefined) {
-    return ''
-  }
-
-  if (columnMetric.startsWith('count_') && countNormalize) {
-    const totalCount = curReleaseColumn.metrics['count'] ?? 1
-    const count = curReleaseColumn.metrics[columnMetric] as number | undefined
-    if (count === undefined) {
-      return ''
-    }
-
-    const normalized = count / totalCount
-
-    return formatPercentage(normalized)
-  }
-
-  const val = column.metrics[columnMetric] as string | number
-  const curReleaseVal = curReleaseColumn.metrics[columnMetric] as string | number
-  const formatColumnMetric =
-    typeof val !== 'number' || typeof curReleaseVal !== 'number'
-      ? ''
-      : !average
-      ? fmtHelperNoAverage(curReleaseVal - val)
-      : fmtHelper(curReleaseVal - val)
-
-  return formatColumnMetric
 }
 
 const formatColumnExtra = (

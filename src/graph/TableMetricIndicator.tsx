@@ -1,19 +1,20 @@
 import React from 'react'
 import { TableMetric } from '../graph-common/model'
 import { renderNumericValue } from '../helpers'
-import DiffMetric from './DiffMetric'
+import MetricColorIndicator from './MetricColorIndicator'
 
 const TableMetricComponent = ({ tableMetric, baseMetricData, currentMetricData }: Props) => {
-  const metricFormatted = tableMetric === 'none' ? null : format(baseMetricData[tableMetric])
-  const isDiffMetric = currentMetricData && tableMetric !== 'none'
+  const baseMetricFormatted = tableMetric === 'none' ? null : format(baseMetricData[tableMetric])
+  const showOtherMetric = currentMetricData && tableMetric !== 'none'
 
   return (
     <div>
-      <span>{metricFormatted}</span>
-      {isDiffMetric && (
-        <DiffMetric
-          value={currentMetricData[tableMetric] - baseMetricData[tableMetric]}
-          valueFormatted={format(currentMetricData[tableMetric] - baseMetricData[tableMetric])}
+      <span>{baseMetricFormatted}</span>
+      {showOtherMetric && (
+        <MetricColorIndicator
+          value={currentMetricData[tableMetric]}
+          prevValue={baseMetricData[tableMetric]}
+          valueFormatted={format(currentMetricData[tableMetric])}
         />
       )}
     </div>
