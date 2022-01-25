@@ -1,10 +1,9 @@
 import dagre from 'dagre'
+import { START_X, START_Y } from './constants'
 import { GraphData } from './types'
 
 const ranksep = 64
 const nodesep = 16
-const startX = 48
-const startY = 32
 
 export const graphLayout = (graph: GraphData, nodeWidth: number, nodeHeight: number): GraphData => {
   const dagreGraph = new dagre.graphlib.Graph({ compound: true, directed: true, multigraph: false })
@@ -52,8 +51,8 @@ export const graphLayout = (graph: GraphData, nodeWidth: number, nodeHeight: num
     return {
       ...node,
       position: {
-        x: nodeWithPosition.x - nodeWidth / 2 + startX,
-        y: nodeWithPosition.y - nodeHeight / 2 + startY,
+        x: nodeWithPosition.x - nodeWidth / 2 + START_X,
+        y: nodeWithPosition.y - nodeHeight / 2 + START_Y,
       },
     }
   })

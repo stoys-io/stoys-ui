@@ -16,12 +16,12 @@ import {
   StoreProvider,
 } from '../graph-common/store'
 
-import { DataGraph, ChromaticScale, Orientation, Edge } from '../graph-common/model'
+import { DataGraph, ChromaticScale, Orientation, Node } from '../graph-common/model'
 import { NODE_HEIGHT, NODE_WIDTH } from '../graph-common/constants'
 import { mapInitialNodes, mapInitialEdges } from '../graph-common/ops'
 import { Container, GraphContainer } from '../graph-common/styles'
 
-import CustomGraph from '../CustomGraph'
+import CustomGraph, { useZoomUtilStore, ZoomUtilProvider } from '../CustomGraph'
 
 const Graph = ({ data, config: cfg }: Props) => {
   const validCurrentRelease =
@@ -51,6 +51,17 @@ const Graph = ({ data, config: cfg }: Props) => {
     release: config.currentRelease,
   }
 
+  const dispatch = useGraphDispatch()
+  const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
+
+  const graph = useGraphStore(
+    // We use init flag to track that store did init and prevent race condition
+    state => (state.init ? state.graph : currentGraph),
+    (oldGraph, newGraph) => oldGraph.release === newGraph.release
+  )
+  const initZoomUtil = useZoomUtilStore(state => state.initZoomUtil)
+  const jump = useZoomUtilStore(state => state.jump)
+
   useEffect(() => {
     dispatch(
       setInitialStore({
@@ -60,50 +71,54 @@ const Graph = ({ data, config: cfg }: Props) => {
     )
   }, [])
 
-  const dispatch = useGraphDispatch()
-  const searchNodeLabels = useGraphStore(state => state.searchNodeLabels)
-
-  const graph = useGraphStore(
-    // We use init flag to track that store did init and prevent race condition
-    state => (state.init ? state.graph : currentGraph),
-    (oldGraph, newGraph) => oldGraph.release === newGraph.release
-  )
-
-  const onNodeClick = (id: string) => {
-    dispatch(nodeClick(id, config.chromaticScale))
-  }
-
-  const onNodeDoubleClick = (id: string) => {
-    dispatch(openDrawer(id))
-  }
-
+  const onNodeClick = (id: string) => dispatch(nodeClick(id, config.chromaticScale))
+  const onNodeDoubleClick = (id: string) => dispatch(openDrawer(id))
   const onPaneClick = () => {
     dispatch(resetHighlights)
     dispatch(resetHighlightedColumns)
   }
 
-  const onSearchNode = ({ val, err, onError }: SearchArgs) => {
-    if (!val) {
-      return
-    }
-    const nodeIds = searchNodeLabels(val)
+  const onSearchNode = () => {
+    let prevVal = ''
+    let cnt = 0 // This is to track where to jump next on search click
 
-    if (!nodeIds?.length) {
-      return onError(true)
-    }
+    return ({ val, err, onError }: SearchArgs) => {
+      if (!val) {
+        return
+      }
 
-    if (err) {
-      return onError(false)
-    }
+      if (val === prevVal) {
+        cnt += 1
+      } else {
+        prevVal = val
+        cnt = 0
+      }
 
-    dispatch(highlightIds(nodeIds))
+      const nodeIds = searchNodeLabels(val)
+      if (!nodeIds?.length) {
+        return onError(true)
+      }
+
+      if (err) {
+        return onError(false)
+      }
+
+      dispatch(highlightIds(nodeIds))
+
+      if (cnt > nodeIds.length - 1) {
+        cnt = 0
+      }
+
+      const jumpNodeId = nodeIds[cnt]
+      jump(jumpNodeId)
+    }
   }
 
   const containerRef = useRef<HTMLDivElement>(null)
   return (
     <Container ref={containerRef}>
       <Sidebar
-        onSearch={onSearchNode}
+        onSearch={onSearchNode()}
         releaseOptions={releaseOptions}
         chromaticScale={config.chromaticScale}
       />
@@ -121,6 +136,7 @@ const Graph = ({ data, config: cfg }: Props) => {
           minScale={0.12}
           maxScale={2}
           withDagreLayout
+          initZoomUtil={initZoomUtil}
         />
       </GraphContainer>
       <ConnectedDrawer containerRef={containerRef} isOpenDrawer={config.openDrawer} />
@@ -129,9 +145,11 @@ const Graph = ({ data, config: cfg }: Props) => {
 }
 
 const WrappedGraph = (props: Props) => (
-  <StoreProvider>
-    <Graph {...props} />
-  </StoreProvider>
+  <ZoomUtilProvider>
+    <StoreProvider>
+      <Graph {...props} />
+    </StoreProvider>
+  </ZoomUtilProvider>
 )
 
 export default WrappedGraph
