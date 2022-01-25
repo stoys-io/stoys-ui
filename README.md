@@ -21,24 +21,10 @@ build packages: `npm run bundle-build`
 
 Copy compiled `stoys-ui.js` from `dist` folder to your project.
 
-#### Example of using library in Jupyter project
+## Publish package
 
-```
-%%html
-    <div id="app">default</div>
+if you are not logged in - `npm login`
+1. `npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease [--preid=<prerelease-id>] | from-git]`
+1. `npm run prepublish`
+1. `npm publish --access public`
 
-    <script type="module">
-
-        import 'https://unpkg.com/@stoys/stoys@0.2.1/lib/stoys-ui.js'
-
-        var domNode = document.getElementById("app");
-
-        const { Profiler, ReactDOM, React } = stoysUi
-
-        ReactDOM.render(
-            React.createElement(Profiler, {datasets: [...]}, null),
-            element
-        );
-
-    </script>
-```
