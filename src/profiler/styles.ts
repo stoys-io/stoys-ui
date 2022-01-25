@@ -36,6 +36,12 @@ export const TableWrapper = styled.div<{ smallSize: boolean }>`
   position: relative;
   overflow: hidden;
 
+  th.chart-cell > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .virtual-table-cell {
     display: flex;
     flex-direction: column;
@@ -263,10 +269,6 @@ export const TableSettingsWrapper = styled.div`
 
   .search-wrapper {
     flex-grow: 1;
-  }
-
-  .ant-input-search {
-    width: 250px;
   }
 `
 
