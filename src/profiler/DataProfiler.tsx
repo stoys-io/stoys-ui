@@ -45,11 +45,13 @@ export const DataProfiler = (props: DataProfilerProps) => {
     chartTableChecked,
     pagination,
     height,
+    isMenuShowed,
   } = config
 
   const [isVertical, setIsVertical] = useState<boolean>(orientType === Orient.Vertical)
   const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonChecked)
   const [searchValue, setSearchValue] = useState<string>('')
+  const [_showProfilerToolbar, _setShowProfilerToolbar] = useState<boolean>(showProfilerToolbar)
 
   const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(!!normalizeChecked)
   const _normalizeChange = () => setIsNormalizeChecked(!isNormalizeChecked)
@@ -177,6 +179,9 @@ export const DataProfiler = (props: DataProfilerProps) => {
       setLogChecked: (isChecked: boolean) => setCheckedLogRows(isChecked ? columnNames : []),
       showAxesSwitcher,
       setAxesChecked: (isChecked: boolean) => setCheckedAxesRows(isChecked ? columnNames : []),
+      isMenuShowed,
+      activeMenu: _showProfilerToolbar,
+      setIsMenuShowed: (isChecked: boolean) => _setShowProfilerToolbar(isChecked),
     }),
     [
       smallSize,
@@ -189,6 +194,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
       setCheckedLogRows,
       showAxesSwitcher,
       setCheckedAxesRows,
+      isMenuShowed,
+      _showProfilerToolbar,
     ]
   )
 
@@ -231,7 +238,7 @@ export const DataProfiler = (props: DataProfilerProps) => {
           dataLength: columnNames.length,
         }}
       >
-        {showProfilerToolbar ? (
+        {_showProfilerToolbar || (isVertical && showProfilerToolbar) ? (
           <TableSettings
             isModeSwitcherShown={showOrientSwitcher}
             isModeSwitcherChecked={isVertical}

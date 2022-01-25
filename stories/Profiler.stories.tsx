@@ -58,6 +58,7 @@ export const Profiler2 = Template.bind({})
 Profiler2.args = {
   datasets: [dataset as Dataset, dataset2 as Dataset],
   config: {
+    showProfilerToolbar: false,
     pagination: false,
     showLogarithmicSwitcher: true,
     showAxesSwitcher: true,
@@ -71,6 +72,7 @@ Profiler2.args = {
     showSearch: true,
     onSearchChange: (value: string) => console.log('search => ', value),
     smallSize: true,
+    isMenuShowed: true,
   },
 }
 Profiler2.storyName = 'comparable*'

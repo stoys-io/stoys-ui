@@ -10,4 +10,9 @@ export const ConfigContext = createContext<{
   setLogChecked?: (isChecked: boolean) => void
   showAxesSwitcher?: boolean
   setAxesChecked?: (isChecked: boolean) => void
-}>({})
+  isMenuShowed?: boolean
+  setIsMenuShowed: (isChecked: boolean) => void
+  activeMenu?: boolean
+}>({
+  setIsMenuShowed: () => undefined,
+})
