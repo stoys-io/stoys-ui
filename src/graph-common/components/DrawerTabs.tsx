@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { Tabs } from 'antd'
 
 import { DrawerNodeLabel } from '../styles'
@@ -12,56 +12,77 @@ const { TabPane } = Tabs
 
 const DrawerTabs = () => {
   const dispatch = useGraphDispatch()
-
   const drawerNodeId = useGraphStore(state => state.drawerNodeId)
   const baseRelease = useGraphStore(state => state.baseRelease)
   const graphData = useGraphStore(state => state.data)
+  const curReleaseGraph = useGraphStore(
+    state => state.currentReleaseGraph,
+    (oldGraph, newGraph) => oldGraph.release === newGraph.release
+  )
 
-  const tables = graphData.find(dataItem => dataItem.version === baseRelease)?.tables ?? []
-  const curTable = tables.find(table => table.id === drawerNodeId)
-  const baseData = useMemo(() => {
-    if (!baseRelease) {
-      return undefined
-    }
+  const selectedReleaseTables = !baseRelease
+    ? graphData.find(dataItem => dataItem.version === curReleaseGraph.release)?.tables ?? []
+    : graphData.find(dataItem => dataItem.version === baseRelease)?.tables ?? []
+  const selectedTable = selectedReleaseTables.find(table => table.id === drawerNodeId)
 
-    return graphData
-      ?.find(dataItem => dataItem.version === baseRelease)
-      ?.tables?.find(table => table.name === curTable?.name)
-  }, [baseRelease, curTable, graphData])
+  const otherReleaseTable = !baseRelease
+    ? undefined
+    : graphData
+        ?.find(dataItem => dataItem.version === curReleaseGraph.release)
+        ?.tables?.find(table => table.name === selectedTable?.name)
 
-  const profilerData = curTable?.dp_result ? [curTable.dp_result] : null
-  const aggSum: RawAggSumData | null = curTable?.aggSum
-    ? {
-        current: {
-          data: curTable.aggSum[0],
-          table_name: curTable.name,
-          key_columns: ['location'],
-        },
-        previous: undefined,
-      }
-    : null
-
-  if (baseData?.dp_result && profilerData) {
-    profilerData.push(baseData.dp_result)
+  let profilerData = null
+  if (!baseRelease) {
+    profilerData = selectedTable?.dp_result ? [selectedTable.dp_result] : null
+  } else {
+    profilerData = selectedTable?.dp_result
+      ? [
+          selectedTable?.dp_result,
+          ...(otherReleaseTable?.dp_result ? [otherReleaseTable?.dp_result] : []),
+        ]
+      : null
   }
 
-  if (baseData?.aggSum && aggSum) {
-    aggSum.previous = {
-      data: baseData.aggSum[0],
-      table_name: baseData.name,
-      key_columns: ['location'],
-    }
+  let aggSum: RawAggSumData | null = null
+  if (!baseRelease) {
+    aggSum = selectedTable?.aggSum
+      ? {
+          current: {
+            data: selectedTable.aggSum[0],
+            table_name: selectedTable.name,
+            key_columns: ['location'],
+          },
+          previous: undefined,
+        }
+      : null
+  } else {
+    aggSum = selectedTable?.aggSum
+      ? {
+          current: {
+            data: selectedTable.aggSum[0],
+            table_name: selectedTable.name,
+            key_columns: ['location'],
+          },
+          previous: otherReleaseTable?.aggSum
+            ? {
+                data: otherReleaseTable.aggSum[0],
+                table_name: otherReleaseTable.name,
+                key_columns: ['location'],
+              }
+            : undefined,
+        }
+      : null
   }
 
-  const firstNonEmptyTab = curTable?.dq_join_results
+  const firstNonEmptyTab = selectedTable?.dq_join_results
     ? JOIN_RATES_KEY
     : aggSum
     ? METADATA_KEY
     : profilerData
     ? PROFILER_KEY
-    : curTable?.dq_result
+    : selectedTable?.dq_result
     ? QUALITY_KEY
-    : curTable?.metadata
+    : selectedTable?.metadata
     ? METADATA_KEY
     : JOIN_RATES_KEY
 
@@ -80,11 +101,11 @@ const DrawerTabs = () => {
       activeKey={drawerTab}
       onChange={tab => dispatch(setDrawerTab(tab))}
       tabBarStyle={tabBarStyle}
-      tabBarExtraContent={<DrawerNodeLabel>{curTable?.name}</DrawerNodeLabel>}
+      tabBarExtraContent={<DrawerNodeLabel>{selectedTable?.name}</DrawerNodeLabel>}
     >
       <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
-        {curTable?.dq_join_results ? (
-          <JoinRates config={{ pagination: false }} data={curTable.dq_join_results} />
+        {selectedTable?.dq_join_results ? (
+          <JoinRates config={{ pagination: false }} data={selectedTable.dq_join_results} />
         ) : (
           <NoData>No data</NoData>
         )}
@@ -131,15 +152,15 @@ const DrawerTabs = () => {
         )}
       </TabPane>
       <TabPane tab="Quality" key={QUALITY_KEY}>
-        {curTable?.dq_result ? (
-          <Quality data={curTable.dq_result} config={{ pagination: false, smallSize: true }} />
+        {selectedTable?.dq_result ? (
+          <Quality data={selectedTable.dq_result} config={{ pagination: false, smallSize: true }} />
         ) : (
           <NoData>No data</NoData>
         )}
       </TabPane>
-      {curTable?.metadata ? (
+      {selectedTable?.metadata ? (
         <TabPane tab="Metadata" key={METADATA_KEY}>
-          <pre>{JSON.stringify(curTable.metadata, null, 2)}</pre>
+          <pre>{JSON.stringify(selectedTable.metadata, null, 2)}</pre>
         </TabPane>
       ) : null}
     </Tabs>
