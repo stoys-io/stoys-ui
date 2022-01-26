@@ -65,7 +65,8 @@ interface EdgeStyleProps {
   strokeWidth: string
 }
 
-export type Highlight = 'none' | 'nearest' | 'parents' | 'children' | 'metrics' | 'diffing'
+export type Highlight = 'none' | 'nearest' | 'traversal' | 'metrics' | 'diffing'
+export type HighlightDirection = 'upstream' | 'downstream' | 'nearest'
 
 export type TableMetric = 'none' | 'violations' | 'partitions'
 export type ColumnMetric =

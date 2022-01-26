@@ -183,16 +183,9 @@ const highlightOptions: HighlighOption[] = [
     label: 'Nearest',
   },
   {
-    key: 'children',
-    value: 'children',
-    // Note: user's notion of children and parents is the opposite of what we use in data structures
-    label: 'Upstream (parents)',
-  },
-  {
-    key: 'parents',
-    value: 'parents',
-    // Note: user's notion of children and parents is the opposite of what we use in data structures
-    label: 'Downstream (children)',
+    key: 'traversal',
+    value: 'traversal',
+    label: 'Traversal',
   },
   {
     key: 'metrics',

@@ -22,9 +22,10 @@ import {
   Highlights,
   TableMetric,
   ColumnMetric,
-  Edge,
   DataGraph,
 } from '../model'
+
+import unionBy from 'lodash.unionby'
 
 export const setCountNormalize = (countNormalize: boolean) => ({ countNormalize })
 export const setTableMetric = (tableMetric: TableMetric) => ({ tableMetric })
@@ -176,7 +177,12 @@ export const nodeClick =
       }
     }
 
-    const newHighlights = highlightGraph(highlightMode, selectedReleaseGraph, id, chromaticScale)
+    const newHighlights = highlightGraph({
+      highlightMode,
+      graph: selectedReleaseGraph,
+      nodeId: id,
+      chromaticScale,
+    })
     return {
       highlights: newHighlights,
       selectedNodeId: id,
@@ -269,12 +275,12 @@ export const setHighlightMode =
       }
     }
 
-    const newHighlights = highlightGraph(
+    const newHighlights = highlightGraph({
       highlightMode,
-      selectedReleaseGraph,
-      selectedNodeId,
-      chromaticScale
-    )
+      graph: selectedReleaseGraph,
+      nodeId: selectedNodeId,
+      chromaticScale,
+    })
 
     return {
       highlightMode,
@@ -349,39 +355,40 @@ const onHighlightModeChangeColumns = ({
 
   let tableIds: string[] = []
   let columnDependcies: string[] = []
-  let subgraphEdges: Edge[] = []
-  if (highlightMode === 'parents') {
-    columnDependcies = Object.keys(traverseGraph(depsIndex, columnId))
-    tableIds = columnDependcies.map(col => columnIndex[col].tableId)
-    subgraphEdges = graph.edges.filter(
-      edge => tableIds.includes(edge.source) || !tableIds.includes(edge.target)
-    )
-  } else if (highlightMode === 'children') {
-    columnDependcies = Object.keys(traverseGraph(columnIndex, columnId))
-    tableIds = columnDependcies.map(col => columnIndex[col].tableId)
-    subgraphEdges = graph.edges.filter(
-      edge => !tableIds.includes(edge.source) || tableIds.includes(edge.target)
-    )
+  if (highlightMode === 'traversal') {
+    const columnDependciesUpstream = Object.keys(traverseGraph(depsIndex, columnId))
+    const tableIdsUpstream = columnDependciesUpstream.map(col => columnIndex[col].tableId)
+
+    const columnDependciesDownstream = Object.keys(traverseGraph(columnIndex, columnId))
+    const tableIdsDownstream = columnDependciesDownstream.map(col => columnIndex[col].tableId)
+
+    columnDependcies = [...columnDependciesUpstream, ...columnDependciesDownstream]
+    tableIds = unionBy(tableIdsUpstream, tableIdsDownstream)
   } else {
     columnDependcies = [
       ...(columnIndex[columnId]?.dependencies ?? []),
       ...(depsIndex[columnId]?.dependencies ?? []),
     ]
     tableIds = [...columnDependcies.map(col => columnIndex[col].tableId), tableId]
-    subgraphEdges = graph.edges.filter(
-      edge => tableIds.includes(edge.source) && tableIds.includes(edge.target)
-    )
   }
 
   // Remove all unrelated to columns nodes and edges
   const subgraphNodes = graph.nodes.filter(node => tableIds.includes(node.id))
+  const subgraphEdges = graph.edges.filter(
+    edge => tableIds.includes(edge.source) && tableIds.includes(edge.target)
+  )
   const columnSubgraph = {
     nodes: subgraphNodes,
     edges: subgraphEdges,
     release: graph.release,
   }
 
-  const newHighlights = highlightGraph(highlightMode, columnSubgraph, tableId)
+  const newHighlights = highlightGraph({
+    highlightMode,
+    graph,
+    subgraph: columnSubgraph,
+    nodeId: tableId,
+  })
 
   return {
     highlights: newHighlights,
