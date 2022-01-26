@@ -5,7 +5,7 @@ const MetricColorIndicator = ({ value, prevValue, valueFormatted }: Props) => {
     return <span style={style}>({valueFormatted})</span>
   }
 
-  const color = value === 0 ? null : value < prevValue ? 'red' : 'green'
+  const color = value === prevValue ? null : value < prevValue ? 'red' : 'green'
   const colorStyle = color ? { color } : {}
 
   return (
