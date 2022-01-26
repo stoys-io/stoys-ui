@@ -319,3 +319,22 @@ export interface ProfilerTableConfig {
   searchValue?: string
   isNormalizeChecked?: boolean
 }
+
+export interface ProfilerToolbarProps {
+  datasets: Datasets
+  config: ProfilerToolbarConfig
+}
+
+export interface ProfilerToolbarConfig {
+  showOrientSwitcher?: boolean
+  showJsonSwitcher?: boolean
+  jsonChecked?: boolean
+  onJsonChange?: (active: boolean) => void
+  showNormalizeSwitcher?: boolean
+  showSearch?: boolean
+  isVertical?: boolean
+  setIsVerticalView: () => void
+  onSearch: (value: string) => void
+  isNormalizeChecked?: boolean
+  normalizeChange: () => void
+}

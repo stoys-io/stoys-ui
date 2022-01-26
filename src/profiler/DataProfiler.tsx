@@ -2,11 +2,9 @@ import React, { useState, useCallback, useEffect } from 'react'
 
 import { DataProfilerProps, Orient } from './model'
 
-import TableSettings from './components/TableSettings'
-import JsonDrawer from './components/JsonDrawer'
-
 import { NoData } from './styles'
 import ProfilerTable from './ProfilerTable'
+import ProfilerToolbar from './ProfilerToolbar'
 
 export const DataProfiler = (props: DataProfilerProps) => {
   const { datasets, config = {}, ...otherProps } = props
@@ -36,7 +34,6 @@ export const DataProfiler = (props: DataProfilerProps) => {
   } = config
 
   const [isVertical, setIsVertical] = useState<boolean>(orientType === Orient.Vertical)
-  const [isJsonShown, setJsonShown] = useState<boolean>(!!jsonChecked)
   const [searchValue, setSearchValue] = useState<string>('')
 
   const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(!!normalizeChecked)
@@ -68,29 +65,24 @@ export const DataProfiler = (props: DataProfilerProps) => {
     [config]
   )
 
-  const _setJsonShown = useCallback(() => {
-    setJsonShown((prevState: boolean) => {
-      onJsonChange?.(!prevState)
-
-      return !prevState
-    })
-  }, [config])
-
   return (
     <>
       {showProfilerToolbar ? (
-        <TableSettings
-          isModeSwitcherShown={showOrientSwitcher}
-          isModeSwitcherChecked={isVertical}
-          onModeChange={_setIsVerticalView}
-          isSearchShown={!!showSearch}
-          onSearchChangeHandler={_onSearch}
-          isJsonSwitcherShown={showJsonSwitcher}
-          isJsonSwitcherChecked={isJsonShown}
-          onJsonChange={_setJsonShown}
-          isNormalizeSwitcherShown={showNormalizeSwitcher}
-          isNormalizeSwitcherChecked={isNormalizeChecked}
-          onNormalizeChange={_normalizeChange}
+        <ProfilerToolbar
+          datasets={datasets}
+          config={{
+            showOrientSwitcher,
+            showJsonSwitcher,
+            jsonChecked,
+            onJsonChange,
+            showNormalizeSwitcher,
+            showSearch,
+            isVertical,
+            setIsVerticalView: _setIsVerticalView,
+            onSearch: _onSearch,
+            isNormalizeChecked,
+            normalizeChange: _normalizeChange,
+          }}
         />
       ) : null}
       <ProfilerTable
@@ -111,10 +103,8 @@ export const DataProfiler = (props: DataProfilerProps) => {
           searchValue,
           isNormalizeChecked,
         }}
+        {...otherProps}
       />
-      {isJsonShown ? (
-        <JsonDrawer visible={isJsonShown} onClose={_setJsonShown} datasets={datasets} />
-      ) : null}
     </>
   )
 }
