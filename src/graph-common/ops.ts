@@ -222,31 +222,42 @@ export const highlightMetrics = ({ metric, graph }: HMetricsArgs): Highlights =>
   return { nodes: nodeHighlights, edges: {} }
 }
 
-export const highlightGraph = (
-  highlightMode: Highlight,
-  graph: Graph,
-  id: string,
-  chromaticScale: ChromaticScale = 'interpolatePuOr'
-): Highlights => {
+interface HighlightGraphArgs {
+  highlightMode: Highlight
+  graph: Graph
+  subgraph?: Graph
+  nodeId: string
+  chromaticScale?: ChromaticScale
+}
+
+export const highlightGraph = ({
+  highlightMode,
+  graph,
+  subgraph,
+  nodeId,
+  chromaticScale = 'interpolatePuOr',
+}: HighlightGraphArgs): Highlights => {
+  const g = subgraph ? subgraph : graph
+
   if (highlightMode === 'traversal') {
-    const upstreamEdges = findUpstreamEdges(graph, id)
-    const downstreamEdges = findDownstreamEdges(graph, id)
+    const upstreamEdges = findUpstreamEdges(g, nodeId)
+    const downstreamEdges = findDownstreamEdges(g, nodeId)
 
     if (!upstreamEdges.length && !downstreamEdges.length) {
-      return highlightSingleNode(id)
+      return highlightSingleNode(nodeId)
     }
 
     const upsteamHighlights = highlightHelper({
-      graph,
-      selectedNodeId: id,
+      graph: g,
+      selectedNodeId: nodeId,
       edgesToHighlight: upstreamEdges,
       direction: 'upstream',
       chromaticScale,
     })
 
     const downstreamHighlights = highlightHelper({
-      graph,
-      selectedNodeId: id,
+      graph: g,
+      selectedNodeId: nodeId,
       edgesToHighlight: downstreamEdges,
       direction: 'downstream',
       chromaticScale,
@@ -274,14 +285,14 @@ export const highlightGraph = (
     }
   }
 
-  const edgesToHighlight = findNearestEdges(graph, id)
+  const edgesToHighlight = findNearestEdges(g, nodeId)
   if (!edgesToHighlight.length) {
-    return highlightSingleNode(id)
+    return highlightSingleNode(nodeId)
   }
 
   const nearestHighlights = highlightHelper({
-    graph,
-    selectedNodeId: id,
+    graph: g,
+    selectedNodeId: nodeId,
     edgesToHighlight,
     direction: 'nearest',
     chromaticScale,
