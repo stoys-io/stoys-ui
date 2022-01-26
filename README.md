@@ -25,6 +25,6 @@ Copy compiled `stoys-ui.js` from `dist` folder to your project.
 
 if you are not logged in - `npm login`
 1. `npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease [--preid=<prerelease-id>] | from-git]`
-1. `npm run prepublish`
+1. `npm run pre-publish`
 1. `npm publish --access public`
 
