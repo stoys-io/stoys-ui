@@ -44,6 +44,9 @@ export const GraphContainer = styled.div`
 
 export const DrawerNodeLabel = styled.div`
   font-weight: bold;
+  font-size: 1.1em;
+  margin-right: 10px;
+  padding-right: 10px;
 `
 
 export const ResizeArea = styled.div`

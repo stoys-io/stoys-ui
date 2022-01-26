@@ -101,7 +101,7 @@ const DrawerTabs = () => {
       activeKey={drawerTab}
       onChange={tab => dispatch(setDrawerTab(tab))}
       tabBarStyle={tabBarStyle}
-      tabBarExtraContent={<DrawerNodeLabel>{selectedTable?.name}</DrawerNodeLabel>}
+      tabBarExtraContent={{ left: <DrawerNodeLabel>{selectedTable?.name}</DrawerNodeLabel> }}
     >
       <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
         {selectedTable?.dq_join_results ? (
