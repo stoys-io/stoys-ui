@@ -1,6 +1,6 @@
 {
   "name": "@stoys/stoys",
-  "version": "0.2.2",
+  "version": "0.2.2-rc.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
@@ -17,8 +17,7 @@
     "prebuild": "rm -rf dist lib",
     "build": "tsc",
     "bundle-build": "webpack",
-    "prepublish": "npm run reinstall && npm run prebuild && npm run build",
-    "pack-build": "npm run prepublish && npm pack",
+    "pack-build": "npm run reinstall && npm run prebuild && npm run build && npm pack",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "test": "jest --coverage",
