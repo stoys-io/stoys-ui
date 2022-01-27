@@ -41,6 +41,7 @@ import { getMetricsColumnColor } from '../graph-common/ops'
 import TinyPmf from './TinyPmf'
 import TableMetricIndicator from './TableMetricIndicator'
 import MetricColorIndicator from './MetricColorIndicator'
+import { PmfPlotItem } from '../profiler/model'
 
 export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Element => {
   const data = d ? d : defaultData
@@ -253,7 +254,10 @@ export const DagNode = ({ id, data: d, onClick, onDoubleClick }: Props): JSX.Ele
               const pmfDataCurrentRelease = curReleaseColumn?.metrics?.['pmf']
                 ? curReleaseColumn.metrics['pmf']
                 : undefined
-              const dataset = pmfDataCurrentRelease ? [pmfDataCurrentRelease, pmfData] : [pmfData]
+
+              const dataset = pmfDataCurrentRelease
+                ? normalizeDataset([pmfDataCurrentRelease, pmfData])
+                : [pmfData]
 
               columnExtra = <TinyPmf dataset={dataset} />
             }
@@ -348,3 +352,13 @@ const dummyNode: Node = {
   data: defaultData,
   type: 'dagNode',
 }
+
+const normalizeDataset = (dataset: PmfPlotItem[][]): PmfPlotItem[][] =>
+  dataset.map(dataItem => {
+    const totalCount = dataItem.reduce((sum, item) => sum + item.count, 0)
+    const normalizedDataItem = dataItem.map(dataBin => ({
+      ...dataBin,
+      count: dataBin.count / totalCount,
+    }))
+    return normalizedDataItem
+  })

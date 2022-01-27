@@ -15,6 +15,7 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
     showXAxis,
     showYAxis,
     showLogScale,
+    showTooltip = true,
     dataType,
     formatTooltipValues,
   } = config
@@ -189,7 +190,7 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
 
         if (tooltipValues.length) {
           tooltip
-            .style('display', 'block')
+            .style('display', showTooltip ? 'block' : 'none')
             .style('padding', '2px')
             .style('position', 'absolute')
             .style('background-color', '#fff')
@@ -264,6 +265,7 @@ interface PmfPlotProps {
     showXAxis?: boolean
     showYAxis?: boolean
     showLogScale?: boolean
+    showTooltip?: boolean
     dataType?: ColumnType
     formatTooltipValues?: FormatTooltipValues
   }
