@@ -297,3 +297,44 @@ export interface JsonDrqwerProps {
   visible: boolean
   onClose: () => void
 }
+
+export interface ProfilerTableProps extends AntdTableProps<any> {
+  datasets: Datasets
+  config?: ProfilerTableConfig
+}
+
+export interface ProfilerTableConfig {
+  smallSize?: boolean
+  colors?: Array<string>
+  visibleColumns?: Array<string>
+  showLogarithmicSwitcher?: boolean
+  logarithmicChecked?: boolean
+  showAxesSwitcher?: boolean
+  axesChecked?: boolean
+  showChartTableSwitcher?: boolean
+  chartTableChecked?: boolean
+  pagination?: PaginationProps | false
+  height?: number | string
+  isVertical?: boolean
+  searchValue?: string
+  isNormalizeChecked?: boolean
+}
+
+export interface ProfilerToolbarProps {
+  datasets: Datasets
+  config: ProfilerToolbarConfig
+}
+
+export interface ProfilerToolbarConfig {
+  showOrientSwitcher?: boolean
+  showJsonSwitcher?: boolean
+  jsonChecked?: boolean
+  onJsonChange?: (active: boolean) => void
+  showNormalizeSwitcher?: boolean
+  showSearch?: boolean
+  isVertical?: boolean
+  setIsVerticalView: () => void
+  onSearch: (value: string) => void
+  isNormalizeChecked?: boolean
+  normalizeChange: () => void
+}

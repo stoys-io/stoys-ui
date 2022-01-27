@@ -43,7 +43,14 @@ export const GraphContainer = styled.div`
 `
 
 export const DrawerNodeLabel = styled.div`
+  max-width: 180px;
   font-weight: bold;
+  font-size: 1.1em;
+  margin-right: 10px;
+  padding-right: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `
 
 export const ResizeArea = styled.div`

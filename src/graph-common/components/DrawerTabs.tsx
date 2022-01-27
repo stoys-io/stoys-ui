@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Tabs } from 'antd'
 
 import { DrawerNodeLabel } from '../styles'
 
 import { NoData } from '../../profiler/styles'
 import { RawAggSumData } from '../../aggSum/model'
-import { JoinRates, AggSum, Profiler, Quality } from '../..'
+import { JoinRates, AggSum, Quality } from '../..'
+import Profiler from '../../profiler/ProfilerTable'
 import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../store'
+import ProfilerToolbar from '../../profiler/ProfilerToolbar'
 
 const { TabPane } = Tabs
 
@@ -96,12 +98,47 @@ const DrawerTabs = () => {
     }
   }, [])
 
+  const [isVertical, setIsVertical] = useState<boolean>(false)
+  const [searchValue, setSearchValue] = useState<string>('')
+
+  const [isNormalizeChecked, setIsNormalizeChecked] = useState<boolean>(false)
+  const _normalizeChange = () => setIsNormalizeChecked(!isNormalizeChecked)
+
+  const _setIsVerticalView = useCallback(
+    () =>
+      setIsVertical((prevState: boolean) => {
+        return !prevState
+      }),
+    []
+  )
+
   return (
     <Tabs
       activeKey={drawerTab}
       onChange={tab => dispatch(setDrawerTab(tab))}
       tabBarStyle={tabBarStyle}
-      tabBarExtraContent={<DrawerNodeLabel>{selectedTable?.name}</DrawerNodeLabel>}
+      tabBarExtraContent={{
+        left: <DrawerNodeLabel title={selectedTable?.name}>{selectedTable?.name}</DrawerNodeLabel>,
+        right:
+          profilerData && drawerTab === 'profiler' ? (
+            <div>
+              <ProfilerToolbar
+                datasets={profilerData}
+                config={{
+                  showOrientSwitcher: true,
+                  showJsonSwitcher: false,
+                  showNormalizeSwitcher: true,
+                  showSearch: true,
+                  isVertical,
+                  setIsVerticalView: _setIsVerticalView,
+                  onSearch: setSearchValue,
+                  isNormalizeChecked,
+                  normalizeChange: _normalizeChange,
+                }}
+              />
+            </div>
+          ) : null,
+      }}
     >
       <TabPane tab="Join Rates" key={JOIN_RATES_KEY}>
         {selectedTable?.dq_join_results ? (
@@ -137,14 +174,14 @@ const DrawerTabs = () => {
               showAxesSwitcher: false,
               axesChecked: false,
 
-              showJsonSwitcher: false,
-
               showChartTableSwitcher: false,
               chartTableChecked: false,
               pagination: false,
 
-              showSearch: false,
               smallSize: true,
+              searchValue,
+              isVertical,
+              isNormalizeChecked,
             }}
           />
         ) : (
