@@ -10544,7 +10544,8 @@
       "measures": {
         "rows": 95787,
         "columns": 10
-      }
+      },
+      "code": "SELECT\nv.location,\nv.date,\nj.new_cases AS cases,\nj.new_deaths AS deaths,\nem.deaths_2022_all_ages AS excess_deaths,\nem.average_deaths_2015_2019_all_ages AS average_deaths,\nv.daily_vaccinations AS vaccinations\nFROM excess_mortality_csv AS em\nFULL JOIN vaccinations_csv AS v ON em.location = v.location AND em.date = v.date\nFULL JOIN jhu_csv AS j ON v.location = j.location AND v.date = j.date\n"
     },
     {
       "id": "7f9b546a-4c26-47a2-b29c-580835fe0622",
