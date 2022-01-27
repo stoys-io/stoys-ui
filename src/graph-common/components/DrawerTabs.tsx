@@ -118,23 +118,25 @@ const DrawerTabs = () => {
       onChange={tab => dispatch(setDrawerTab(tab))}
       tabBarStyle={tabBarStyle}
       tabBarExtraContent={{
-        left: <DrawerNodeLabel>{selectedTable?.name}</DrawerNodeLabel>,
+        left: <DrawerNodeLabel title={selectedTable?.name}>{selectedTable?.name}</DrawerNodeLabel>,
         right:
           profilerData && drawerTab === 'profiler' ? (
-            <ProfilerToolbar
-              datasets={profilerData}
-              config={{
-                showOrientSwitcher: true,
-                showJsonSwitcher: false,
-                showNormalizeSwitcher: true,
-                showSearch: true,
-                isVertical,
-                setIsVerticalView: _setIsVerticalView,
-                onSearch: setSearchValue,
-                isNormalizeChecked,
-                normalizeChange: _normalizeChange,
-              }}
-            />
+            <div>
+              <ProfilerToolbar
+                datasets={profilerData}
+                config={{
+                  showOrientSwitcher: true,
+                  showJsonSwitcher: false,
+                  showNormalizeSwitcher: true,
+                  showSearch: true,
+                  isVertical,
+                  setIsVerticalView: _setIsVerticalView,
+                  onSearch: setSearchValue,
+                  isNormalizeChecked,
+                  normalizeChange: _normalizeChange,
+                }}
+              />
+            </div>
           ) : null,
       }}
     >
