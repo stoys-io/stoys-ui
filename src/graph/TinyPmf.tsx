@@ -11,6 +11,7 @@ const TinyPmf = ({ dataset }: Props) => (
         height: 23,
         showAxes: false,
         showLogScale: false,
+        showTooltip: false,
       }}
     />
   </div>
