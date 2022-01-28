@@ -145,6 +145,7 @@ const BarChart = ({ dataset, config }: BarChartProps): JSX.Element => {
             .style('position', 'fixed')
             .style('background-color', '#fff')
             .style('border', '1px solid #000')
+            .style('z-index', '9999')
             .html(() => {
               return tooltipValues
                 .map(
