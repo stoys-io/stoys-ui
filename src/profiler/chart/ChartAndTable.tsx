@@ -9,7 +9,9 @@ import { ChartAndTableProps, ColumnType, DiscreteItem, PmfPlotItem } from '../mo
 import { Maybe } from '../../model'
 import { MIN_TABLE_ROW_HEIGHT, TABLE_ROW_HEIGHT } from '../constants'
 import { BarChartWrapper, StyledEmpty } from '../styles'
-import { formatPercentage } from '../../helpers'
+import { formatPercentage, renderNumericValue, transformSecondsToDate } from '../../helpers'
+
+const renderShortNumber = renderNumericValue(2, true)
 
 const ChartAndTable = ({
   data,
@@ -82,12 +84,17 @@ const ChartAndTable = ({
         showLogScale: enabledLogScale,
         color,
         dataType,
-        formatTooltipValues: displayNormalized
-          ? data => ({
-              ...data,
-              count: formatPercentage(data.count),
-            })
-          : undefined,
+        formatTooltipValues: data => ({
+          high:
+            dataType === 'timestamp'
+              ? transformSecondsToDate(data.high, 'date')
+              : renderShortNumber(data.high),
+          low:
+            dataType === 'timestamp'
+              ? transformSecondsToDate(data.low, 'date')
+              : renderShortNumber(data.low),
+          count: displayNormalized ? formatPercentage(data.count) : data.count,
+        }),
       }}
     />
   )

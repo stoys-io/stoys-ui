@@ -9,6 +9,7 @@ import { JoinRates, AggSum, Quality } from '../..'
 import Profiler from '../../profiler/ProfilerTable'
 import { useGraphStore, setDrawerTab, closeDrawer, useGraphDispatch } from '../store'
 import ProfilerToolbar from '../../profiler/ProfilerToolbar'
+import StringDiffing from '../../common/StringDiffing'
 
 const { TabPane } = Tabs
 
@@ -200,6 +201,15 @@ const DrawerTabs = () => {
           <pre>{JSON.stringify(selectedTable.metadata, null, 2)}</pre>
         </TabPane>
       ) : null}
+      {selectedTable?.code ? (
+        <TabPane tab="Code" key={CODE_KEY}>
+          {otherReleaseTable?.code ? (
+            <StringDiffing current={selectedTable.code} base={otherReleaseTable.code} />
+          ) : (
+            <pre>{selectedTable.code}</pre>
+          )}
+        </TabPane>
+      ) : null}
     </Tabs>
   )
 }
@@ -211,5 +221,6 @@ const AGG_SUM_KEY = 'aggSum'
 const PROFILER_KEY = 'profiler'
 const QUALITY_KEY = 'quality'
 const METADATA_KEY = 'metadata'
+const CODE_KEY = 'code'
 
 const tabBarStyle = { padding: '0 16px' }

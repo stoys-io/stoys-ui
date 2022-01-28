@@ -115,6 +115,7 @@ export interface Table {
 
   groupId?: string
   rootId?: string
+  code?: string
 }
 
 export interface Column {

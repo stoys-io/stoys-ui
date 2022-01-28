@@ -185,6 +185,7 @@ const PmfPlot = ({ dataset, config = {} }: PmfPlotProps) => {
             margin-right: 5px;
             margin-left: 5px;
             background-color: ${color};
+            z-index: 10
           "></span>
         `
 
