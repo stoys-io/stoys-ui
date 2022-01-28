@@ -1,8 +1,7 @@
-import React, { ReactNode, useCallback, useState, RefObject, useEffect } from 'react'
+import React, { ReactNode, useCallback, useState, RefObject, useEffect, CSSProperties } from 'react'
 
-import AntDrawer from 'antd/lib/drawer'
 import { RESIZE_AREA_HEIGHT } from '../constants'
-import { ResizeArea } from '../styles'
+import { ResizeArea, StyledAntDrawer } from '../styles'
 
 const Drawer = ({ children, visible, containerRef }: Props) => {
   const [drawerHeight, setDrawerHeight] = useState<number>(0)
@@ -59,7 +58,7 @@ const Drawer = ({ children, visible, containerRef }: Props) => {
   }, [])
 
   return (
-    <AntDrawer
+    <StyledAntDrawer
       title={<ResizeArea onMouseDown={handleMouseDown} />}
       getContainer={false}
       placement="bottom"
@@ -67,11 +66,12 @@ const Drawer = ({ children, visible, containerRef }: Props) => {
       mask={false}
       visible={visible}
       height={drawerHeight}
+      style={style}
       headerStyle={headerStyle}
       bodyStyle={bodyStyle}
     >
       {children}
-    </AntDrawer>
+    </StyledAntDrawer>
   )
 }
 
@@ -85,5 +85,6 @@ interface Props {
 
 const threshold = RESIZE_AREA_HEIGHT + 150
 
+const style: CSSProperties = { position: 'absolute' }
 const bodyStyle = { padding: 0 }
 const headerStyle = { padding: 0 }
