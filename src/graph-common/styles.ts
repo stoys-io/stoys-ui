@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import Input from 'antd/lib/input'
+import AntDrawer from 'antd/lib/drawer'
 
 const { Search } = Input
 
@@ -53,10 +54,16 @@ export const DrawerNodeLabel = styled.div`
   white-space: nowrap;
 `
 
+export const StyledAntDrawer = styled(AntDrawer)`
+  .ant-drawer-header-title,
+  .ant-drawer-title {
+    flex: 1;
+  }
+`
+
 export const ResizeArea = styled.div`
   background: #e2e2e2;
   height: ${RESIZE_AREA_HEIGHT}px;
-  width: 100vw;
   cursor: ns-resize;
   z-index: 10;
 
